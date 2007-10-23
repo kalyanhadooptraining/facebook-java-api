@@ -136,6 +136,9 @@ public enum ProfileField {
     this.fieldName = name;
   }
 
+  /**
+   * @return the name of the field
+   */
   public String fieldName() {
     return this.fieldName;
   }
@@ -144,7 +147,9 @@ public enum ProfileField {
     return fieldName();
   }
   /**
-   * Returns true if this field has a particular name.
+   * @param name the name to check against
+   * 
+   * @return true if this field has the specified name.
    */
   public boolean isName(String name) {
     return toString().equals(name);

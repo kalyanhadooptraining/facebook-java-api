@@ -93,12 +93,22 @@ public enum FacebookMethod
   private static EnumSet<FacebookMethod> preAuth = null;
   private static EnumSet<FacebookMethod> postAuth = null;
 
+  /**
+   * Set of methods that can be called without authenticating the user/getting a session-id first.
+   * 
+   * @return a set listing all such methods.
+   */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
       preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION);
     return preAuth;
   }
 
+  /**
+   * Set of methods that *cannot* be called without authenticating the user/getting a session-id first.
+   * 
+   * @return a set listing all such methods.
+   */
   public static EnumSet<FacebookMethod> postAuthMethods() {
     if (null == postAuth)
       postAuth = EnumSet.complementOf(preAuthMethods());
@@ -121,22 +131,42 @@ public enum FacebookMethod
     this.takesFile = takesFile;
   }
 
+  /**
+   * Get the Facebook method name
+   * @return the Facebook method name
+   */
   public String methodName() {
     return this.methodName;
   }
 
+  /**
+   * @return the maximum number of parameters this method will send
+   */
   public int numParams() {
     return this.numParams;
   }
 
+  /**
+   * Check whether or not this method requires a valid session-id in order to be used.
+   * 
+   * @return true if the method requires a session-id prior to use
+   *         false otherwise
+   */
   public boolean requiresSession() {
     return postAuthMethods().contains(this);
   }
 
+  /**
+   * @return the max number of params this method will send, plus the number that will be auto-appended by the client
+   */
   public int numTotalParams() {
     return requiresSession() ? this.maxParamsWithSession : this.numParams;
   }
 
+  /**
+   * @return true if this API call requires a file-stream as a parameter
+   *         false otherwise
+   */
   public boolean takesFile() {
     return this.takesFile;
   }

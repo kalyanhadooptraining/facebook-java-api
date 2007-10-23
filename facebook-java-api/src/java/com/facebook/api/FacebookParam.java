@@ -34,6 +34,9 @@ package com.facebook.api;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * List of URL parameters added by Facebook.
+ */
 public enum FacebookParam
   implements CharSequence {
   SIGNATURE,
@@ -76,6 +79,14 @@ public enum FacebookParam
     return null != key && key.startsWith(FacebookParam.SIGNATURE.toString());
   }
   
+  /**
+   * Check to see if a given parameter name is a signature parameter.
+   * 
+   * @param key the parameter name to check
+   * 
+   * @return true if the parameter is a signature parameter
+   *         false otherwise
+   */
   public static boolean isSignature(String key) {
     return SIGNATURE.equals(get(key));
   }
@@ -109,10 +120,20 @@ public enum FacebookParam
     return this._paramName;
   }
   
+  /**
+   * @return the signature name of this parameter
+   */
   public String getSignatureName() {
     return this._signatureName;
   }
   
+  /**
+   * Remove the Facebook signature prefix from the specified parameter.
+   * 
+   * @param paramName the name to remove the prefix from.
+   * 
+   * @return the specified name, with the Facebook signature prefix removed, if necessary.
+   */
   public static String stripSignaturePrefix(String paramName) {
     if (paramName != null && paramName.startsWith("fb_sig_")) {
       return paramName.substring(7);
@@ -120,6 +141,13 @@ public enum FacebookParam
     return paramName;
   }
 
+  /**
+   * Run this as a standalone Java application.  Why, I do not know.
+   * 
+   * @param args command line arguments, ignored.
+   * 
+   * @deprecated wtf is this even doing here?  
+   */
   public static void main(String[] args) {
     System.out.println( isSignature("fb_sig") );
     System.out.println( !isSignature("fb_sig_something") );
