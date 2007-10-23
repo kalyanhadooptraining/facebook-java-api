@@ -129,8 +129,7 @@ public class TemplatizedAction {
     }
 
     /**
-     * Add a picture to be associated with this feed entry, along with a link to be associated with the picture (clicking 
-     * on the picture in the feed will go to the specified link).
+     * Add a picture to be associated with this feed entry, the picture will not have an associated link.
      * 
      * Note that only 4 pictures may be present at any given time.  Any pictures beyond this are ignored.  Use removePicture 
      * if you need to change something after 4 pictures have been added.
