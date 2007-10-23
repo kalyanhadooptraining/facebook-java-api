@@ -39,20 +39,30 @@ package com.facebook.api;
  * few exceptions.
  */
 public class FacebookException
-  extends Exception {
-  private int _code;
+    extends Exception {
+    /**
+     * Serialization thing.
+     */
+    private static final long serialVersionUID = 5347943510956485237L;
+    private int _code;
 
-  public FacebookException(int code, String msg) {
-    super(msg);
-    _code = code;
-  }
+    /**
+     * Constructor
+     * 
+     * @param code the error code that caused this exception (see http://wiki.developers.facebook.com/index.php/Error_codes)
+     * @param msg a message describing the nature of the error
+     */
+    public FacebookException(int code, String msg) {
+        super(msg);
+        _code = code;
+    }
 
-  /**
-   * See http://wiki.developers.facebook.com/index.php/Error_codes for more information
-   * 
-   * @return the error code that caused this Facebook exception to be thrown.
-   */
-  public int getCode() {
-    return _code;
-  }
+    /**
+     * See http://wiki.developers.facebook.com/index.php/Error_codes for more information
+     * 
+     * @return the error code that caused this Facebook exception to be thrown.
+     */
+    public int getCode() {
+        return _code;
+    }
 }

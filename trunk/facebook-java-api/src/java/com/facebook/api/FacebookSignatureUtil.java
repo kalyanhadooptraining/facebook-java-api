@@ -39,7 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Utility for managing Facebook-specific parameters, specifically those related to session/login aspects.
+ */
 public final class FacebookSignatureUtil {
   private FacebookSignatureUtil() {
   }
@@ -130,6 +132,8 @@ public final class FacebookSignatureUtil {
    * Verifies that a signature received matches the expected value.
    * @param params a map of parameters and their values, such as one
    *   obtained from extractFacebookParams
+   * @param secret the developers 'secret' API key
+   * @param expected the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
    * @return a boolean indicating whether the calculated signature matched the
    *   expected signature
    */
@@ -152,7 +156,7 @@ public final class FacebookSignatureUtil {
    * @param params a map of parameters and their values, such as one
    *   obtained from extractFacebookNamespaceParams; expected to contain the 
    *   signature as the FacebookParam.SIGNATURE parameter
-   * @param secret
+   * @param secret the developers 'secret' API key
    * @return a boolean indicating whether the calculated signature matched the
    *   expected signature
    */
@@ -167,6 +171,8 @@ public final class FacebookSignatureUtil {
    * Verifies that a signature received matches the expected value.
    * @param params a map of parameters and their values, such as one
    *   obtained from extractFacebookNamespaceParams
+   * @param secret the developers 'secret' API key
+   * @param expected the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
    * @return a boolean indicating whether the calculated signature matched the
    *   expected signature
    */

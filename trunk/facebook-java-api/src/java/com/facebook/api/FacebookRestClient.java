@@ -69,14 +69,33 @@ import org.w3c.dom.NodeList;
  * Facebook API client.  Allocate an instance of this class to make Facebook API requests.
  */
 public class FacebookRestClient {
+  /**
+   * API version to request when making calls to the server
+   */
   public static final String TARGET_API_VERSION = "1.0";
+  /**
+   * Flag indicating an erroneous response
+   */
   public static final String ERROR_TAG = "error_response";
-  // presence of f8 here is temporary ... should be removed at launch
-  // note that f8 does not support https://
+  /**
+   * Facebook API server, part 1
+   */
   public static final String FB_SERVER = "api.facebook.com/restserver.php";
+  /**
+   * Facebook API server, part 2a
+   */
   public static final String SERVER_ADDR = "http://" + FB_SERVER;
+  /**
+   * Facebook API server, part 2b
+   */
   public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
+  /**
+   * Facebook API server, part 3a
+   */
   public static URL SERVER_URL = null;
+  /**
+   * Facebook API server, part 3b
+   */
   public static URL HTTPS_SERVER_URL = null;
   static {
     try {
@@ -99,25 +118,59 @@ public class FacebookRestClient {
   private String _sessionSecret; // only used for desktop apps
   private long _userId;
 
+  /**
+   * number of params that the client automatically appends to every API call
+   */
   public static int NUM_AUTOAPPENDED_PARAMS = 5;
   private static boolean DEBUG = false;
   private Boolean _debug = null;
 
   private File _uploadFile = null;
 
+  /**
+   * Constructor
+   * 
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   */
   public FacebookRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
 
+  /**
+   * Constructor
+   * 
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   */
   public FacebookRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
   }
 
+  /**
+   * Constructor
+   * 
+   * @param serverAddr the URL of the Facebook API server to use, allows overriding of the default API server.
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   * 
+   * @throws MalformedURLException if the specified serverAddr is invalid
+   */
   public FacebookRestClient(String serverAddr, String apiKey, String secret,
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
 
+  /**
+   * Constructor
+   * 
+   * @param serverUrl the URL of the Facebook API server to use, allows overriding of the default API server.
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   */
   public FacebookRestClient(URL serverUrl, String apiKey, String secret, String sessionKey) {
     _sessionKey = sessionKey;
     _apiKey = apiKey;
@@ -125,28 +178,62 @@ public class FacebookRestClient {
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
   }
 
+  /**
+   * Set global debugging on.
+   * 
+   * @param isDebug true to enable debugging
+   *                false to disable debugging
+   */
   public static void setDebugAll(boolean isDebug) {
     FacebookRestClient.DEBUG = isDebug;
   }
 
+  /**
+   * Set debugging on for this instance only.
+   * 
+   * @param isDebug true to enable debugging
+   *                false to disable debugging
+   */
+  //FIXME:  do we really need both of these?
   public void setDebug(boolean isDebug) {
     _debug = isDebug;
   }
 
+  /**
+   * Check to see if debug mode is enabled.
+   * 
+   * @return true if debugging is enabled
+   *         false otherwise
+   */
   public boolean isDebug() {
     return (null == _debug) ? FacebookRestClient.DEBUG : _debug.booleanValue();
   }
 
+  /**
+   * Check to see if the client is running in desktop mode.
+   * 
+   * @return true if the client is running in desktop mode
+   *         false otherwise
+   */
   public boolean isDesktop() {
     return this._isDesktop;
   }
 
+  /**
+   * Enable/disable desktop mode.
+   * 
+   * @param isDesktop true to enable desktop application mode
+   *                  false to disable desktop application mode
+   */
   public void setIsDesktop(boolean isDesktop) {
     this._isDesktop = isDesktop;
   }
 
   /**
    * Prints out the DOM tree.
+   * 
+   * @param n the parent node to start printing from
+   * @param prefix string to append to output, should not be null
    */
   public static void printDom(Node n, String prefix) {
     String outString = prefix;
@@ -308,11 +395,18 @@ public class FacebookRestClient {
     return null;
   }
 
+  /**
+   * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
+   * 
+   * Note that calling this method consumes the data held in the internal buffer, and thus it may only be called once per API 
+   * call.
+   * 
+   * @return a String representation of the last API response sent by Facebook
+   */
   public String getRawResponse() {
       String result = this.rawResponse;
       this.rawResponse = null;
       return result;
-
   }
 
   /**
