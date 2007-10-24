@@ -47,7 +47,7 @@ Getting Started:
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.1.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.2.jar'.
 	    
 
 Using the JAR File:
@@ -60,6 +60,21 @@ Using the JAR File:
 	
 	http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
+	-- JAVA 5 USERS ONLY --
+	All versions of this library from 1.2 onward also depend upon the JAXB libraries.  With 
+	Java 6, these libraries are available on the classpath automatically.  With Java 5, however, 
+	they are not, so you must manually include them as well (or alternatively you can switch 
+	to Java 6).  
+	
+	You can download the required dependencies at:
+	
+	http://facebook-java-api.googlecode.com/files/jaxb-api-2.1.jar
+	http://facebook-java-api.googlecode.com/files/jaxb-impl-2.1.jar
+	http://facebook-java-api.googlecode.com/files/jsr173-api-1.0.jar
+	
+	These files must all be deployed alongside the Facebook JAR file and the json-1.0 library.
+	-- END JAVA 5 SPECIFIC CONTENT -- 
+	
 		
 Committing Changes:
 
@@ -67,3 +82,23 @@ Committing Changes:
 	are interested in committing your revisions/helping out with this project, please 
 	send an e-mail to aroth@bigtribe.com to be allocated a developer account with full 
 	access to commit new code.
+	
+	
+Changelog:
+
+	From v1.1 to v1.2
+		- Add JAXB bindings for all FacebookRestClient methods that return a Document.
+		- Add utility method to get the JAXB response object corresponding to the last API call made through the client.
+
+	From v1.0 (last "official" Facebook release) to v1.1:
+		- The 'Pair' class has been factored out of FacebookRestClient, and is now public.
+		- All object id's use 64-bit longs as their datatype to be compatible with pending Facebook platform changes.
+		- 'notifications_sendRequest' is marked as deprecated (it is no longer supported by Facebook).
+		- 'feed_publishActionOfUser' is marked as deprecated (it is being replaced with 'feed_publishTemplatizedAction').
+		- Add support for 'feed_publishTemplatizedAction' API call.
+		- Add 'TemplatizedAction' utility class to assist in creating feed entries through 'feed_publishTemplatizedAction'.
+		- Add ability to retrieve the raw XML/text snippet returned by the Facebook API server (note that this can only be called once per API call).
+		- Update/add javadoc comments.
+		- Provide more useful error messages and debugging output.
+		- Removed 'ExampleClient' sample application (removes spurious dependency on BrowserLauncher).
+		- Fixed varions bugs in 'PhotoTag' class.

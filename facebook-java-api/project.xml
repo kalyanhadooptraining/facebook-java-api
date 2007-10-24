@@ -77,6 +77,7 @@
 			<artifactId>json</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<!-- THIS SECTION FOR JAVA 5 ONLY, NOT REQUIRED WITH JAVA 6-->
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -92,6 +93,7 @@
 			<artifactId>jsr173-api</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<!-- END OF JAVA 5 SECTION -->
 	</dependencies>
 	<build>
 		<nagEmailAddress>aroth@bigtribe.com</nagEmailAddress>
