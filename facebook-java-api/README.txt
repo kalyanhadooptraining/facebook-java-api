@@ -28,6 +28,11 @@ Getting Started:
 		the repository entry and navigate to /trunk/facebook-java-api.  Right-click 
 		on this folder, and then select "Checkout..." to check out the project.
 		
+		Note that while it is possible to download the entire project as a plain .zip archive, 
+		it is generally recommended to checkout from SVN instead if you plan on building from 
+		sources.  This will make things much easier should you ever decide you want to commit 
+		any changes you have in the future.
+		
 	2.  At the command line, navigate to the top-level project directory ('/favebook-java-api' 
 	    unless you have renamed the project on your system) and type "maven eclipse".  This 
 	    will configure the project for use with Eclipse, and download any necessary dependencies.
