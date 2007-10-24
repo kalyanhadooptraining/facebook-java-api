@@ -107,8 +107,8 @@ public class TemplatizedAction {
     
     /**
      * Add a picture to be associated with this feed entry, along with a link to be associated with the picture (clicking 
-     * on the picture in the feed will go to the specified link).
-     * 
+     * on the picture in the feed will go to the specified link).<br />
+     * <br />
      * Note that only 4 pictures may be present at any given time.  Any pictures beyond this are ignored.  Use removePicture 
      * if you need to change something after 4 pictures have been added.
      * 
@@ -308,8 +308,8 @@ public class TemplatizedAction {
     
     /**
      * Set the target ids of friends who are associated with this action.  This must be specified if you have used the "{target}" token 
-     * in any of your markup.
-     * 
+     * in any of your markup.<br />
+     * <br />
      * This method will clear out any previously added target ids.  To append additional target ids to a previous list, use addTargetIds
      * instead.
      * 
@@ -324,8 +324,8 @@ public class TemplatizedAction {
     }
     
     /**
-     * Append to the list of friends who are associated with this action.
-     * 
+     * Append to the list of friends who are associated with this action.<br />
+     * <br />
      * This method *will not* clear out any previously added target ids.  
      * 
      * @param newIds a comma-seperated list of Facebook UID's representing any friends of the current user who are associated with 
@@ -343,8 +343,8 @@ public class TemplatizedAction {
     
     /**
      * Set the target ids of friends who are associated with this action.  This must be specified if you have used the "{target}" token 
-     * in any of your markup.
-     * 
+     * in any of your markup.<br />
+     * <br />
      * This method will clear out any previously added target ids.  To append additional target ids to a previous list, use addTargetIds
      * instead.
      * 
@@ -367,8 +367,8 @@ public class TemplatizedAction {
     
     /**
      * Append to the set of friends who are associated with this action.  This must be specified if you have used the "{target}" token 
-     * in any of your markup.
-     * 
+     * in any of your markup.<br />
+     * <br />
      * This method *will not* clear out any previously added target ids. 
      * 
      * @param facebookIds a list of all the Facebook UID to specify as targets.  The elements in the collection may only be of type Long 

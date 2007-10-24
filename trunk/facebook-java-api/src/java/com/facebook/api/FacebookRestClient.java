@@ -548,29 +548,29 @@ public class FacebookRestClient {
    * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally 
    * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally 
    * recommend Bizou").  This happens automatically, and *only* if the template match between the two
-   * feed entries is identical.
-   * 
+   * feed entries is identical.<br />
+   * <br />
    * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le 
-   * Charm" *will not* become "Bob recommends Bizou and Le Charm").
-   * 
+   * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
+   * <br />
    * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.  
    * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2, 
    * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token 
    * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry 
    * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send 
    * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the 
-   * story through the newsfeed.
-   * 
+   * story through the newsfeed.<br />
+   * <br />
    * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere 
    * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if 
-   * being omitted.
-   * 
+   * being omitted.<br />
+   * <br />
    * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so 
    * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not 
    * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility 
-   * it provides
-   * 
-   * 
+   * it provides.<br />
+   * <br />
+   * <br />
    * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
    * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
    * 
@@ -606,29 +606,29 @@ public class FacebookRestClient {
    * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally 
    * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally 
    * recommend Bizou").  This happens automatically, and *only* if the template match between the two
-   * feed entries is identical.
-   * 
+   * feed entries is identical.<br />
+   * <br />
    * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le 
-   * Charm" *will not* become "Bob recommends Bizou and Le Charm").
-   * 
+   * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
+   * <br />
    * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.  
    * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2, 
    * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token 
    * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry 
    * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send 
    * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the 
-   * story through the newsfeed.
-   * 
+   * story through the newsfeed.<br />
+   * <br />
    * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere 
    * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if 
-   * being omitted.
-   * 
+   * being omitted.<br />
+   * <br />
    * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so 
    * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not 
    * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility 
-   * it provides
-   * 
-   * 
+   * it provides.<br />
+   * <br />
+   * <br />
    * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
    * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
    * 
@@ -1375,22 +1375,22 @@ public class FacebookRestClient {
    * Returns a JAXB object of the type that corresponds to the last API call made on the client.  Each 
    * Facebook Platform API call that returns a Document object has a JAXB response object associated 
    * with it.  The naming convention is generally intuitive.  For example, if you invoke the 
-   * 'user_getInfo' API call, the associated JAXB response object is 'UsersGetInfoResponse'.
-   * 
-   * An example of how to use this method:
-   *  
-   *    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
-   *    client.friends_get();
-   *    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();
-   *    List<Long> friends = response.getUid(); 
-   * 
+   * 'user_getInfo' API call, the associated JAXB response object is 'UsersGetInfoResponse'.<br />
+   * <br />
+   * An example of how to use this method:<br />
+   *  <br />
+   *    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");<br />
+   *    client.friends_get();<br />
+   *    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();<br />
+   *    List<Long> friends = response.getUid(); <br />
+   * <br />
    * This is particularly useful in the case of API calls that return a Document object, as working 
    * with the JAXB response object is generally much simple than trying to walk/parse the DOM by 
-   * hand.
-   * 
+   * hand.<br />
+   * <br />
    * This method can be safely called multiple times, though note that it will only return the 
-   * response-object corresponding to the most recent Facebook Platform API call made.
-   * 
+   * response-object corresponding to the most recent Facebook Platform API call made.<br />
+   * <br />
    * Note that you must cast the return value of this method to the correct type in order to do anything 
    * useful with it.
    * 
