@@ -11,6 +11,12 @@
   </classpathentry>
   <classpathentry path="MAVEN_REPO/json/jars/json-1.0.jar" kind="var">
   </classpathentry>
+  <classpathentry path="MAVEN_REPO/javax.xml/jars/jaxb-api-2.1.jar" kind="var">
+  </classpathentry>
+  <classpathentry path="MAVEN_REPO/javax.xml/jars/jaxb-impl-2.1.jar" kind="var">
+  </classpathentry>
+  <classpathentry path="MAVEN_REPO/javax.xml/jars/jsr173-api-1.0.jar" kind="var">
+  </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
 </classpath>
