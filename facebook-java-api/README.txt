@@ -8,8 +8,27 @@ Prerequisites:
 	-- OR --
 	SVN 									http://subversion.tigris.org/ 	
 	
+
+Quick Start (project users):
+
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.2.jar
 	
-Getting Started:
+	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
+	
+	3.  If (and *only* if) you are using Java 5, also download the following libraries:
+	
+		http://facebook-java-api.googlecode.com/files/jaxb-api-2.1.jar
+		http://facebook-java-api.googlecode.com/files/jaxb-impl-2.1.jar
+		http://facebook-java-api.googlecode.com/files/jsr173-api-1.0.jar
+		
+	4.  Deploy all of the downloaded JAR files onto your application server, or otherwise 
+		place them on your runtime classpath.  This will allow you to use the Facebook 
+		Platform API.
+		
+	5.  If you need help using the API, consult the project Javadoc at http://64.81.51.104:54321/facebook/javadoc/index.html
+			
+	
+Getting Started (project developers):
 
 	0.  Install all of the prerequisites mentioned above.  Be sure that your Java and 
 	    maven binaries are on your system path.  Also be sure to define the JAVA_HOME 
@@ -101,4 +120,4 @@ Changelog:
 		- Update/add javadoc comments.
 		- Provide more useful error messages and debugging output.
 		- Removed 'ExampleClient' sample application (removes spurious dependency on BrowserLauncher).
-		- Fixed varions bugs in 'PhotoTag' class.
+		- Fixed various bugs in 'PhotoTag' class.
