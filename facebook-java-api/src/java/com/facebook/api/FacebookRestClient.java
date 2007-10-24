@@ -56,6 +56,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONException;
@@ -1366,5 +1369,56 @@ public class FacebookRestClient {
       this._sessionSecret =
           d.getElementsByTagName("secret").item(0).getFirstChild().getTextContent();
     return this._sessionKey;
+  }
+  
+  /**
+   * Returns a JAXB object of the type that corresponds to the last API call made on the client.  Each 
+   * Facebook Platform API call that returns a Document object has a JAXB response object associated 
+   * with it.  The naming convention is generally intuitive.  For example, if you invoke the 
+   * 'user_getInfo' API call, the associated JAXB response object is 'UsersGetInfoResponse'.
+   * 
+   * An example of how to use this method:
+   *  
+   *    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
+   *    client.friends_get();
+   *    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();
+   *    List<Long> friends = response.getUid(); 
+   * 
+   * This is particularly useful in the case of API calls that return a Document object, as working 
+   * with the JAXB response object is generally much simple than trying to walk/parse the DOM by 
+   * hand.
+   * 
+   * This method can be safely called multiple times, though note that it will only return the 
+   * response-object corresponding to the most recent Facebook Platform API call made.
+   * 
+   * Note that you must cast the return value of this method to the correct type in order to do anything 
+   * useful with it.
+   * 
+   * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on 
+   *         the client.  Note that you must cast this object to its proper type before you will be able to 
+   *         do anything useful with it.
+   */
+  public Object getResponsePOJO(){
+      if (this.rawResponse == null) {
+          return null;
+      }
+      JAXBContext jc;
+      Object pojo = null;
+      try {
+          jc = JAXBContext.newInstance("com.facebook.api.schema");
+          Unmarshaller unmarshaller = jc.createUnmarshaller();
+          pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));             
+      } catch (JAXBException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO");
+          e.printStackTrace();
+      }
+      catch (NullPointerException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO.");
+          e.printStackTrace();
+      } catch (UnsupportedEncodingException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO.");
+          e.printStackTrace();
+      }
+      return pojo;
   }
 }
