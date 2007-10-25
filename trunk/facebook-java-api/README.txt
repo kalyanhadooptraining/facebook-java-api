@@ -1,14 +1,3 @@
-Prerequisites:
-
-	Java 5 or higher 						http://java.sun.com
-	Eclipse 3.0 or higher					http://www.eclipse.org
-	Maven 1.x (*not 2.0*)					http://maven.apache.org/maven-1.x/
-	
-	Subclipse plugin for Eclipse			http://subclipse.tigris.org/install.html
-	-- OR --
-	SVN 									http://subversion.tigris.org/ 	
-	
-
 Quick Start (project users):
 
 	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.2.jar
@@ -26,6 +15,17 @@ Quick Start (project users):
 		Platform API.
 		
 	5.  If you need help using the API, consult the project Javadoc at http://64.81.51.104:54321/facebook/javadoc/index.html
+	
+	
+Prerequisites (project developers):
+
+	Java 5 or higher 						http://java.sun.com
+	Eclipse 3.0 or higher					http://www.eclipse.org
+	Maven 1.x (*not 2.0*)					http://maven.apache.org/maven-1.x/
+	
+	Subclipse plugin for Eclipse			http://subclipse.tigris.org/install.html
+	-- OR --
+	SVN 									http://subversion.tigris.org/ 
 			
 	
 Getting Started (project developers):
