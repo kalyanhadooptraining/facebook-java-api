@@ -23,8 +23,9 @@
 
 *Publishing a Templatized Feed Entry:*
 {{{
-    //using the TemplatizedAction utility class helps keep things sane
+     //using the TemplatizedAction utility class helps keep things sane
     TemplatizedAction action = new TemplatizedAction("{actor} recommends {book}");                      //the user has recommended a book
+
 
     action.addTitleParam("book", "<a href='http://www.amazon.com/Hamlet/dp/0140714545/'>Hamlet</a>");   //specify the specific book
     action.setBodyTemplate("{actor} is using BooksApp!");                                               //set a body template (optional)
