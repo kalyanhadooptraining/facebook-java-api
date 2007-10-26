@@ -1579,4 +1579,90 @@ public class FacebookRestClient {
       }
       return "_" + input;
   }
+  
+  /**
+   * Check to see if the application is permitted to send SMS messages to the current application user.
+   * 
+   * @return true if the application is presently able to send SMS messages to the current user
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean sms_canSend() throws FacebookException, IOException {
+      return sms_canSend(this.users_getLoggedInUser());
+  }
+  
+  /**
+   * Check to see if the application is permitted to send SMS messages to the specified user.
+   * 
+   * @param userId the UID of the user to check permissions for
+   * 
+   * @return true if the application is presently able to send SMS messages to the specified user
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean sms_canSend(Long userId) throws FacebookException, IOException {
+      this.callMethod(FacebookMethod.SMS_CAN_SEND, new Pair<String, CharSequence>("uid", userId.toString()));
+      return this.rawResponse.contains(">0<");  //a status code of "0" indicates that the app can send messages
+  }
+  
+  /**
+   * Send an SMS message to the current application user.
+   * 
+   * @param message the message to send.
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to 
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify 
+   *                     null if you do not want/need to use a session for the current message.
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated 
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are 
+   *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
+   * 
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was 
+   *                    not requested, this method will return null.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+      return sms_send(this.users_getLoggedInUser(), message, smsSessionId, makeNewSession);
+  }
+  
+  /**
+   * Send an SMS message to the specified user.
+   * 
+   * @param userId the id of the user to send the message to.
+   * @param message the message to send.
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to 
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify 
+   *                     null if you do not want/need to use a session for the current message.
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated 
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are 
+   *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
+   * 
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was 
+   *                    not requested, this method will return null.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Integer sms_send(Long userId, String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("uid", userId.toString()));
+      params.add(new Pair<String, CharSequence>("message", message));
+      if (smsSessionId != null) {
+          params.add(new Pair<String, CharSequence>("session_id", smsSessionId.toString()));
+      }
+      if (makeNewSession) {
+          params.add(new Pair<String, CharSequence>("req_session", "true"));
+      }
+      
+      this.callMethod(FacebookMethod.SMS_SEND, params);
+      
+      //System.out.println("!!!!!!!!!!  SEND:  " + this.rawResponse);
+      //FIXME:  need to parse out the result here
+      return 0;
+  }
 }

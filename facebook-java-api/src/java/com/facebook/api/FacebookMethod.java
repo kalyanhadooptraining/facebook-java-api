@@ -90,7 +90,7 @@ public enum FacebookMethod
   DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
   //SMS
   SMS_CAN_SEND("facebook.sms.canSend", 2),
-  SMS_SEND("facebook.sms", 4)
+  SMS_SEND("facebook.sms.send", 4)
   ;
 
   private String methodName;
