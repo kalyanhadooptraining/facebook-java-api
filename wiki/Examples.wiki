@@ -6,18 +6,18 @@
 *Getting a User's Friends:*
 {{{
     FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
-    client.friends_get();
-    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();
-    List<Long> friends = response.getUid();
+   client.friends_get();
+   FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();
+   List<Long> friends = response.getUid();
 }}}
 
 
 *Send SMS to a User:*
 {{{
     FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
-    if (client.sms_canSend()) {
-        client.sms_send("I can send you text messages now!", null, false);
-    }
+   if (client.sms_canSend()) {
+       client.sms_send("I can send you text messages now!", null, false);
+   }
 }}}
 
 
