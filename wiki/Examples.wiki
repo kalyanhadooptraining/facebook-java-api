@@ -1,0 +1,89 @@
+#summary This page contains example code of how to use the newer features of the client.
+
+=== Code Examples ===
+
+
+*Getting a User's Friends:*
+{{{
+    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
+    client.friends_get();
+    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();
+    List<Long> friends = response.getUid();
+}}}
+
+
+*Send SMS to a User:*
+{{{
+    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
+    if (client.sms_canSend()) {
+        client.sms_send("I can send you text messages now!", null, false);
+    }
+}}}
+
+
+*Publishing a Templatized Feed Entry:*
+{{{
+    //using the TemplatizedAction utility class helps keep things sane
+    TemplatizedAction action = new TemplatizedAction("{actor} recommends {book}");                      //the user has recommended a book
+
+    action.addTitleParam("book", "<a href='http://www.amazon.com/Hamlet/dp/0140714545/'>Hamlet</a>");   //specify the specific book
+    action.setBodyTemplate("{actor} is using BooksApp!");                                               //set a body template (optional)
+    action.setBodyGeneral("100 other people recommend this book!");                                     //set general body content (optional)
+    action.addPicture("http://code.google.com/hosting/images/code_sm.png", "http://www.google.com");    //add up to 4 pictures (optional)
+    action.addPicture("http://code.google.com/hosting/images/code_sm.png", "http://www.google.com");
+    action.addPicture("http://code.google.com/hosting/images/code_sm.png", "http://www.google.com");
+    action.addPicture("http://code.google.com/hosting/images/code_sm.png", "http://www.google.com");
+    
+    client.feed_PublishTemplatizedAction(action);                                                       //publish to feed
+}}}
+
+
+*Playing With User Preferences:*
+{{{
+    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
+    Map<Integer, String> prefs = client.data_getUserPreferences();
+    
+    //show any preferences that are currently set for the user, all at once
+    System.out.println("Preferences already set:");
+    for (Integer key : prefs.keySet()) {
+        System.out.println("\tkey " + key + " = " + prefs.get(key));
+    }
+        
+    //set the values of some preferences, one at a time    
+    client.data_setUserPreference(1, "test1");
+    client.data_setUserPreference(2, "test2");
+    client.data_setUserPreference(3, "0");
+    
+    //retrieve some of the set values, one at a time    
+    System.out.println("Preference 2 is:  " + client.data_getUserPreference(2));
+    System.out.println("Preference 1 is:  " + client.data_getUserPreference(1));
+        
+    //retrieve all the values at once
+    System.out.println("All current preferences:");
+    prefs = client.data_getUserPreferences();
+    for (Integer key : prefs.keySet()) {
+        System.out.println("\tkey " + key + " = " + prefs.get(key));
+    }
+        
+    //set several new preference values at once, preserving any existing values    
+    Map<Integer, String> vals = new HashMap<Integer, String>();
+    vals.put(4, "test4");
+    vals.put(5, "test5");
+    vals.put(6, "test6");
+    client.data_setUserPreferences(vals, false);
+
+    //retrieve all the values at once
+    System.out.println("All current preferences:");
+    prefs = client.data_getUserPreferences();
+    for (Integer key : prefs.keySet()) {
+        System.out.println("\tkey " + key + " = " + prefs.get(key));
+    }
+    
+    //set several new preference values at once, *removing* any existing values   
+    client.data_setUserPreferences(vals, true);
+    System.out.println("All current preferences:");
+    prefs = client.data_getUserPreferences();
+    for (Integer key : prefs.keySet()) {
+        System.out.println("\tkey " + key + " = " + prefs.get(key));
+    }
+}}}
