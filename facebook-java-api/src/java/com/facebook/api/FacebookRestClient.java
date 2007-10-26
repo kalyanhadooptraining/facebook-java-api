@@ -51,6 +51,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
 import org.w3c.dom.Document;
@@ -1420,5 +1422,161 @@ public class FacebookRestClient {
           e.printStackTrace();
       }
       return pojo;
+  }
+  
+  /**
+   * Lookup a single preference value for the current user.
+   * 
+   * @param prefId the id of the preference to lookup.  This should be an integer value from 0-200.
+   * 
+   * @return The value of that preference, or null if it is not yet set.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public String data_getUserPreference(Integer prefId) throws FacebookException, IOException {
+      if ((prefId < 0) || (prefId > 200)) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200.");
+      }
+      this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCE, new Pair<String, CharSequence>("pref_id", Integer.toString(prefId)));
+      this.checkError();
+      
+      if (! this.rawResponse.contains("</data_getUserPreference_response>")) {
+          //there is no value set for this preference yet
+          return null;
+      }
+      String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</data_getUserPreference_response>"));
+      result = result.substring(result.indexOf("facebook.xsd\">") + "facebook.xsd\">".length());
+      
+      return reconstructValue(result);
+  }
+  
+  /**
+   * Get a map containing all preference values set for the current user.
+   * 
+   * @return a map of preference values, keyed by preference id.  The map will contain all 
+   *         preferences that have been set for the current user.  If there are no preferences
+   *         currently set, the map will be empty.  The map returned will never be null.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Map<Integer, String> data_getUserPreferences() throws FacebookException, IOException {
+      Document response = this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCES);
+      this.checkError();
+      
+      Map<Integer, String> results = new HashMap<Integer, String>();
+      NodeList ids = response.getElementsByTagName("pref_id");
+      NodeList values = response.getElementsByTagName("value");
+      for (int count = 0; count < ids.getLength(); count++) {
+          results.put(Integer.parseInt(ids.item(count).getFirstChild().getTextContent()), 
+                  reconstructValue(values.item(count).getFirstChild().getTextContent()));
+      }
+      
+      return results;
+  }
+  
+  private void checkError() throws FacebookException {
+      if (this.rawResponse.contains("error_response")) {
+          //<error_code>xxx</error_code>
+          Integer code = Integer.parseInt(this.rawResponse.substring(this.rawResponse.indexOf("<error_code>") + "<error_code>".length(), 
+                  this.rawResponse.indexOf("</error_code>") + "</error_code>".length()));
+          throw new FacebookException(code, "The request could not be completed!");
+      }
+  }
+  
+  private String reconstructValue(String input) {
+      if ((input == null) || ("".equals(input))) {
+          return null;
+      }
+      if (input.charAt(0) == '_') {
+          return input.substring(1);
+      }
+      return input;
+  }
+  
+  /**
+   * Set a user-preference value.  The value can be any string up to 127 characters in length, 
+   * while the preference id can only be an integer between 0 and 200.  Any preference set applies 
+   * only to the current user of the application.
+   * 
+   * To clear a user-preference, specify null as the value parameter.  The values of "0" and "" will 
+   * be stored as user-preferences with a literal value of "0" and "" respectively.
+   * 
+   * @param prefId the id of the preference to set, an integer between 0 and 200.
+   * @param value the value to store, a String of up to 127 characters in length.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void data_setUserPreference(Integer prefId, String value) throws FacebookException, IOException {
+      if ((prefId < 0) || (prefId > 200)) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200.");
+      }
+      if ((value != null) && (value.length() > 127)) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference value cannot be longer than 128 characters.");
+      }
+      
+      value = normalizePreferenceValue(value);
+      
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("pref_id", Integer.toString(prefId)));
+      params.add(new Pair<String, CharSequence>("value", value));
+      this.callMethod(FacebookMethod.DATA_SET_USER_PREFERENCE, params);
+      this.checkError();
+  }
+  
+  /**
+   * Set multiple user-preferences values.  The values can be strings up to 127 characters in length, 
+   * while the preference id can only be an integer between 0 and 200.  Any preferences set apply 
+   * only to the current user of the application.
+   * 
+   * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will 
+   * be stored as user-preferences with a literal value of "0" and "" respectively.
+   * 
+   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and 
+   *              the values should be strings of up to 127 characters in length.
+   * @param replace set to true if you want to remove any pre-existing preferences before writing the new ones
+   *                set to false if you want the new preferences to be merged with any pre-existing preferences
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void data_setUserPreferences(Map<Integer, String> values, boolean replace) throws FacebookException, IOException {
+      JSONObject map = new JSONObject();
+      
+      for (Integer key : values.keySet()) {
+          if ((key < 0) || (key > 200)) {
+              throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200.");
+          }
+          if ((values.get(key) != null) && (values.get(key).length() > 127)) {
+              throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference value cannot be longer than 128 characters.");
+          }
+          try {
+              map.put(Integer.toString(key), normalizePreferenceValue(values.get(key)));
+          }
+          catch (JSONException e) {
+              FacebookException ex = new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "Error when translating {key=" 
+                      + key + ", value=" + values.get(key) + "}to JSON!");
+              ex.setStackTrace(e.getStackTrace());
+              throw ex;
+          }
+      }
+      
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("values", map.toString()));
+      if (replace) {
+          params.add(new Pair<String, CharSequence>("replace", "true"));
+      }
+      
+      this.callMethod(FacebookMethod.DATA_SET_USER_PREFERENCES, params);
+      this.checkError();
+  }
+  
+  private String normalizePreferenceValue(String input) {
+      if (input == null) {
+          return "0";
+      }
+      return "_" + input;
   }
 }

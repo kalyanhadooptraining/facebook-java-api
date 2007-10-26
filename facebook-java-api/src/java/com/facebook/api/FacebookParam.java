@@ -50,7 +50,12 @@ public enum FacebookParam
   FRIENDS("friends"),
   ADDED("added"),
   PROFILE_UPDATE_TIME("profile_udpate_time"),
-  API_KEY("api_key")
+  API_KEY("api_key"),
+  //SMS sig params
+  SMS("sms"),
+  MESSAGE("message"),
+  SMS_SID("sms_sid"),
+  SMS_NEW_USER("sms_new_user")
   ;
 
   private static Map<String, FacebookParam> _lookupTable =
