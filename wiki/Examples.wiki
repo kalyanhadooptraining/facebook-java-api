@@ -1,6 +1,6 @@
 #summary This page contains example code of how to use the newer features of the client.
 
-=== Code Examples ===
+=== Sample Code ===
 
 
 *Getting a User's Friends:*
@@ -41,7 +41,7 @@
 
 *Playing With User Preferences:*
 {{{
-    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
+     FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
     Map<Integer, String> prefs = client.data_getUserPreferences();
     
     //show any preferences that are currently set for the user, all at once
