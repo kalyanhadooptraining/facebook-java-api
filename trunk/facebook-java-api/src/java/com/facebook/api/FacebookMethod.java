@@ -83,6 +83,14 @@ public enum FacebookMethod
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),  //deprecated
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
   FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 15),
+  //Data
+  DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
+  DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),
+  DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference", 2),
+  DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
+  //SMS
+  SMS_CAN_SEND("facebook.sms.canSend", 2),
+  SMS_SEND("facebook.sms", 4)
   ;
 
   private String methodName;
@@ -100,7 +108,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND);
     return preAuth;
   }
 
