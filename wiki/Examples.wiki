@@ -74,6 +74,7 @@
     client.data_setUserPreferences(vals, false);
 
 
+    
     //retrieve all the values at once
     System.out.println("All current preferences:");
     prefs = client.data_getUserPreferences();
