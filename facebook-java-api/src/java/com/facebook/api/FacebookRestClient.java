@@ -1665,4 +1665,52 @@ public class FacebookRestClient {
       //FIXME:  need to parse out the result here
       return 0;
   }
+  
+  /**
+   * Check to see if the user has granted the app a specific external permission.  In order to be granted a 
+   * permission, an application must direct the user to a URL of the form:
+   * 
+   * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
+   * 
+   * @param perm the permission to check for
+   * 
+   * @return true if the user has granted the application the specified permission
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException {
+      this.callMethod(FacebookMethod.USERS_HAS_PERMISSION, new Pair<String, CharSequence>("ext_perm", perm.getName()));
+      return this.rawResponse.contains(">1<");  //a code of '1' is sent back to indicate that the user has the request permission
+  }
+  
+  /**
+   * Set the user's profile status message.  This requires that the user has granted the application the 
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission' 
+   * to check to see if the user has granted your app the abbility to update their status.
+   *
+   * @param newStatus the new status message to set.
+   * @param clear whether or not to clear the old status message.
+   * 
+   * @return true if the call succeeds
+   *         false otherwise 
+   *          
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException {
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      
+      if (newStatus != null) {
+          params.add(new Pair<String, CharSequence>("status", newStatus));
+      }
+      if (clear) {
+          params.add(new Pair<String, CharSequence>("clear", "true"));
+      }
+      
+      this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
+      
+      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the user has the request permission   
+  }
 }

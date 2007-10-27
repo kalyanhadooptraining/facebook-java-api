@@ -53,12 +53,14 @@ public enum FacebookMethod
   // Friends
   FRIENDS_GET("facebook.friends.get"),
   FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
-  FRIENDS_GET_REQUESTS("facebook.friends.getRequests"),
+  FRIENDS_GET_REQUESTS("facebook.friends.getRequests"),  //deprectaed/unofficial
   FRIENDS_ARE_FRIENDS("facebook.friends.areFriends", 2),
   // Users
   USERS_GET_INFO("facebook.users.getInfo", 2),
   USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
   USERS_IS_APP_ADDED("facebook.users.isAppAdded"),
+  USERS_HAS_PERMISSION("facebook.users.hasAppPermission", 2),
+  USERS_SET_STATUS("facebook.users.setStatus", 3),
   // Photos
   PHOTOS_GET("facebook.photos.get", 2),
   PHOTOS_GET_ALBUMS("facebook.photos.getAlbums", 1),

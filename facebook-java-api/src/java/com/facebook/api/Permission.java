@@ -28,29 +28,47 @@
 package com.facebook.api;
 
 /**
- * Simple data structure for grouping two values together.  Required by some API calls.
+ * Enum for managing the different permission-types used by Facebook.  These 
+ * are opt-in permissions that the user must explicitly grant, and can only 
+ * be requested one at a time.  To request that a user grant you a permission, 
+ * direct them to a URL of the form:
  * 
- * @param <N> first element in the pair.
- * @param <V> second element in the pair.
+ * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
+ * 
+ * You can query to see if the user has granted your application a given permission using the 
+ * 'users.hasAppPermission' API call.
  */
-public class Pair<N, V> {
+public enum Permission {
     /**
-     * The first element in the pair.
+     * Permission to send SMS messages to a user
      */
-    public N first;
+    SMS_SEND("sms"),
     /**
-     * The second element in the pair.
+     * Permission to update a user's status message
      */
-    public V second;
-
+    STATUS_UPDATE("status_update"),
     /**
-     * Constructor.
+     * Permission to create marketplac elistings for the user
+     */
+    MARKETPLACE_CREATE("create_listing"),
+    /**
+     * Enahnced photo-uploading permissions
+     */
+    PHOTO_UPLOAD("photo_upload");
+    
+    private String name;
+    
+    private Permission(String name) {
+        this.name = name;
+    }
+    
+    /**
+     * Gets the name by which Facebook refers to this permission.  The name is what is sent in API calls 
+     * and other requests to Facebook to specify the desired premission.
      * 
-     * @param name the first value in the pair.
-     * @param value the second value in the pair.
+     * @return the Facebook name given to this permission.
      */
-    public Pair(N name, V value) {
-      this.first = name;
-      this.second = value;
+    public String getName() {
+        return name;
     }
 }
