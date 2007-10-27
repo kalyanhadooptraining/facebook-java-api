@@ -1711,6 +1711,32 @@ public class FacebookRestClient {
       
       this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
       
-      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the user has the request permission   
+      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error   
+  }
+  
+  /**
+   * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML 
+   * tag, to allow a given snippet to be reused easily across multiple users, and also to allow the application to update 
+   * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML 
+   * markup that is associated with the handle/id. 
+   * 
+   * @param handle the id to associate the specified markup with.  Put this in fb:ref FBML tags to reference your markup.
+   * @param markup the FBML markup to store.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
+      if ((handle == null) || ("".equals(handle))) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The FBML handle may not be null or empty!");
+      }
+      if (markup == null) {
+          markup = "";
+      }
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("handle", handle));
+      params.add(new Pair<String, CharSequence>("fbml", markup));
+      
+      this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE, params);
   }
 }

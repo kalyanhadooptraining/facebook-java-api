@@ -81,6 +81,7 @@ public enum FacebookMethod
   PROFILE_GET_FBML("facebook.profile.getFBML", 1),
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
+  FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 3),
   // Feed
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),  //deprecated
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
