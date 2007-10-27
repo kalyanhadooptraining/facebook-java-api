@@ -6,6 +6,16 @@
  * redistribution or other use of this work is prohibited.  All copies must
  * retain this copyright notice.  Any use or exploitation of this work without
  * authorization could subject the perpetrator to criminal and civil liability.
+ * 
+ * Redistribution and use in source and binary forms, with or without        
+ * modification, are permitted provided that the following conditions        
+ * are met:                                                                  
+ *                                                                           
+ * 1. Redistributions of source code must retain the above copyright         
+ *    notice, this list of conditions and the following disclaimer.          
+ * 2. Redistributions in binary form must reproduce the above copyright      
+ *    notice, this list of conditions and the following disclaimer in the    
+ *    documentation and/or other materials provided with the distribution.   
  *
  * The information in this software is subject to change without notice
  * and should not be construed as a commitment by BigTribe Corporation.
