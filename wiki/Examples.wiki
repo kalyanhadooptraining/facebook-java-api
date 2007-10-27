@@ -12,6 +12,14 @@
 }}}
 
 
+*Update a User's Status Message:*
+{{{
+    if (client.users_hasAppPermission(Permission.STATUS_UPDATE)) {
+        client.users_setStatus("developing Facebook apps in Java because the new Java client kicks the PHP client's ass!", false);
+    }
+}}}
+
+
 *Send SMS to a User:*
 {{{
     FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");
