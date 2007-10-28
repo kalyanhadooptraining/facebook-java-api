@@ -6,6 +6,16 @@
  * redistribution or other use of this work is prohibited.  All copies must
  * retain this copyright notice.  Any use or exploitation of this work without
  * authorization could subject the perpetrator to criminal and civil liability.
+ * 
+ * Redistribution and use in source and binary forms, with or without        
+ * modification, are permitted provided that the following conditions        
+ * are met:                                                                  
+ *                                                                           
+ * 1. Redistributions of source code must retain the above copyright         
+ *    notice, this list of conditions and the following disclaimer.          
+ * 2. Redistributions in binary form must reproduce the above copyright      
+ *    notice, this list of conditions and the following disclaimer in the    
+ *    documentation and/or other materials provided with the distribution.   
  *
  * The information in this software is subject to change without notice
  * and should not be construed as a commitment by BigTribe Corporation.
@@ -25,108 +35,6 @@ import org.json.JSONObject;
  * For details visit http://wiki.developers.facebook.com/index.php/Marketplace_Listing_Attributes
  */
 public class MarketListing {
-    /**
-     * Category to specify for a for-sale listing
-     */
-    public static final String CATEGORY_FORSALE = "FORSALE";
-    /**
-     * Category to specify for a housing listing
-     */
-    public static final String CATEGORY_HOUSING = "HOUSING";
-    /**
-     * Category to specify for a job posting
-     */
-    public static final String CATEGORY_JOBS = "JOBS";
-    /**
-     * Category for any listing that doesn't fit in any of the other categories
-     */
-    public static final String CATEGORY_OTHER = "OTHER";
-    /**
-     * Category for a listing advertising free goods/services
-     */
-    public static final String CATEGORY_FREE = "FREE";
-    /**
-     * Category for a listing seeking items for sale
-     */
-    public static final String CATEGORY_FORSALE_WANTED = "FORSALE_WANTED";
-    /**
-     * Category for a listing seeking housing
-     */
-    public static final String CATEGORY_HOUSING_WANTED = "HOUSING_WANTED";
-    /**
-     * Category for a listing seeking employment
-     */
-    public static final String CATEGORY_JOBS_WANTED = "JOBS_WANTED";
-    /**
-     * Category for a listing seeking anything that doesn't fit in any other category
-     */
-    public static final String CATEGORY_OTHER_WANTED = "OTHER_WANTED";
-    
-    /**
-     * Subcategory for listings involving books
-     */
-    public static final String SUBCATEGORY_BOOKS = "BOOKS";
-    /**
-     * Subcategory for listings involving furniture
-     */
-    public static final String SUBCATEGORY_FURNITURE = "FURNITURE";
-    /**
-     * Subcategory for listings involving event tickets
-     */
-    public static final String SUBCATEGORY_TICKETS = "TICKETS";
-    /**
-     * Subcategory for listings involving electronics
-     */
-    public static final String SUBCATEGORY_ELECTRONICS = "ELECTRONICS";
-    /**
-     * Subcategory for listings involving cars
-     */
-    public static final String SUBCATEGORY_AUTOS = "AUTOS";
-    /**
-     * Subcategory for listings involving things not specified by any of the other subcategories
-     */
-    public static final String SUBCATEGORY_GENERAL = "GENERAL";
-    /**
-     * Subcategory for listings involving rentals
-     */
-    public static final String SUBCATEGORY_RENTALS = "RENTALS";
-    /**
-     * Subcategory for listings involving sublets
-     */
-    public static final String SUBCATEGORY_SUBLETS = "SUBLETS";
-    /**
-     * Subcategory for listings involving real-estate
-     */
-    public static final String SUBCATEGORY_REAL_ESTATE = "REALESTATE";
-    /**
-     * Subcategory for listings seeking books
-     */
-    public static final String SUBCATEGORY_BOOKS_WANTED = "BOOKS_WANTED";
-    /**
-     * Subcategory for listings seeking furniture
-     */
-    public static final String SUBCATEGORY_FURNITURE_WANTED = "FURNITURE_WANTED";
-    /**
-     * Subcategory for listings seeking electronics
-     */
-    public static final String SUBCATEGORY_ELECTRONICS_WANTED = "ELECTRONICS_WANTED";
-    /**
-     * Subcategory for listings seeking cars
-     */
-    public static final String SUBCATEGORY_AUTOS_WANTED = "AUTOS_WANTED";
-    /**
-     * Subcategory for listings seeking things not specified by any of the other subcategories
-     */
-    public static final String SUBCATEGORY_GENERAL_WANTED = "GENERAL_WANTED";
-    /**
-     * Subcategory for listings seeking sublets
-     */
-    public static final String SUBCATEGORY_SUBLETS_WANTED = "SUBLETS_WANTED";
-    /**
-     * Subcategory for listings seeking real-estate
-     */
-    public static final String SUBCATEGORY_REAL_ESTATE_WANTED = "REALESTATE_WANTED";
-    
     /**
      * Specifies a condition of 'any'
      */
@@ -155,12 +63,12 @@ public class MarketListing {
      * @param subcategory the listing subcategory, always required.
      * 
      */
-    public MarketListing(String title, String description, String category, String subcategory) {
+    public MarketListing(String title, String description, MarketListingCategory category, MarketListingSubcategory subcategory) {
         this.attribs = new JSONObject();
         this.setAttribute("title", title);
         this.setAttribute("description", description);
-        this.setAttribute("category", category);
-        this.setAttribute("subcategory", subcategory);
+        this.setAttribute("category", category.getName());
+        this.setAttribute("subcategory", subcategory.getName());
     }
     
     //package-level access intentional
@@ -230,28 +138,28 @@ public class MarketListing {
         if (!checkString("subcategory")) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'subcategory' attribute may not be null or empty!");
         }
-        //XXX:  uncomment to force strict validation (requires all attributes mentioned in the docs)
-        /* 
+        //XXX:  uncomment to force strict validation (requires all attributes mentioned in the Facebook docs)
+        /*
         String category = this.getAttribute("category");
         String subcat = this.getAttribute("subcategory");
-        if (category.equals(CATEGORY_FORSALE)) {
+        if (category.equals(MarketListingCategory.FORSALE.getName())) {
             if (!checkString("price")) {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'price' attribute is required when selling an item!");
             }
-            if ((subcat.equals(SUBCATEGORY_ELECTRONICS)) || (subcat.equals(SUBCATEGORY_FURNITURE)) 
-                    || (subcat.equals(SUBCATEGORY_AUTOS)) || (subcat.equals(SUBCATEGORY_BOOKS))) {
+            if ((subcat.equals(MarketListingSubcategory.ELECTRONICS)) || (subcat.equals(MarketListingSubcategory.FURNITURE)) 
+                    || (subcat.equals(MarketListingSubcategory.AUTOS)) || (subcat.equals(MarketListingSubcategory.BOOKS))) {
                 if (!checkString("condition")) {
                     throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'condition' attribute is required whenever selling books, electronics, cars, or furniture!");
                 }
             }
-            if (subcat.equals(SUBCATEGORY_BOOKS)) {
+            if (subcat.equals(MarketListingSubcategory.BOOKS)) {
                 if ((!checkString("isbn")) || (this.getAttribute("isbn").length() != 13)) {
                     throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'isbn' attribute is required when selling a book, and it must be exactly 13 digits long!");
                 }
                 
             }
         }
-        if ((category.equals(CATEGORY_HOUSING)) || (category.equals(CATEGORY_HOUSING_WANTED))) {
+        if ((category.equals(MarketListingCategory.HOUSING)) || (category.equals(MarketListingCategory.HOUSING_WANTED))) {
             //num_beds, num_baths, dogs, cats, smoking, square_footage, street, crossstreet, postal
             if (! checkString("num_beds")) {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'num_beds' attribute is required for all housing listings!");
@@ -280,18 +188,18 @@ public class MarketListing {
             if (! checkString("postal")) {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'postal' attribute is required for all housing listings!");
             }
-            if ((subcat.equals(SUBCATEGORY_SUBLETS)) || (subcat.equals(SUBCATEGORY_RENTALS))) {
+            if ((subcat.equals(MarketListingSubcategory.SUBLETS)) || (subcat.equals(MarketListingSubcategory.RENTALS))) {
                 if (!checkString("rent")) {
                     throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'rent' attribute is required for all rentals and sublets!");
                 }
             }
-            if (subcat.equals(SUBCATEGORY_REAL_ESTATE)) {
+            if (subcat.equals(MarketListingSubcategory.REAL_ESTATE)) {
                 if (!checkString("price")) {
                     throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'price' attribute is required for all real-estate listings!");
                 }
             }
         }
-        if (category.equals(CATEGORY_JOBS)) {
+        if (category.equals(MarketListingCategory.JOBS)) {
             //pay, full, intern, summer, nonprofit, pay_type
             if (!checkString("pay")) {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'pay' attribute is required for all job postings!");
@@ -312,13 +220,13 @@ public class MarketListing {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'pay_type' attribute is required for all job postings!");
             }
         }
-        if (category.equals(CATEGORY_FORSALE_WANTED)) {
-            if ((subcat.equals(SUBCATEGORY_BOOKS_WANTED)) || (subcat.equals(SUBCATEGORY_FURNITURE_WANTED)) 
-                || (subcat.equals(SUBCATEGORY_AUTOS_WANTED)) || (subcat.equals(SUBCATEGORY_ELECTRONICS_WANTED))) {
+        if (category.equals(MarketListingCategory.FORSALE_WANTED)) {
+            if ((subcat.equals(MarketListingSubcategory.BOOKS_WANTED)) || (subcat.equals(MarketListingSubcategory.FURNITURE_WANTED)) 
+                || (subcat.equals(MarketListingSubcategory.AUTOS_WANTED)) || (subcat.equals(MarketListingSubcategory.ELECTRONICS_WANTED))) {
                 if (!checkString("condition")) {
                     throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'condition' attribute is required whenever seeking books, burniture, electronics, or cars!");
                 }
-                if (subcat.equals(SUBCATEGORY_ELECTRONICS_WANTED)) {
+                if (subcat.equals(MarketListingSubcategory.ELECTRONICS_WANTED)) {
                     if (!checkString("isbn")) {
                         throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'isbn' attribute is required when requesting a book!");
                     }
