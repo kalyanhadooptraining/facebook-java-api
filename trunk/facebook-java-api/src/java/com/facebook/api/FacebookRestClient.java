@@ -69,8 +69,11 @@ import org.json.JSONWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import com.facebook.api.schema.Listing;
 import com.facebook.api.schema.MarketplaceGetCategoriesResponse;
+import com.facebook.api.schema.MarketplaceGetListingsResponse;
 import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
+import com.facebook.api.schema.MarketplaceSearchResponse;
 
 /**
  * Facebook API client.  Allocate an instance of this class to make Facebook API requests.
@@ -1870,5 +1873,111 @@ public class FacebookRestClient {
       this.callMethod(FacebookMethod.MARKET_GET_SUBCATEGORIES);
       MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceSubcategory();
+  }
+  
+  /**
+   * Retrieve listings from the marketplace.  The listings can be filtered by listing-id or user-id (or both).
+   * 
+   * @param listingIds the ids of listings to filter by, only listings matching the specified ids will be returned.
+   * @param uids the ids of users to filter by, only listings submitted by those users will be returned.
+   * 
+   * @return A list of marketplace listings that meet the specified filter criteria.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<Listing> marketplace_getListings(List<Long> listingIds, List<Long> uids) throws FacebookException, IOException {
+      String listings = stringify(listingIds);
+      String users = stringify(uids);
+      
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      if (listings != null) {
+          params.add(new Pair<String, CharSequence>("listing_ids", listings));
+      }
+      if (uids != null) {
+          params.add(new Pair<String, CharSequence>("uids", users));
+      }
+      
+      this.callMethod(FacebookMethod.MARKET_GET_LISTINGS, params);
+      MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse)this.getResponsePOJO();
+      return resp.getListing();
+  }
+  
+  private String stringify(List input) {
+      if ((input == null) || (input.isEmpty())) {
+          return null;
+      }
+      String result = "";
+      for (Object elem : input) {
+          if (! "".equals(result)) {
+              result += ",";
+          }
+          result += elem.toString();
+      }
+      return result;
+  }
+  
+  /**
+   * Search the marketplace listings by category, subcategory, and keyword.
+   * 
+   * @param category the category to search in, optional (unless subcategory is specified).
+   * @param subcategory the subcategory to search in, optional.
+   * @param searchTerm the keyword to search for, optional.
+   * 
+   * @return a list of marketplace entries that match the specified search parameters.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<Listing> marketplace_search(MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm) throws FacebookException, IOException {
+      if ("".equals(searchTerm)) {
+          searchTerm = null;
+      }
+      if ((subcategory != null) && (category == null)) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot search by subcategory without also specifying a category!");
+      }
+      
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      if (category != null) {
+          params.add(new Pair<String, CharSequence>("category", category.getName()));
+      }
+      if (subcategory != null) {
+          params.add(new Pair<String, CharSequence>("subcategory", subcategory.getName()));
+      }
+      if (searchTerm != null) {
+          params.add(new Pair<String, CharSequence>("query", searchTerm));
+      }
+      
+      this.callMethod(FacebookMethod.MARKET_SEARCH, params);
+      MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.getResponsePOJO();
+      return resp.getListing();
+  }
+  
+  /**
+   * Remove a listing from the marketplace by id.
+   * 
+   * @param listingId the id of the listing to remove.
+   * @param status the status to apply when removing the listing.  Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+   * 
+   * @return true if the listing was successfully removed
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean marketplace_removeListing(Long listingId, MarketListingStatus status) throws FacebookException, IOException {
+      if (status == null) {
+          status = MarketListingStatus.DEFAULT;
+      }
+      if (listingId == null) {
+          return false;
+      }
+      
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
+      params.add(new Pair<String, CharSequence>("status", status.getName()));
+      this.callMethod(FacebookMethod.MARKET_REMOVE_LISTING, params);
+      
+      return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
 }
