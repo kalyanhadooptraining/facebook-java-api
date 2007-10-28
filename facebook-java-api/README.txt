@@ -105,6 +105,17 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.2 to v1.3
+	    - Add support for all marketplace.* API calls.
+	    - Add support for users.hasAppPermission and users.setStatus API calls.
+	    - Add support for fbml.setRefHandle API call.
+	    - Add support for sms.* API calls.
+	    - Add support for data.setUserPreference(s) and data.getUserPreference(s) API calls.
+	    - Add JAXB bindings for all marketplace.* and data.* API calls.
+	    - Add MarketListing utility class to assist in creating marketplace listings.
+	    - Define enum's that can be used for specifying marketplace categories, subcategories, and status codes.
+	    - client now supports all "official" API methods as specified at http://wiki.developers.facebook.com/index.php/API
+
 	From v1.1 to v1.2
 		- Add JAXB bindings for all FacebookRestClient methods that return a Document.
 		- Add utility method to get the JAXB response object corresponding to the last API call made through the client.
