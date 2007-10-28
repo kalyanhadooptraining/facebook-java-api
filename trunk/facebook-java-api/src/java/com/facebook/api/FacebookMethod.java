@@ -86,6 +86,13 @@ public enum FacebookMethod
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),  //deprecated
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
   FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 15),
+  //Marketplace
+  MARKET_CREATE_LISTING("facebook.marketplace.createListing", 4),
+  MARKET_GET_CATEGORIES("facebook.marketplace.getCategories", 1),
+  MARKET_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories", 1),
+  MARKET_GET_LISTINGS("facebook.marketplace.getListings", 3),
+  MARKET_REMOVE_LISTING("facebook.marketplace.removeListing", 3),
+  MARKET_SEARCH("facebook.marketplace.search", 4),
   //Data
   DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
   DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),

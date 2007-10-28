@@ -69,6 +69,8 @@ import org.json.JSONWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import com.facebook.api.schema.MarketplaceGetCategoriesResponse;
+import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
 
 /**
  * Facebook API client.  Allocate an instance of this class to make Facebook API requests.
@@ -1744,5 +1746,129 @@ public class FacebookRestClient {
       params.add(new Pair<String, CharSequence>("fbml", markup));
       
       this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE, params);
+  }
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   * 
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+   * @param attributes JSON-encoded attributes for this listing.
+   * 
+   * @return the id of the listing created (or modified).
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, String attributes) throws FacebookException, IOException {
+     if (listingId == null) {
+         listingId = 0l;
+     }
+     MarketListing test = new MarketListing(attributes);
+     if (!test.verify()) {
+         throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The specified listing is invalid!");
+     }
+     
+     Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+     params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
+     if (showOnProfile) {
+         params.add(new Pair<String, CharSequence>("show_on_profile", "true"));
+     }
+     params.add(new Pair<String, CharSequence>("listing_attrs", attributes));
+     
+     this.callMethod(FacebookMethod.MARKET_CREATE_LISTING, params);
+     String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</marketplace"));
+     result = result.substring(result.lastIndexOf(">") + 1);
+     return Long.parseLong(result);
+  }
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   * 
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * 
+   * @return the id of the listing created (or modified).
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(listingId, showOnProfile, listing.getAttribs());
+  }
+  
+  /**
+   * Create a new marketplace listing.
+   * 
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * 
+   * @return the id of the listing created (or modified).
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(0l, showOnProfile, listing.getAttribs());
+  }
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   * 
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * 
+   * @return the id of the listing created (or modified).
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, JSONObject listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(listingId, showOnProfile, listing.toString());
+  }
+  
+  /**
+   * Create a new marketplace listing.
+   * 
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * 
+   * @return the id of the listing created (or modified).
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(boolean showOnProfile, JSONObject listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(0l, showOnProfile, listing.toString());
+  }
+  
+  /**
+   * Return a list of all valid Marketplace categories.
+   * 
+   * @return a list of marketplace categories allowed by Facebook.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<String> marketplace_getCategories() throws FacebookException, IOException{
+      this.callMethod(FacebookMethod.MARKET_GET_CATEGORIES);
+      MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse)this.getResponsePOJO();
+      return resp.getMarketplaceCategory();
+  }
+  
+  /**
+   * Return a list of all valid Marketplace subcategories.
+   * 
+   * @return a list of marketplace subcategories allowed by Facebook.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<String> marketplace_getSubCategories() throws FacebookException, IOException{
+      this.callMethod(FacebookMethod.MARKET_GET_SUBCATEGORIES);
+      MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse)this.getResponsePOJO();
+      return resp.getMarketplaceSubcategory();
   }
 }
