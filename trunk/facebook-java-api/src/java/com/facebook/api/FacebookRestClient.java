@@ -1661,9 +1661,15 @@ public class FacebookRestClient {
       
       this.callMethod(FacebookMethod.SMS_SEND, params);
       
-      //System.out.println("!!!!!!!!!!  SEND:  " + this.rawResponse);
-      //FIXME:  need to parse out the result here
-      return 0;
+      //XXX:  needs testing to make sure it's correct (Facebook always gives me a code 270 permissions error no matter what I do)
+      Integer response = null;
+      if ((this.rawResponse.indexOf("</sms") != -1) && (makeNewSession)) {
+          String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</sms"));
+          result = result.substring(result.lastIndexOf(">") + 1);
+          response = Integer.parseInt(result);
+      }
+      
+      return response;
   }
   
   /**
