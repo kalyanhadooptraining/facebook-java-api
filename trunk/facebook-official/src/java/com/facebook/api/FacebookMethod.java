@@ -35,7 +35,7 @@ package com.facebook.api;
 import java.util.EnumSet;
 
 public enum FacebookMethod
-  implements CharSequence {
+  implements IFacebookMethod, CharSequence {
   // Authentication
   AUTH_CREATE_TOKEN("facebook.auth.createToken"),
   AUTH_GET_SESSION("facebook.auth.getSession", 1),
@@ -52,7 +52,9 @@ public enum FacebookMethod
   // Users
   USERS_GET_INFO("facebook.users.getInfo", 2),
   USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
+  USERS_SET_STATUS("facebook.users_setStatus",1),
   USERS_IS_APP_ADDED("facebook.users.isAppAdded"),
+  USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 1),
   // Photos
   PHOTOS_GET("facebook.photos.get", 2),
   PHOTOS_GET_ALBUMS("facebook.photos.getAlbums", 1),
@@ -64,7 +66,6 @@ public enum FacebookMethod
   // Notifications
   NOTIFICATIONS_GET("facebook.notifications.get"),
   NOTIFICATIONS_SEND("facebook.notifications.send",5),
-  NOTIFICATIONS_SEND_REQUEST("facebook.notifications.sendRequest",5),
   // Groups
   GROUPS_GET("facebook.groups.get", 1),
   GROUPS_GET_MEMBERS("facebook.groups.getMembers", 1),
@@ -74,8 +75,16 @@ public enum FacebookMethod
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
   // Feed
-  FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),
+  FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 10),
+  FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 12),
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
+  // Marketplace
+  MARKETPLACE_GET_CATEGORIES("facebook.marketplace.getCategories"),
+  MARKETPLACE_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories", 1),  
+  MARKETPLACE_GET_LISTINGS("facebook.marketplace.getListings", 2),  
+  MARKETPLACE_CREATE_LISTING("facebook.marketplace.createListing", 3),  
+  MARKETPLACE_SEARCH("facebook.marketplace.search", 3),  
+  MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 2),  
   ;
 
   private String methodName;
