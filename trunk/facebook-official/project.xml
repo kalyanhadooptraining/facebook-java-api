@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:noNamespaceSchemaLocation="file:///c:/bin/maven/maven-project.xsd" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<pomVersion>3</pomVersion>
+	<id>facebook-java-api</id>
+	<name>Facebook Official API</name>
+	<groupId>facebook</groupId>
+	<currentVersion>constantly_broken</currentVersion>
+	<organization>
+		<name>Facebook</name>
+		<logo>http://www.facebook.com</logo>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+	<package>com.facebook.api</package>
+	<description>Facebook Official API</description>
+	<shortDescription>Facebook Java Library</shortDescription>
+	<url>http://www.facebook.com/</url>
+	<issueTrackingUrl>http://www.facebook.com</issueTrackingUrl>
+    <siteAddress>ginsu.bigtribe.com</siteAddress>  
+    <siteDirectory>/maven/docs/${pom.groupId}/${pom.artifactId}</siteDirectory>
+    <distributionDirectory>/maven/distributions/${pom.groupId}/${pom.artifactId}</distributionDirectory>
+	<repository>
+		<connection>
+            scm:http://facebook-java-api.googlecode.com/svn/trunk/
+        </connection>
+	</repository>
+	<mailingLists>
+	</mailingLists>
+	<developers>
+	</developers>
+	<licenses>
+	</licenses>
+	<dependencies>
+		<dependency>
+			<groupId>json</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>json</groupId>
+			<artifactId>json</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<nagEmailAddress>aroth@bigtribe.com</nagEmailAddress>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+		<!-- Unit test cases -->
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+				<include>**/*TestSuite.java</include>
+			</includes>
+			<excludes>
+			</excludes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/test</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                    </includes>
+                </resource>
+            </resources>
+		</unitTest>
+		<!-- J A R  R E S O U R C E S -->
+		<!-- Resources that are packaged up inside the JAR file -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/webapp</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>
