@@ -46,7 +46,7 @@ public enum FacebookParam
   TIME("time"),
   FRIENDS("friends"),
   ADDED("added"),
-  PROFILE_UPDATE_TIME("profile_udpate_time"),
+  PROFILE_UPDATE_TIME("profile_update_time"),
   API_KEY("api_key")
   ;
 
