@@ -119,7 +119,7 @@ public enum FacebookMethod
     assert (name != null && 0 != name.length());
     this.methodName = name;
     this.numParams = maxParams;
-    this.maxParamsWithSession = maxParams + FacebookRestClient.NUM_AUTOAPPENDED_PARAMS;
+    this.maxParamsWithSession = maxParams + ExtensibleClient.NUM_AUTOAPPENDED_PARAMS;
     this.takesFile = takesFile;
   }
 
