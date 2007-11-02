@@ -614,7 +614,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws IOException
    */
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
 
       return templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
               bodyData, bodyGeneral, pictures, targetIds);
@@ -675,7 +675,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                           Collection<Pair<URL, URL>> images,
+                                           Collection<? extends Pair<URL, URL>> images,
                                            Integer priority) throws FacebookException,
                                                                     IOException {
     return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, priority);
@@ -723,7 +723,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return a Document object containing the server response
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                          Collection<Pair<URL, URL>> images,
+                                          Collection<? extends Pair<URL, URL>> images,
                                           Integer priority) throws FacebookException, IOException {
     return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
@@ -763,7 +763,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
 
   protected Document feedHandler(FacebookMethod feedMethod, CharSequence title, CharSequence body,
-                                 Collection<Pair<URL, URL>> images,
+                                 Collection<? extends Pair<URL, URL>> images,
                                  Integer priority) throws FacebookException, IOException {
     assert (images == null || images.size() <= 4);
 
@@ -791,7 +791,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
 
   protected boolean feedHandlerBoolean(FacebookMethod feedMethod, CharSequence title, CharSequence body,
-          Collection<Pair<URL, URL>> images,
+          Collection<? extends Pair<URL, URL>> images,
           Integer priority) throws FacebookException, IOException {
       assert (images == null || images.size() <= 4);
     
@@ -821,7 +821,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   
   
   protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
       long actorId = this.users_getLoggedInUser();
@@ -2101,7 +2101,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<Pair<URL, URL>> images)
+                                         Collection<? extends Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -2134,7 +2134,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishActionOfUser(java.lang.CharSequence, java.lang.CharSequence, java.util.Collection)
      */
-    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<Pair<URL, URL>> images) throws FacebookException, IOException {
+    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<? extends Pair<URL, URL>> images) throws FacebookException, IOException {
         return this.feed_publishActionOfUser(title, body, images, null);
     }
     
@@ -2148,7 +2148,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
      */
-    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<Pair<URL, URL>> images) throws FacebookException, IOException {
+    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends Pair<URL, URL>> images) throws FacebookException, IOException {
         return this.feed_publishTemplatizedAction(titleTemplate.toString(), 
                 titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), images, targetIds.toString());
     }
