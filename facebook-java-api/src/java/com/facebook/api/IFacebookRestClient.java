@@ -190,7 +190,7 @@ public interface IFacebookRestClient<T> {
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<FeedImage> images
+                                               Collection<Pair<URL, URL>> images
                                               )
     throws FacebookException, IOException;
 
@@ -206,7 +206,7 @@ public interface IFacebookRestClient<T> {
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<FeedImage> images)
+                                          Collection<Pair<URL, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -233,7 +233,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images, Integer priority)
+                                         Collection<Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException;
 
   /**
@@ -269,7 +269,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images)
+                                         Collection<Pair<URL, URL>> images)
     throws FacebookException, IOException;
 
   /**

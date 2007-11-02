@@ -723,15 +723,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return a Document object containing the server response
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                          Collection<FeedImage> images,
+                                          Collection<Pair<URL, URL>> images,
                                           Integer priority) throws FacebookException, IOException {
-    Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
-    if (images != null) {
-        for (FeedImage img : images) {
-            imgCopy.add(new Pair<URL, URL>(img.first, img.second));
-        }
-    }
-    return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, imgCopy, priority);
+    return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
 
   /**
@@ -2107,7 +2101,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images)
+                                         Collection<Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -2140,14 +2134,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishActionOfUser(java.lang.CharSequence, java.lang.CharSequence, java.util.Collection)
      */
-    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<FeedImage> images) throws FacebookException, IOException {
-        Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
-        if (images != null) {
-            for (FeedImage img : images) {
-                imgCopy.add(new Pair<URL, URL>(img.first, img.second));
-            }
-        }
-        return this.feed_publishActionOfUser(title, body, imgCopy, null);
+    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<Pair<URL, URL>> images) throws FacebookException, IOException {
+        return this.feed_publishActionOfUser(title, body, images, null);
     }
     
     /* (non-Javadoc)
@@ -2160,15 +2148,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
      */
-    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<FeedImage> images) throws FacebookException, IOException {
-        Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
-        if (images != null) {
-            for (FeedImage img : images) {
-                imgCopy.add(new Pair<URL, URL>(img.first, img.second));
-            }
-        }
+    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<Pair<URL, URL>> images) throws FacebookException, IOException {
         return this.feed_publishTemplatizedAction(titleTemplate.toString(), 
-                titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), imgCopy, targetIds.toString());
+                titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), images, targetIds.toString());
     }
     
     /** 
