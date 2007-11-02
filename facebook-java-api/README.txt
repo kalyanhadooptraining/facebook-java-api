@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.2.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.4.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -104,6 +104,17 @@ Committing Changes:
 	
 	
 Changelog:
+
+	From v1.3 to v1.4
+		- Merge in changes to official Facebook API made on 10/26/2007.
+		- Refactor changes so that they don't break reverse compatibility for anyone using the official API.
+		- Refactor changes so that they don't break reverse compatibility for anyone using a previous version this API.
+		- Add a 'FacebookJaxbRestClient' that returns JAXB objects when making API calls.
+		- Extend the 'IFacebookRestClient' interface to include sms and data API calls.
+		- Refactor any UID's that were expressed as Integers in the new Facebook code to use Longs.
+		- Remove dependency on the simple-json library, the previous json library is still used.
+		- Add some new utility methods to 'FacebookXmlRestClient' and 'FacebookJsonRestClient'.
+		- Cleanup, add documentation, deprecate things where appropriate.
 
 	From v1.2 to v1.3
 	    - Add support for all marketplace.* API calls.
