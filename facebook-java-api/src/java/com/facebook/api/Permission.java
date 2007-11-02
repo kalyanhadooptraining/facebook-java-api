@@ -27,6 +27,9 @@
  */
 package com.facebook.api;
 
+import java.io.IOException;
+import java.net.URL;
+
 /**
  * Enum for managing the different permission-types used by Facebook.  These 
  * are opt-in permissions that the user must explicitly grant, and can only 
@@ -56,6 +59,11 @@ public enum Permission {
      */
     PHOTO_UPLOAD("photo_upload");
     
+    /**
+     * The unchanging part of the URL to use when authorizing permissions.
+     */
+    public static final String PERM_AUTHORIZE_ADDR = "http://www.facebook.com/authorize.php";
+    
     private String name;
     
     private Permission(String name) {
@@ -70,5 +78,21 @@ public enum Permission {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * Compute the URL to which to send the user to request the extended permission.
+     * 
+     * @param apiKey your application's API key.
+     * @param permission the permission you want the grant URL for.
+     * 
+     * @return a String that specifies the URL to direct users to in order to grant this permission to the application.
+     */
+    public static String authorizationUrl(String apiKey, Permission permission) {
+      return authorizationUrl(apiKey, permission.getName());
+    }
+
+    private static String authorizationUrl(String apiKey, CharSequence permission) {
+      return String.format("%s?api_key=%s&v=1.0&ext_perm=%s", PERM_AUTHORIZE_ADDR, apiKey, permission);
     }
 }

@@ -36,7 +36,7 @@ public enum MarketListingStatus {
      */
     SUCCESS("SUCCESS"),
     /**
-     * "Default" status (as Facebook what this should mean, because they don't specify).
+     * "Default" status (ask Facebook what this should mean, because they don't specify).
      */
     DEFAULT("DEFAULT"),
     /**

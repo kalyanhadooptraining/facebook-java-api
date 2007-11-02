@@ -62,6 +62,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -78,7 +79,7 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
 /**
  * Facebook API client.  Allocate an instance of this class to make Facebook API requests.
  */
-public class FacebookRestClient {
+public class FacebookRestClient implements IFacebookRestClient<Document>{
   /**
    * API version to request when making calls to the server
    */
@@ -118,28 +119,35 @@ public class FacebookRestClient {
     }
   }
 
-  private final String _secret;
-  private final String _apiKey;
-  private final URL _serverUrl;
-  private String rawResponse;
+  protected final String _secret;
+  protected final String _apiKey;
+  protected final URL _serverUrl;
+  protected String rawResponse;
 
-  private String _sessionKey; // filled in when session is established
-  private boolean _isDesktop = false;
-  private String _sessionSecret; // only used for desktop apps
-  private long _userId;
+  protected String _sessionKey; // filled in when session is established
+  protected boolean _isDesktop = false;
+  protected String _sessionSecret; // only used for desktop apps
+  protected long _userId;
 
   /**
    * number of params that the client automatically appends to every API call
    */
-  public static int NUM_AUTOAPPENDED_PARAMS = 5;
+  public static int NUM_AUTOAPPENDED_PARAMS = 6;
   private static boolean DEBUG = false;
-  private Boolean _debug = null;
+  protected Boolean _debug = null;
 
-  private File _uploadFile = null;
+  protected File _uploadFile = null;
+  protected static final String CRLF = "\r\n";
+  protected static final String PREF = "--";
+  protected static final int UPLOAD_BUFFER_SIZE = 512;
+
+  public static final String MARKETPLACE_STATUS_DEFAULT     = "DEFAULT";
+  public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
+  public static final String MARKETPLACE_STATUS_SUCCESS     = "SUCCESS";
 
   /**
    * Constructor
-   * 
+   *
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    */
@@ -149,7 +157,7 @@ public class FacebookRestClient {
 
   /**
    * Constructor
-   * 
+   *
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    * @param sessionKey the session-id to use
@@ -160,12 +168,12 @@ public class FacebookRestClient {
 
   /**
    * Constructor
-   * 
+   *
    * @param serverAddr the URL of the Facebook API server to use, allows overriding of the default API server.
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    * @param sessionKey the session-id to use
-   * 
+   *
    * @throws MalformedURLException if the specified serverAddr is invalid
    */
   public FacebookRestClient(String serverAddr, String apiKey, String secret,
@@ -175,7 +183,7 @@ public class FacebookRestClient {
 
   /**
    * Constructor
-   * 
+   *
    * @param serverUrl the URL of the Facebook API server to use, allows overriding of the default API server.
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
@@ -189,8 +197,16 @@ public class FacebookRestClient {
   }
 
   /**
+   * The response format in which results to FacebookMethod calls are returned
+   * @return the format: either XML, JSON, or null (API default)
+   */
+  public String getResponseFormat() {
+      return null;
+  }
+
+  /**
    * Set global debugging on.
-   * 
+   *
    * @param isDebug true to enable debugging
    *                false to disable debugging
    */
@@ -200,7 +216,7 @@ public class FacebookRestClient {
 
   /**
    * Set debugging on for this instance only.
-   * 
+   *
    * @param isDebug true to enable debugging
    *                false to disable debugging
    */
@@ -211,7 +227,7 @@ public class FacebookRestClient {
 
   /**
    * Check to see if debug mode is enabled.
-   * 
+   *
    * @return true if debugging is enabled
    *         false otherwise
    */
@@ -221,7 +237,7 @@ public class FacebookRestClient {
 
   /**
    * Check to see if the client is running in desktop mode.
-   * 
+   *
    * @return true if the client is running in desktop mode
    *         false otherwise
    */
@@ -231,7 +247,7 @@ public class FacebookRestClient {
 
   /**
    * Enable/disable desktop mode.
-   * 
+   *
    * @param isDesktop true to enable desktop application mode
    *                  false to disable desktop application mode
    */
@@ -241,7 +257,7 @@ public class FacebookRestClient {
 
   /**
    * Prints out the DOM tree.
-   * 
+   *
    * @param n the parent node to start printing from
    * @param prefix string to append to output, should not be null
    */
@@ -361,15 +377,15 @@ public class FacebookRestClient {
               buffer.append((char)current);
           }
       }*/
-      
+
       BufferedReader in = new BufferedReader(new InputStreamReader(data, "UTF-8"));
       StringBuffer buffer = new StringBuffer();
       String line;
       while ((line = in.readLine()) != null) {
         buffer.append(line);
       }
-      
-      
+
+
       String xmlResp = new String(buffer);
       this.rawResponse = xmlResp;
 
@@ -407,10 +423,10 @@ public class FacebookRestClient {
 
   /**
    * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
-   * 
-   * Note that calling this method consumes the data held in the internal buffer, and thus it may only be called once per API 
+   *
+   * Note that calling this method consumes the data held in the internal buffer, and thus it may only be called once per API
    * call.
-   * 
+   *
    * @return a String representation of the last API response sent by Facebook
    */
   public String getRawResponse() {
@@ -548,106 +564,106 @@ public class FacebookRestClient {
     return extractBoolean(this.callMethod(FacebookMethod.FBML_REFRESH_IMG_SRC,
                           new Pair<String, CharSequence>("url", imageUrl.toString())));
   }
-  
+
   /**
-   * Publishes a templatized action for the current user.  The action will appear in their minifeed, 
-   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When 
-   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally 
-   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally 
+   * Publishes a templatized action for the current user.  The action will appear in their minifeed,
+   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When
+   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally
+   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally
    * recommend Bizou").  This happens automatically, and *only* if the template match between the two
    * feed entries is identical.<br />
    * <br />
-   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le 
+   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le
    * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
    * <br />
-   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.  
-   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2, 
-   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token 
-   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry 
-   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send 
-   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the 
+   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.
+   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2,
+   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token
+   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry
+   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send
+   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the
    * story through the newsfeed.<br />
    * <br />
-   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere 
-   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if 
+   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere
+   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if
    * being omitted.<br />
    * <br />
-   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so 
-   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not 
-   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility 
+   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so
+   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not
+   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility
    * it provides.<br />
    * <br />
    * <br />
    * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
    * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
-   * 
-   * 
-   * @param titleTemplate the template for the title of the feed entry, this must contain the "(actor}" token.  
+   *
+   *
+   * @param titleTemplate the template for the title of the feed entry, this must contain the "(actor}" token.
    *                      Any other tokens are optional, i.e. "{actor} recommends {place}".
-   * @param titleData JSON-formatted values for any tokens used in titleTemplate, with the exception of "{actor}" 
+   * @param titleData JSON-formatted values for any tokens used in titleTemplate, with the exception of "{actor}"
    *                  and "{target}", which Facebook populates automatically, i.e. "{place: "<a href='http://www.bizou.com'>Bizou</a>"}".
-   * @param bodyTemplate the template for the body of the feed entry, works the same as 'titleTemplate', but 
+   * @param bodyTemplate the template for the body of the feed entry, works the same as 'titleTemplate', but
    *                     is not required to contain the "{actor}" token.
    * @param bodyData works the same as titleData
    * @param bodyGeneral non-templatized content for the body, may contain markup, may not contain tokens.
    * @param pictures a list of up to 4 images to display, with optional hyperlinks for each one.
-   * @param targetIds a comma-seperated list of the UID's of any friend(s) who are involved in this feed 
-   *                  action (if there are any), this specifies the value of the "{target}" token.  If you 
+   * @param targetIds a comma-seperated list of the UID's of any friend(s) who are involved in this feed
+   *                  action (if there are any), this specifies the value of the "{target}" token.  If you
    *                  use this token in any of your templates, you must specify a value for this parameter.
-   * 
+   *
    * @return a Document representing the XML response returned from the Facebook API server.
-   * 
+   *
    * @throws FacebookException if any number of bad things happen
    * @throws IOException
    */
-  public Document feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, 
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
           String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
-      
-      return templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate, 
+
+      return templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
               bodyData, bodyGeneral, pictures, targetIds);
   }
-  
+
   /**
-   * Publishes a templatized action for the current user.  The action will appear in their minifeed, 
-   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When 
-   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally 
-   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally 
+   * Publishes a templatized action for the current user.  The action will appear in their minifeed,
+   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When
+   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally
+   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally
    * recommend Bizou").  This happens automatically, and *only* if the template match between the two
    * feed entries is identical.<br />
    * <br />
-   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le 
+   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le
    * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
    * <br />
-   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.  
-   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2, 
-   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token 
-   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry 
-   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send 
-   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the 
+   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.
+   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2,
+   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token
+   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry
+   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send
+   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the
    * story through the newsfeed.<br />
    * <br />
-   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere 
-   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if 
+   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere
+   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if
    * being omitted.<br />
    * <br />
-   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so 
-   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not 
-   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility 
+   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so
+   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not
+   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility
    * it provides.<br />
    * <br />
    * <br />
    * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
    * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
-   * 
-   * 
+   *
+   *
    * @param action a TemplatizedAction instance that represents the feed data to publish
-   * 
+   *
    * @return a Document representing the XML response returned from the Facebook API server.
-   * 
+   *
    * @throws FacebookException if any number of bad things happen
    * @throws IOException
    */
-  public Document feed_PublishTemplatizedAction(TemplatizedAction action) throws FacebookException, IOException {
+  public boolean feed_PublishTemplatizedAction(TemplatizedAction action) throws FacebookException, IOException {
       return this.feed_publishTemplatizedAction(action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds());
   }
 
@@ -658,22 +674,33 @@ public class FacebookRestClient {
    * @param images (optional) up to four pairs of image URLs and (possibly null) link URLs
    * @param priority
    * @return a document object containing the server response
-   * 
+   *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
-  public Document feed_publishActionOfUser(CharSequence title, CharSequence body,
+  public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                            Collection<Pair<URL, URL>> images,
                                            Integer priority) throws FacebookException,
                                                                     IOException {
-    return feedHandler(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, priority);
+    return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, priority);
   }
 
   /**
    * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-   * 
+   *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
-  public Document feed_publishActionOfUser(CharSequence title,
+  public boolean feed_publishActionOfUser(String title,
+                                           String body) throws FacebookException,
+                                                                     IOException {
+    return feed_publishActionOfUser(title, body, null, null);
+  }
+  
+  /**
+   * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
+   *
+   * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
+   */
+  public boolean feed_publishActionOfUser(CharSequence title,
                                            CharSequence body) throws FacebookException,
                                                                      IOException {
     return feed_publishActionOfUser(title, body, null, null);
@@ -681,26 +708,14 @@ public class FacebookRestClient {
 
   /**
    * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-   * 
+   *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
-  public Document feed_publishActionOfUser(CharSequence title, CharSequence body,
+  public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                            Integer priority) throws FacebookException,
                                                                     IOException {
     return feed_publishActionOfUser(title, body, null, priority);
   }
-
-  /**
-   * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-   * 
-   * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
-   */
-  public Document feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                           Collection<Pair<URL, URL>> images) throws FacebookException,
-                                                                                     IOException {
-    return feed_publishActionOfUser(title, body, images, null);
-  }
-
 
   /**
    * Publish a story to the logged-in user's newsfeed.
@@ -710,16 +725,39 @@ public class FacebookRestClient {
    * @param priority
    * @return a Document object containing the server response
    */
-  public Document feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                          Collection<Pair<URL, URL>> images,
+  public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
+                                          Collection<FeedImage> images,
                                           Integer priority) throws FacebookException, IOException {
-    return feedHandler(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
+    Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
+    if (images != null) {
+        for (FeedImage img : images) {
+            imgCopy.add(new Pair<URL, URL>(img.first, img.second));
+        }
+    }
+    return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, imgCopy, priority);
   }
 
   /**
    * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
    */
-  public Document feed_publishStoryToUser(CharSequence title,
+  public boolean feed_publishStoryToUser(String title,
+                                          String body) throws FacebookException,
+                                                                    IOException {
+    return feed_publishStoryToUser(title, body, null, null);
+  }
+
+  /**
+   * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
+   */
+  public boolean feed_publishStoryToUser(String title, String body,
+                                          Integer priority) throws FacebookException, IOException {
+    return feed_publishStoryToUser(title, body, null, priority);
+  }
+  
+  /**
+   * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
+   */
+  public boolean feed_publishStoryToUser(CharSequence title,
                                           CharSequence body) throws FacebookException,
                                                                     IOException {
     return feed_publishStoryToUser(title, body, null, null);
@@ -728,18 +766,9 @@ public class FacebookRestClient {
   /**
    * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
    */
-  public Document feed_publishStoryToUser(CharSequence title, CharSequence body,
+  public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
                                           Integer priority) throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, null, priority);
-  }
-
-  /**
-   * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
-   */
-  public Document feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                          Collection<Pair<URL, URL>> images) throws FacebookException,
-                                                                                    IOException {
-    return feed_publishStoryToUser(title, body, images, null);
   }
 
   protected Document feedHandler(FacebookMethod feedMethod, CharSequence title, CharSequence body,
@@ -769,18 +798,48 @@ public class FacebookRestClient {
     }
     return this.callMethod(feedMethod, params);
   }
+
+  protected boolean feedHandlerBoolean(FacebookMethod feedMethod, CharSequence title, CharSequence body,
+          Collection<Pair<URL, URL>> images,
+          Integer priority) throws FacebookException, IOException {
+      assert (images == null || images.size() <= 4);
+    
+      ArrayList<Pair<String, CharSequence>> params =
+          new ArrayList<Pair<String, CharSequence>>(feedMethod.numParams());
+    
+      params.add(new Pair<String, CharSequence>("title", title));
+      if (null != body)
+          params.add(new Pair<String, CharSequence>("body", body));
+      if (null != priority)
+          params.add(new Pair<String, CharSequence>("priority", priority.toString()));
+      if (null != images && !images.isEmpty()) {
+          int image_count = 0;
+          for (Pair<URL, URL> image: images) {
+              ++image_count;
+              assert (image.first != null);
+              params.add(new Pair<String, CharSequence>(String.format("image_%d", image_count),
+                               image.first.toString()));
+              if (image.second != null)
+                  params.add(new Pair<String, CharSequence>(String.format("image_%d_link", image_count),
+                                 image.second.toString()));
+          }
+      }
+      this.callMethod(feedMethod, params);
+      return this.rawResponse.contains(">1<"); //a code of '1' indicates success
+  }
   
-  protected Document templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate, 
+  
+  protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
           String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
-      
+
       long actorId = this.users_getLoggedInUser();
       ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>(method.numParams());
-      
+
       //these are always required parameters
       params.add(new Pair<String, CharSequence>("actor_id", Long.toString(actorId)));
       params.add(new Pair<String, CharSequence>("title_template", titleTemplate));
-      
+
       //these are optional parameters
       if (titleData != null) {
           params.add(new Pair<String, CharSequence>("title_data", titleData));
@@ -807,7 +866,8 @@ public class FacebookRestClient {
       if (targetIds != null) {
           params.add(new Pair<String, CharSequence>("target_ids", targetIds));
       }
-      return this.callMethod(method, params);
+      this.callMethod(method, params);
+      return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
 
   /**
@@ -1087,13 +1147,18 @@ public class FacebookRestClient {
    * @return a list of booleans indicating whether the tag was successfully added.
    */
   public Document photos_addTags(Long photoId, Collection<PhotoTag> tags)
-    throws FacebookException, IOException, JSONException {
+    throws FacebookException, IOException {
     assert (photoId > 0);
     assert (null != tags && !tags.isEmpty());
-    JSONWriter tagsJSON = new JSONStringer().array();
-    for (PhotoTag tag: tags)
-      tagsJSON = tag.jsonify(tagsJSON);
-    String tagStr = tagsJSON.endArray().toString();
+    String tagStr = null;
+    try {
+        JSONArray jsonTags=new JSONArray();
+        for (PhotoTag tag : tags) {
+          jsonTags.put(tag.jsonify());
+        }
+        tagStr = jsonTags.toString();
+    }
+    catch (Exception ignored) {}
 
     return this.callMethod(FacebookMethod.PHOTOS_ADD_TAG,
                            new Pair<String, CharSequence>("pid", photoId.toString()),
@@ -1235,7 +1300,7 @@ public class FacebookRestClient {
    * @param isInvite whether this is a "request" or an "invite"
    * @return a URL, possibly null, to which the user should be redirected to finalize
    *    the sending of the message
-   *    
+   *
    * @deprecated this method has been removed from the Facebook API server
    */
   public URL notifications_sendRequest(Collection<Long> recipientIds, CharSequence type,
@@ -1270,7 +1335,7 @@ public class FacebookRestClient {
     assert (null != recipientIds && !recipientIds.isEmpty());
     assert (null != notification);
     Document d;
-    
+
     if (email != null) {
         d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
                       new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
@@ -1290,10 +1355,6 @@ public class FacebookRestClient {
     String content = doc.getFirstChild().getTextContent();
     return 1 == Integer.parseInt(content);
   }
-
-  protected static final String CRLF = "\r\n";
-  protected static final String PREF = "--";
-  protected static final int UPLOAD_BUFFER_SIZE = 512;
 
   public InputStream postFileRequest(String methodName,
                                      Map<String, CharSequence> params) {
@@ -1377,11 +1438,11 @@ public class FacebookRestClient {
           d.getElementsByTagName("secret").item(0).getFirstChild().getTextContent();
     return this._sessionKey;
   }
-  
+
   /**
-   * Returns a JAXB object of the type that corresponds to the last API call made on the client.  Each 
-   * Facebook Platform API call that returns a Document object has a JAXB response object associated 
-   * with it.  The naming convention is generally intuitive.  For example, if you invoke the 
+   * Returns a JAXB object of the type that corresponds to the last API call made on the client.  Each
+   * Facebook Platform API call that returns a Document object has a JAXB response object associated
+   * with it.  The naming convention is generally intuitive.  For example, if you invoke the
    * 'user_getInfo' API call, the associated JAXB response object is 'UsersGetInfoResponse'.<br />
    * <br />
    * An example of how to use this method:<br />
@@ -1391,18 +1452,18 @@ public class FacebookRestClient {
    *    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();<br />
    *    List<Long> friends = response.getUid(); <br />
    * <br />
-   * This is particularly useful in the case of API calls that return a Document object, as working 
-   * with the JAXB response object is generally much simple than trying to walk/parse the DOM by 
+   * This is particularly useful in the case of API calls that return a Document object, as working
+   * with the JAXB response object is generally much simple than trying to walk/parse the DOM by
    * hand.<br />
    * <br />
-   * This method can be safely called multiple times, though note that it will only return the 
+   * This method can be safely called multiple times, though note that it will only return the
    * response-object corresponding to the most recent Facebook Platform API call made.<br />
    * <br />
-   * Note that you must cast the return value of this method to the correct type in order to do anything 
+   * Note that you must cast the return value of this method to the correct type in order to do anything
    * useful with it.
-   * 
-   * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on 
-   *         the client.  Note that you must cast this object to its proper type before you will be able to 
+   *
+   * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on
+   *         the client.  Note that you must cast this object to its proper type before you will be able to
    *         do anything useful with it.
    */
   public Object getResponsePOJO(){
@@ -1414,7 +1475,7 @@ public class FacebookRestClient {
       try {
           jc = JAXBContext.newInstance("com.facebook.api.schema");
           Unmarshaller unmarshaller = jc.createUnmarshaller();
-          pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));             
+          pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));
       } catch (JAXBException e) {
           System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO");
           e.printStackTrace();
@@ -1428,14 +1489,14 @@ public class FacebookRestClient {
       }
       return pojo;
   }
-  
+
   /**
    * Lookup a single preference value for the current user.
-   * 
+   *
    * @param prefId the id of the preference to lookup.  This should be an integer value from 0-200.
-   * 
+   *
    * @return The value of that preference, or null if it is not yet set.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1445,51 +1506,51 @@ public class FacebookRestClient {
       }
       this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCE, new Pair<String, CharSequence>("pref_id", Integer.toString(prefId)));
       this.checkError();
-      
+
       if (! this.rawResponse.contains("</data_getUserPreference_response>")) {
           //there is no value set for this preference yet
           return null;
       }
       String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</data_getUserPreference_response>"));
       result = result.substring(result.indexOf("facebook.xsd\">") + "facebook.xsd\">".length());
-      
+
       return reconstructValue(result);
   }
-  
+
   /**
    * Get a map containing all preference values set for the current user.
-   * 
-   * @return a map of preference values, keyed by preference id.  The map will contain all 
+   *
+   * @return a map of preference values, keyed by preference id.  The map will contain all
    *         preferences that have been set for the current user.  If there are no preferences
    *         currently set, the map will be empty.  The map returned will never be null.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Map<Integer, String> data_getUserPreferences() throws FacebookException, IOException {
       Document response = this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCES);
       this.checkError();
-      
+
       Map<Integer, String> results = new HashMap<Integer, String>();
       NodeList ids = response.getElementsByTagName("pref_id");
       NodeList values = response.getElementsByTagName("value");
       for (int count = 0; count < ids.getLength(); count++) {
-          results.put(Integer.parseInt(ids.item(count).getFirstChild().getTextContent()), 
+          results.put(Integer.parseInt(ids.item(count).getFirstChild().getTextContent()),
                   reconstructValue(values.item(count).getFirstChild().getTextContent()));
       }
-      
+
       return results;
   }
-  
+
   private void checkError() throws FacebookException {
       if (this.rawResponse.contains("error_response")) {
           //<error_code>xxx</error_code>
-          Integer code = Integer.parseInt(this.rawResponse.substring(this.rawResponse.indexOf("<error_code>") + "<error_code>".length(), 
+          Integer code = Integer.parseInt(this.rawResponse.substring(this.rawResponse.indexOf("<error_code>") + "<error_code>".length(),
                   this.rawResponse.indexOf("</error_code>") + "</error_code>".length()));
           throw new FacebookException(code, "The request could not be completed!");
       }
   }
-  
+
   private String reconstructValue(String input) {
       if ((input == null) || ("".equals(input))) {
           return null;
@@ -1499,18 +1560,18 @@ public class FacebookRestClient {
       }
       return input;
   }
-  
+
   /**
-   * Set a user-preference value.  The value can be any string up to 127 characters in length, 
-   * while the preference id can only be an integer between 0 and 200.  Any preference set applies 
+   * Set a user-preference value.  The value can be any string up to 127 characters in length,
+   * while the preference id can only be an integer between 0 and 200.  Any preference set applies
    * only to the current user of the application.
-   * 
-   * To clear a user-preference, specify null as the value parameter.  The values of "0" and "" will 
+   *
+   * To clear a user-preference, specify null as the value parameter.  The values of "0" and "" will
    * be stored as user-preferences with a literal value of "0" and "" respectively.
-   * 
+   *
    * @param prefId the id of the preference to set, an integer between 0 and 200.
    * @param value the value to store, a String of up to 127 characters in length.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1521,35 +1582,35 @@ public class FacebookRestClient {
       if ((value != null) && (value.length() > 127)) {
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference value cannot be longer than 128 characters.");
       }
-      
+
       value = normalizePreferenceValue(value);
-      
+
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       params.add(new Pair<String, CharSequence>("pref_id", Integer.toString(prefId)));
       params.add(new Pair<String, CharSequence>("value", value));
       this.callMethod(FacebookMethod.DATA_SET_USER_PREFERENCE, params);
       this.checkError();
   }
-  
+
   /**
-   * Set multiple user-preferences values.  The values can be strings up to 127 characters in length, 
-   * while the preference id can only be an integer between 0 and 200.  Any preferences set apply 
+   * Set multiple user-preferences values.  The values can be strings up to 127 characters in length,
+   * while the preference id can only be an integer between 0 and 200.  Any preferences set apply
    * only to the current user of the application.
-   * 
-   * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will 
+   *
+   * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will
    * be stored as user-preferences with a literal value of "0" and "" respectively.
-   * 
-   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and 
+   *
+   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and
    *              the values should be strings of up to 127 characters in length.
    * @param replace set to true if you want to remove any pre-existing preferences before writing the new ones
    *                set to false if you want the new preferences to be merged with any pre-existing preferences
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public void data_setUserPreferences(Map<Integer, String> values, boolean replace) throws FacebookException, IOException {
       JSONObject map = new JSONObject();
-      
+
       for (Integer key : values.keySet()) {
           if ((key < 0) || (key > 200)) {
               throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200.");
@@ -1561,51 +1622,51 @@ public class FacebookRestClient {
               map.put(Integer.toString(key), normalizePreferenceValue(values.get(key)));
           }
           catch (JSONException e) {
-              FacebookException ex = new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "Error when translating {key=" 
+              FacebookException ex = new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "Error when translating {key="
                       + key + ", value=" + values.get(key) + "}to JSON!");
               ex.setStackTrace(e.getStackTrace());
               throw ex;
           }
       }
-      
+
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       params.add(new Pair<String, CharSequence>("values", map.toString()));
       if (replace) {
           params.add(new Pair<String, CharSequence>("replace", "true"));
       }
-      
+
       this.callMethod(FacebookMethod.DATA_SET_USER_PREFERENCES, params);
       this.checkError();
   }
-  
+
   private String normalizePreferenceValue(String input) {
       if (input == null) {
           return "0";
       }
       return "_" + input;
   }
-  
+
   /**
    * Check to see if the application is permitted to send SMS messages to the current application user.
-   * 
+   *
    * @return true if the application is presently able to send SMS messages to the current user
    *         false otherwise
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public boolean sms_canSend() throws FacebookException, IOException {
       return sms_canSend(this.users_getLoggedInUser());
   }
-  
+
   /**
    * Check to see if the application is permitted to send SMS messages to the specified user.
-   * 
+   *
    * @param userId the UID of the user to check permissions for
-   * 
+   *
    * @return true if the application is presently able to send SMS messages to the specified user
    *         false otherwise
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1613,43 +1674,43 @@ public class FacebookRestClient {
       this.callMethod(FacebookMethod.SMS_CAN_SEND, new Pair<String, CharSequence>("uid", userId.toString()));
       return this.rawResponse.contains(">0<");  //a status code of "0" indicates that the app can send messages
   }
-  
+
   /**
    * Send an SMS message to the current application user.
-   * 
+   *
    * @param message the message to send.
-   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to 
-   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify 
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify
    *                     null if you do not want/need to use a session for the current message.
-   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated 
-   *                       id will be returned as the result of this API call.  You should only set this to true if you are 
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are
    *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
-   * 
-   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was 
+   *
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was
    *                    not requested, this method will return null.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
       return sms_send(this.users_getLoggedInUser(), message, smsSessionId, makeNewSession);
   }
-  
+
   /**
    * Send an SMS message to the specified user.
-   * 
+   *
    * @param userId the id of the user to send the message to.
    * @param message the message to send.
-   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to 
-   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify 
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify
    *                     null if you do not want/need to use a session for the current message.
-   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated 
-   *                       id will be returned as the result of this API call.  You should only set this to true if you are 
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are
    *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
-   * 
-   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was 
+   *
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was
    *                    not requested, this method will return null.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1663,9 +1724,9 @@ public class FacebookRestClient {
       if (makeNewSession) {
           params.add(new Pair<String, CharSequence>("req_session", "true"));
       }
-      
+
       this.callMethod(FacebookMethod.SMS_SEND, params);
-      
+
       //XXX:  needs testing to make sure it's correct (Facebook always gives me a code 270 permissions error no matter what I do)
       Integer response = null;
       if ((this.rawResponse.indexOf("</sms") != -1) && (makeNewSession)) {
@@ -1673,21 +1734,21 @@ public class FacebookRestClient {
           result = result.substring(result.lastIndexOf(">") + 1);
           response = Integer.parseInt(result);
       }
-      
+
       return response;
   }
-  
+
   /**
-   * Check to see if the user has granted the app a specific external permission.  In order to be granted a 
+   * Check to see if the user has granted the app a specific external permission.  In order to be granted a
    * permission, an application must direct the user to a URL of the form:
-   * 
+   *
    * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
-   * 
+   *
    * @param perm the permission to check for
-   * 
+   *
    * @return true if the user has granted the application the specified permission
    *         false otherwise
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1695,45 +1756,45 @@ public class FacebookRestClient {
       this.callMethod(FacebookMethod.USERS_HAS_PERMISSION, new Pair<String, CharSequence>("ext_perm", perm.getName()));
       return this.rawResponse.contains(">1<");  //a code of '1' is sent back to indicate that the user has the request permission
   }
-  
+
   /**
-   * Set the user's profile status message.  This requires that the user has granted the application the 
-   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission' 
+   * Set the user's profile status message.  This requires that the user has granted the application the
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
    * to check to see if the user has granted your app the abbility to update their status.
    *
    * @param newStatus the new status message to set.
    * @param clear whether or not to clear the old status message.
-   * 
+   *
    * @return true if the call succeeds
-   *         false otherwise 
-   *          
+   *         false otherwise
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException {
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-      
+
       if (newStatus != null) {
           params.add(new Pair<String, CharSequence>("status", newStatus));
       }
       if (clear) {
           params.add(new Pair<String, CharSequence>("clear", "true"));
       }
-      
+
       this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
-      
-      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error   
+
+      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error
   }
-  
+
   /**
-   * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML 
-   * tag, to allow a given snippet to be reused easily across multiple users, and also to allow the application to update 
-   * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML 
-   * markup that is associated with the handle/id. 
-   * 
+   * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML
+   * tag, to allow a given snippet to be reused easily across multiple users, and also to allow the application to update
+   * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML
+   * markup that is associated with the handle/id.
+   *
    * @param handle the id to associate the specified markup with.  Put this in fb:ref FBML tags to reference your markup.
    * @param markup the FBML markup to store.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1747,19 +1808,19 @@ public class FacebookRestClient {
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       params.add(new Pair<String, CharSequence>("handle", handle));
       params.add(new Pair<String, CharSequence>("fbml", markup));
-      
+
       this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE, params);
   }
-  
+
   /**
    * Create a new marketplace listing, or modify an existing one.
-   * 
+   *
    * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
    * @param showOnProfile set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
    * @param attributes JSON-encoded attributes for this listing.
-   * 
+   *
    * @return the id of the listing created (or modified).
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1771,87 +1832,87 @@ public class FacebookRestClient {
      if (!test.verify()) {
          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The specified listing is invalid!");
      }
-     
+
      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
      params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
      if (showOnProfile) {
          params.add(new Pair<String, CharSequence>("show_on_profile", "true"));
      }
      params.add(new Pair<String, CharSequence>("listing_attrs", attributes));
-     
+
      this.callMethod(FacebookMethod.MARKET_CREATE_LISTING, params);
      String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</marketplace"));
      result = result.substring(result.lastIndexOf(">") + 1);
      return Long.parseLong(result);
   }
-  
+
   /**
    * Create a new marketplace listing, or modify an existing one.
-   * 
+   *
    * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
    * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
    * @param listing the listing to publish.
-   * 
+   *
    * @return the id of the listing created (or modified).
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Long marketplace_createListing(Long listingId, boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
       return this.marketplace_createListing(listingId, showOnProfile, listing.getAttribs());
   }
-  
+
   /**
    * Create a new marketplace listing.
-   * 
+   *
    * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
    * @param listing the listing to publish.
-   * 
+   *
    * @return the id of the listing created (or modified).
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Long marketplace_createListing(boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
       return this.marketplace_createListing(0l, showOnProfile, listing.getAttribs());
   }
-  
+
   /**
    * Create a new marketplace listing, or modify an existing one.
-   * 
+   *
    * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
    * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
    * @param listing the listing to publish.
-   * 
+   *
    * @return the id of the listing created (or modified).
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Long marketplace_createListing(Long listingId, boolean showOnProfile, JSONObject listing) throws FacebookException, IOException {
       return this.marketplace_createListing(listingId, showOnProfile, listing.toString());
   }
-  
+
   /**
    * Create a new marketplace listing.
-   * 
+   *
    * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
    * @param listing the listing to publish.
-   * 
+   *
    * @return the id of the listing created (or modified).
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public Long marketplace_createListing(boolean showOnProfile, JSONObject listing) throws FacebookException, IOException {
       return this.marketplace_createListing(0l, showOnProfile, listing.toString());
   }
-  
+
   /**
    * Return a list of all valid Marketplace categories.
-   * 
+   *
    * @return a list of marketplace categories allowed by Facebook.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1860,12 +1921,12 @@ public class FacebookRestClient {
       MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceCategory();
   }
-  
+
   /**
    * Return a list of all valid Marketplace subcategories.
-   * 
+   *
    * @return a list of marketplace subcategories allowed by Facebook.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1874,22 +1935,22 @@ public class FacebookRestClient {
       MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceSubcategory();
   }
-  
+
   /**
    * Retrieve listings from the marketplace.  The listings can be filtered by listing-id or user-id (or both).
-   * 
+   *
    * @param listingIds the ids of listings to filter by, only listings matching the specified ids will be returned.
    * @param uids the ids of users to filter by, only listings submitted by those users will be returned.
-   * 
+   *
    * @return A list of marketplace listings that meet the specified filter criteria.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
   public List<Listing> marketplace_getListings(List<Long> listingIds, List<Long> uids) throws FacebookException, IOException {
       String listings = stringify(listingIds);
       String users = stringify(uids);
-      
+
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       if (listings != null) {
           params.add(new Pair<String, CharSequence>("listing_ids", listings));
@@ -1897,12 +1958,12 @@ public class FacebookRestClient {
       if (uids != null) {
           params.add(new Pair<String, CharSequence>("uids", users));
       }
-      
+
       this.callMethod(FacebookMethod.MARKET_GET_LISTINGS, params);
       MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse)this.getResponsePOJO();
       return resp.getListing();
   }
-  
+
   private String stringify(List input) {
       if ((input == null) || (input.isEmpty())) {
           return null;
@@ -1916,16 +1977,16 @@ public class FacebookRestClient {
       }
       return result;
   }
-  
+
   /**
    * Search the marketplace listings by category, subcategory, and keyword.
-   * 
+   *
    * @param category the category to search in, optional (unless subcategory is specified).
    * @param subcategory the subcategory to search in, optional.
    * @param searchTerm the keyword to search for, optional.
-   * 
+   *
    * @return a list of marketplace entries that match the specified search parameters.
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1936,7 +1997,7 @@ public class FacebookRestClient {
       if ((subcategory != null) && (category == null)) {
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot search by subcategory without also specifying a category!");
       }
-      
+
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       if (category != null) {
           params.add(new Pair<String, CharSequence>("category", category.getName()));
@@ -1947,21 +2008,21 @@ public class FacebookRestClient {
       if (searchTerm != null) {
           params.add(new Pair<String, CharSequence>("query", searchTerm));
       }
-      
+
       this.callMethod(FacebookMethod.MARKET_SEARCH, params);
       MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.getResponsePOJO();
       return resp.getListing();
   }
-  
+
   /**
    * Remove a listing from the marketplace by id.
-   * 
+   *
    * @param listingId the id of the listing to remove.
    * @param status the status to apply when removing the listing.  Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
-   * 
+   *
    * @return true if the listing was successfully removed
    *         false otherwise
-   * 
+   *
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
@@ -1972,12 +2033,213 @@ public class FacebookRestClient {
       if (listingId == null) {
           return false;
       }
-      
+
       Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
       params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
       params.add(new Pair<String, CharSequence>("status", status.getName()));
       this.callMethod(FacebookMethod.MARKET_REMOVE_LISTING, params);
-      
+
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
+  
+  /**
+   * Clears the logged-in user's Facebook status.
+   * Requires the status_update extended permission.
+   * @return whether the status was successfully cleared
+   * @see #users_hasAppPermission
+   * @see FacebookExtendedPerm#STATUS_UPDATE
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus">
+   *      Developers Wiki: Users.setStatus</a> 
+   */
+  public boolean users_clearStatus()
+    throws FacebookException, IOException {
+    return this.users_setStatus(null, true);
+  }
+  
+  /**
+   * Modify a marketplace listing
+   * @param listingId identifies the listing to be modified
+   * @param showOnProfile whether the listing can be shown on the user's profile
+   * @param attrs the properties of the listing
+   * @return the id of the edited listing
+   * @see MarketplaceListing
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
+   *      Developers Wiki: marketplace.createListing</a>
+   *      
+   * @deprecated provided for legacy support only.
+   */
+  public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketplaceListing attrs)
+    throws FacebookException, IOException {
+    return this.marketplace_createListing(listingId, showOnProfile, attrs.getAttribs());
+  }
+  
+  /**
+   * Modify a marketplace listing
+   * @param listingId identifies the listing to be modified
+   * @param showOnProfile whether the listing can be shown on the user's profile
+   * @param attrs the properties of the listing
+   * @return the id of the edited listing
+   * @see MarketplaceListing
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
+   *      Developers Wiki: marketplace.createListing</a>
+   */
+  public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketListing attrs)
+    throws FacebookException, IOException {
+    return this.marketplace_createListing(listingId, showOnProfile, attrs);
+  }
+  
+  /**
+   * Publish a story to the logged-in user's newsfeed.
+   * @param title the title of the feed story
+   * @param body the body of the feed story
+   * @param images (optional) up to four pairs of image URLs and (possibly null) link URLs
+   * @return whether the story was successfully published; false in case of permission error
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser">
+   *      Developers Wiki: Feed.publishStoryToUser</a>
+   */
+  public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
+                                         Collection<FeedImage> images)
+    throws FacebookException, IOException {
+    return feed_publishStoryToUser(title, body, images, null);
+  }
+  
+  /**
+   * Create a marketplace listing
+   * @param showOnProfile whether the listing can be shown on the user's profile
+   * @param attrs the properties of the listing
+   * @return the id of the created listing
+   * @see MarketplaceListing
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
+   *      Developers Wiki: marketplace.createListing</a>
+   *      
+   * @deprecated provided for legacy support only.
+   */
+  public Long marketplace_createListing(Boolean showOnProfile, MarketplaceListing attrs)
+    throws FacebookException, IOException {
+    return this.marketplace_createListing(null, showOnProfile, attrs.getAttribs());
+  }
+
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#auth_getUserId(java.lang.String)
+     */
+    public long auth_getUserId(String authToken) throws FacebookException, IOException {
+        if (null == this._sessionKey)
+            auth_getSession(authToken);
+        return this.users_getLoggedInUser();
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#feed_publishActionOfUser(java.lang.CharSequence, java.lang.CharSequence, java.util.Collection)
+     */
+    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<FeedImage> images) throws FacebookException, IOException {
+        Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
+        if (images != null) {
+            for (FeedImage img : images) {
+                imgCopy.add(new Pair<URL, URL>(img.first, img.second));
+            }
+        }
+        return this.feed_publishActionOfUser(title, body, imgCopy, null);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence)
+     */
+    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate) throws FacebookException, IOException {
+        return this.feed_publishTemplatizedAction(titleTemplate.toString(), null, null, null, null, null, null);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
+     */
+    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<FeedImage> images) throws FacebookException, IOException {
+        Collection<Pair<URL, URL>> imgCopy = new ArrayList<Pair<URL, URL>>();
+        if (images != null) {
+            for (FeedImage img : images) {
+                imgCopy.add(new Pair<URL, URL>(img.first, img.second));
+            }
+        }
+        return this.feed_publishTemplatizedAction(titleTemplate.toString(), 
+                titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), imgCopy, targetIds.toString());
+    }
+    
+    /** 
+     * @deprecated provided for legacy support only.  Use the version that returns a List<String> instead.
+     */
+    public Document marketplace_getListings(Collection<Long> listingIds, Collection<Long> userIds) throws FacebookException, IOException {
+        ArrayList<Pair<String, CharSequence>> params =
+            new ArrayList<Pair<String, CharSequence>>(FacebookMethod.MARKETPLACE_GET_LISTINGS.numParams());
+        if (null != listingIds && !listingIds.isEmpty()) {
+            params.add(new Pair<String, CharSequence>("listing_ids", delimit(listingIds)));
+        }
+        if (null != userIds && !userIds.isEmpty()) {
+            params.add(new Pair<String, CharSequence>("uids", delimit(userIds)));
+        }
+
+        assert !params.isEmpty() : "Either listingIds or userIds should be provided";
+        return this.callMethod(FacebookMethod.MARKETPLACE_GET_LISTINGS, params);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories(java.lang.CharSequence)
+     */
+    public Document marketplace_getSubCategories(CharSequence category) throws FacebookException, IOException {
+        if (category != null) {
+            return this.callMethod(FacebookMethod.MARKET_GET_SUBCATEGORIES, new Pair<String, CharSequence>("category", category));
+        }
+        return this.callMethod(FacebookMethod.MARKET_GET_SUBCATEGORIES);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#marketplace_removeListing(java.lang.Long)
+     */
+    public boolean marketplace_removeListing(Long listingId) throws FacebookException, IOException {
+        return this.marketplace_removeListing(listingId, MarketListingStatus.DEFAULT);
+    }
+    
+    /**
+     * @deprecated provided for legacy support only.  Use marketplace_removeListing(Long, MarketListingStatus) instead.
+     */
+    public boolean marketplace_removeListing(Long listingId, CharSequence status) throws FacebookException, IOException {
+        return this.marketplace_removeListing(listingId);
+    }
+    
+    /** 
+     * @deprecated provided for legacy support only.  Use the version that returns a List<Listing> instead.
+     */
+    public Document marketplace_search(CharSequence category, CharSequence subCategory, CharSequence query) throws FacebookException, IOException {
+        if ("".equals(query)) {
+            query = null;
+        }
+        if ((subCategory != null) && (category == null)) {
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot search by subcategory without also specifying a category!");
+        }
+
+        Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+        if (category != null) {
+            params.add(new Pair<String, CharSequence>("category", category));
+        }
+        if (subCategory != null) {
+            params.add(new Pair<String, CharSequence>("subcategory", subCategory));
+        }
+        if (query != null) {
+            params.add(new Pair<String, CharSequence>("query", query));
+        }
+
+        return this.callMethod(FacebookMethod.MARKET_SEARCH, params);
+    }
+    
+    /**
+     * @deprecated provided for legacy support only.  Use users_hasAppPermission(Permission) instead.
+     */
+    public boolean users_hasAppPermission(CharSequence permission) throws FacebookException, IOException {
+        this.callMethod(FacebookMethod.USERS_HAS_PERMISSION, new Pair<String, CharSequence>("ext_perm", permission));
+        return this.rawResponse.contains(">1<");  //a code of '1' is sent back to indicate that the user has the request permission
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#users_setStatus(java.lang.String)
+     */
+    public boolean users_setStatus(String status) throws FacebookException, IOException {
+        return this.users_setStatus(status, false);
+    }
 }

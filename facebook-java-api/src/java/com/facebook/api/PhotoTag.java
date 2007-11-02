@@ -1,6 +1,7 @@
 package com.facebook.api;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
 
@@ -101,23 +102,18 @@ public class PhotoTag {
     return this._taggedUserId;
   }
 
-  /**
-   * Return a JSON-formatted representation of this object.
-   * 
-   * @param writer the JSONWriter to buffer the result in, may be null.
-   * 
-   * @return a JSONWriter buffering the results. 
-   * 
-   * @throws JSONException
-   */
-  public JSONWriter jsonify(JSONWriter writer)
-    throws JSONException {
-    JSONWriter ret = (null == writer ? new JSONStringer() : writer)
-      .object()
-      .key("x").value(Double.toString(getX()))
-      .key("y").value(Double.toString(getY()));
-
-    return (hasTaggedUser()) ? ret.key("tag_uid").value(getTaggedUserId()).endObject() :
-           ret.key("tag_text").value(getText()).endObject();
-  }
+  public JSONObject jsonify() {
+      JSONObject ret = new JSONObject();
+      try {
+          ret.put("x", this.getX());
+          ret.put("y", this.getY());
+          if (hasTaggedUser()) {
+            ret.put("tag_uid", getTaggedUserId());
+          } else {
+            ret.put("tag_text", getText());
+          }
+      }
+      catch (Exception ignored) {}
+      return ret;
+    }
 }
