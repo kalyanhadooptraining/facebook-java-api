@@ -33,11 +33,14 @@
 package com.facebook.api;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -54,6 +57,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -88,6 +94,7 @@ public abstract class ExtensibleClient<T>
   protected final String _secret;
   protected final String _apiKey;
   protected final URL _serverUrl;
+  protected String rawResponse;
 
   protected String _sessionKey;
   protected boolean _isDesktop = false;
@@ -706,6 +713,7 @@ public abstract class ExtensibleClient<T>
    */
   protected T callMethod(IFacebookMethod method, Collection<Pair<String, CharSequence>> paramPairs)
     throws FacebookException, IOException {
+    this.rawResponse = null;
     HashMap<String, CharSequence> params =
       new HashMap<String, CharSequence>(2 * method.numTotalParams());
 
@@ -741,7 +749,17 @@ public abstract class ExtensibleClient<T>
                                                                                       params,
                                                                                       doHttps,
                                                                                       true);
-    return parseCallResult(data, method);
+    BufferedReader in = new BufferedReader(new InputStreamReader(data, "UTF-8"));
+    StringBuffer buffer = new StringBuffer();
+    String line;
+    while ((line = in.readLine()) != null) {
+      buffer.append(line);
+    }
+     
+    String xmlResp = new String(buffer);
+    this.rawResponse = xmlResp;
+      
+    return parseCallResult(new ByteArrayInputStream(xmlResp.getBytes("UTF-8")), method);
   }
 
   /**
@@ -1588,5 +1606,128 @@ public abstract class ExtensibleClient<T>
     throws FacebookException, IOException {
     T temp = this.callMethod(FacebookMethod.MARKETPLACE_GET_CATEGORIES);
     return temp;
+  }
+  
+  public String getRawResponse() {
+      return this.rawResponse;
+  }
+  
+  public Object getResponsePOJO() {
+      if (this.rawResponse == null) {
+          return null;
+      }
+      if ((this.getResponseFormat() != null) && (! "xml".equals(this.getResponseFormat().toLowerCase()))) {
+          //JAXB will not work with JSON
+          throw new RuntimeException("You can only generate a response POJO when using XML formatted API responses!  JSON users go elsewhere!");
+      }
+      JAXBContext jc;
+      Object pojo = null;
+      try {
+          jc = JAXBContext.newInstance("com.facebook.api.schema");
+          Unmarshaller unmarshaller = jc.createUnmarshaller();
+          pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));
+      } catch (JAXBException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO");
+          e.printStackTrace();
+      }
+      catch (NullPointerException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO.");
+          e.printStackTrace();
+      } catch (UnsupportedEncodingException e) {
+          System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO.");
+          e.printStackTrace();
+      }
+      return pojo;
+  }
+  
+  public boolean feed_PublishTemplatizedAction(TemplatizedAction action) throws FacebookException, IOException{
+      return this.templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, action.getTitleTemplate(), action.getTitleParams(), 
+              action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds());
+  }
+  
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral, Collection<Pair<URL,URL>> pictures, String targetIds) throws FacebookException, IOException {
+      return this.templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, 
+              bodyTemplate, bodyData, bodyGeneral, pictures, targetIds);
+  }
+  
+  protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
+          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+      assert (pictures == null || pictures.size() <= 4);
+
+      long actorId = this.users_getLoggedInUser();
+      ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>(method.numParams());
+
+      //these are always required parameters
+      params.add(new Pair<String, CharSequence>("actor_id", Long.toString(actorId)));
+      params.add(new Pair<String, CharSequence>("title_template", titleTemplate));
+
+      //these are optional parameters
+      if (titleData != null) {
+          params.add(new Pair<String, CharSequence>("title_data", titleData));
+      }
+      if (bodyTemplate != null) {
+          params.add(new Pair<String, CharSequence>("body_template", bodyTemplate));
+          if (bodyData != null) {
+              params.add(new Pair<String, CharSequence>("body_data", bodyData));
+          }
+      }
+      if (bodyGeneral != null) {
+          params.add(new Pair<String, CharSequence>("body_general", bodyGeneral));
+      }
+      if (pictures != null) {
+          int count = 1;
+          for (Pair<URL, URL> picture : pictures) {
+                params.add(new Pair<String, CharSequence>("image_" + count, picture.first.toString()));
+                if (picture.second != null) {
+                    params.add(new Pair<String, CharSequence>("image_" + count + "_link", picture.second.toString()));
+                }
+                count++;
+          }
+      }
+      if (targetIds != null) {
+          params.add(new Pair<String, CharSequence>("target_ids", targetIds));
+      }
+      this.callMethod(method, params);
+      return this.rawResponse.contains(">1<"); //a code of '1' indicates success
+  }
+  
+  public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException {
+      return this.users_hasAppPermission(perm.getName());
+  }
+  
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, String attributes) throws FacebookException, IOException {
+      T result = this.callMethod(FacebookMethod.MARKETPLACE_CREATE_LISTING,
+              new Pair<String, CharSequence>("show_on_profile", showOnProfile ? "1" : "0"),
+              new Pair<String, CharSequence>("listing_id", "0"),
+              new Pair<String, CharSequence>("listing_attrs", attributes));
+      return this.extractLong(result);
+  }
+  
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(listingId, showOnProfile, listing.getAttribs());
+  }
+  
+  public Long marketplace_createListing(boolean showOnProfile, MarketListing listing) throws FacebookException, IOException {
+      return this.marketplace_createListing(null, showOnProfile, listing.getAttribs());
+  }
+  
+  public boolean marketplace_removeListing(Long listingId, MarketListingStatus status) throws FacebookException, IOException {
+      return this.marketplace_removeListing(listingId, status.getName());
+  }
+  
+  public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketListing attrs)
+    throws FacebookException, IOException {
+      T result = this.callMethod(FacebookMethod.MARKETPLACE_CREATE_LISTING,
+              new Pair<String, CharSequence>("show_on_profile", showOnProfile ? "1" : "0"),
+              new Pair<String, CharSequence>("listing_id", listingId.toString()),
+              new Pair<String, CharSequence>("listing_attrs", attrs.getAttribs()));
+      return this.extractLong(result);
+  }
+  
+  public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException {
+      if (clear) {
+          this.users_clearStatus();
+      }
+      return this.users_setStatus(newStatus);
   }
 }

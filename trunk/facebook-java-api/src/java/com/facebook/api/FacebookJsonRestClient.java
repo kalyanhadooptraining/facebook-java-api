@@ -6,8 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.facebook.api.schema.Listing;
 
  /**
   * A FacebookRestClient that uses the JSON result format. This means 
@@ -220,4 +224,99 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     }
   }
 
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#data_getUserPreference(java.lang.Integer)
+     */
+    public String data_getUserPreference(Integer prefId) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#data_getUserPreferences()
+     */
+    public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#data_setUserPreference(java.lang.Integer, java.lang.String)
+     */
+    public void data_setUserPreference(Integer prefId, String value) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead.");
+        
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#data_setUserPreferences(java.util.Map, boolean)
+     */
+    public void data_setUserPreferences(Map<Integer,String> values, boolean replace) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+                "Please use an instance of FacebookRestClient instead.");
+        
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#fbml_setRefHandle(java.lang.String, java.lang.String)
+     */
+    public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+        
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
+     */
+    public List<Listing> marketplace_getListings(List<Long> listingIds, List<Long> uids) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
+     */
+    public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#marketplace_search(com.facebook.api.MarketListingCategory, com.facebook.api.MarketListingSubcategory, java.lang.String)
+     */
+    public List<Listing> marketplace_search(MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#sms_canSend()
+     */
+    public boolean sms_canSend() throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#sms_canSend(java.lang.Long)
+     */
+    public boolean sms_canSend(Long userId) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.String, java.lang.Integer, boolean)
+     */
+    public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
+    
+    /* (non-Javadoc)
+     * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.Long, java.lang.String, java.lang.Integer, boolean)
+     */
+    public Integer sms_send(Long userId, String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
+        "Please use an instance of FacebookRestClient instead.");
+    }
 }

@@ -2075,7 +2075,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
    *      Developers Wiki: marketplace.createListing</a>
    *      
-   * @deprecated provided for legacy support only.
+   * @deprecated provided for legacy support only.  Please use the version that takes a MarketListing instead.
    */
   public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException {
