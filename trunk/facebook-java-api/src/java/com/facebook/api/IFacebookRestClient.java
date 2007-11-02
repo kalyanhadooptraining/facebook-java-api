@@ -190,7 +190,7 @@ public interface IFacebookRestClient<T> {
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<Pair<URL, URL>> images
+                                               Collection<? extends Pair<URL, URL>> images
                                               )
     throws FacebookException, IOException;
 
@@ -206,7 +206,7 @@ public interface IFacebookRestClient<T> {
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<Pair<URL, URL>> images)
+                                          Collection<? extends Pair<URL, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -233,7 +233,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<Pair<URL, URL>> images, Integer priority)
+                                         Collection<? extends Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException;
 
   /**
@@ -269,7 +269,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<Pair<URL, URL>> images)
+                                         Collection<? extends Pair<URL, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -1103,7 +1103,7 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException;
+          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException;
   
   /**
    * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML

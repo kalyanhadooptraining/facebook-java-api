@@ -217,7 +217,7 @@ public abstract class ExtensibleClient<T>
    * @return whether the call to <code>feedMethod</code> was successful
    */
   protected boolean feedHandler(IFacebookMethod feedMethod, CharSequence title, CharSequence body,
-                                Collection<Pair<URL, URL>> images, Integer priority)
+                                Collection<? extends Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException {
     ArrayList<Pair<String, CharSequence>> params =
       new ArrayList<Pair<String, CharSequence>>(feedMethod.numParams());
@@ -238,7 +238,7 @@ public abstract class ExtensibleClient<T>
    * @param params
    * @param images
    */
-  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<Pair<URL, URL>> images) {
+  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<? extends Pair<URL, URL>> images) {
     if (images != null && images.size() > 4) {
       throw new IllegalArgumentException("At most four images are allowed, got " + Integer.toString(images.size()));
     }
@@ -266,7 +266,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishActionOfUser</a>
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<Pair<URL, URL>> images)
+                                          Collection<? extends Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, null);
   }
@@ -315,7 +315,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<Pair<URL, URL>> images)
+                                         Collection<? extends Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -345,7 +345,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                   Collection<Pair<URL, URL>> images, Integer priority)
+                                   Collection<? extends Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
@@ -404,7 +404,7 @@ public abstract class ExtensibleClient<T>
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<Pair<URL, URL>> images
+                                               Collection<? extends Pair<URL, URL>> images
                                               )
     throws FacebookException, IOException {
     assert null != actorId && actorId > 0 : "Invalid actorId: " + Long.toString(actorId);
@@ -1645,13 +1645,13 @@ public abstract class ExtensibleClient<T>
               action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds());
   }
   
-  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral, Collection<Pair<URL,URL>> pictures, String targetIds) throws FacebookException, IOException {
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral, Collection<? extends Pair<URL,URL>> pictures, String targetIds) throws FacebookException, IOException {
       return this.templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, 
               bodyTemplate, bodyData, bodyGeneral, pictures, targetIds);
   }
   
   protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
       long actorId = this.users_getLoggedInUser();
