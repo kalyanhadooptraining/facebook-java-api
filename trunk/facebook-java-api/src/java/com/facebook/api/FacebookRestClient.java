@@ -51,7 +51,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -65,8 +64,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -201,7 +198,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return the format: either XML, JSON, or null (API default)
    */
   public String getResponseFormat() {
-      return null;
+      return "xml";
   }
 
   /**
