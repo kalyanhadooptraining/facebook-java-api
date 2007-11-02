@@ -743,4 +743,42 @@ public interface IFacebookRestClient<T> {
    */
   public T marketplace_search(CharSequence category, CharSequence subCategory, CharSequence query)
     throws FacebookException, IOException;
+  
+  /**
+   * Used to retrieve photo objects using the search parameters (one or more of the
+   * parameters must be provided).
+   *
+   * @param albumId retrieve from photos from this album (optional)
+   * @param photoIds retrieve from this list of photos (optional)
+   * @return an T of photo objects.
+   * @see #photos_get(Integer, Long, Collection)
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+   *      Developers Wiki: Photos.get</a>
+   */
+  public T photos_getByAlbum(Long albumId, Collection<Long> photoIds)
+    throws FacebookException, IOException;
+  
+  /**
+   * Used to retrieve photo objects using the search parameters (one or more of the
+   * parameters must be provided).
+   *
+   * @param albumId retrieve from photos from this album (optional)
+   * @return an T of photo objects.
+   * @see #photos_get(Integer, Long, Collection)
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+   *      Developers Wiki: Photos.get</a>
+   */
+  public T photos_getByAlbum(Long albumId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Get the categories available in marketplace.
+   * @return a T listing the marketplace categories
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories">
+   *      Developers Wiki: marketplace.getCategories</a>
+   *      
+   * @deprecated use the version that returns a List<String> instead.
+   */
+  public T marketplace_getCategoriesObject()
+    throws FacebookException, IOException;
 }
