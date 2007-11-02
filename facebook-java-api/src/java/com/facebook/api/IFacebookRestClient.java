@@ -40,6 +40,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.facebook.api.schema.Listing;
 
 /**
  * Generic interface for a FacebookRestClient, parameterized by output format.
@@ -201,6 +202,8 @@ public interface IFacebookRestClient<T> {
    * @return whether the story was successfully published; false in case of permission error
    * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishActionOfUser">
    *      Developers Wiki: Feed.publishActionOfUser</a>
+   *      
+   * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                           Collection<FeedImage> images)
@@ -213,6 +216,8 @@ public interface IFacebookRestClient<T> {
    * @return whether the story was successfully published; false in case of permission error
    * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishActionOfUser">
    *      Developers Wiki: Feed.publishActionOfUser</a>
+   *      
+   * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body)
     throws FacebookException, IOException;
@@ -372,6 +377,8 @@ public interface IFacebookRestClient<T> {
    * @see FacebookExtendedPerm
    * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">
    *      Developers Wiki: Users.hasAppPermission</a>
+   *      
+   * @deprecated provided for legacy support only.  Please use the alternate version.
    */
   public boolean users_hasAppPermission(CharSequence permission)
     throws FacebookException, IOException;
@@ -387,6 +394,22 @@ public interface IFacebookRestClient<T> {
    */
   public boolean users_setStatus(String status)
     throws FacebookException, IOException;
+  
+  /**
+   * Set the user's profile status message.  This requires that the user has granted the application the
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
+   * to check to see if the user has granted your app the abbility to update their status.
+   *
+   * @param newStatus the new status message to set.
+   * @param clear whether or not to clear the old status message.
+   *
+   * @return true if the call succeeds
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException;
 
   /**
    * Clears the logged-in user's Facebook status.
@@ -684,6 +707,8 @@ public interface IFacebookRestClient<T> {
    * @see FacebookExtendedPerm#MARKETPLACE
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
    *      Developers Wiki: marketplace.createListing</a>
+   *      
+   * @deprecated provided for legacy support only.  Please use the version that takes a MarketListing instead.
    */
   public Long marketplace_createListing(Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
@@ -693,6 +718,8 @@ public interface IFacebookRestClient<T> {
    * @return the id of the edited listing
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
    *      Developers Wiki: marketplace.createListing</a>
+   *      
+   * @deprecated provided for legacy support only.  Please use the version that takes a MarketListing instead.
    */
   public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
@@ -718,6 +745,8 @@ public interface IFacebookRestClient<T> {
    * @see FacebookExtendedPerm#MARKETPLACE
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing">
    *      Developers Wiki: marketplace.removeListing</a>
+   *      
+   * @deprecated provided for legacy support only.  Please use the version that takes a MarketListingStatus instead.
    */
   public boolean marketplace_removeListing(Long listingId, CharSequence status)
     throws FacebookException, IOException;
@@ -760,6 +789,8 @@ public interface IFacebookRestClient<T> {
    * @return a T of marketplace listings
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search">
    *      Developers Wiki: marketplace.search</a>
+   *      
+   * @deprecated provided for legacy support only.  Please use the alternate version instead.
    */
   public T marketplace_search(CharSequence category, CharSequence subCategory, CharSequence query)
     throws FacebookException, IOException;
@@ -800,5 +831,396 @@ public interface IFacebookRestClient<T> {
    * @deprecated use the version that returns a List<String> instead.
    */
   public T marketplace_getCategoriesObject()
+    throws FacebookException, IOException;
+  
+  /**
+   * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
+   *
+   * Note that calling this method consumes the data held in the internal buffer, and thus it may only be called once per API
+   * call.
+   *
+   * @return a String representation of the last API response sent by Facebook
+   */
+  public String getRawResponse();
+  
+  /**
+   * Returns a JAXB object of the type that corresponds to the last API call made on the client.  Each
+   * Facebook Platform API call that returns a Document object has a JAXB response object associated
+   * with it.  The naming convention is generally intuitive.  For example, if you invoke the
+   * 'user_getInfo' API call, the associated JAXB response object is 'UsersGetInfoResponse'.<br />
+   * <br />
+   * An example of how to use this method:<br />
+   *  <br />
+   *    FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");<br />
+   *    client.friends_get();<br />
+   *    FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();<br />
+   *    List<Long> friends = response.getUid(); <br />
+   * <br />
+   * This is particularly useful in the case of API calls that return a Document object, as working
+   * with the JAXB response object is generally much simple than trying to walk/parse the DOM by
+   * hand.<br />
+   * <br />
+   * This method can be safely called multiple times, though note that it will only return the
+   * response-object corresponding to the most recent Facebook Platform API call made.<br />
+   * <br />
+   * Note that you must cast the return value of this method to the correct type in order to do anything
+   * useful with it.
+   *
+   * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on
+   *         the client.  Note that you must cast this object to its proper type before you will be able to
+   *         do anything useful with it.
+   */
+  public Object getResponsePOJO();
+  
+  /**
+   * Publishes a templatized action for the current user.  The action will appear in their minifeed,
+   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When
+   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally
+   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally
+   * recommend Bizou").  This happens automatically, and *only* if the template match between the two
+   * feed entries is identical.<br />
+   * <br />
+   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le
+   * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
+   * <br />
+   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.
+   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2,
+   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token
+   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry
+   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send
+   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the
+   * story through the newsfeed.<br />
+   * <br />
+   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere
+   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if
+   * being omitted.<br />
+   * <br />
+   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so
+   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not
+   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility
+   * it provides.<br />
+   * <br />
+   * <br />
+   * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
+   * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
+   *
+   *
+   * @param action a TemplatizedAction instance that represents the feed data to publish
+   *
+   * @return a Document representing the XML response returned from the Facebook API server.
+   *
+   * @throws FacebookException if any number of bad things happen
+   * @throws IOException
+   */
+  public boolean feed_PublishTemplatizedAction(TemplatizedAction action) throws FacebookException, IOException; 
+  
+  /**
+   * Lookup a single preference value for the current user.
+   *
+   * @param prefId the id of the preference to lookup.  This should be an integer value from 0-200.
+   *
+   * @return The value of that preference, or null if it is not yet set.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public String data_getUserPreference(Integer prefId) throws FacebookException, IOException;
+  
+  /**
+   * Get a map containing all preference values set for the current user.
+   *
+   * @return a map of preference values, keyed by preference id.  The map will contain all
+   *         preferences that have been set for the current user.  If there are no preferences
+   *         currently set, the map will be empty.  The map returned will never be null.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Map<Integer, String> data_getUserPreferences() throws FacebookException, IOException;
+  
+  /**
+   * Set a user-preference value.  The value can be any string up to 127 characters in length,
+   * while the preference id can only be an integer between 0 and 200.  Any preference set applies
+   * only to the current user of the application.
+   *
+   * To clear a user-preference, specify null as the value parameter.  The values of "0" and "" will
+   * be stored as user-preferences with a literal value of "0" and "" respectively.
+   *
+   * @param prefId the id of the preference to set, an integer between 0 and 200.
+   * @param value the value to store, a String of up to 127 characters in length.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void data_setUserPreference(Integer prefId, String value) throws FacebookException, IOException;
+  
+  /**
+   * Set multiple user-preferences values.  The values can be strings up to 127 characters in length,
+   * while the preference id can only be an integer between 0 and 200.  Any preferences set apply
+   * only to the current user of the application.
+   *
+   * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will
+   * be stored as user-preferences with a literal value of "0" and "" respectively.
+   *
+   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and
+   *              the values should be strings of up to 127 characters in length.
+   * @param replace set to true if you want to remove any pre-existing preferences before writing the new ones
+   *                set to false if you want the new preferences to be merged with any pre-existing preferences
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void data_setUserPreferences(Map<Integer, String> values, boolean replace) throws FacebookException, IOException;
+  
+  /**
+   * Check to see if the application is permitted to send SMS messages to the current application user.
+   *
+   * @return true if the application is presently able to send SMS messages to the current user
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean sms_canSend() throws FacebookException, IOException;
+  
+  /**
+   * Check to see if the application is permitted to send SMS messages to the specified user.
+   *
+   * @param userId the UID of the user to check permissions for
+   *
+   * @return true if the application is presently able to send SMS messages to the specified user
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean sms_canSend(Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Send an SMS message to the current application user.
+   *
+   * @param message the message to send.
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify
+   *                     null if you do not want/need to use a session for the current message.
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are
+   *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
+   *
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was
+   *                    not requested, this method will return null.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException;
+  
+  /**
+   * Send an SMS message to the specified user.
+   *
+   * @param userId the id of the user to send the message to.
+   * @param message the message to send.
+   * @param smsSessionId the SMS session id to use, note that that is distinct from the user's facebook session id.  It is used to
+   *                     allow applications to keep track of individual SMS conversations/threads for a single user.  Specify
+   *                     null if you do not want/need to use a session for the current message.
+   * @param makeNewSession set to true to request that Facebook allocate a new SMS session id for this message.  The allocated
+   *                       id will be returned as the result of this API call.  You should only set this to true if you are
+   *                       passing a null 'smsSessionId' value.  Otherwise you already have a SMS session id, and do not need a new one.
+   *
+   * @return an integer specifying the value of the session id alocated by Facebook, if one was requested.  If a new session id was
+   *                    not requested, this method will return null.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Integer sms_send(Long userId, String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException;
+  
+  /**
+   * Check to see if the user has granted the app a specific external permission.  In order to be granted a
+   * permission, an application must direct the user to a URL of the form:
+   *
+   * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
+   *
+   * @param perm the permission to check for
+   *
+   * @return true if the user has granted the application the specified permission
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException;
+  
+  /**
+   * Publishes a templatized action for the current user.  The action will appear in their minifeed,
+   * and may appear in their friends' newsfeeds depending upon a number of different factors.  When
+   * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally
+   * recommends Bizou"), the feed entries may be combined in the newfeed (to something like "Bob and sally
+   * recommend Bizou").  This happens automatically, and *only* if the template match between the two
+   * feed entries is identical.<br />
+   * <br />
+   * Feed entries are not aggregated for a single user (so "Bob recommends Bizou" and "Bob recommends Le
+   * Charm" *will not* become "Bob recommends Bizou and Le Charm").<br />
+   * <br />
+   * If the user's action involves one or more of their friends, list them in the 'targetIds' parameter.
+   * For example, if you have "Bob says hi to Sally and Susie", and Sally's UID is 1, and Susie's UID is 2,
+   * then pass a 'targetIds' paramters of "1,2".  If you pass this parameter, you can use the "{target}" token
+   * in your templates.  Probably it also makes it more likely that Sally and Susie will see the feed entry
+   * in their newsfeed, relative to any other friends Bob might have.  It may be a good idea to always send
+   * a list of all the user's friends, and avoid using the "{target}" token, to maximize distribution of the
+   * story through the newsfeed.<br />
+   * <br />
+   * The only strictly required parameter is 'titleTemplate', which must contain the "{actor}" token somewhere
+   * inside of it.  All other parameters, options, and tokens are optional, and my be set to null if
+   * being omitted.<br />
+   * <br />
+   * Not that stories will only be aggregated if *all* templates match and *all* template parameters match, so
+   * if two entries have the same templateTitle and titleData, but a different bodyTemplate, they will not
+   * aggregate.  Probably it's better to use bodyGeneral instead of bodyTemplate, for the extra flexibility
+   * it provides.<br />
+   * <br />
+   * <br />
+   * Note that this method is replacing 'feed_publishActionOfUser', which has been deprecated by Facebook.
+   * For specific details, visit http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction
+   *
+   *
+   * @param titleTemplate the template for the title of the feed entry, this must contain the "(actor}" token.
+   *                      Any other tokens are optional, i.e. "{actor} recommends {place}".
+   * @param titleData JSON-formatted values for any tokens used in titleTemplate, with the exception of "{actor}"
+   *                  and "{target}", which Facebook populates automatically, i.e. "{place: "<a href='http://www.bizou.com'>Bizou</a>"}".
+   * @param bodyTemplate the template for the body of the feed entry, works the same as 'titleTemplate', but
+   *                     is not required to contain the "{actor}" token.
+   * @param bodyData works the same as titleData
+   * @param bodyGeneral non-templatized content for the body, may contain markup, may not contain tokens.
+   * @param pictures a list of up to 4 images to display, with optional hyperlinks for each one.
+   * @param targetIds a comma-seperated list of the UID's of any friend(s) who are involved in this feed
+   *                  action (if there are any), this specifies the value of the "{target}" token.  If you
+   *                  use this token in any of your templates, you must specify a value for this parameter.
+   *
+   * @return a Document representing the XML response returned from the Facebook API server.
+   *
+   * @throws FacebookException if any number of bad things happen
+   * @throws IOException
+   */
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
+          String bodyData, String bodyGeneral, Collection<Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException;
+  
+  /**
+   * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML
+   * tag, to allow a given snippet to be reused easily across multiple users, and also to allow the application to update
+   * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML
+   * markup that is associated with the handle/id.
+   *
+   * @param handle the id to associate the specified markup with.  Put this in fb:ref FBML tags to reference your markup.
+   * @param markup the FBML markup to store.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException;
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   *
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+   * @param attributes JSON-encoded attributes for this listing.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, String attributes) throws FacebookException, IOException;
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   *
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, MarketListing listing) throws FacebookException, IOException;
+  
+  /**
+   * Create a new marketplace listing.
+   *
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(boolean showOnProfile, MarketListing listing) throws FacebookException, IOException;
+  
+  /**
+   * Return a list of all valid Marketplace subcategories.
+   *
+   * @return a list of marketplace subcategories allowed by Facebook.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<String> marketplace_getSubCategories() throws FacebookException, IOException;
+  
+  /**
+   * Retrieve listings from the marketplace.  The listings can be filtered by listing-id or user-id (or both).
+   *
+   * @param listingIds the ids of listings to filter by, only listings matching the specified ids will be returned.
+   * @param uids the ids of users to filter by, only listings submitted by those users will be returned.
+   *
+   * @return A list of marketplace listings that meet the specified filter criteria.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<Listing> marketplace_getListings(List<Long> listingIds, List<Long> uids) throws FacebookException, IOException;
+  
+  /**
+   * Search the marketplace listings by category, subcategory, and keyword.
+   *
+   * @param category the category to search in, optional (unless subcategory is specified).
+   * @param subcategory the subcategory to search in, optional.
+   * @param searchTerm the keyword to search for, optional.
+   *
+   * @return a list of marketplace entries that match the specified search parameters.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public List<Listing> marketplace_search(MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm) throws FacebookException, IOException;
+  
+  /**
+   * Remove a listing from the marketplace by id.
+   *
+   * @param listingId the id of the listing to remove.
+   * @param status the status to apply when removing the listing.  Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+   *
+   * @return true if the listing was successfully removed
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean marketplace_removeListing(Long listingId, MarketListingStatus status) throws FacebookException, IOException;
+  
+  /**
+   * Modify a marketplace listing
+   * @param listingId identifies the listing to be modified
+   * @param showOnProfile whether the listing can be shown on the user's profile
+   * @param attrs the properties of the listing
+   * @return the id of the edited listing
+   * @see MarketplaceListing
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
+   *      Developers Wiki: marketplace.createListing</a>
+   */
+  public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketListing attrs)
     throws FacebookException, IOException;
 }
