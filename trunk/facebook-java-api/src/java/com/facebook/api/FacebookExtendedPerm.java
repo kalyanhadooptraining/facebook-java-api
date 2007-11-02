@@ -33,10 +33,7 @@
 package com.facebook.api;
 
 import java.io.IOException;
-
 import java.net.URL;
-
-import java.util.EnumSet;
 
 /**
  * An enumeration of the extended permissions available for applications using
@@ -72,6 +69,9 @@ public enum FacebookExtendedPerm
   MARKETPLACE("create_listing"),
   ;
 
+  /**
+   * The unchanging part of the URL to use for authorizing extended permissions.
+   */
   public static final String PERM_AUTHORIZE_ADDR = Permission.PERM_AUTHORIZE_ADDR;
   private String permissionName;
 
@@ -89,6 +89,8 @@ public enum FacebookExtendedPerm
   }
 
   /**
+   * @return the name by which the Facebook Platform refers to this permission.
+   * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
   public String getPermissionName() {
@@ -102,6 +104,7 @@ public enum FacebookExtendedPerm
    * @return a URL
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
+   * @throws IOException if something bad happens.
    */
   public static URL authorizationUrl(String apiKey, FacebookExtendedPerm permission)
     throws IOException {
@@ -115,6 +118,7 @@ public enum FacebookExtendedPerm
    * @return a URL
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
+   * @throws IOException if something bad happens.
    */
   public static URL authorizationUrl(String apiKey, CharSequence permission)
     throws IOException {

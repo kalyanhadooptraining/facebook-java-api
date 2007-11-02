@@ -37,10 +37,12 @@ public class Pair<N, V> {
     /**
      * The first element in the pair.
      */
+    //FIXME:  should be private
     public N first;
     /**
      * The second element in the pair.
      */
+    //FIXME:  should be private
     public V second;
 
     /**

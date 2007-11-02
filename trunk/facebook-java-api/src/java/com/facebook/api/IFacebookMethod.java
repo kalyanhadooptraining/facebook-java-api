@@ -32,10 +32,34 @@
 
 package com.facebook.api;
 
+/**
+ * Facebook went interface-happy with their latest release, because someone levied 
+ * very questionable criticism that they should extract interfaces for peices of 
+ * their code (most of which don't make sense to extract interfaces from), and the 
+ * Facebook Java developers weren't clever enough to question the validity of the 
+ * criticism and just went ahead with implementing it.
+ */
 public interface IFacebookMethod {
+    /**
+     * @return the name that the Facebook Platform uses to refer to this method.
+     */
     public String methodName();
+    /**
+     * @return the maximum number of params this API call will send (excluding any added automatically by the client).
+     */
     public int numParams();
+    /**
+     * @return true if this API call requires an active session to work
+     *         false otherwise
+     */
     public boolean requiresSession();
+    /**
+     * @return the maximum number of params this API call will send, including any that are added automatically by the Facebook client.
+     */
     public int numTotalParams();
+    /**
+     * @return true if this API call accepts a File as a parameter
+     *         false otherwise
+     */
     public boolean takesFile();
 }

@@ -16,19 +16,52 @@ import org.json.JSONObject;
   * transformed into Java <code>Object</code>'s.
   */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+  /**
+   * Constructor.
+   * 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   */
   public FacebookJsonRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   */
   public FacebookJsonRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
   }
 
+  
+  /**
+   * Constructor.
+   * 
+   * @param serverAddr the URL of the Facebook API server to use 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   * 
+   * @throws MalformedURLException if you specify an invalid URL 
+   */
   public FacebookJsonRestClient(String serverAddr, String apiKey, String secret,
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
 
+  
+  /**
+   * Constructor.
+   * 
+   * @param serverUrl the URL of the Facebook API server to use 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   */
   public FacebookJsonRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey) {
     super(serverUrl, apiKey, secret, sessionKey);

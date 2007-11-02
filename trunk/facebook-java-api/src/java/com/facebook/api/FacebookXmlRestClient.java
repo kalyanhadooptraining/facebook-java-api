@@ -58,19 +58,61 @@ import org.xml.sax.SAXException;
  */
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
+  /**
+   * Constructor.  Don't use this, use FacebookRestClient instead.
+   * 
+   * @param apiKey
+   * @param secret
+   * 
+   * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
+   *             to use the Facebook Platform XML API. 
+   */
   public FacebookXmlRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
 
+  /**
+   * Constructor.  Don't use this, use FacebookRestClient instead.
+   * 
+   * @param serverUrl
+   * @param apiKey
+   * @param secret
+   * @param sessionKey
+   * 
+   * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
+   *             to use the Facebook Platform XML API. 
+   */
   public FacebookXmlRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
   }
 
+  /**
+   * Constructor.  Don't use this, use FacebookRestClient instead.
+   * 
+   * @param serverUrl
+   * @param apiKey
+   * @param secret
+   * @param sessionKey
+   * 
+   * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
+   *             to use the Facebook Platform XML API. 
+   */
   public FacebookXmlRestClient(String serverAddr, String apiKey, String secret,
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
 
+  /**
+   * Constructor.  Don't use this, use FacebookRestClient instead.
+   * 
+   * @param serverUrl
+   * @param apiKey
+   * @param secret
+   * @param sessionKey
+   * 
+   * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
+   *             to use the Facebook Platform XML API. 
+   */
   public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey) {
     super(serverUrl, apiKey, secret, sessionKey);
