@@ -53,4 +53,36 @@ public class Pair<N, V> {
       this.first = name;
       this.second = value;
     }
+    
+    /**
+     * Set the first element in the pair
+     * 
+     * @param first the object to set
+     */
+    public void setFirst(N first) {
+        this.first = first;
+    } 
+
+    /**
+     * @return the first object in the pair
+     */
+    public N getFirst() {
+        return first;
+    }
+
+    /**
+     * Set the second element in the pair
+     * 
+     * @param second the object to set
+     */
+    public void setSecond(V second) {
+        this.second = second;
+    }
+
+    /**
+     * @return the second object in the pair
+     */
+    public V getSecond() {
+        return second;
+    }
 }

@@ -41,7 +41,7 @@ import java.util.EnumSet;
  * There are arguably better ways to do this.
  */
 public enum FacebookMethod
-  implements CharSequence {
+  implements IFacebookMethod, CharSequence {
   // Authentication
   AUTH_CREATE_TOKEN("facebook.auth.createToken"),
   AUTH_GET_SESSION("facebook.auth.getSession", 1),
@@ -60,6 +60,10 @@ public enum FacebookMethod
   USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
   USERS_IS_APP_ADDED("facebook.users.isAppAdded"),
   USERS_HAS_PERMISSION("facebook.users.hasAppPermission", 2),
+  /**
+   * @deprecated provided for legacy support only.  Please use USERS_HAS_PERMISSION instead.
+   */
+  USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 2),  //duplicated above
   USERS_SET_STATUS("facebook.users.setStatus", 3),
   // Photos
   PHOTOS_GET("facebook.photos.get", 2),
@@ -93,6 +97,31 @@ public enum FacebookMethod
   MARKET_GET_LISTINGS("facebook.marketplace.getListings", 3),
   MARKET_REMOVE_LISTING("facebook.marketplace.removeListing", 3),
   MARKET_SEARCH("facebook.marketplace.search", 4),
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_GET_CATEGORIES instead.
+   */
+  MARKETPLACE_GET_CATEGORIES("facebook.marketplace.getCategories", 1),
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_GET_SUBCATEGORIES instead.
+   */
+  MARKETPLACE_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories", 1),  
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_GET_LISTINGS instead.
+   */
+  MARKETPLACE_GET_LISTINGS("facebook.marketplace.getListings", 3),  
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_CREATE_LISTING instead.
+   */
+  MARKETPLACE_CREATE_LISTING("facebook.marketplace.createListing", 4),  
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_SEARCH instead.
+   */
+  MARKETPLACE_SEARCH("facebook.marketplace.search", 4),  
+  /**
+   * @deprecated provided for legacy support only.  Please use MARKET_REMOVE_LISTING instead.
+   */
+  MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 3), 
+  
   //Data
   DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
   DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),

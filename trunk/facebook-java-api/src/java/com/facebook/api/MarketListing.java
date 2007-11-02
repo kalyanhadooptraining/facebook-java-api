@@ -48,7 +48,12 @@ public class MarketListing {
      */
     public static final String CONDITION_USED = "USED";
     
-    private JSONObject attribs;
+    protected static final String CATEGORY_ATTRIB = "category";
+    protected static final String SUBCATEGORY_ATTRIB = "subcategory";
+    protected static final String TITLE_ATTRIB = "title";
+    protected static final String DESCRIPTION_ATTRIB = "description";
+    
+    protected JSONObject attribs;
     
     private MarketListing() {
         //empty constructor not allowed
@@ -65,10 +70,10 @@ public class MarketListing {
      */
     public MarketListing(String title, String description, MarketListingCategory category, MarketListingSubcategory subcategory) {
         this.attribs = new JSONObject();
-        this.setAttribute("title", title);
-        this.setAttribute("description", description);
-        this.setAttribute("category", category.getName());
-        this.setAttribute("subcategory", subcategory.getName());
+        this.setAttribute(TITLE_ATTRIB, title);
+        this.setAttribute(DESCRIPTION_ATTRIB, description);
+        this.setAttribute(CATEGORY_ATTRIB, category.getName());
+        this.setAttribute(SUBCATEGORY_ATTRIB, subcategory.getName());
     }
     
     //package-level access intentional
@@ -126,22 +131,22 @@ public class MarketListing {
     
     //package-level access intentional
     boolean verify() throws FacebookException {
-        if (!checkString("title")) {
+        if (!checkString(TITLE_ATTRIB)) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'title' attribute may not be null or empty!");
         }
-        if (!checkString("description")) {
+        if (!checkString(DESCRIPTION_ATTRIB)) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'description' attribute may not be null or empty!");        
         }
-        if (!checkString("category")) {
+        if (!checkString(CATEGORY_ATTRIB)) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'category' attribute may not be null or empty!");
         }
-        if (!checkString("subcategory")) {
+        if (!checkString(SUBCATEGORY_ATTRIB)) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'subcategory' attribute may not be null or empty!");
         }
         //XXX:  uncomment to force strict validation (requires all attributes mentioned in the Facebook docs)
         /*
-        String category = this.getAttribute("category");
-        String subcat = this.getAttribute("subcategory");
+        String category = this.getAttribute(CATEGORY_ATTRIB);
+        String subcat = this.getAttribute(SUBCATEGORY_ATTRIB);
         if (category.equals(MarketListingCategory.FORSALE.getName())) {
             if (!checkString("price")) {
                 throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The 'price' attribute is required when selling an item!");
@@ -243,5 +248,78 @@ public class MarketListing {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * Set the category of the listing
+     * 
+     * @param category the category to set
+     */
+    public void setCategory(String category) {
+        this.setAttribute(CATEGORY_ATTRIB, category);
+    }
+
+    /**
+     * @return the listing category.
+     */
+    public String getCategory() {
+        return this.getAttribute(CATEGORY_ATTRIB);
+    }
+
+    /**
+     * Set the subcategory of the listing
+     * 
+     * @param subCategory the subcategory to set
+     */
+    public void setSubCategory(String subCategory) {
+        this.setAttribute(SUBCATEGORY_ATTRIB, subCategory);
+    }
+
+    /**
+     * @return the listing subcategory.
+     */
+    public String getSubCategory() {
+        return this.getAttribute(SUBCATEGORY_ATTRIB);
+    }
+
+    /**
+     * Set the listing title.
+     * 
+     * @param title the title to set.
+     */
+    public void setTitle(String title) {
+        this.setAttribute(TITLE_ATTRIB, title);
+    }
+
+    /**
+     * @return the listing title.
+     */
+    public String getTitle() {
+        return this.getAttribute(TITLE_ATTRIB);
+    }
+
+    /**
+     * Set the listing description.
+     * 
+     * @param description the description to set.
+     */
+    public void setDescription(String description) {
+        this.setAttribute(DESCRIPTION_ATTRIB, description);
+    }
+
+    /**
+     * @return the listing description.
+     */
+    public String getDescription() {
+        return this.getAttribute(DESCRIPTION_ATTRIB);
+    }
+    
+    /**
+     * Remove an attribute from this listing.
+     * 
+     * @param attr the attribute to remove.
+     */
+    public void removeAttribute(CharSequence attr) {
+        this.attribs.remove(attr.toString());
     }
 }
