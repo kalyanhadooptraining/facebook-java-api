@@ -28,68 +28,14 @@
   +---------------------------------------------------------------------------+
   | For help with this library, contact developers-help@facebook.com          |
   +---------------------------------------------------------------------------+
-*/
+ */
+
 package com.facebook.api;
 
-import org.json.simple.JSONObject;
-
-
-public class PhotoTag {
-  private double _x;
-  private double _y;
-  private Integer _taggedUserId;
-  private String _text;
-
-  public PhotoTag(String text, double x, double y) {
-    assert (null != text && !"".equals(text));
-    this._text = text;
-    this._taggedUserId = null;
-    this.setCoordinates(x, y);
-  }
-
-  public PhotoTag(int taggedUserId, double x, double y) {
-    assert (0 < taggedUserId);
-    this._text = null;
-    this._taggedUserId = taggedUserId;
-    this.setCoordinates(x, y);
-  }
-
-  private void setCoordinates(double x, double y) {
-    assert (0.0 <= x && x <= 00.0);
-    assert (0.0 <= y && y <= 100.0);
-    this._x = x;
-    this._y = y;
-  }
-
-  public boolean hasTaggedUser() {
-    return null != this._taggedUserId;
-  }
-
-  public double getX() {
-    return this._x;
-  }
-
-  public double getY() {
-    return this._y;
-  }
-
-  public String getText() {
-    return this._text;
-  }
-
-  public Integer getTaggedUserId() {
-    return this._taggedUserId;
-  }
-
-  public JSONObject jsonify() {
-    JSONObject ret = new JSONObject();
-    ret.put("x", this.getX());
-    ret.put("y", this.getY());
-    if (hasTaggedUser()) {
-      ret.put("tag_uid", getTaggedUserId());
-    } else {
-      ret.put("tag_text", getText());
-    }
-    return ret;
-  }
+public interface IFacebookMethod {
+    public String methodName();
+    public int numParams();
+    public boolean requiresSession();
+    public int numTotalParams();
+    public boolean takesFile();
 }
