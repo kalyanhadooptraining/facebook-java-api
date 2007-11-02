@@ -34,11 +34,7 @@ package com.facebook.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-
 import java.net.URL;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -58,12 +54,36 @@ public interface IFacebookRestClient<T> {
   public static final String SERVER_ADDR       = "http://" + FB_SERVER;
   public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
+  /**
+   * Toggle debug mode.
+   * 
+   * @param isDebug set to true to enable debug
+   *                set to false to disable debug
+   */
   public void setDebug(boolean isDebug);
 
+  /**
+   * Check to see if debug mode is enabled.
+   * 
+   * @return true if debug is enabled
+   *         false otherwise
+   */
   public boolean isDebug();
 
+  /**
+   * Check to see if the client is running in desktop-app mode
+   * 
+   * @return true if the app is running in desktop mode.
+   *         false otherwise
+   */
   public boolean isDesktop();
 
+  /**
+   * Set the client to run in desktop-app mode.
+   * 
+   * @param isDesktop set to true to enable desktop mode
+   *                  set to false to disable desktop mode
+   */
   public void setIsDesktop(boolean isDesktop);
 
   /**

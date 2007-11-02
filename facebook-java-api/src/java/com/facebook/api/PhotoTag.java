@@ -1,9 +1,6 @@
 package com.facebook.api;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
 
 /**
  * Data structure for representing a photo tag.  Required by some API calls.
@@ -102,6 +99,11 @@ public class PhotoTag {
     return this._taggedUserId;
   }
 
+  /**
+   * Convert the tag to a JSON representation.
+   * 
+   * @return a JSONObject representing this tag
+   */
   public JSONObject jsonify() {
       JSONObject ret = new JSONObject();
       try {

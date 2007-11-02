@@ -27,8 +27,6 @@
  */
 package com.facebook.api;
 
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * Enum for managing the different permission-types used by Facebook.  These 
