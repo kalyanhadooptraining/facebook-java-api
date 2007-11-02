@@ -1918,6 +1918,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceCategory();
   }
+  
+  /**
+   * Return a list of all valid Marketplace categories.
+   *
+   * @return a list of marketplace categories allowed by Facebook.
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Document marketplace_getCategoriesObject() throws FacebookException, IOException{
+      return this.callMethod(FacebookMethod.MARKET_GET_CATEGORIES);
+  }
 
   /**
    * Return a list of all valid Marketplace subcategories.
@@ -2238,5 +2250,36 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      */
     public boolean users_setStatus(String status) throws FacebookException, IOException {
         return this.users_setStatus(status, false);
+    }
+    
+    /**
+     * Used to retrieve photo objects using the search parameters (one or more of the
+     * parameters must be provided).
+     *
+     * @param albumId retrieve from photos from this album (optional)
+     * @param photoIds retrieve from this list of photos (optional)
+     * @return an T of photo objects.
+     * @see #photos_get(Integer, Long, Collection)
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+     *      Developers Wiki: Photos.get</a> 
+     */
+    public Document photos_getByAlbum(Long albumId, Collection<Long> photoIds)
+      throws FacebookException, IOException {
+      return photos_get(null /*subjId*/, albumId, photoIds);
+    }
+    
+    /**
+     * Used to retrieve photo objects using the search parameters (one or more of the
+     * parameters must be provided).
+     *
+     * @param albumId retrieve from photos from this album (optional)
+     * @return an T of photo objects.
+     * @see #photos_get(Integer, Long, Collection)
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+     *      Developers Wiki: Photos.get</a> 
+     */
+    public Document photos_getByAlbum(Long albumId)
+      throws FacebookException, IOException {
+      return photos_get(null /*subjId*/, albumId, null /*photoIds*/);
     }
 }

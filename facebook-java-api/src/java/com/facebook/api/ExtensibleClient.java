@@ -1546,4 +1546,47 @@ public abstract class ExtensibleClient<T>
 
     return this.callMethod(FacebookMethod.MARKETPLACE_SEARCH, params);
   }
+  
+  /**
+   * Used to retrieve photo objects using the search parameters (one or more of the
+   * parameters must be provided).
+   *
+   * @param albumId retrieve from photos from this album (optional)
+   * @param photoIds retrieve from this list of photos (optional)
+   * @return an T of photo objects.
+   * @see #photos_get(Integer, Long, Collection)
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+   *      Developers Wiki: Photos.get</a> 
+   */
+  public T photos_getByAlbum(Long albumId, Collection<Long> photoIds)
+    throws FacebookException, IOException {
+    return photos_get(null /*subjId*/, albumId, photoIds);
+  }
+  
+  /**
+   * Used to retrieve photo objects using the search parameters (one or more of the
+   * parameters must be provided).
+   *
+   * @param albumId retrieve from photos from this album (optional)
+   * @return an T of photo objects.
+   * @see #photos_get(Integer, Long, Collection)
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
+   *      Developers Wiki: Photos.get</a> 
+   */
+  public T photos_getByAlbum(Long albumId)
+    throws FacebookException, IOException {
+    return photos_get(null /*subjId*/, albumId, null /*photoIds*/);
+  }
+  
+  /**
+   * Get the categories available in marketplace.
+   * @return a T listing the marketplace categories
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories">
+   *      Developers Wiki: marketplace.getCategories</a>
+   */
+  public T marketplace_getCategoriesObject()
+    throws FacebookException, IOException {
+    T temp = this.callMethod(FacebookMethod.MARKETPLACE_GET_CATEGORIES);
+    return temp;
+  }
 }
