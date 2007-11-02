@@ -217,7 +217,7 @@ public abstract class ExtensibleClient<T>
    * @return whether the call to <code>feedMethod</code> was successful
    */
   protected boolean feedHandler(IFacebookMethod feedMethod, CharSequence title, CharSequence body,
-                                Collection<FeedImage> images, Integer priority)
+                                Collection<Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException {
     ArrayList<Pair<String, CharSequence>> params =
       new ArrayList<Pair<String, CharSequence>>(feedMethod.numParams());
@@ -238,20 +238,20 @@ public abstract class ExtensibleClient<T>
    * @param params
    * @param images
    */
-  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<FeedImage> images) {
+  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<Pair<URL, URL>> images) {
     if (images != null && images.size() > 4) {
       throw new IllegalArgumentException("At most four images are allowed, got " + Integer.toString(images.size()));
     }
     if (null != images && !images.isEmpty()) {
       int image_count = 0;
-      for (FeedImage image : images) {
+      for (Pair<URL, URL> image : images) {
         ++image_count;
-        assert null != image.getImageUrl() : "Image URL must be provided";
+        assert null != image.first : "Image URL must be provided";
         params.add(new Pair<String, CharSequence>(String.format("image_%d", image_count),
-                                                  image.getImageUrl().toString()));
-        if (null != image.getLinkUrl())
+                                                  image.first.toString()));
+        if (null != image.second)
           params.add(new Pair<String, CharSequence>(String.format("image_%d_link", image_count),
-                                                    image.getLinkUrl().toString()));
+                                                    image.second.toString()));
       }
     }
   }
@@ -266,7 +266,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishActionOfUser</a>
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<FeedImage> images)
+                                          Collection<Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, null);
   }
@@ -315,7 +315,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images)
+                                         Collection<Pair<URL, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -345,7 +345,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                   Collection<FeedImage> images, Integer priority)
+                                   Collection<Pair<URL, URL>> images, Integer priority)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
@@ -404,7 +404,7 @@ public abstract class ExtensibleClient<T>
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<FeedImage> images
+                                               Collection<Pair<URL, URL>> images
                                               )
     throws FacebookException, IOException {
     assert null != actorId && actorId > 0 : "Invalid actorId: " + Long.toString(actorId);
