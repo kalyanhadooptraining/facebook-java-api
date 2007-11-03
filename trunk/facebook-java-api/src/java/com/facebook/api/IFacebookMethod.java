@@ -33,12 +33,7 @@
 package com.facebook.api;
 
 /**
- * Facebook went interface-happy with their latest release, because someone levied 
- * very questionable criticism that they should extract interfaces for peices of 
- * their code (most of which don't make sense to extract interfaces from), and the 
- * Facebook Java developers weren't clever enough to question the validity of the 
- * criticism and just went ahead with implementing it.  This is one of the more 
- * pointless results of that process.
+ * Interface for specifying a Facebook API method.
  */
 public interface IFacebookMethod {
     /**
