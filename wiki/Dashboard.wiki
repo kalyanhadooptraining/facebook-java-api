@@ -13,8 +13,11 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 
 ===== Change Matrix =====
 
-||*Feature*||*facebook-java-api*||*Official Facebook API (10/30/2007)*||*Official Facebook API (July 2007)*||
-||*Non-disruptive Updates*||Since 1.0||No.||No.||
-||**||Since 1.0||No.||No.||
-||**||Since 1.0||No.||No.||
-||**||Since 1.0||No.||No.||
+||*Feature*||*facebook-java-api*||*Official Facebook API (10/30/2007)*||*Official Facebook API 1.0 (July 2007)*||
+||*Non-disruptive Updates*||Yes||No||No||
+||*JavaDoc Available*||Yes||No||No||
+||*64-bit UID's*||Yes||No||No||
+||*'Pair' implemented correctly*||Yes||Yes||No||
+||*JAXB Integration*||Yes||No||No||
+||*JAXB Integration*||Yes||No||No||
+||*JAXB Integration*||Yes||No||No||
