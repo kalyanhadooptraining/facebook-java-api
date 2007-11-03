@@ -22,4 +22,5 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 ||*Support marketplace API*||Yes, since v1.3||Yes||No||
 ||*Support data.setUserPreference(s)*||Yes, since v1.2||No||No||
 ||*Support data.getUserPreference(s)*||Yes, since v1.2||No||No||
-||*Support SMS*||Yes, since v1.2||No||No||
+||*Support SMS API*||Yes, since v1.2||No||No||
+||*Support All non-beta API calls*||Yes||No (missing fbml_setRefHandle)||No||
