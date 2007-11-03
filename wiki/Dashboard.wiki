@@ -18,6 +18,8 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 ||*JavaDoc Available*||Yes||No||No||
 ||*64-bit UID's*||Yes||No||No||
 ||*'Pair' implemented correctly*||Yes||Yes||No||
-||*JAXB Integration*||Yes||No||No||
-||*JAXB Integration*||Yes||No||No||
-||*JAXB Integration*||Yes||No||No||
+||*Support feed_templatizedAction*||Yes, since v1.1||Yes||No||
+||*Support marketplace API*||Yes, since v1.3||Yes||No||
+||*Support data.setUserPreference(s)*||Yes, since v1.2||No||No||
+||*Support data.getUserPreference(s)*||Yes, since v1.2||No||No||
+||*Support SMS*||Yes, since v1.2||No||No||
