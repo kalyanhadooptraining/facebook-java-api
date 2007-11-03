@@ -106,7 +106,7 @@ Committing Changes:
 Changelog:
 
 	From v1.3 to v1.4
-		- Merge in changes to official Facebook API made on 10/26/2007.
+		- Merge in changes from official Facebook API made on 10/30/2007.
 		- Refactor changes so that they don't break reverse compatibility for anyone using the official API.
 		- Refactor changes so that they don't break reverse compatibility for anyone using a previous version this API.
 		- Add a 'FacebookJaxbRestClient' that returns JAXB objects when making API calls.
@@ -131,7 +131,7 @@ Changelog:
 		- Add JAXB bindings for all FacebookRestClient methods that return a Document.
 		- Add utility method to get the JAXB response object corresponding to the last API call made through the client.
 
-	From v1.0 (last "official" Facebook release) to v1.1:
+	From v1.0 ("official" Facebook release in July) to v1.1:
 		- The 'Pair' class has been factored out of FacebookRestClient, and is now public.
 		- All object id's use 64-bit longs as their datatype to be compatible with pending Facebook platform changes.
 		- 'notifications_sendRequest' is marked as deprecated (it is no longer supported by Facebook).

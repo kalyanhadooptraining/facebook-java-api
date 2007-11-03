@@ -74,7 +74,10 @@ import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
 import com.facebook.api.schema.MarketplaceSearchResponse;
 
 /**
- * Facebook API client.  Allocate an instance of this class to make Facebook API requests.
+ * A FacebookRestClient that uses the XML result format. This means results from calls 
+ * to the Facebook API are returned as XML and transformed into instances of Document. 
+ * 
+ * Allocate an instance of this class to make Facebook API requests.
  */
 public class FacebookRestClient implements IFacebookRestClient<Document>{
   /**
