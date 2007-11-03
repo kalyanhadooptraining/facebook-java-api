@@ -11,12 +11,15 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 
 
 
-===== Change Matrix =====
+===== Comparison Matrix =====
 
 ||*Feature*||*facebook-java-api*||*Official Facebook API (10/30/2007)*||*Official Facebook API 1.0 (July 2007)*||
 ||*Non-disruptive Updates*||Yes||No||No||
-||*JavaDoc Available*||Yes||No||No||
+||*Javadoc Available*||Yes||No||No||
 ||*64-bit UID's*||Yes||No||No||
+||*JAXB Integration*||Yes||No||No||
+||*Backwards Compatible*||Yes||No||N/A||
+||*Cross-compatible*||Yes||No||No||
 ||*'Pair' implemented correctly*||Yes||Yes||No||
 ||*Support feed_templatizedAction*||Yes, since v1.1||Yes||No||
 ||*Support data.setUserPreference(s)*||Yes, since v1.2||No||No||
@@ -24,3 +27,4 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 ||*Support SMS API*||Yes, since v1.2||No||No||
 ||*Support Marketplace API*||Yes, since v1.3||Yes||No||
 ||*Support All non-beta API calls*||Yes, since v1.3||No (missing fbml_setRefHandle)||No||
+||*Time Between Releases*||~1 week||~3 Months||Unknown||
