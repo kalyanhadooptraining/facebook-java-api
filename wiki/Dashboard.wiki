@@ -18,7 +18,7 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 ||*Javadoc Available*||Yes||No||No||
 ||*64-bit UID's*||Yes||No||No||
 ||*JAXB Integration*||Yes||No||No||
-||*Backwards Compatible*||Yes||No||N/A||
+||*Backwards Compatible*||Yes||No||Not Applicable||
 ||*Cross-compatible*||Yes||No||No||
 ||*'Pair' implemented correctly*||Yes||Yes||No||
 ||*Support feed_templatizedAction*||Yes, since v1.1||Yes||No||
@@ -27,4 +27,4 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 ||*Support SMS API*||Yes, since v1.2||No||No||
 ||*Support Marketplace API*||Yes, since v1.3||Yes||No||
 ||*Support All non-beta API calls*||Yes, since v1.3||No (missing fbml_setRefHandle)||No||
-||*Time Between Releases*||~1 week||~3 Months||Unknown||
+||*Time Between Releases*||~1 week||~3 Months||Not Applicable||
