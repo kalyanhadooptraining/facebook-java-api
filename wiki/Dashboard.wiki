@@ -15,6 +15,8 @@ http://64.81.51.104:54321/facebook/javadoc/index.html
 
 ||*Feature*||*facebook-java-api*||*Official Facebook API (10/30/2007)*||*Official Facebook API 1.0 (July 2007)*||
 ||*Non-disruptive Updates*||Yes||No||No||
+||*Available as Binary*||Yes||No||No||
+||*Available as Source*||Yes||Yes||Yes||
 ||*Javadoc Available*||Yes||No||No||
 ||*64-bit UID's*||Yes||No||No||
 ||*JAXB Integration*||Yes||No||No||
