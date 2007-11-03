@@ -8,3 +8,13 @@
 You can view the [http://64.81.51.104:54321/facebook/javadoc/index.html latest project javadocs] here:
 
 http://64.81.51.104:54321/facebook/javadoc/index.html
+
+
+
+===== Change Matrix =====
+
+||*Feature*||*facebook-java-api*||*Official Facebook API (10/30/2007)*||*Official Facebook API (July 2007)*||
+||*Non-disruptive Updates*||Since 1.0||No.||No.||
+||**||Since 1.0||No.||No.||
+||**||Since 1.0||No.||No.||
+||**||Since 1.0||No.||No.||
