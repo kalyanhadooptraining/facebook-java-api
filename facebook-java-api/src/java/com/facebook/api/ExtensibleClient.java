@@ -469,6 +469,9 @@ public abstract class ExtensibleClient<T>
   }
 
   private static String encode(CharSequence target) {
+    if (target == null) {
+        return "";
+    }
     String result = target.toString();
     try {
       result = URLEncoder.encode(result, "UTF8");
@@ -821,7 +824,7 @@ public abstract class ExtensibleClient<T>
    */
   public long users_getLoggedInUser() throws FacebookException, IOException {
     T result = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
-    return extractInt(result);
+    return extractLong(result);
   }
 
   /**
