@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.facebook.api.schema.Listing;
@@ -145,10 +145,33 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     String jsonResp = new String(buffer);
     
     Object json = null;
-    try {
-        json = new JSONObject(jsonResp);
+    if (this.rawResponse.matches("[\\{\\[].*[\\}\\]]")) {
+        try {
+            if (this.rawResponse.matches("\\{.*\\}")) {
+                json = new JSONObject(jsonResp);
+            }
+            else {
+                json = new JSONArray(jsonResp);
+            }
+        }
+        catch (Exception ignored) { ignored.printStackTrace(); }
     }
-    catch (Exception ignored) {}
+    else {
+        if (this.rawResponse.startsWith("\"")) {
+            this.rawResponse = this.rawResponse.substring(1);
+        }
+        if (this.rawResponse.endsWith("\"")) {
+            this.rawResponse = this.rawResponse.substring(0, this.rawResponse.length() - 1);
+        }
+        try {
+            //it's either a number...
+            json = Long.parseLong(this.rawResponse);
+        }
+        catch (Exception e) {
+            //...or a string
+            json = this.rawResponse;
+        }
+    }
     if (isDebug()) {
       log(method.methodName() + ": " + (null != json ? json.toString() : "null"));
     }
@@ -156,14 +179,14 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     if (json instanceof JSONObject) {
       JSONObject jsonObj = (JSONObject) json;
       try {
-          if (jsonObj.get("error_code") != null) {
             Integer errorCode = (Integer) jsonObj.get("error_code");
-            String message = (String) jsonObj.get("error_msg");
-            throw new FacebookException(errorCode, message);
-          }
+            if (errorCode != null) {
+                String message = (String) jsonObj.get("error_msg");
+                throw new FacebookException(errorCode, message);
+            }
       }
-      catch (JSONException e) {
-          throw new FacebookException(ErrorCode.GEN_UNKNOWN_ERROR, e.getClass().getName() + ":  " + e.getMessage());
+      catch (JSONException ignored) {
+          //the call completed normally
       }
     }
     return json;
@@ -189,6 +212,14 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    */
   protected int extractInt(Object val) {
     try {
+      if (val instanceof String) {
+          //shouldn't happen, really
+          return Integer.parseInt((String)val);
+      }
+      if (val instanceof Long) {
+          //this one will happen, the parse method parses all numbers as longs
+          return ((Long)val).intValue();
+      }
       return (Integer) val;
     } catch (ClassCastException cce) {
       logException(cce);
@@ -203,7 +234,10 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    */
   protected boolean extractBoolean(Object val) {
     try {
-      return (Boolean) val;
+        if (val instanceof String) {
+            return ! ((val == null) || (val.equals("false")) || (val.equals("0")));
+        }
+        return ((Long)val != 0l);
     } catch (ClassCastException cce) {
       logException(cce);
       return false;
@@ -217,6 +251,10 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    */
   protected Long extractLong(Object val) {
     try {
+      if (val instanceof String) {
+          //shouldn't happen, really
+          return Long.parseLong((String)val);
+      }
       return (Long) val;
     } catch (ClassCastException cce) {
       logException(cce);
