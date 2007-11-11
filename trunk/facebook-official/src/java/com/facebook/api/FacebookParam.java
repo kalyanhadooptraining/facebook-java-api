@@ -69,13 +69,17 @@ public enum FacebookParam
 
   /**
    * Indicates whether a given key is in the FacebookParam namespace
-   * @param key
-   * @return boolean 
+   * @param key the parameter name to check
+   * @return true if key is in the FacebookParam namespace, false otherwise 
    */
   public static boolean isInNamespace(String key) {
     return null != key && key.startsWith(FacebookParam.SIGNATURE.toString());
   }
-  
+
+  /**
+   * @param key
+   * 
+   */
   public static boolean isSignature(String key) {
     return SIGNATURE.equals(get(key));
   }
@@ -112,18 +116,17 @@ public enum FacebookParam
   public String getSignatureName() {
     return this._signatureName;
   }
-  
+
+  /**
+   * Strips the signature prefix, if present, from <code>paramName</code>,
+   * and returns the result.
+   * @param paramName
+   * @return the paramName, minus the signature prefix
+   */
   public static String stripSignaturePrefix(String paramName) {
     if (paramName != null && paramName.startsWith("fb_sig_")) {
       return paramName.substring(7);
     }
     return paramName;
-  }
-
-  public static void main(String[] args) {
-    System.out.println( isSignature("fb_sig") );
-    System.out.println( !isSignature("fb_sig_something") );
-    
-    assert false;
   }
 }
