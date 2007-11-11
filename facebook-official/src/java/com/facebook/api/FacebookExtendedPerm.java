@@ -62,6 +62,11 @@ public enum FacebookExtendedPerm
    * @see FacebookRestClient#marketplace_removeListing(Long)
    */
   MARKETPLACE("create_listing"),
+  /** Required for sending SMS to the user
+   * @see FacebookRestClient#sms_canSend
+   * @see FacebookRestClient#sms_sendMessage
+   */
+  SMS("sms"),
   ;
 
   public static final String PERM_AUTHORIZE_ADDR = "http://www.facebook.com/authorize.php";
