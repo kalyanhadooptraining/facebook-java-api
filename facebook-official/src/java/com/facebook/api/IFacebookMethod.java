@@ -33,9 +33,35 @@
 package com.facebook.api;
 
 public interface IFacebookMethod {
-    public String methodName();
-    public int numParams();
-    public boolean requiresSession();
-    public int numTotalParams();
-    public boolean takesFile();
+
+  /**
+   * The name of the method, e.g. "facebook.friends.get"
+   * @return the method name
+   * @see <a href="http://wiki.developers.facebook.com/index.php/API">
+   *      Developers Wiki: Facebook API Reference</a>
+   */
+  public String methodName();
+
+  /**
+   * Number of method-specific parameters (i.e. excluding universally required parameters 
+   * such as api_key and sig)
+   * @return the number of parameters expected 
+   */
+  public int numParams();
+
+  /**
+   * @return whether the method requires an active session to be established
+   */
+  public boolean requiresSession();
+
+  /**
+   * @return the total number of parameters this method accepts, including
+   *         required parameters
+   */
+  public int numTotalParams();
+
+  /**
+   * @return whether the method expects a file to be posted
+   */
+  public boolean takesFile();
 }
