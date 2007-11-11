@@ -74,6 +74,7 @@ public enum FacebookMethod
   PROFILE_GET_FBML("facebook.profile.getFBML", 1),
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
+  FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 2),
   // Feed
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 10),
   FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 12),
@@ -84,7 +85,16 @@ public enum FacebookMethod
   MARKETPLACE_GET_LISTINGS("facebook.marketplace.getListings", 2),  
   MARKETPLACE_CREATE_LISTING("facebook.marketplace.createListing", 3),  
   MARKETPLACE_SEARCH("facebook.marketplace.search", 3),  
-  MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 2),  
+  MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 2),
+  // SMS - Mobile
+  SMS_CAN_SEND("facebook.sms.canSend", 1),
+  SMS_SEND_MESSAGE("facebook.sms.sendMessage", 3),
+  // Facebook Pages
+  PAGES_IS_APP_ADDED("facebook.pages.isAppAdded", 1),
+  PAGES_IS_ADMIN("facebook.pages.isAdmin", 1),
+  PAGES_IS_FAN("facebook.pages.isFan", 2),
+  PAGES_GET_INFO("facebook.pages.getInfo", 2),
+  PAGES_GET_INFO_NO_SESSION("facebook.pages.getInfo", 2),
   ;
 
   private String methodName;
@@ -95,12 +105,20 @@ public enum FacebookMethod
   private static EnumSet<FacebookMethod> preAuth = null;
   private static EnumSet<FacebookMethod> postAuth = null;
 
+  /**
+   * Methods that don't require an active session to be established.
+   * @return the methods
+   */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION);
     return preAuth;
   }
 
+  /**
+   * Methods that do require an active session to be established.
+   * @return the methods
+   */
   public static EnumSet<FacebookMethod> postAuthMethods() {
     if (null == postAuth)
       postAuth = EnumSet.complementOf(preAuthMethods());
@@ -123,22 +141,44 @@ public enum FacebookMethod
     this.takesFile = takesFile;
   }
 
+
+  /**
+   * The name of the method, e.g. "facebook.friends.get"
+   * @return the method name
+   */
   public String methodName() {
     return this.methodName;
   }
 
+  /**
+   * Number of method-specific parameters (i.e. excluding universally required parameters 
+   * such as api_key and sig)
+   * @return the number of parameters expected 
+   */
   public int numParams() {
     return this.numParams;
   }
 
+  /**
+   * @return whether the method requires an active session to be established 
+   * @see #postAuthMethods
+   * @see #preAuthMethods
+   */
   public boolean requiresSession() {
     return postAuthMethods().contains(this);
   }
 
+  /**
+   * @return the total number of parameters this method accepts, including 
+   *         required parameters
+   */
   public int numTotalParams() {
     return requiresSession() ? this.maxParamsWithSession : this.numParams;
   }
 
+  /**
+   * @return whether the method expects a file to be posted
+   */
   public boolean takesFile() {
     return this.takesFile;
   }
