@@ -10,12 +10,13 @@ import java.net.URL;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
- /**
-  * A FacebookRestClient that uses the JSON result format. This means 
-  * results from calls to the Facebook API are returned as 
-  * <a href="http://www.json.org/">JSON</a> and 
-  * transformed into Java <code>Object</code>'s.
-  */
+
+/**
+ * A FacebookRestClient that uses the JSON result format. This means
+ * results from calls to the Facebook API are returned as
+ * <a href="http://www.json.org/">JSON</a> and
+ * transformed into Java <code>Object</code>'s.
+ */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
   public FacebookJsonRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
@@ -25,13 +26,12 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     this(SERVER_URL, apiKey, secret, sessionKey);
   }
 
-  public FacebookJsonRestClient(String serverAddr, String apiKey, String secret,
-                            String sessionKey) throws MalformedURLException {
+  public FacebookJsonRestClient(String serverAddr, String apiKey, String secret, String sessionKey)
+    throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
 
-  public FacebookJsonRestClient(URL serverUrl, String apiKey, String secret,
-                            String sessionKey) {
+  public FacebookJsonRestClient(URL serverUrl, String apiKey, String secret, String sessionKey) {
     super(serverUrl, apiKey, secret, sessionKey);
   }
 
@@ -58,21 +58,20 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
   }
 
   /**
-   * Sets the session information (sessionKey) using the token from auth_createToken. 
+   * Sets the session information (sessionKey) using the token from auth_createToken.
    *
    * @param authToken the token returned by auth_createToken or passed back to your callback_url.
    * @return the session key
    * @throws FacebookException
    * @throws IOException
    */
-  public String auth_getSession(String authToken) throws FacebookException,
-                                                         IOException {
+  public String auth_getSession(String authToken)
+    throws FacebookException, IOException {
     if (null != this._sessionKey) {
       return this._sessionKey;
     }
-    JSONObject d = (JSONObject)
-      this.callMethod(FacebookMethod.AUTH_GET_SESSION, 
-                      new Pair<String, CharSequence>("auth_token", authToken.toString()));
+    JSONObject d = (JSONObject) this.callMethod(FacebookMethod.AUTH_GET_SESSION, 
+                                                new Pair<String, CharSequence>("auth_token", authToken.toString()));
     this._sessionKey = (String) d.get("session_key");
     Object uid = d.get("uid");
     try {
@@ -95,7 +94,8 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @throws IOException if <code>data</code> is not readable
    * @see JSONObject
    */
-  protected Object parseCallResult(InputStream data, IFacebookMethod method) throws FacebookException, IOException {
+  protected Object parseCallResult(InputStream data, IFacebookMethod method)
+    throws FacebookException, IOException {
     Object json = JSONValue.parse(new InputStreamReader(data));
     if (isDebug()) {
       log(method.methodName() + ": " + (null != json ? json.toString() : "null"));
@@ -118,7 +118,8 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @param url
    * @return the URL
    */
-  protected URL extractURL(Object url) throws IOException {
+  protected URL extractURL(Object url)
+    throws IOException {
     if (!(url instanceof String)) {
       return null;
     }
