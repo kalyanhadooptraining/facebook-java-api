@@ -56,7 +56,7 @@ public interface IFacebookRestClient<T> {
   public static final String FB_SERVER         = "api.facebook.com/restserver.php";
   public static final String SERVER_ADDR       = "http://" + FB_SERVER;
   public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
-
+  
   public void setDebug(boolean isDebug);
 
   public boolean isDebug();
@@ -101,6 +101,21 @@ public interface IFacebookRestClient<T> {
     throws FacebookException, IOException;
 
   /**
+   * Associates a "<code>handle</code>" with FBML markup so that the handle can be used within the 
+   * <a href="http://wiki.developers.facebook.com/index.php/Fb:ref">fb:ref</a> FBML tag. 
+   * A handle is unique within an application and allows an application to publish identical FBML 
+   * to many user profiles and do subsequent updates without having to republish FBML for each user.
+   * 
+   * @param handle - a string, unique within the application, that 
+   * @param fbmlMarkup - refer to the FBML documentation for a description of the markup and its role in various contexts
+   * @return a boolean indicating whether the FBML was successfully set
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle">
+   *      Developers Wiki: Fbml.setRefHandle</a>
+   */
+  public boolean fbml_setRefHandle(CharSequence handle, CharSequence fbmlMarkup)
+    throws FacebookException, IOException;
+
+  /**
    * Recaches the image with the specified imageUrl.
    * @param imageUrl String representing the image URL to refresh
    * @return boolean indicating whether the refresh succeeded
@@ -127,6 +142,8 @@ public interface IFacebookRestClient<T> {
    *         of a permission error
    * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
    *      Developers Wiki: Feed.publishTemplatizedAction</a>
+   * @see <a href="http://developers.facebook.com/tools.php?feed">
+   *      Developers Resources: Feed Preview Console </a>
    */
   public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate)
     throws FacebookException, IOException;
@@ -139,9 +156,9 @@ public interface IFacebookRestClient<T> {
    * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
    *        section. Must include the token <code>{actor}</code>.
    * @param titleData (optional) contains token-substitution mappings for tokens that appear in
-   *        titleTemplate. Should not contain mappings for the <code>{actor}</code> or
-   *        <code>{target}</code> tokens. Required if tokens other than <code>{actor}</code>
-   *        or <code>{target}</code> appear in the titleTemplate.
+   *        titleTemplate. Should not contain mappings for the <code>{actor}</code> or 
+   *        <code>{target}</code> tokens. Required if tokens other than <code>{actor}</code> 
+   *        or <code>{target}</code> appear in the titleTemplate. 
    * @param bodyTemplate (optional) markup to be displayed in the feed story's body section.
    *        can include tokens, of the form <code>{token}</code>, to be substituted using
    *        bodyData.
@@ -151,7 +168,7 @@ public interface IFacebookRestClient<T> {
    * @param bodyGeneral (optional) additional body markup that is not aggregated. If multiple instances
    *        of this templated story are combined together, the markup in the bodyGeneral of
    *        one of their stories may be displayed.
-   * @param targetIds The user ids of friends of the actor, used for stories about a direct action between
+   * @param targetIds The user ids of friends of the actor, used for stories about a direct action between 
    *        the actor and these targets of his/her action. Required if either the titleTemplate or bodyTemplate
    *        includes the token <code>{target}</code>.
    * @param images (optional) additional body markup that is not aggregated. If multiple instances
@@ -161,14 +178,16 @@ public interface IFacebookRestClient<T> {
    *         of a permission error
    * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
    *      Developers Wiki: Feed.publishTemplatizedAction</a>
+   * @see <a href="http://developers.facebook.com/tools.php?feed">
+   *      Developers Resources: Feed Preview Console </a>
    */
   public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate,
-                                               Map<String,CharSequence> titleData,
+                                               Map<String,CharSequence> titleData, 
                                                CharSequence bodyTemplate,
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Integer> targetIds,
-                                               Collection<FeedImage> images
+                                               Collection<IFeedImage> images
                                               )
     throws FacebookException, IOException;
 
@@ -182,7 +201,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishActionOfUser</a>
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<FeedImage> images)
+                                          Collection<IFeedImage> images)
     throws FacebookException, IOException;
 
   /**
@@ -207,7 +226,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images, Integer priority)
+                                         Collection<IFeedImage> images, Integer priority)
     throws FacebookException, IOException;
 
   /**
@@ -243,7 +262,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<FeedImage> images)
+                                         Collection<IFeedImage> images)
     throws FacebookException, IOException;
 
   /**
@@ -268,7 +287,7 @@ public interface IFacebookRestClient<T> {
 
   /**
    * Retrieves whether two users are friends.
-   * @param userId1
+   * @param userId1 
    * @param userId2
    * @return T
    * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends">
@@ -338,7 +357,7 @@ public interface IFacebookRestClient<T> {
    * application associated with the _apiKey.
    * @return boolean indicating whether the user has added the app
    * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">
-   *      Developers Wiki: Users.isAppAdded</a>
+   *      Developers Wiki: Users.isAppAdded</a> 
    */
   public boolean users_isAppAdded()
     throws FacebookException, IOException;
@@ -350,7 +369,7 @@ public interface IFacebookRestClient<T> {
    * @return boolean indicating whether the user has the permission
    * @see FacebookExtendedPerm
    * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">
-   *      Developers Wiki: Users.hasAppPermission</a>
+   *      Developers Wiki: Users.hasAppPermission</a> 
    */
   public boolean users_hasAppPermission(CharSequence permission)
     throws FacebookException, IOException;
@@ -362,19 +381,19 @@ public interface IFacebookRestClient<T> {
    * @see #users_hasAppPermission
    * @see FacebookExtendedPerm#STATUS_UPDATE
    * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus">
-   *      Developers Wiki: Users.setStatus</a>
+   *      Developers Wiki: Users.setStatus</a> 
    */
   public boolean users_setStatus(String status)
     throws FacebookException, IOException;
 
   /**
-   * Clears the logged-in user's Facebook status.
+   * Clears the logged-in user's Facebook status. 
    * Requires the status_update extended permission.
    * @return whether the status was successfully cleared
    * @see #users_hasAppPermission
    * @see FacebookExtendedPerm#STATUS_UPDATE
    * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus">
-   *      Developers Wiki: Users.setStatus</a>
+   *      Developers Wiki: Users.setStatus</a> 
    */
   public boolean users_clearStatus()
     throws FacebookException, IOException;
@@ -401,7 +420,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Long albumId, Collection<Long> photoIds)
     throws FacebookException, IOException;
@@ -415,7 +434,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Integer subjId, Collection<Long> photoIds)
     throws FacebookException, IOException;
@@ -429,7 +448,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Integer subjId, Long albumId)
     throws FacebookException, IOException;
@@ -442,7 +461,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Collection<Long> photoIds)
     throws FacebookException, IOException;
@@ -455,7 +474,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Long albumId)
     throws FacebookException, IOException;
@@ -468,7 +487,7 @@ public interface IFacebookRestClient<T> {
    * @return an T of photo objects.
    * @see #photos_get(Integer, Long, Collection)
    * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get">
-   *      Developers Wiki: Photos.get</a>
+   *      Developers Wiki: Photos.get</a> 
    */
   public T photos_get(Integer subjId)
     throws FacebookException, IOException;
@@ -659,6 +678,54 @@ public interface IFacebookRestClient<T> {
     throws FacebookException, IOException;
 
   /**
+   * Determines whether this application can send SMS to the user identified by <code>userId</code>
+   * @param userId a user ID
+   * @return true if sms can be sent to the user
+   * @see FacebookExtendedPerm#SMS
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+   *      Developers Wiki: Mobile: Application Generated Messages</a>
+   */
+  public boolean sms_canSend(Integer userId)
+    throws FacebookException, IOException;
+
+  /**
+   * Sends a message via SMS to the user identified by <code>userId</code>, with
+   * the expectation that the user will reply. The SMS extended permission is required for success.
+   * The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when
+   * the user replies.
+   *
+   * @param userId a user ID
+   * @param message the message to be sent via SMS
+   * @return a mobile session ID (can be used in {@link #sms_sendResponse})
+   * @throws FacebookException in case of error, e.g. SMS is not enabled
+   * @throws IOException
+   * @see FacebookExtendedPerm#SMS
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+   *      Developers Wiki: Mobile: Application Generated Messages</a>
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+   *      Developers Wiki: Mobile: Workflow</a>
+   */
+  public int sms_sendMessageWithSession(Integer userId, CharSequence message)
+    throws FacebookException, IOException;
+
+  /**
+   * Sends a message via SMS to the user identified by <code>userId</code>.
+   * The SMS extended permission is required for success.
+   *
+   * @param userId a user ID
+   * @param message the message to be sent via SMS
+   * @throws FacebookException in case of error
+   * @throws IOException
+   * @see FacebookExtendedPerm#SMS
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+   * Developers Wiki: Mobile: Application Generated Messages</a>
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+   * Developers Wiki: Mobile: Workflow</a>
+   */
+  public void sms_sendMessage(Integer userId, CharSequence message)
+    throws FacebookException, IOException;  
+
+  /**
    * Call this function and store the result, using it to generate the
    * appropriate login url and then to retrieve the session information.
    * @return an authentication token
@@ -681,10 +748,10 @@ public interface IFacebookRestClient<T> {
    */
   public int auth_getUserId(String authToken)
     throws FacebookException, IOException;
-
+  
   /**
-   * Create a marketplace listing. The create_listing extended permission is required.
-   * @param showOnProfile whether
+   * Create a marketplace listing. The create_listing extended permission is required. 
+   * @param showOnProfile whether 
    * @return the id of the created listing
    * @see #users_hasAppPermission
    * @see FacebookExtendedPerm#MARKETPLACE
@@ -693,16 +760,16 @@ public interface IFacebookRestClient<T> {
    */
   public Long marketplace_createListing(Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
-
+  
   /**
-   * Modify a marketplace listing. The create_listing extended permission is required.
+   * Modify a marketplace listing. The create_listing extended permission is required. 
    * @return the id of the edited listing
    * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing">
    *      Developers Wiki: marketplace.createListing</a>
    */
   public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
-
+  
   /**
    * Remove a marketplace listing. The create_listing extended permission is required.
    * @param listingId the listing to be removed
@@ -716,7 +783,7 @@ public interface IFacebookRestClient<T> {
     throws FacebookException, IOException;
 
   /**
-   * Remove a marketplace listing. The create_listing extended permission is required.
+   * Remove a marketplace listing. The create_listing extended permission is required. 
    * @param listingId the listing to be removed
    * @param status MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
    * @return boolean indicating whether the listing was removed
@@ -727,7 +794,7 @@ public interface IFacebookRestClient<T> {
    */
   public boolean marketplace_removeListing(Long listingId, CharSequence status)
     throws FacebookException, IOException;
-
+  
   /**
    * Get the categories available in marketplace.
    * @return a T listing the marketplace categories
@@ -757,7 +824,7 @@ public interface IFacebookRestClient<T> {
    */
   public T marketplace_getListings(Collection<Long> listingIds, Collection<Integer> userIds)
     throws FacebookException, IOException;
-
+  
   /**
    * Search for marketplace listings, optionally by category, subcategory, and/or query string.
    * @param category the category of listings desired (optional except if subcategory is provided)
@@ -768,5 +835,101 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: marketplace.search</a>
    */
   public T marketplace_search(CharSequence category, CharSequence subCategory, CharSequence query)
+    throws FacebookException, IOException;
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages with the given 
+   * <code>pageIds</code>. Can be called for pages that have added the application 
+   * without establishing a session.
+   * @param pageIds the page IDs
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Collection<Long> pageIds, EnumSet<PageProfileField> fields)
+    throws FacebookException, IOException;
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages with the given 
+   * <code>pageIds</code>. Can be called for pages that have added the application 
+   * without establishing a session.
+   * @param pageIds the page IDs
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Collection<Long> pageIds, Set<CharSequence> fields)
+    throws FacebookException, IOException;
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages of the user with the given 
+   * <code>userId</code>.
+   * @param userId the ID of a user about whose pages to fetch info
+   * @param fields a set of PageProfileFields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Integer userId, EnumSet<PageProfileField> fields)
+    throws FacebookException, IOException;
+
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages of the user with the given 
+   * <code>userId</code>.
+   * @param userId the ID of a user about whose pages to fetch info
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Integer userId, Set<CharSequence> fields)
+    throws FacebookException, IOException;
+
+  /**
+   * Checks whether a page has added the application
+   * @param pageId the ID of the page
+   * @return true if the page has added the application
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded">
+   *      Developers Wiki: Pages.isAppAdded</a>
+   */
+  public boolean pages_isAppAdded(Long pageId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether a user is a fan of the page with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @param userId the ID of the user (defaults to the logged-in user if null)
+   * @return true if the user is a fan of the page
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+   *      Developers Wiki: Pages.isFan</a>
+   */
+  public boolean pages_isFan(Long pageId, Integer userId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether the logged-in user is a fan of the page with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @return true if the logged-in user is a fan of the page
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+   *      Developers Wiki: Pages.isFan</a>
+   */
+  public boolean pages_isFan(Long pageId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether the logged-in user for this session is an admin of the page 
+   * with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @return true if the logged-in user is an admin
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin">
+   *      Developers Wiki: Pages.isAdmin</a>
+   */
+  public boolean pages_isAdmin(Long pageId)
     throws FacebookException, IOException;
 }
