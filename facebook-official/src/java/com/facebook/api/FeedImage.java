@@ -35,24 +35,44 @@ import java.net.URL;
 
 /**
  * A simple Pair of URLs for an image appearing in 
- * a newsfeed/minifeed story and the optional destination URL for a click
+ * a newsfeed/minifeed story and the destination URL for a click
  * on that image.
  * 
  * @see IFacebookRestClient
  */
-public class FeedImage extends Pair<URL, URL> {
-  public FeedImage(URL image) {
-    super(image, null);
-  }
-
+public class FeedImage extends Pair<URL, URL>
+  implements IFeedImage {
+  /**
+   * Creates an image to appear in a user's newsfeed/minifeed.
+   * This image will be shrunk to fit within 75x75, cached, and formatted by Facebook.
+   * 
+   * @param image the URL of an image to appear in a user's newsfeed/
+   * @param link the link URL to which the image should link
+   */
   public FeedImage(URL image, URL link) {
     super(image, link);
+    if (null == image || null == link) {
+      throw new IllegalArgumentException("both image and link URLs are required");
+    }
   }
 
+  /**
+   * @return the URL of the image
+   */
   public URL getImageUrl() {
     return getFirst();
   }
 
+  /**
+   * @return the String representation of the image URL
+   */
+  public String getImageUrlString() {
+    return getImageUrl().toString();
+  }
+
+  /**
+   * @return the link URL to which the feed image should link
+   */
   public URL getLinkUrl() {
     return getSecond();
   }
