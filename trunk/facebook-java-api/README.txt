@@ -105,6 +105,10 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.4 to v1.5
+		- Fix various bugs in FacebookJsonRestClient (should actually be usable now).
+		- Merge in changes from official Facebook API made on 11/7/2007.
+	
 	From v1.3 to v1.4
 		- Merge in changes from official Facebook API made on 10/30/2007.
 		- Refactor changes so that they don't break reverse compatibility for anyone using the official API.
