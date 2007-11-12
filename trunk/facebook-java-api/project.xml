@@ -5,7 +5,7 @@
 	<id>facebook-java-api</id>
 	<name>Facebook Java Library</name>
 	<groupId>bigtribe</groupId>
-	<currentVersion>1.4</currentVersion>
+	<currentVersion>1.5</currentVersion>
 	<organization>
 		<name>BigTribe Corporation</name>
 		<logo>http://www.bigtribe.com/img/logo.gif</logo>
@@ -93,7 +93,7 @@
 			<artifactId>jsr173-api</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- END OF JAVA 5 SECTION -->
+        <!-- END OF JAVA 5 SECTION -->
 	</dependencies>
 	<build>
 		<nagEmailAddress>aroth@bigtribe.com</nagEmailAddress>

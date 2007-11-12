@@ -190,7 +190,7 @@ public interface IFacebookRestClient<T> {
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<? extends IPair<Object, URL>> images
+                                               Collection<? extends IPair<? extends Object, URL>> images
                                               )
     throws FacebookException, IOException;
 
@@ -206,7 +206,7 @@ public interface IFacebookRestClient<T> {
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<? extends IPair<Object, URL>> images)
+                                          Collection<? extends IPair<? extends Object, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -233,7 +233,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends IPair<Object, URL>> images, Integer priority)
+                                         Collection<? extends IPair<? extends Object, URL>> images, Integer priority)
     throws FacebookException, IOException;
 
   /**
@@ -269,7 +269,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends IPair<Object, URL>> images)
+                                         Collection<? extends IPair<? extends Object, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -1103,7 +1103,7 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends IPair<Object, URL>> pictures, String targetIds) throws FacebookException, IOException;
+          String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException;
   
   /**
    * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML
@@ -1160,7 +1160,7 @@ public interface IFacebookRestClient<T> {
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<? extends IPair<Object, URL>> images
+                                               Collection<? extends IPair<? extends Object, URL>> images
                                               )
     throws FacebookException, IOException;
   
