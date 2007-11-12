@@ -217,7 +217,7 @@ public abstract class ExtensibleClient<T>
    * @return whether the call to <code>feedMethod</code> was successful
    */
   protected boolean feedHandler(IFacebookMethod feedMethod, CharSequence title, CharSequence body,
-                                Collection<? extends IPair<Object, URL>> images, Integer priority)
+                                Collection<? extends IPair<? extends Object, URL>> images, Integer priority)
     throws FacebookException, IOException {
     ArrayList<Pair<String, CharSequence>> params =
       new ArrayList<Pair<String, CharSequence>>(feedMethod.numParams());
@@ -238,13 +238,13 @@ public abstract class ExtensibleClient<T>
    * @param params
    * @param images
    */
-  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<? extends IPair<Object, URL>> images) {
+  protected void handleFeedImages(List<Pair<String, CharSequence>> params, Collection<? extends IPair<? extends Object, URL>> images) {
     if (images != null && images.size() > 4) {
       throw new IllegalArgumentException("At most four images are allowed, got " + Integer.toString(images.size()));
     }
     if (null != images && !images.isEmpty()) {
       int image_count = 0;
-      for (IPair<Object, URL> image : images) {
+      for (IPair image : images) {
         ++image_count;
         assert null != image.getFirst() : "Image URL must be provided";
         params.add(new Pair<String, CharSequence>(String.format("image_%d", image_count),
@@ -266,7 +266,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishActionOfUser</a>
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<? extends IPair<Object, URL>> images)
+                                          Collection<? extends IPair<? extends Object, URL>> images)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, null);
   }
@@ -315,7 +315,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends IPair<Object, URL>> images)
+                                         Collection<? extends IPair<? extends Object, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -345,7 +345,7 @@ public abstract class ExtensibleClient<T>
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                   Collection<? extends IPair<Object, URL>> images, Integer priority)
+                                   Collection<? extends IPair<? extends Object, URL>> images, Integer priority)
     throws FacebookException, IOException {
     return feedHandler(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
@@ -404,7 +404,7 @@ public abstract class ExtensibleClient<T>
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<? extends IPair<Object, URL>> images
+                                               Collection<? extends IPair<? extends Object, URL>> images
                                               )
     throws FacebookException, IOException {
     assert null != actorId && actorId > 0 : "Invalid actorId: " + Long.toString(actorId);
@@ -463,7 +463,7 @@ public abstract class ExtensibleClient<T>
           Map<String,CharSequence> bodyData,
           CharSequence bodyGeneral,
           Collection<Long> targetIds,
-          Collection<? extends IPair<Object, URL>> images
+          Collection<? extends IPair<? extends Object, URL>> images
          )
   throws FacebookException, IOException {
       return this.feed_publishTemplatizedAction((long)actorId.intValue(), titleTemplate, 
@@ -1664,13 +1664,13 @@ public abstract class ExtensibleClient<T>
               action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds());
   }
   
-  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral, Collection<? extends IPair<Object,URL>> pictures, String targetIds) throws FacebookException, IOException {
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds) throws FacebookException, IOException {
       return this.templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, 
               bodyTemplate, bodyData, bodyGeneral, pictures, targetIds);
   }
   
   protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends IPair<Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
       long actorId = this.users_getLoggedInUser();
@@ -1695,7 +1695,7 @@ public abstract class ExtensibleClient<T>
       }
       if (pictures != null) {
           int count = 1;
-          for (IPair<Object, URL> picture : pictures) {
+          for (IPair picture : pictures) {
                 params.add(new Pair<String, CharSequence>("image_" + count, picture.getFirst().toString()));
                 if (picture.getSecond() != null) {
                     params.add(new Pair<String, CharSequence>("image_" + count + "_link", picture.getSecond().toString()));
