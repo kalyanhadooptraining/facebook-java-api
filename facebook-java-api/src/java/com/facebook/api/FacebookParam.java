@@ -145,18 +145,4 @@ public enum FacebookParam
     }
     return paramName;
   }
-
-  /**
-   * Run this as a standalone Java application.  Why, I do not know.
-   * 
-   * @param args command line arguments, ignored.
-   * 
-   * @deprecated wtf is this even doing here?  
-   */
-  public static void main(String[] args) {
-    System.out.println( isSignature("fb_sig") );
-    System.out.println( !isSignature("fb_sig_something") );
-    
-    assert false;
-  }
 }

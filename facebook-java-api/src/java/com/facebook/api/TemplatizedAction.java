@@ -46,7 +46,7 @@ public class TemplatizedAction {
     private String targetIds;
     private JSONObject titleParams;
     private JSONObject bodyParams;
-    private List<Pair<URL, URL>> pictures;
+    private List<IPair<Object, URL>> pictures;
     
     private TemplatizedAction() {
         //empty constructor not allowed, at a minimum the titleTemplate parameter is needed
@@ -64,7 +64,7 @@ public class TemplatizedAction {
         this.bodyTemplate = null;
         this.bodyGeneral = null;
         this.targetIds = null;
-        this.pictures = new ArrayList<Pair<URL, URL>>();
+        this.pictures = new ArrayList<IPair<Object, URL>>();
     }
     
     /**
@@ -148,10 +148,10 @@ public class TemplatizedAction {
     
     private void addPicture(URL imageUrl, URL linkUrl) {
         if (this.pictures == null) {
-            this.pictures = new ArrayList<Pair<URL, URL>>();
+            this.pictures = new ArrayList<IPair<Object, URL>>();
         }
         if (this.pictures.size() < 4) {
-            this.pictures.add(new Pair<URL, URL>(imageUrl, linkUrl));
+            this.pictures.add(new Pair<Object, URL>(imageUrl, linkUrl));
         }
     }
     
@@ -161,17 +161,17 @@ public class TemplatizedAction {
      * 
      * @param pics the pictures to set.
      */
-    public void setPictures(List<Pair<URL, URL>> pics) {
+    public void setPictures(List<? extends IPair<Object, URL>> pics) {
         if ((pics == null) || (pics.isEmpty())) {
             this.pictures = null;
             return;
         }
         if (pics.size() <= 4) {
-            this.pictures = pics;
+            this.pictures = (List<IPair<Object, URL>>)pics;
         }
         if (pics.size() > 4) {
             int count = 0;
-            for (Pair<URL, URL> pic : pics) {
+            for (IPair<Object, URL> pic : pics) {
                 this.pictures.add(pic);
                 count++;
                 if (count == 4) {
@@ -186,7 +186,7 @@ public class TemplatizedAction {
      * 
      * @return the list of pictures.
      */
-    public Collection<Pair<URL, URL>> getPictures() {
+    public Collection<IPair<Object, URL>> getPictures() {
         if ((this.pictures == null) || (this.pictures.isEmpty())) {
             return null;
         }

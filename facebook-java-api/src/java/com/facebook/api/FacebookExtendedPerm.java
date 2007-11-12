@@ -67,6 +67,13 @@ public enum FacebookExtendedPerm
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
   MARKETPLACE("create_listing"),
+  /** Required for sending SMS to the user
+   * @see FacebookRestClient#sms_canSend
+   * @see FacebookRestClient#sms_sendMessage
+   * 
+   * @deprecated this class exists for legacy support only.  Please use Permission instead.
+   */
+  SMS("sms"),
   ;
 
   /**

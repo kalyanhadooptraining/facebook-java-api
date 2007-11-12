@@ -322,7 +322,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param paramPairs a list of arguments to the method
    * @throws Exception with a description of any errors given to us by the server.
    */
-  protected Document callMethod(FacebookMethod method,
+  protected Document callMethod(IFacebookMethod method,
                                 Pair<String, CharSequence>... paramPairs) throws FacebookException,
                                                                                  IOException {
     return callMethod(method, Arrays.asList(paramPairs));
@@ -335,7 +335,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param paramPairs a list of arguments to the method
    * @throws Exception with a description of any errors given to us by the server.
    */
-  protected Document callMethod(FacebookMethod method,
+  protected Document callMethod(IFacebookMethod method,
                                 Collection<Pair<String, CharSequence>> paramPairs) throws FacebookException,
                                                                                           IOException {
     this.rawResponse = null;
@@ -617,7 +617,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws IOException
    */
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends IPair<Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
 
       return templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
               bodyData, bodyGeneral, pictures, targetIds);
@@ -678,7 +678,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                           Collection<? extends Pair<URL, URL>> images,
+                                           Collection<? extends IPair<Object, URL>> images,
                                            Integer priority) throws FacebookException,
                                                                     IOException {
     return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, priority);
@@ -726,7 +726,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return a Document object containing the server response
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                          Collection<? extends Pair<URL, URL>> images,
+                                          Collection<? extends IPair<Object, URL>> images,
                                           Integer priority) throws FacebookException, IOException {
     return feedHandlerBoolean(FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority);
   }
@@ -766,7 +766,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
 
   protected Document feedHandler(FacebookMethod feedMethod, CharSequence title, CharSequence body,
-                                 Collection<? extends Pair<URL, URL>> images,
+                                 Collection<? extends IPair<Object, URL>> images,
                                  Integer priority) throws FacebookException, IOException {
     assert (images == null || images.size() <= 4);
 
@@ -780,21 +780,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       params.add(new Pair<String, CharSequence>("priority", priority.toString()));
     if (null != images && !images.isEmpty()) {
       int image_count = 0;
-      for (Pair<URL, URL> image: images) {
+      for (IPair<Object, URL> image: images) {
         ++image_count;
-        assert (image.first != null);
+        assert (image.getFirst() != null);
         params.add(new Pair<String, CharSequence>(String.format("image_%d", image_count),
-                                                  image.first.toString()));
-        if (image.second != null)
+                                                  image.getFirst().toString()));
+        if (image.getSecond() != null)
           params.add(new Pair<String, CharSequence>(String.format("image_%d_link", image_count),
-                                                    image.second.toString()));
+                                                    image.getSecond().toString()));
       }
     }
     return this.callMethod(feedMethod, params);
   }
 
   protected boolean feedHandlerBoolean(FacebookMethod feedMethod, CharSequence title, CharSequence body,
-          Collection<? extends Pair<URL, URL>> images,
+          Collection<? extends IPair<Object, URL>> images,
           Integer priority) throws FacebookException, IOException {
       assert (images == null || images.size() <= 4);
     
@@ -808,14 +808,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
           params.add(new Pair<String, CharSequence>("priority", priority.toString()));
       if (null != images && !images.isEmpty()) {
           int image_count = 0;
-          for (Pair<URL, URL> image: images) {
+          for (IPair<Object, URL> image: images) {
               ++image_count;
-              assert (image.first != null);
+              assert (image.getFirst() != null);
               params.add(new Pair<String, CharSequence>(String.format("image_%d", image_count),
-                               image.first.toString()));
-              if (image.second != null)
+                               image.getFirst().toString()));
+              if (image.getSecond() != null)
                   params.add(new Pair<String, CharSequence>(String.format("image_%d_link", image_count),
-                                 image.second.toString()));
+                                 image.getSecond().toString()));
           }
       }
       this.callMethod(feedMethod, params);
@@ -824,7 +824,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   
   
   protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends IPair<Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
       long actorId = this.users_getLoggedInUser();
@@ -849,10 +849,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       }
       if (pictures != null) {
           int count = 1;
-          for (Pair<URL, URL> picture : pictures) {
-                params.add(new Pair<String, CharSequence>("image_" + count, picture.first.toString()));
-                if (picture.second != null) {
-                    params.add(new Pair<String, CharSequence>("image_" + count + "_link", picture.second.toString()));
+          for (IPair<Object, URL> picture : pictures) {
+                params.add(new Pair<String, CharSequence>("image_" + count, picture.getFirst().toString()));
+                if (picture.getSecond() != null) {
+                    params.add(new Pair<String, CharSequence>("image_" + count + "_link", picture.getSecond().toString()));
                 }
                 count++;
           }
@@ -1792,7 +1792,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
-  public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
+  public boolean fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
       if ((handle == null) || ("".equals(handle))) {
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The FBML handle may not be null or empty!");
       }
@@ -1803,7 +1803,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       params.add(new Pair<String, CharSequence>("handle", handle));
       params.add(new Pair<String, CharSequence>("fbml", markup));
 
-      this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE, params);
+      return extractBoolean(this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE, params));
   }
 
   /**
@@ -2104,7 +2104,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends Pair<URL, URL>> images)
+                                         Collection<? extends IPair<Object, URL>> images)
     throws FacebookException, IOException {
     return feed_publishStoryToUser(title, body, images, null);
   }
@@ -2137,7 +2137,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishActionOfUser(java.lang.CharSequence, java.lang.CharSequence, java.util.Collection)
      */
-    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<? extends Pair<URL, URL>> images) throws FacebookException, IOException {
+    public boolean feed_publishActionOfUser(CharSequence title, CharSequence body, Collection<? extends IPair<Object, URL>> images) throws FacebookException, IOException {
         return this.feed_publishActionOfUser(title, body, images, null);
     }
     
@@ -2151,7 +2151,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
      */
-    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends Pair<URL, URL>> images) throws FacebookException, IOException {
+    public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<Object, URL>> images) throws FacebookException, IOException {
         return this.feed_publishTemplatizedAction(titleTemplate.toString(), 
                 titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), images, targetIds.toString());
     }
@@ -2266,5 +2266,245 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     public Document photos_getByAlbum(Long albumId)
       throws FacebookException, IOException {
       return photos_get(null /*subjId*/, albumId, null /*photoIds*/);
+    }
+    
+    /**
+     * Sends a message via SMS to the user identified by <code>userId</code> in response 
+     * to a user query associated with <code>mobileSessionId</code>.
+     *
+     * @param userId a user ID
+     * @param response the message to be sent via SMS
+     * @param mobileSessionId the mobile session
+     * @throws FacebookException in case of error
+     * @throws IOException
+     * @see FacebookExtendedPerm#SMS
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+     * Developers Wiki: Mobile: Application Generated Messages</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+     * Developers Wiki: Mobile: Workflow</a>
+     */
+    public void sms_sendResponse(Integer userId, CharSequence response, Integer mobileSessionId)
+      throws FacebookException, IOException {
+      this.callMethod(FacebookMethod.SMS_SEND_MESSAGE,
+                      new Pair<String, CharSequence>("uid", userId.toString()),
+                      new Pair<String, CharSequence>("message", response),
+                      new Pair<String, CharSequence>("session_id", mobileSessionId.toString()));
+    }
+
+    /**
+     * Sends a message via SMS to the user identified by <code>userId</code>.
+     * The SMS extended permission is required for success.
+     *
+     * @param userId a user ID
+     * @param message the message to be sent via SMS
+     * @throws FacebookException in case of error
+     * @throws IOException
+     * @see FacebookExtendedPerm#SMS
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+     * Developers Wiki: Mobile: Application Generated Messages</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+     * Developers Wiki: Mobile: Workflow</a>
+     */
+    public void sms_sendMessage(Long userId, CharSequence message)
+      throws FacebookException, IOException {
+      this.callMethod(FacebookMethod.SMS_SEND_MESSAGE,
+                      new Pair<String, CharSequence>("uid", userId.toString()),
+                      new Pair<String, CharSequence>("message", message),
+                      new Pair<String, CharSequence>("req_session", "0"));
+    }
+
+    /**
+     * Sends a message via SMS to the user identified by <code>userId</code>, with
+     * the expectation that the user will reply. The SMS extended permission is required for success.
+     * The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when
+     * the user replies.
+     *
+     * @param userId a user ID
+     * @param message the message to be sent via SMS
+     * @return a mobile session ID (can be used in {@link #sms_sendResponse})
+     * @throws FacebookException in case of error, e.g. SMS is not enabled
+     * @throws IOException
+     * @see FacebookExtendedPerm#SMS
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+     *      Developers Wiki: Mobile: Application Generated Messages</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+     *      Developers Wiki: Mobile: Workflow</a>
+     */
+    public int sms_sendMessageWithSession(Long userId, CharSequence message)
+      throws FacebookException, IOException {
+      return extractInt(this.callMethod(FacebookMethod.SMS_SEND_MESSAGE,
+                                 new Pair<String, CharSequence>("uid", userId.toString()),
+                                 new Pair<String, CharSequence>("message", message),
+                                 new Pair<String, CharSequence>("req_session", "1")));
+    }
+    
+    /**
+     * Extracts an Integer from a document that consists of an Integer only.
+     * @param doc
+     * @return the Integer
+     */
+    protected int extractInt(Document doc) {
+      return Integer.parseInt(doc.getFirstChild().getTextContent());
+    }
+    
+    /**
+     * Retrieves the requested profile fields for the Facebook Pages with the given 
+     * <code>pageIds</code>. Can be called for pages that have added the application 
+     * without establishing a session.
+     * @param pageIds the page IDs
+     * @param fields a set of page profile fields
+     * @return a T consisting of a list of pages, with each page element
+     *     containing the requested fields.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+     *      Developers Wiki: Pages.getInfo</a>
+     */
+    public Document pages_getInfo(Collection<Long> pageIds, EnumSet<PageProfileField> fields)
+      throws FacebookException, IOException {
+      if (pageIds == null || pageIds.isEmpty()) {
+        throw new IllegalArgumentException("pageIds cannot be empty or null");
+      }
+      if (fields == null || fields.isEmpty()) {
+        throw new IllegalArgumentException("fields cannot be empty or null");
+      }
+      IFacebookMethod method =
+        null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+      return this.callMethod(method,
+                             new Pair<String, CharSequence>("page_ids", delimit(pageIds)),
+                             new Pair<String, CharSequence>("fields", delimit(fields)));
+    }
+    
+    /**
+     * Retrieves the requested profile fields for the Facebook Pages with the given 
+     * <code>pageIds</code>. Can be called for pages that have added the application 
+     * without establishing a session.
+     * @param pageIds the page IDs
+     * @param fields a set of page profile fields
+     * @return a T consisting of a list of pages, with each page element
+     *     containing the requested fields.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+     *      Developers Wiki: Pages.getInfo</a>
+     */
+    public Document pages_getInfo(Collection<Long> pageIds, Set<CharSequence> fields)
+      throws FacebookException, IOException {
+      if (pageIds == null || pageIds.isEmpty()) {
+        throw new IllegalArgumentException("pageIds cannot be empty or null");
+      }
+      if (fields == null || fields.isEmpty()) {
+        throw new IllegalArgumentException("fields cannot be empty or null");
+      }
+      IFacebookMethod method =
+        null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+      return this.callMethod(method,
+                             new Pair<String, CharSequence>("page_ids", delimit(pageIds)),
+                             new Pair<String, CharSequence>("fields", delimit(fields)));
+    }
+    
+    /**
+     * Retrieves the requested profile fields for the Facebook Pages of the user with the given 
+     * <code>userId</code>.
+     * @param userId the ID of a user about whose pages to fetch info (defaulted to the logged-in user)
+     * @param fields a set of PageProfileFields
+     * @return a T consisting of a list of pages, with each page element
+     *     containing the requested fields.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+     *      Developers Wiki: Pages.getInfo</a>
+     */
+    public Document pages_getInfo(Long userId, EnumSet<PageProfileField> fields)
+      throws FacebookException, IOException {
+      if (fields == null || fields.isEmpty()) {
+        throw new IllegalArgumentException("fields cannot be empty or null");
+      }
+      if (userId == null) {
+        userId = this._userId;
+      }
+      return this.callMethod(FacebookMethod.PAGES_GET_INFO,
+                             new Pair<String, CharSequence>("uid",    userId.toString()),
+                             new Pair<String, CharSequence>("fields", delimit(fields)));
+    }
+
+    /**
+     * Retrieves the requested profile fields for the Facebook Pages of the user with the given
+     * <code>userId</code>.
+     * @param userId the ID of a user about whose pages to fetch info (defaulted to the logged-in user)
+     * @param fields a set of page profile fields
+     * @return a T consisting of a list of pages, with each page element
+     *     containing the requested fields.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+     *      Developers Wiki: Pages.getInfo</a>
+     */
+    public Document pages_getInfo(Long userId, Set<CharSequence> fields)
+      throws FacebookException, IOException {
+      if (fields == null || fields.isEmpty()) {
+        throw new IllegalArgumentException("fields cannot be empty or null");
+      }
+      if (userId == null) {
+        userId = this._userId;
+      }
+      return this.callMethod(FacebookMethod.PAGES_GET_INFO,
+                             new Pair<String, CharSequence>("uid",    userId.toString()),
+                             new Pair<String, CharSequence>("fields", delimit(fields)));
+    }
+
+    /**
+     * Checks whether a page has added the application
+     * @param pageId the ID of the page
+     * @return true if the page has added the application
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded">
+     *      Developers Wiki: Pages.isAppAdded</a>
+     */
+    public boolean pages_isAppAdded(Long pageId)
+      throws FacebookException, IOException {
+      return extractBoolean(this.callMethod(FacebookMethod.PAGES_IS_APP_ADDED,
+                                            new Pair<String,CharSequence>("page_id", pageId.toString())));
+    }
+    
+    /**
+     * Checks whether a user is a fan of the page with the given <code>pageId</code>.
+     * @param pageId the ID of the page
+     * @param userId the ID of the user (defaults to the logged-in user if null)
+     * @return true if the user is a fan of the page
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+     *      Developers Wiki: Pages.isFan</a>
+     */
+    public boolean pages_isFan(Long pageId, Long userId)
+      throws FacebookException, IOException {
+      return extractBoolean(this.callMethod(FacebookMethod.PAGES_IS_FAN,
+                                            new Pair<String,CharSequence>("page_id", pageId.toString()),
+                                            new Pair<String,CharSequence>("uid", userId.toString())));
+    }
+    
+    /**
+     * Checks whether the logged-in user is a fan of the page with the given <code>pageId</code>.
+     * @param pageId the ID of the page
+     * @return true if the logged-in user is a fan of the page
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+     *      Developers Wiki: Pages.isFan</a>
+     */
+    public boolean pages_isFan(Long pageId)
+      throws FacebookException, IOException {
+      return extractBoolean(this.callMethod(FacebookMethod.PAGES_IS_FAN,
+                                            new Pair<String,CharSequence>("page_id", pageId.toString())));
+    }
+
+    /**
+     * Checks whether the logged-in user for this session is an admin of the page
+     * with the given <code>pageId</code>.
+     * @param pageId the ID of the page
+     * @return true if the logged-in user is an admin
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin">
+     *      Developers Wiki: Pages.isAdmin</a>
+     */
+    public boolean pages_isAdmin(Long pageId)
+      throws FacebookException, IOException {
+      return extractBoolean(this.callMethod(FacebookMethod.PAGES_IS_ADMIN,
+                                            new Pair<String, CharSequence>("page_id",
+                                                                           pageId.toString())));
+    }
+
+    /**
+     * @deprecated use the version that treats actorId as a Long.  UID's *are not ever to be* expressed as Integers.
+     */
+    public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<Object,URL>> images) throws FacebookException, IOException {
+        return this.feed_publishTemplatizedAction((long)actorId.intValue(), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images);
     }
 }

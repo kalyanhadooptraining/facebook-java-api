@@ -190,7 +190,7 @@ public interface IFacebookRestClient<T> {
                                                Map<String,CharSequence> bodyData,
                                                CharSequence bodyGeneral,
                                                Collection<Long> targetIds,
-                                               Collection<? extends Pair<URL, URL>> images
+                                               Collection<? extends IPair<Object, URL>> images
                                               )
     throws FacebookException, IOException;
 
@@ -206,7 +206,7 @@ public interface IFacebookRestClient<T> {
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
-                                          Collection<? extends Pair<URL, URL>> images)
+                                          Collection<? extends IPair<Object, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -233,7 +233,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends Pair<URL, URL>> images, Integer priority)
+                                         Collection<? extends IPair<Object, URL>> images, Integer priority)
     throws FacebookException, IOException;
 
   /**
@@ -269,7 +269,7 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: Feed.publishStoryToUser</a>
    */
   public boolean feed_publishStoryToUser(CharSequence title, CharSequence body,
-                                         Collection<? extends Pair<URL, URL>> images)
+                                         Collection<? extends IPair<Object, URL>> images)
     throws FacebookException, IOException;
 
   /**
@@ -1103,7 +1103,7 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends Pair<URL, URL>> pictures, String targetIds) throws FacebookException, IOException;
+          String bodyData, String bodyGeneral, Collection<? extends IPair<Object, URL>> pictures, String targetIds) throws FacebookException, IOException;
   
   /**
    * Associates the specified FBML markup with the specified handle/id.  The markup can then be referenced using the fb:ref FBML
@@ -1117,7 +1117,52 @@ public interface IFacebookRestClient<T> {
    * @throws FacebookException if an error happens when executing the API call.
    * @throws IOException if a communication/network error happens.
    */
-  public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException;
+  public boolean fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException;
+  
+  /**
+   * Publishes a Mini-Feed story describing an action taken by a user, and
+   * publishes aggregating News Feed stories to the friends of that user.
+   * Stories are identified as being combinable if they have matching templates and substituted values.
+   * @param actorId the user into whose mini-feed the story is being published.
+   * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
+   *        section. Must include the token <code>{actor}</code>.
+   * @param titleData (optional) contains token-substitution mappings for tokens that appear in
+   *        titleTemplate. Should not contain mappings for the <code>{actor}</code> or 
+   *        <code>{target}</code> tokens. Required if tokens other than <code>{actor}</code> 
+   *        or <code>{target}</code> appear in the titleTemplate. 
+   * @param bodyTemplate (optional) markup to be displayed in the feed story's body section.
+   *        can include tokens, of the form <code>{token}</code>, to be substituted using
+   *        bodyData.
+   * @param bodyData (optional) contains token-substitution mappings for tokens that appear in
+   *        bodyTemplate. Required if the bodyTemplate contains tokens other than <code>{actor}</code>
+   *        and <code>{target}</code>.
+   * @param bodyGeneral (optional) additional body markup that is not aggregated. If multiple instances
+   *        of this templated story are combined together, the markup in the bodyGeneral of
+   *        one of their stories may be displayed.
+   * @param targetIds The user ids of friends of the actor, used for stories about a direct action between 
+   *        the actor and these targets of his/her action. Required if either the titleTemplate or bodyTemplate
+   *        includes the token <code>{target}</code>.
+   * @param images (optional) additional body markup that is not aggregated. If multiple instances
+   *        of this templated story are combined together, the markup in the bodyGeneral of
+   *        one of their stories may be displayed.
+   * @return whether the action story was successfully published; false in case
+   *         of a permission error
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
+   *      Developers Wiki: Feed.publishTemplatizedAction</a>
+   * @see <a href="http://developers.facebook.com/tools.php?feed">
+   *      Developers Resources: Feed Preview Console </a>
+   *      
+   * @deprecated use the version that specified the actorId as a Long instead.  UID's *are not ever to be* expressed as Integers.
+   */
+  public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate,
+                                               Map<String,CharSequence> titleData, 
+                                               CharSequence bodyTemplate,
+                                               Map<String,CharSequence> bodyData,
+                                               CharSequence bodyGeneral,
+                                               Collection<Long> targetIds,
+                                               Collection<? extends IPair<Object, URL>> images
+                                              )
+    throws FacebookException, IOException;
   
   /**
    * Create a new marketplace listing, or modify an existing one.
@@ -1222,5 +1267,138 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: marketplace.createListing</a>
    */
   public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketListing attrs)
+    throws FacebookException, IOException;
+  
+  /**
+   * Sends a message via SMS to the user identified by <code>userId</code>, with
+   * the expectation that the user will reply. The SMS extended permission is required for success.
+   * The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when
+   * the user replies.
+   *
+   * @param userId a user ID
+   * @param message the message to be sent via SMS
+   * @return a mobile session ID (can be used in {@link #sms_sendResponse})
+   * @throws FacebookException in case of error, e.g. SMS is not enabled
+   * @throws IOException
+   * @see FacebookExtendedPerm#SMS
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+   *      Developers Wiki: Mobile: Application Generated Messages</a>
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+   *      Developers Wiki: Mobile: Workflow</a>
+   */
+  public int sms_sendMessageWithSession(Long userId, CharSequence message)
+    throws FacebookException, IOException;
+
+  /**
+   * Sends a message via SMS to the user identified by <code>userId</code>.
+   * The SMS extended permission is required for success.
+   *
+   * @param userId a user ID
+   * @param message the message to be sent via SMS
+   * @throws FacebookException in case of error
+   * @throws IOException
+   * @see FacebookExtendedPerm#SMS
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages">
+   * Developers Wiki: Mobile: Application Generated Messages</a>
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow">
+   * Developers Wiki: Mobile: Workflow</a>
+   */
+  public void sms_sendMessage(Long userId, CharSequence message)
+    throws FacebookException, IOException;  
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages with the given 
+   * <code>pageIds</code>. Can be called for pages that have added the application 
+   * without establishing a session.
+   * @param pageIds the page IDs
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Collection<Long> pageIds, EnumSet<PageProfileField> fields)
+    throws FacebookException, IOException;
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages with the given 
+   * <code>pageIds</code>. Can be called for pages that have added the application 
+   * without establishing a session.
+   * @param pageIds the page IDs
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Collection<Long> pageIds, Set<CharSequence> fields)
+    throws FacebookException, IOException;
+  
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages of the user with the given 
+   * <code>userId</code>.
+   * @param userId the ID of a user about whose pages to fetch info
+   * @param fields a set of PageProfileFields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Long userId, EnumSet<PageProfileField> fields)
+    throws FacebookException, IOException;
+
+  /**
+   * Retrieves the requested profile fields for the Facebook Pages of the user with the given 
+   * <code>userId</code>.
+   * @param userId the ID of a user about whose pages to fetch info
+   * @param fields a set of page profile fields
+   * @return a T consisting of a list of pages, with each page element
+   *     containing the requested fields.
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo">
+   *      Developers Wiki: Pages.getInfo</a>
+   */
+  public T pages_getInfo(Long userId, Set<CharSequence> fields)
+    throws FacebookException, IOException;
+
+  /**
+   * Checks whether a page has added the application
+   * @param pageId the ID of the page
+   * @return true if the page has added the application
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded">
+   *      Developers Wiki: Pages.isAppAdded</a>
+   */
+  public boolean pages_isAppAdded(Long pageId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether a user is a fan of the page with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @param userId the ID of the user (defaults to the logged-in user if null)
+   * @return true if the user is a fan of the page
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+   *      Developers Wiki: Pages.isFan</a>
+   */
+  public boolean pages_isFan(Long pageId, Long userId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether the logged-in user is a fan of the page with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @return true if the logged-in user is a fan of the page
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan">
+   *      Developers Wiki: Pages.isFan</a>
+   */
+  public boolean pages_isFan(Long pageId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Checks whether the logged-in user for this session is an admin of the page 
+   * with the given <code>pageId</code>.
+   * @param pageId the ID of the page
+   * @return true if the logged-in user is an admin
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin">
+   *      Developers Wiki: Pages.isAdmin</a>
+   */
+  public boolean pages_isAdmin(Long pageId)
     throws FacebookException, IOException;
 }

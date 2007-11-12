@@ -33,7 +33,7 @@ package com.facebook.api;
  * @param <N> first element in the pair.
  * @param <V> second element in the pair.
  */
-public class Pair<N, V> {
+public class Pair<N, V> implements IPair<N, V> {
     /**
      * The first element in the pair.
      */

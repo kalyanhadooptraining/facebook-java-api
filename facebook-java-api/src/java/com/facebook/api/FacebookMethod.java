@@ -127,9 +127,19 @@ public enum FacebookMethod
   DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),
   DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference", 2),
   DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
-  //SMS
+  //SMS - Mobile
   SMS_CAN_SEND("facebook.sms.canSend", 2),
-  SMS_SEND("facebook.sms.send", 4)
+  /**
+   * @deprecated use SMS_SEND_MESSAGE instead.
+   */
+  SMS_SEND("facebook.sms.send", 4),
+  SMS_SEND_MESSAGE("facebook.sms.sendMessage", 3),
+  // Facebook Pages
+  PAGES_IS_APP_ADDED("facebook.pages.isAppAdded", 1),
+  PAGES_IS_ADMIN("facebook.pages.isAdmin", 1),
+  PAGES_IS_FAN("facebook.pages.isFan", 2),
+  PAGES_GET_INFO("facebook.pages.getInfo", 2),
+  PAGES_GET_INFO_NO_SESSION("facebook.pages.getInfo", 2),
   ;
 
   private String methodName;
@@ -147,7 +157,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION);
     return preAuth;
   }
 
