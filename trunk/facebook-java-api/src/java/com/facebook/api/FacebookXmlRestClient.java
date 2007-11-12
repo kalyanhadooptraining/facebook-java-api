@@ -288,15 +288,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
     }
     
     /* (non-Javadoc)
-     * @see com.facebook.api.IFacebookRestClient#fbml_setRefHandle(java.lang.String, java.lang.String)
-     */
-    public void fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
-        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
-        "Please use an instance of FacebookRestClient instead.");
-        
-    }
-    
-    /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
      */
     public List<Listing> marketplace_getListings(List<Long> listingIds, List<Long> uids) throws FacebookException, IOException {
@@ -321,22 +312,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
         this.marketplace_search(category.getName(), subcategory.getName(), searchTerm);
         MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.getResponsePOJO();
         return resp.getListing();
-    }
-    
-    /* (non-Javadoc)
-     * @see com.facebook.api.IFacebookRestClient#sms_canSend()
-     */
-    public boolean sms_canSend() throws FacebookException, IOException {
-        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
-        "Please use an instance of FacebookRestClient instead.");
-    }
-    
-    /* (non-Javadoc)
-     * @see com.facebook.api.IFacebookRestClient#sms_canSend(java.lang.Long)
-     */
-    public boolean sms_canSend(Long userId) throws FacebookException, IOException {
-        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
-        "Please use an instance of FacebookRestClient instead.");
     }
     
     /* (non-Javadoc)

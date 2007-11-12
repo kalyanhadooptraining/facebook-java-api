@@ -40,14 +40,16 @@ import java.net.URL;
  * 
  * @see IFacebookRestClient
  */
-public class FeedImage extends Pair<URL, URL> {
+public class FeedImage extends Pair<Object, URL> implements IFeedImage {
     /**
      * Constructor for a feed image with no associated hyperlink.
      * 
      * @param image the URL of the image to display.
+     * 
+     * @deprecated a FeedImage must include a link url.
      */
     public FeedImage(URL image) {
-        super(image, null);
+        this(image, null);
     }
 
     /**
@@ -58,12 +60,15 @@ public class FeedImage extends Pair<URL, URL> {
      */
     public FeedImage(URL image, URL link) {
         super(image, link);
+        if (null == image || null == link) {
+            throw new IllegalArgumentException("both image and link URLs are required");
+        }
     }
 
     /**
      * @return the URL of the image to display.
      */
-    public URL getImageUrl() {
+    public Object getImageUrl() {
         return getFirst();
     }
 
@@ -72,5 +77,12 @@ public class FeedImage extends Pair<URL, URL> {
      */
     public URL getLinkUrl() {
         return getSecond();
+    }
+    
+    /**
+     * @return the String representation of the image URL
+     */
+    public String getImageUrlString() {
+      return getImageUrl().toString();
     }
 }
