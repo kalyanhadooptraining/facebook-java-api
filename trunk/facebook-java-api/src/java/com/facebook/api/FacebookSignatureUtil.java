@@ -31,6 +31,7 @@
  */
 package com.facebook.api;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -240,9 +241,17 @@ public final class FacebookSignatureUtil {
     try {
       java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
       StringBuffer result = new StringBuffer();
-      for (byte b: md.digest(buffer.toString().getBytes())) {
-        result.append(Integer.toHexString((b & 0xf0) >>> 4));
-        result.append(Integer.toHexString(b & 0x0f));
+      try {
+          for (byte b: md.digest(buffer.toString().getBytes("UTF-8"))) {
+            result.append(Integer.toHexString((b & 0xf0) >>> 4));
+            result.append(Integer.toHexString(b & 0x0f));
+          }
+      }
+      catch (UnsupportedEncodingException e) {
+          for (byte b: md.digest(buffer.toString().getBytes())) {
+              result.append(Integer.toHexString((b & 0xf0) >>> 4));
+              result.append(Integer.toHexString(b & 0x0f));
+            }
       }
       return result.toString();
     }
