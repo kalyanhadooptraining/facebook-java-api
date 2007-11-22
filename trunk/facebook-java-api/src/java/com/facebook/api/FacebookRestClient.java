@@ -345,9 +345,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     params.put("method", method.methodName());
     params.put("api_key", _apiKey);
     params.put("v", TARGET_API_VERSION);
-    if (method.requiresSession()) {
-      params.put("call_id", Long.toString(System.currentTimeMillis()));
-      params.put("session_key", _sessionKey);
+    if (method.requiresSession() && _sessionKey != null) {
+        // some methods like setFBML can take a session key for users, but doesn't require one for pages.
+        params.put("call_id", Long.toString(System.currentTimeMillis()));
+        params.put("session_key", _sessionKey);
     }
     CharSequence oldVal;
     for (Pair<String, CharSequence> p: paramPairs) {
