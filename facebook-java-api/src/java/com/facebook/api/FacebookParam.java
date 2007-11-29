@@ -55,7 +55,8 @@ public enum FacebookParam
   SMS("sms"),
   MESSAGE("message"),
   SMS_SID("sms_sid"),
-  SMS_NEW_USER("sms_new_user")
+  SMS_NEW_USER("sms_new_user"),
+  POSITION_FIX("position_fix")
   ;
 
   private static Map<String, FacebookParam> _lookupTable =
