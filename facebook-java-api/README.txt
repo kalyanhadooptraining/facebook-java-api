@@ -10,11 +10,15 @@ Quick Start (project users):
 		http://facebook-java-api.googlecode.com/files/jaxb-impl-2.1.jar
 		http://facebook-java-api.googlecode.com/files/jsr173-api-1.0.jar
 		
-	4.  Deploy all of the downloaded JAR files onto your application server, or otherwise 
+	4.  If you (and *only* if) will be running your application in an environment that does not automatically include the Sun activation framework (nearly all application servers will do this by default), also download the following library:
+
+		http://facebook-java-api.googlecode.com/files/activation.jar
+		
+	5.  Deploy all of the downloaded JAR files onto your application server, or otherwise 
 		place them on your runtime classpath.  This will allow you to use the Facebook 
 		Platform API.
 		
-	5.  If you need help using the API, consult the project Javadoc at http://64.81.51.104:54321/facebook/javadoc/index.html
+	6.  If you need help using the API, consult the project Javadoc at http://64.81.51.104:54321/facebook/javadoc/index.html
 	
 	
 Prerequisites (project developers):
