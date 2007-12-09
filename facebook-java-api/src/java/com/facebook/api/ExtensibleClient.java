@@ -915,8 +915,7 @@ public abstract class ExtensibleClient<T>
    */
   public boolean users_setStatus(String status)
     throws FacebookException, IOException {
-    return extractBoolean(this.callMethod(FacebookMethod.USERS_SET_STATUS,
-                                          new Pair<String, CharSequence>("status", status)));
+    return this.users_setStatus(status, false, false);
   }
 
   /**
@@ -930,8 +929,8 @@ public abstract class ExtensibleClient<T>
    */
   public boolean users_clearStatus()
     throws FacebookException, IOException {
-    return extractBoolean(this.callMethod(FacebookMethod.USERS_SET_STATUS,
-                                          new Pair<String, CharSequence>("clear", "1")));
+      return extractBoolean(this.callMethod(FacebookMethod.USERS_SET_STATUS,
+              new Pair<String, CharSequence>("clear", "1")));
   }
 
   /**
@@ -1042,27 +1041,13 @@ public abstract class ExtensibleClient<T>
   }
 
   /**
-   * Send a notification message to the specified users.
-   * @param recipientIds the user ids to which the message is to be sent
-   * @param notification the FBML to display on the notifications page
-   * @param email the FBML to send to the specified users via email, or null
-   * if no email should be sent
-   * @return a URL, possibly null, to which the user should be redirected to finalize
-   * the sending of the email
+   * @deprecated
    */
   public URL notifications_send(Collection<Long> recipientIds, CharSequence notification,
                                 CharSequence email)
     throws FacebookException, IOException {
-    assert (null != recipientIds && !recipientIds.isEmpty());
-    assert (null != notification);
-    ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>(3);
-    args.add(new Pair<String, CharSequence>("to_ids", delimit(recipientIds)));
-    args.add(new Pair<String, CharSequence>("notification", notification));
-    if (null != email) {
-      args.add(new Pair<String, CharSequence>("email", email));
-    }
-    T result = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND, args);
-    return extractURL(result);
+    this.notifications_send(recipientIds, notification);
+    return null;
   }
 
   /**
@@ -1744,10 +1729,7 @@ public abstract class ExtensibleClient<T>
   }
   
   public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException {
-      if (clear) {
-          this.users_clearStatus();
-      }
-      return this.users_setStatus(newStatus);
+      return this.users_setStatus(newStatus, clear, false);
   }
   
   /**
@@ -2012,5 +1994,91 @@ public abstract class ExtensibleClient<T>
                                new Pair<String, CharSequence>("uid", userId.toString()),
                                new Pair<String, CharSequence>("message", message),
                                new Pair<String, CharSequence>("req_session", "1")));
+  }
+  
+  public void notifications_send(Collection<Long> recipientIds, CharSequence notification) throws FacebookException, IOException {
+      if (null == recipientIds || recipientIds.isEmpty()) {
+          return;
+      }
+      if (null == notification || "".equals(notification)) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!");
+      }
+      this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
+                  new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
+                  new Pair<String, CharSequence>("notification", notification));
+  }
+  
+  private T notifications_sendEmail(CharSequence recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+      if (null == recipients || "".equals(recipients)) {
+          //we throw an exception here because returning a sensible result (like an empty list) is problematic due to the use of Document as the return type
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least one recipient when sending an email!");
+      }
+      if ((null == email || "".equals(email)) && (null == fbml || "".equals(fbml))){
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty email!");
+      }
+      T d;
+      String paramName = "text";
+      String paramValue = email;
+      if ((paramValue == null) || ("".equals(paramValue))) {
+          paramValue = fbml;
+          paramName = "fbml";
+      }
+
+      if ((subject != null) && (! "".equals(subject))) {
+          d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+                        new Pair<String, CharSequence>("recipients", recipients),
+                        new Pair<String, CharSequence>("subject", subject),
+                        new Pair<String, CharSequence>(paramName, paramValue));
+      }
+      else {
+          d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+                  new Pair<String, CharSequence>("recipients", recipients),
+                  new Pair<String, CharSequence>(paramName, paramValue));
+      }
+      
+      return d;
+  }
+
+  public T notifications_sendEmail(Collection<Long> recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+      return this.notifications_sendEmail(delimit(recipients), subject, email, fbml);
+  }
+
+  public T notifications_sendEmailToCurrentUser(String subject, String email, String fbml) throws FacebookException, IOException {
+      Long currentUser = this.users_getLoggedInUser();
+      return this.notifications_sendEmail(currentUser.toString(), subject, email, fbml);
+  }
+
+  public T notifications_sendFbmlEmail(Collection<Long> recipients, String subject, String fbml) throws FacebookException, IOException {
+      return this.notifications_sendEmail(delimit(recipients), subject, null, fbml);
+  }
+
+  public T notifications_sendFbmlEmailToCurrentUser(String subject, String fbml) throws FacebookException, IOException {
+      Long currentUser = this.users_getLoggedInUser();
+      return this.notifications_sendEmail(currentUser.toString(), subject, null, fbml);
+  }
+
+  public T notifications_sendTextEmail(Collection<Long> recipients, String subject, String email) throws FacebookException, IOException {
+      return this.notifications_sendEmail(delimit(recipients), subject, email, null);
+  }
+
+  public T notifications_sendTextEmailToCurrentUser(String subject, String email) throws FacebookException, IOException {
+      Long currentUser = this.users_getLoggedInUser();
+      return this.notifications_sendEmail(currentUser.toString(), subject, email, null);
+  }
+  
+  public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb) throws FacebookException, IOException {
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+
+      if (newStatus != null) {
+          params.add(new Pair<String, CharSequence>("status", newStatus));
+      }
+      if (clear) {
+          this.users_clearStatus();
+      }
+      if (statusIncludesVerb) {
+          params.add(new Pair<String, CharSequence>("status_includes_verb", "true"));
+      }
+
+      return this.extractBoolean(this.callMethod(FacebookMethod.USERS_SET_STATUS, params));
   }
 }
