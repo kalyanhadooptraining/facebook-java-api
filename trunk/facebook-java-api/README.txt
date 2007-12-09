@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.5.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.5.2.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -25,7 +25,7 @@ Prerequisites (project developers):
 
 	Java 5 or higher 						http://java.sun.com
 	Eclipse 3.0 or higher					http://www.eclipse.org
-	Maven 1.x (*not 2.0*)					http://maven.apache.org/maven-1.x/
+	Maven 1.x (or 2.0)						http://maven.apache.org/maven-1.x/ (Maven 2.0 at:  http://maven.apache.org)
 	
 	Subclipse plugin for Eclipse			http://subclipse.tigris.org/install.html
 	-- OR --
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.2.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.5.2.jar'.
 	    
 
 Using the JAR File:
