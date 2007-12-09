@@ -64,7 +64,7 @@ public enum FacebookMethod
    * @deprecated provided for legacy support only.  Please use USERS_HAS_PERMISSION instead.
    */
   USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 2),  //duplicated above
-  USERS_SET_STATUS("facebook.users.setStatus", 3),
+  USERS_SET_STATUS("facebook.users.setStatus", 4),
   // Photos
   PHOTOS_GET("facebook.photos.get", 2),
   PHOTOS_GET_ALBUMS("facebook.photos.getAlbums", 1),
@@ -75,8 +75,9 @@ public enum FacebookMethod
   PHOTOS_UPLOAD("facebook.photos.upload", 3, true),
   // Notifications
   NOTIFICATIONS_GET("facebook.notifications.get"),
-  NOTIFICATIONS_SEND("facebook.notifications.send",5),
+  NOTIFICATIONS_SEND("facebook.notifications.send",4),
   NOTIFICATIONS_SEND_REQUEST("facebook.notifications.sendRequest",5),
+  NOTIFICATIONS_SEND_EMAIL("facebook.notifications.sendEmail", 5),
   // Groups
   GROUPS_GET("facebook.groups.get", 1),
   GROUPS_GET_MEMBERS("facebook.groups.getMembers", 1),

@@ -410,6 +410,24 @@ public interface IFacebookRestClient<T> {
    * @throws IOException if a communication/network error happens.
    */
   public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException;
+  
+  /**
+   * Set the user's profile status message.  This requires that the user has granted the application the
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
+   * to check to see if the user has granted your app the abbility to update their status
+   * 
+   * @param newStatus the new status message to set.
+   * @param clear whether or not to clear the old status message.
+   * @param statusIncludesVerb set to true if you do not want the Facebook Platform to automatically prepend "is " to your status message
+   *                           set to false if you want the "is " prepended (default behavior)
+   * 
+   * @return true if the call succeeds
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb) throws FacebookException, IOException;
 
   /**
    * Clears the logged-in user's Facebook status.
@@ -670,9 +688,21 @@ public interface IFacebookRestClient<T> {
    *        if no email should be sent
    * @return a URL, possibly null, to which the user should be redirected to finalize
    * the sending of the email
+   * 
+   * @deprecated notifications.send can no longer be used for sending e-mails, use notifications.sendEmail 
+   *             intead when sending e-mail, or the alternate version of notifications.send if all you 
+   *             want to send is a notification.       
    */
   public URL notifications_send(Collection<Long> recipientIds, CharSequence notification,
                                 CharSequence email)
+    throws FacebookException, IOException;
+  
+  /**
+   * Send a notification message to the specified users.
+   * @param recipientIds the user ids to which the message is to be sent.
+   * @param notification the FBML to display on the notifications page.
+   */
+  public void notifications_send(Collection<Long> recipientIds, CharSequence notification)
     throws FacebookException, IOException;
 
   /**
@@ -962,7 +992,7 @@ public interface IFacebookRestClient<T> {
    * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will
    * be stored as user-preferences with a literal value of "0" and "" respectively.
    *
-   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and
+   * @param values the values to store, specified in a map. The keys should be preference-id values from 0-200, and
    *              the values should be strings of up to 127 characters in length.
    * @param replace set to true if you want to remove any pre-existing preferences before writing the new ones
    *                set to false if you want the new preferences to be merged with any pre-existing preferences
@@ -1401,4 +1431,112 @@ public interface IFacebookRestClient<T> {
    */
   public boolean pages_isAdmin(Long pageId)
     throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to the currently logged-in user.  The e-mail content can be specified as either plaintext or 
+   * FBML.  In either case, only a limited subset of markup is supported (only tags that result in text and 
+   * links are allowed). 
+   * 
+   * You must include at least one of either the fbml or email parameters, but you do not ever need to specify 
+   * both at once (the other can be null, or "").  If you specify both a text version and a fbml version of 
+   * your e-mail, the text version will be used.
+   * 
+   * @param subject the subject of the email message.
+   * @param email a plaintext version of the email to send.  
+   * @param fbml an FBML version of the email to send, the fbml parameter is a stripped-down set of FBML that allows 
+   *             only tags that result in text, links and linebreaks. 
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendEmailToCurrentUser(String subject, String email, String fbml) throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to a set of app-users.  You can only e-mail users who have already added your 
+   * application.  The e-mail content can be specified as either plaintext or 
+   * FBML.  In either case, only a limited subset of markup is supported (only tags that result in text and 
+   * links are allowed). 
+   * 
+   * You must include at least one of either the fbml or email parameters, but you do not ever need to specify 
+   * both at once (the other can be null, or "").  If you specify both a text version and a fbml version of 
+   * your e-mail, the text version will be used.
+   * 
+   * @param recipients the uid's of the users to send to.
+   * @param subject the subject of the email message.
+   * @param email a plaintext version of the email to send.  
+   * @param fbml an FBML version of the email to send, the fbml parameter is a stripped-down set of FBML that allows 
+   *             only tags that result in text, links and linebreaks. 
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendEmail(Collection<Long> recipients, String subject, String email, String fbml) throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to the currently logged-in user.  The e-mail must be specified as plaintext, and can 
+   * contain a limited subset of HTML tags (specifically, only tags that result in text and links).
+   * 
+   * @param subject the subject of the email message.
+   * @param email a plaintext version of the email to send.  
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendTextEmailToCurrentUser(String subject, String email) throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to a set of app-users.  You can only e-mail users who have already added your 
+   * application.  The e-mail content can be specified as either plaintext or 
+   * FBML.  In either case, only a limited subset of markup is supported (only tags that result in text and 
+   * links are allowed). 
+   * 
+   * @param recipients the uid's of the users to send to.
+   * @param subject the subject of the email message.
+   * @param email a plaintext version of the email to send.  
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendTextEmail(Collection<Long> recipients, String subject, String email) throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to the currently logged-in user.  The e-mail must be specified as fbml, and can 
+   * contain a limited subset of FBML tags (specifically, only tags that result in text and links).
+   * 
+   * @param subject the subject of the email message.
+   * @param fbml the FBML version of the email to send, the fbml parameter is a stripped-down set of FBML that allows 
+   *             only tags that result in text, links and linebreaks. 
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendFbmlEmailToCurrentUser(String subject, String fbml) throws FacebookException, IOException;
+  
+  /**
+   * Send an e-mail to a set of app-users.  You can only e-mail users who have already added your 
+   * application.  The e-mail content can be specified as either plaintext or 
+   * FBML.  In either case, only a limited subset of markup is supported (only tags that result in text and 
+   * links are allowed). 
+   * 
+   * @param recipients the uid's of the users to send to.
+   * @param subject the subject of the email message.
+   * @param fbml the FBML version of the email to send, the fbml parameter is a stripped-down set of FBML that allows 
+   *             only tags that result in text, links and linebreaks. 
+   * 
+   * @return a list of user-ids specifying which users were successfully emailed.
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public T notifications_sendFbmlEmail(Collection<Long> recipients, String subject, String fbml) throws FacebookException, IOException;
 }

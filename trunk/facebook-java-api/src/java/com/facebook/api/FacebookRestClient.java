@@ -1317,33 +1317,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
 
   /**
-   * Send a notification message to the specified users.
-   * @param recipientIds the user ids to which the message is to be sent
-   * @param notification the notification to send, this is delivered to the targets' Facebook account(s)
-   * @param email the email to send, this is delivered to the targets' external e-mail account(s)
-   * @return a URL, possibly null, to which the user should be redirected to finalize
-   *    the sending of the message
+   * @deprecated
    */
   public URL notifications_send(Collection<Long> recipientIds,
                                 CharSequence notification,
                                 CharSequence email) throws FacebookException, IOException {
-    assert (null != recipientIds && !recipientIds.isEmpty());
-    assert (null != notification);
-    Document d;
-
-    if (email != null) {
-        d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
-                      new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
-                      new Pair<String, CharSequence>("notification", notification),
-                      new Pair<String, CharSequence>("email", email));
-    }
-    else {
-        d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
-                new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
-                new Pair<String, CharSequence>("notification", notification));
-    }
-    String url = d.getFirstChild().getTextContent();
-    return (null == url || "".equals(url)) ? null : new URL(url);
+    this.notifications_send(recipientIds, notification);
+    return null;
   }
 
   protected static boolean extractBoolean(Document doc) {
@@ -1595,7 +1575,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * To clear a user-preference, specify null as its value in the map.  The values of "0" and "" will
    * be stored as user-preferences with a literal value of "0" and "" respectively.
    *
-   * @param value the values to store, specified in a map. The keys should be preference-id values from 0-200, and
+   * @param values the values to store, specified in a map. The keys should be preference-id values from 0-200, and
    *              the values should be strings of up to 127 characters in length.
    * @param replace set to true if you want to remove any pre-existing preferences before writing the new ones
    *                set to false if you want the new preferences to be merged with any pre-existing preferences
@@ -1767,18 +1747,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws IOException if a communication/network error happens.
    */
   public boolean users_setStatus(String newStatus, boolean clear) throws FacebookException, IOException {
-      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-
-      if (newStatus != null) {
-          params.add(new Pair<String, CharSequence>("status", newStatus));
-      }
-      if (clear) {
-          params.add(new Pair<String, CharSequence>("clear", "true"));
-      }
-
-      this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
-
-      return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error
+      return this.users_setStatus(newStatus, clear, false);
   }
 
   /**
@@ -2507,5 +2476,93 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      */
     public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images) throws FacebookException, IOException {
         return this.feed_publishTemplatizedAction((long)actorId.intValue(), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images);
+    }
+
+    public void notifications_send(Collection<Long> recipientIds, CharSequence notification) throws FacebookException, IOException {
+        if (null == recipientIds || recipientIds.isEmpty()) {
+            return;
+        }
+        if (null == notification || "".equals(notification)) {
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!");
+        }
+        this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
+                    new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
+                    new Pair<String, CharSequence>("notification", notification));
+    }
+    
+    private Document notifications_sendEmail(CharSequence recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+        if (null == recipients || "".equals(recipients)) {
+            //we throw an exception here because returning a sensible result (like an empty list) is problematic due to the use of Document as the return type
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least one recipient when sending an email!");
+        }
+        if ((null == email || "".equals(email)) && (null == fbml || "".equals(fbml))){
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty email!");
+        }
+        Document d;
+        String paramName = "text";
+        String paramValue = email;
+        if ((paramValue == null) || ("".equals(paramValue))) {
+            paramValue = fbml;
+            paramName = "fbml";
+        }
+
+        if ((subject != null) && (! "".equals(subject))) {
+            d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+                          new Pair<String, CharSequence>("recipients", recipients),
+                          new Pair<String, CharSequence>("subject", subject),
+                          new Pair<String, CharSequence>(paramName, paramValue));
+        }
+        else {
+            d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+                    new Pair<String, CharSequence>("recipients", recipients),
+                    new Pair<String, CharSequence>(paramName, paramValue));
+        }
+        
+        return d;
+    }
+
+    public Document notifications_sendEmail(Collection<Long> recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+        return this.notifications_sendEmail(delimit(recipients), subject, email, fbml);
+    }
+
+    public Document notifications_sendEmailToCurrentUser(String subject, String email, String fbml) throws FacebookException, IOException {
+        Long currentUser = this.users_getLoggedInUser();
+        return this.notifications_sendEmail(currentUser.toString(), subject, email, fbml);
+    }
+
+    public Document notifications_sendFbmlEmail(Collection<Long> recipients, String subject, String fbml) throws FacebookException, IOException {
+        return this.notifications_sendEmail(delimit(recipients), subject, null, fbml);
+    }
+
+    public Document notifications_sendFbmlEmailToCurrentUser(String subject, String fbml) throws FacebookException, IOException {
+        Long currentUser = this.users_getLoggedInUser();
+        return this.notifications_sendEmail(currentUser.toString(), subject, null, fbml);
+    }
+
+    public Document notifications_sendTextEmail(Collection<Long> recipients, String subject, String email) throws FacebookException, IOException {
+        return this.notifications_sendEmail(delimit(recipients), subject, email, null);
+    }
+
+    public Document notifications_sendTextEmailToCurrentUser(String subject, String email) throws FacebookException, IOException {
+        Long currentUser = this.users_getLoggedInUser();
+        return this.notifications_sendEmail(currentUser.toString(), subject, email, null);
+    }
+
+    public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb) throws FacebookException, IOException {
+        Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+
+        if (newStatus != null) {
+            params.add(new Pair<String, CharSequence>("status", newStatus));
+        }
+        if (clear) {
+            params.add(new Pair<String, CharSequence>("clear", "true"));
+        }
+        if (statusIncludesVerb) {
+            params.add(new Pair<String, CharSequence>("status_includes_verb", "true"));
+        }
+
+        this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
+
+        return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error
     }
 }

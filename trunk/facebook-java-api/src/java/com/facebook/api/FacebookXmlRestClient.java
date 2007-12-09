@@ -76,7 +76,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
   /**
    * Constructor.  Don't use this, use FacebookRestClient instead.
    * 
-   * @param serverUrl
    * @param apiKey
    * @param secret
    * @param sessionKey
@@ -91,7 +90,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
   /**
    * Constructor.  Don't use this, use FacebookRestClient instead.
    * 
-   * @param serverUrl
+   * @param serverAddr
    * @param apiKey
    * @param secret
    * @param sessionKey
@@ -130,7 +129,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
   /**
    * Extracts a String from a T consisting entirely of a String.
-   * @param result
    * @return the String
    */
   public String extractString(Document d) {

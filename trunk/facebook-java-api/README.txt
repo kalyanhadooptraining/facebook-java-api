@@ -109,6 +109,17 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.5.1 to 1.5.2
+		- Add support for the notifications.sendEmail API call.
+		- Deprecate 'email' parameter of notifications.send, provide an alternate version with no 'email' parameter.
+		- Update users.setStatus to include the 'status_includes_verb' parameter.
+		- Made session-key optional when using pages.* API calls.
+		- Minor updates to the Facebook 'sig' parameter list.
+
+	From v1.5 to 1.5.1
+		- Fix minor bug with international characters screwing up the 'sig' utilities. 
+		- Rebuild the JAR with Java 5 to ensure its compatibility for Java 5 users.
+
 	From v1.4 to v1.5
 		- Fix various bugs in FacebookJsonRestClient (should actually be usable now).
 		- Merge in changes from official Facebook API made on 11/7/2007.

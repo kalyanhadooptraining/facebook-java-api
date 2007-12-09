@@ -4,7 +4,7 @@
     <groupId>com.facebook.api</groupId>
     <artifactId>facebook-java-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.5</version>
+    <version>1.5.2</version>
 	<name>Facebook Java Library</name>
 	<dependencies>
 	<dependency>
