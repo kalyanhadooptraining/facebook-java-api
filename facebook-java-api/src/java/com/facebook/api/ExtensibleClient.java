@@ -1211,6 +1211,8 @@ public abstract class ExtensibleClient<T>
    * @param userId - the user whose profile FBML to set
    * @param fbmlMarkup - refer to the FBML documentation for a description of the markup and its role in various contexts
    * @return a boolean indicating whether the FBML was successfully set
+   * 
+   * @deprecated Facebook will remove support for this version of the API call on 1/17/2008, please use the alternate version instead.
    */
   public boolean profile_setFBML(CharSequence fbmlMarkup, Long userId)
     throws FacebookException, IOException {
@@ -2008,7 +2010,7 @@ public abstract class ExtensibleClient<T>
                   new Pair<String, CharSequence>("notification", notification));
   }
   
-  private T notifications_sendEmail(CharSequence recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+  private T notifications_sendEmail(CharSequence recipients, CharSequence subject, CharSequence email, CharSequence fbml) throws FacebookException, IOException {
       if (null == recipients || "".equals(recipients)) {
           //we throw an exception here because returning a sensible result (like an empty list) is problematic due to the use of Document as the return type
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least one recipient when sending an email!");
@@ -2018,20 +2020,22 @@ public abstract class ExtensibleClient<T>
       }
       T d;
       String paramName = "text";
-      String paramValue = email;
+      String paramValue = email.toString();
       if ((paramValue == null) || ("".equals(paramValue))) {
-          paramValue = fbml;
+          paramValue = fbml.toString();
           paramName = "fbml";
       }
 
+      //session is only required to send email from a desktop app
+      FacebookMethod method = this.isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL;
       if ((subject != null) && (! "".equals(subject))) {
-          d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+          d = this.callMethod(method,
                         new Pair<String, CharSequence>("recipients", recipients),
                         new Pair<String, CharSequence>("subject", subject),
                         new Pair<String, CharSequence>(paramName, paramValue));
       }
       else {
-          d = this.callMethod(FacebookMethod.NOTIFICATIONS_SEND_EMAIL,
+          d = this.callMethod(method,
                   new Pair<String, CharSequence>("recipients", recipients),
                   new Pair<String, CharSequence>(paramName, paramValue));
       }
@@ -2039,7 +2043,7 @@ public abstract class ExtensibleClient<T>
       return d;
   }
 
-  public T notifications_sendEmail(Collection<Long> recipients, String subject, String email, String fbml) throws FacebookException, IOException {
+  public T notifications_sendEmail(Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml) throws FacebookException, IOException {
       return this.notifications_sendEmail(delimit(recipients), subject, email, fbml);
   }
 
@@ -2080,5 +2084,120 @@ public abstract class ExtensibleClient<T>
       }
 
       return this.extractBoolean(this.callMethod(FacebookMethod.USERS_SET_STATUS, params));
+  }
+  
+  /**
+   * Send a notification message to the logged-in user.
+   *
+   * @param notification the FBML to be displayed on the notifications page; only a stripped-down 
+   *    set of FBML tags that result in text and links is allowed
+   * @return a URL, possibly null, to which the user should be redirected to finalize
+   * the sending of the email
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail">
+   *      Developers Wiki: notifications.send</a>
+   */
+  public void notifications_send(CharSequence notification)
+    throws FacebookException, IOException {
+      Long currentUser = this.users_getLoggedInUser();
+      Collection<Long> coll = new ArrayList<Long>();
+      coll.add(currentUser);
+      notifications_send(coll, notification);
+  }
+
+  /**
+   * Sends a notification email to the specified users, who must have added your application.
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only 
+   * send email to the person whose session it is. This method does not require a session for Web applications. 
+   * Either <code>fbml</code> or <code>text</code> must be specified.
+   * 
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param fbml markup to be sent to the specified users via email; only a stripped-down set of FBML tags
+   *    that result in text, links and linebreaks is allowed
+   * @param text the plain text to send to the specified users via email
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send">
+   *      Developers Wiki: notifications.sendEmail</a>
+   *      
+   * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
+   */
+  public String notifications_sendEmailStr(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text)
+    throws FacebookException, IOException {
+    if (null == recipientIds || recipientIds.isEmpty()) {
+      throw new IllegalArgumentException("List of email recipients cannot be empty");
+    }
+    boolean hasText = null != text && (0 != text.length());
+    boolean hasFbml = null != fbml && (0 != fbml.length());
+    if (!hasText && !hasFbml) {
+      throw new IllegalArgumentException("Text and/or fbml must not be empty");
+    }
+    ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>(4);
+    args.add(new Pair<String, CharSequence>("recipients", delimit(recipientIds)));
+    args.add(new Pair<String, CharSequence>("subject", subject));
+    if (hasText) {
+      args.add(new Pair<String, CharSequence>("text", text));
+    }
+    if (hasFbml) {
+      args.add(new Pair<String, CharSequence>("fbml", fbml));
+    }
+    // this method requires a session only if we're dealing with a desktop app
+    T result = this.callMethod(this.isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION
+                 : FacebookMethod.NOTIFICATIONS_SEND_EMAIL, args);
+    return extractString(result);
+  }
+
+  /**
+   * Sends a notification email to the specified users, who must have added your application.
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only
+   * send email to the person whose session it is. This method does not require a session for Web applications.
+   *
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param fbml markup to be sent to the specified users via email; only a stripped-down set of FBML
+   *    that allows only tags that result in text, links and linebreaks is allowed
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send">
+   *      Developers Wiki: notifications.sendEmail</a>
+   *      
+   * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
+   */
+  public String notifications_sendEmail(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml)
+    throws FacebookException, IOException {
+    return notifications_sendEmailStr(recipientIds, subject, fbml, /*text*/null);
+  }
+
+  /**
+   * Sends a notification email to the specified users, who must have added your application.
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only
+   * send email to the person whose session it is. This method does not require a session for Web applications.
+   *
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param text the plain text to send to the specified users via email
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail">
+   *      Developers Wiki: notifications.sendEmail</a>
+   *      
+   * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
+   */
+  public String notifications_sendEmailPlain(Collection<Long> recipientIds, CharSequence subject, CharSequence text)
+    throws FacebookException, IOException {
+    return notifications_sendEmailStr(recipientIds, subject, /*fbml*/null, text);
+  }
+  
+  public boolean profile_setFBML(Long userId, String profileFbml, String actionFbml, String mobileFbml) throws FacebookException, IOException {
+      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+      if ((profileFbml != null) && (! "".equals(profileFbml))) {
+          params.add(new Pair<String, CharSequence>("profile", profileFbml));
+      }
+      if ((actionFbml != null) && (! "".equals(actionFbml))) {
+          params.add(new Pair<String, CharSequence>("profile_action", actionFbml));
+      }
+      if ((mobileFbml != null) && (! "".equals(mobileFbml))) {
+          params.add(new Pair<String, CharSequence>("mobile_fbml", mobileFbml));
+      }
+      
+      return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML, params));
   }
 }

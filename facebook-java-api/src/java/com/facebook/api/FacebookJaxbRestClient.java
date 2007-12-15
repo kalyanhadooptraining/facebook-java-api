@@ -114,7 +114,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
             return null;
         }
         xml = xml.substring(0, xml.indexOf("</"));
-        xml = xml.substring(xml.lastIndexOf(">" + 1));
+        xml = xml.substring(xml.lastIndexOf(">") + 1);
         return xml;
     }
 

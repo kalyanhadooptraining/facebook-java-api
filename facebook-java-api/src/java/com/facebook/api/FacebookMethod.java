@@ -78,11 +78,12 @@ public enum FacebookMethod
   NOTIFICATIONS_SEND("facebook.notifications.send",4),
   NOTIFICATIONS_SEND_REQUEST("facebook.notifications.sendRequest",5),
   NOTIFICATIONS_SEND_EMAIL("facebook.notifications.sendEmail", 5),
+  NOTIFICATIONS_SEND_EMAIL_SESSION("facebook.notifications.sendEmail",5),
   // Groups
   GROUPS_GET("facebook.groups.get", 1),
   GROUPS_GET_MEMBERS("facebook.groups.getMembers", 1),
   // FBML
-  PROFILE_SET_FBML("facebook.profile.setFBML", 2),
+  PROFILE_SET_FBML("facebook.profile.setFBML", 4),
   PROFILE_GET_FBML("facebook.profile.getFBML", 1),
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
@@ -158,7 +159,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL);
     return preAuth;
   }
 

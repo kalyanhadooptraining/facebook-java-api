@@ -113,7 +113,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
         this._sessionKey = (String) d.get("session_key");
         Object uid = d.get("uid");
         try {
-          this._userId = (Integer) uid;
+          this._userId = ((Long) uid).intValue();
         } catch (ClassCastException cce) {
           this._userId = Integer.parseInt((String) uid);
         } 
@@ -179,10 +179,10 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     if (json instanceof JSONObject) {
       JSONObject jsonObj = (JSONObject) json;
       try {
-            Integer errorCode = (Integer) jsonObj.get("error_code");
+            Long errorCode = (Long) jsonObj.get("error_code");
             if (errorCode != null) {
                 String message = (String) jsonObj.get("error_msg");
-                throw new FacebookException(errorCode, message);
+                throw new FacebookException(errorCode.intValue(), message);
             }
       }
       catch (JSONException ignored) {
