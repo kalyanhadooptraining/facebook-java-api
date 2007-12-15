@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.5.2.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.6.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.5.2.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.6.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,12 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.5.2 to 1.6
+		- Fix parsing bug in JAXB client.
+		- Support upcoming API changes to profile.setFBML.
+		- Allow notifications.sendEmail to be called without a session when using a non-desktop app.
+		- Merge in changes from official Facebook API made on 12/11/2007.
+		
 	From v1.5.1 to 1.5.2
 		- Add support for the notifications.sendEmail API call.
 		- Deprecate 'email' parameter of notifications.send, provide an alternate version with no 'email' parameter.
