@@ -1999,15 +1999,18 @@ public abstract class ExtensibleClient<T>
   }
   
   public void notifications_send(Collection<Long> recipientIds, CharSequence notification) throws FacebookException, IOException {
-      if (null == recipientIds || recipientIds.isEmpty()) {
-          return;
-      }
       if (null == notification || "".equals(notification)) {
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!");
       }
-      this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
+      if ((recipientIds != null) && (! recipientIds.isEmpty())) {
+          this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
                   new Pair<String, CharSequence>("to_ids", delimit(recipientIds)),
                   new Pair<String, CharSequence>("notification", notification));
+      }
+      else {
+          this.callMethod(FacebookMethod.NOTIFICATIONS_SEND,
+                  new Pair<String, CharSequence>("notification", notification));
+      }
   }
   
   private T notifications_sendEmail(CharSequence recipients, CharSequence subject, CharSequence email, CharSequence fbml) throws FacebookException, IOException {
