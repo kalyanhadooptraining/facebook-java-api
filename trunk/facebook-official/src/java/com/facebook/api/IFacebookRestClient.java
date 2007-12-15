@@ -665,18 +665,82 @@ public interface IFacebookRestClient<T> {
     throws FacebookException, IOException;
 
   /**
-   * Send a notification message to the specified users.
-   * @param recipientIds the user ids to which the message is to be sent
-   * @param notification the FBML to display on the notifications page
-   * @param email the FBML to send to the specified users via email, or null
-   *        if no email should be sent
+   * Send a notification message to the specified users on behalf of the logged-in user.
+   *
+   * @param recipientIds the user ids to which the message is to be sent. if empty,
+   *        notification will be sent to logged-in user.
+   * @param notification the FBML to be displayed on the notifications page; only a stripped-down 
+   *        set of FBML tags that result in text and links is allowed
    * @return a URL, possibly null, to which the user should be redirected to finalize
    * the sending of the email
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send">
+   *      Developers Wiki: notifications.send</a>
    */
-  public URL notifications_send(Collection<Integer> recipientIds, CharSequence notification,
-                                CharSequence email)
+  public void notifications_send(Collection<Integer> recipientIds, CharSequence notification)
     throws FacebookException, IOException;
 
+  /**
+   * Send a notification message to the logged-in user.
+   *
+   * @param notification the FBML to be displayed on the notifications page; only a stripped-down 
+   *    set of FBML tags that result in text and links is allowed
+   * @return a URL, possibly null, to which the user should be redirected to finalize
+   * the sending of the email
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send">
+   *      Developers Wiki: notifications.send</a>
+   */
+  public void notifications_send(CharSequence notification)
+    throws FacebookException, IOException;
+
+  /**
+   * Sends a notification email to the specified users, who must have added your application. 
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only 
+   * send email to the person whose session it is. This method does not require a session for Web applications. 
+   * Either <code>fbml</code> or <code>text</code> must be specified.
+   * 
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param fbml markup to be sent to the specified users via email; only a stripped-down set of FBML tags
+   *    that result in text, links and linebreaks is allowed
+   * @param text the plain text to send to the specified users via email
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent 
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail">
+   *      Developers Wiki: notifications.sendEmail</a>
+   */
+  public String notifications_sendEmail(Collection<Integer> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text)
+    throws FacebookException, IOException;
+
+  /**
+   * Sends a notification email to the specified users, who must have added your application.
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only
+   * send email to the person whose session it is. This method does not require a session for Web applications.
+   *
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param fbml markup to be sent to the specified users via email; only a stripped-down set of FBML
+   *    that allows only tags that result in text, links and linebreaks is allowed
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send">
+   *      Developers Wiki: notifications.sendEmail</a>
+   */
+  public String notifications_sendEmail(Collection<Integer> recipientIds, CharSequence subject, CharSequence fbml)
+    throws FacebookException, IOException;
+  
+  /**
+   * Sends a notification email to the specified users, who must have added your application.
+   * You can send five (5) emails to a user per day. Requires a session key for desktop applications, which may only
+   * send email to the person whose session it is. This method does not require a session for Web applications.
+   *
+   * @param recipientIds up to 100 user ids to which the message is to be sent
+   * @param subject the subject of the notification email (optional)
+   * @param text the plain text to send to the specified users via email
+   * @return a comma-separated list of the IDs of the users to whom the email was successfully sent
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail">
+   *      Developers Wiki: notifications.sendEmail</a>
+   */
+  public String notifications_sendEmailPlain(Collection<Integer> recipientIds, CharSequence subject, CharSequence text)
+    throws FacebookException, IOException;
+  
   /**
    * Determines whether this application can send SMS to the user identified by <code>userId</code>
    * @param userId a user ID

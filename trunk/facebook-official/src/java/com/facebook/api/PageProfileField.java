@@ -43,9 +43,6 @@ public enum PageProfileField {
   /**Page entered profile field. May not be blank.*/
   NAME("name"),
 
-  /**Contains the pronoun in the first and third person as subject and object children respectively.*/
-  PRONOUN("pronoun"),
-
   /**URL of profile picture, with max width 50px and max height 150px. May be blank.*/
   PIC_SMALL("pic_small"),
 
@@ -84,10 +81,33 @@ public enum PageProfileField {
    *   mon_1_open, mon_1_close, tue_1_open, tue_1_close, wed_1_open, wed_1_close, thu_1_open, thu_1_close, 
    *   fri_1_open, fri_1_close, sat_1_open, sat_1_close, sun_1_open, sun_1_close, </br>
    *   mon_2_open, mon_2_close, tue_2_open, tue_2_close, wed_2_open, wed_2_close, thu_2_open, thu_2_close,
-   *   fri_2_open, fri_2_close, sat_2_open, sat_2_close, sun_2_open, sun_2_close. 
+   *   fri_2_open, fri_2_close, sat_2_open, sat_2_close, sun_2_open, sun_2_close. </br>
+   *   
    * Each field is returned with time (in seconds since epoch). For example, 9:00 AM is represented as 406800
    */
   HOURS("hours"),
+
+  /**
+   * Parking options available. <br/>
+   * Contains three children: street, lot, and valet. Each field returned is a boolean value (1 or 0) 
+   * indicating if the Page has the specified parking option.
+   */
+  PARKING("parking"),
+
+  /** Public transit details, e.g. "Take Caltrain to Palo Alto station. Walk down University Ave one block." */
+  PUBLIC_TRANSIT("public_transit"),
+  
+  /** Restaurant recommended attire, may be one of Unspecfied, Casual, or Dressy */
+  ATTIRE("attire"),
+
+  /** Payment options accepted. Contains five children: cash_only, visa, amex, master_card, and discover.
+   * Notes on the children: 
+   * <ul>
+   * <li>Each field returned is a boolean value (1 or 0) indicating if the Page accepts the given payment option.</li>
+   * <li>Note that if <b>cash_only</b> is set to 1, the others would be set to 0.</li>
+   * </ul>
+   */
+  PAYMENT_OPTIONS("payment_options"),
 
   /**Members of the band, may be blank.*/
   BAND_MEMBERS("band_members"),
@@ -125,9 +145,6 @@ public enum PageProfileField {
   /**Company's products, may be blank*/
   PRODUCTS("products"),
 
-  /**Ticker symbol of company, may be blank*/
-  TICKER_SYMBOL("ticker_symbol"),
-
   /**Release date of film, may be blank*/
   RELEASE_DATE("release_date"),
 
@@ -159,7 +176,46 @@ public enum PageProfileField {
   SEASON("season"),
 
   /**Schedule of TV show, may be blank */
-  SCHEDULE("schedule");
+  SCHEDULE("schedule"),
+
+  /**Current location, may be blank*/
+  CURRENT_LOCATION("current_location"),
+
+  /**Boooking agent, may be blank*/
+  BOOKING_AGENT("booking_agent"),
+
+  /**Artists also liked by the musician, may be blank*/
+  ARTISTS_WE_LIKE("artists_we_like"),
+
+  /**Band interests, may be blank*/
+  BAND_INTERESTS("band_interests"),
+
+  /**Affiliation field of person or team, may be blank*/
+  AFFILIATION("affiliation"),
+
+  /**Birthday field, may be blank. In the format mm/dd/yyyy*/
+  BIRTHDAY("birthday"),
+
+  /**Personal information of public figure, may be blank*/
+  PERSONAL_INFO("personal_info"),
+
+  /**Personal interests of public figure, may be blank*/
+  PERSONAL_INTERESTS("personal_interests"),
+
+  /**members of team, may be blank*/
+  MEMBERS("members"),
+
+  /**when automotive was built, may be blank*/
+  BUILT("built"),
+
+  /**features of automotive, may be blank*/
+  FEATURES("features"),
+
+  /**mpg of automotive, may be blank*/
+  MPG("mpg"),
+
+  /**general info field, may be blank*/
+  GENERAL_INFO("general_info");
 
   private String fieldName;
 
