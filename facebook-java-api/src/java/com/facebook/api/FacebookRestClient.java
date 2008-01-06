@@ -125,6 +125,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected String rawResponse;
 
   protected String _sessionKey; // filled in when session is established
+  protected Long _expires; // also filled in when session is established
   protected boolean _isDesktop = false;
   protected String _sessionSecret; // only used for desktop apps
   protected long _userId;
@@ -1426,6 +1427,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         d.getElementsByTagName("session_key").item(0).getFirstChild().getTextContent();
     this._userId =
         Long.parseLong(d.getElementsByTagName("uid").item(0).getFirstChild().getTextContent());
+    this._expires =
+    	Long.parseLong(d.getElementsByTagName("expires").item(0).getFirstChild().getTextContent());
     if (this._isDesktop)
       this._sessionSecret =
           d.getElementsByTagName("secret").item(0).getFirstChild().getTextContent();
