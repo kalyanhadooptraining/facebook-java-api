@@ -112,11 +112,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     try {
         this._sessionKey = (String) d.get("session_key");
         Object uid = d.get("uid");
+        Object expires = d.get("expires");
         try {
-          this._userId = ((Long) uid).intValue();
+          this._userId = (Long) uid;
         } catch (ClassCastException cce) {
-          this._userId = Integer.parseInt((String) uid);
-        } 
+          this._userId = Long.parseLong((String) uid);
+        }
+        try {
+            this._expires = (Long) expires;
+        }
+        catch (ClassCastException cce) {
+            this._expires = Long.parseLong((String) expires);
+        }
         if (this.isDesktop()) {
           this._sessionSecret = (String) d.get("secret");
         }

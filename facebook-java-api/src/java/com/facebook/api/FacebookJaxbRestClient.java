@@ -142,6 +142,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
                         new Pair<String, CharSequence>("auth_token", authToken.toString()));
       this._sessionKey = d.getSessionKey();
       this._userId = d.getUid();
+      this._expires = (long)d.getExpires();
       if (this._isDesktop) {
         this._sessionSecret =
             d.getSecret();
