@@ -95,6 +95,7 @@ public abstract class ExtensibleClient<T>
   protected final String _apiKey;
   protected final URL _serverUrl;
   protected String rawResponse;
+  protected Long _expires;
 
   protected String _sessionKey;
   protected boolean _isDesktop = false;

@@ -151,6 +151,8 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
     this._sessionKey =
         d.getElementsByTagName("session_key").item(0).getFirstChild().getTextContent();
     this._userId = Integer.parseInt(d.getElementsByTagName("uid").item(0).getFirstChild().getTextContent());
+    this._expires =
+        Long.parseLong(d.getElementsByTagName("expires").item(0).getFirstChild().getTextContent());
     if (this._isDesktop) {
       this._sessionSecret =
           d.getElementsByTagName("secret").item(0).getFirstChild().getTextContent();
