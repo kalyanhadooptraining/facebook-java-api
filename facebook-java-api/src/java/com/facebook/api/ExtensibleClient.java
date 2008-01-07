@@ -61,6 +61,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -96,6 +97,7 @@ public abstract class ExtensibleClient<T>
   protected final URL _serverUrl;
   protected String rawResponse;
   protected Long _expires;
+  protected int _timeout;
 
   protected String _sessionKey;
   protected boolean _isDesktop = false;
@@ -131,7 +133,13 @@ public abstract class ExtensibleClient<T>
     _apiKey = apiKey;
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
+    _timeout = -1;
   }
+  
+  protected ExtensibleClient(URL serverUrl, String apiKey, String secret, String sessionKey, int timeout) {
+      this(serverUrl, apiKey, secret, sessionKey);
+      _timeout = timeout;
+    }
 
   /**
    * The response format in which results to FacebookMethod calls are returned
@@ -467,7 +475,7 @@ public abstract class ExtensibleClient<T>
           Collection<? extends IPair<? extends Object, URL>> images
          )
   throws FacebookException, IOException {
-      return this.feed_publishTemplatizedAction((long)actorId.intValue(), titleTemplate, 
+      return this.feed_publishTemplatizedAction((long)(actorId.intValue()), titleTemplate, 
               titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images);
   }
 
@@ -871,9 +879,16 @@ public abstract class ExtensibleClient<T>
     assert (null != taggedUserId || null != tagText);
     assert (null != xPct && xPct >= 0 && xPct <= 100);
     assert (null != yPct && yPct >= 0 && yPct <= 100);
+    Pair<String, CharSequence> tagData;
+    if (taggedUserId != null) {
+        tagData = new Pair<String, CharSequence>("tag_uid", taggedUserId.toString());
+    }
+    else {
+        tagData = new Pair<String, CharSequence>("tag_text", tagText.toString());
+    }
     T d =
       this.callMethod(FacebookMethod.PHOTOS_ADD_TAG, new Pair<String, CharSequence>("pid", photoId.toString()),
-                      new Pair<String, CharSequence>("tag_uid", taggedUserId.toString()),
+                      tagData,
                       new Pair<String, CharSequence>("x", xPct.toString()),
                       new Pair<String, CharSequence>("y", yPct.toString()));
     return extractBoolean(d);
@@ -1380,6 +1395,9 @@ public abstract class ExtensibleClient<T>
     }
 
     HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
+    if (this._timeout != -1) {
+        conn.setConnectTimeout(this._timeout);
+    }
     try {
       conn.setRequestMethod("POST");
     } catch (ProtocolException ex) {
@@ -2203,5 +2221,160 @@ public abstract class ExtensibleClient<T>
       }
       
       return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML, params));
+  }
+  
+  /* (non-Javadoc)
+   * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.String, java.lang.Integer, boolean)
+   */
+  public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+      if ((smsSessionId == null) || (smsSessionId <= 0)) {
+          return this.sms_sendMessageWithSession(this.users_getLoggedInUser(), message);
+      }
+      else {
+          this.sms_sendResponse((int)this.users_getLoggedInUser(), message, smsSessionId);
+          return smsSessionId;
+      }
+  }
+  
+  /* (non-Javadoc)
+   * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.Long, java.lang.String, java.lang.Integer, boolean)
+   */
+  public Integer sms_send(Long userId, String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
+      if ((smsSessionId == null) || (smsSessionId <= 0)) {
+          return this.sms_sendMessageWithSession(userId, message);
+      }
+      else {
+          this.sms_sendResponse(userId.intValue(), message, smsSessionId);
+          return smsSessionId;
+      }
+  }
+  
+  public T data_getCookies() throws FacebookException, IOException {
+      return this.data_getCookies(this.users_getLoggedInUser(), null);
+  }
+
+  public T data_getCookies(long userId) throws FacebookException, IOException {
+      return this.data_getCookies(userId, null);
+  }
+
+  public T data_getCookies(String name) throws FacebookException, IOException {
+      return this.data_getCookies(this.users_getLoggedInUser(), name);
+  }
+
+  public T data_getCookies(long userId, String name) throws FacebookException, IOException {
+      ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>();
+      args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+      if ((name != null) && (! "".equals(name))) {
+          args.add(new Pair<String, CharSequence>("name", name));
+      }
+      
+      return this.callMethod(FacebookMethod.DATA_GET_COOKIES, args);
+  }
+
+  public boolean data_setCookie(String name, String value) throws FacebookException, IOException {
+      return this.data_setCookie(this.users_getLoggedInUser(), name, value, null, null);
+  }
+
+  public boolean data_setCookie(String name, String value, String path) throws FacebookException, IOException {
+      return this.data_setCookie(this.users_getLoggedInUser(), name, value, null, path);
+  }
+
+  public boolean data_setCookie(long userId, String name, String value) throws FacebookException, IOException {
+      return this.data_setCookie(userId, name, value, null, null);
+  }
+
+  public boolean data_setCookie(long userId, String name, String value, String path) throws FacebookException, IOException {
+      return this.data_setCookie(userId, name, value, null, path);
+  }
+
+  public boolean data_setCookie(String name, String value, long expires) throws FacebookException, IOException {
+      return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, null);
+  }
+
+  public boolean data_setCookie(String name, String value, long expires, String path) throws FacebookException, IOException {
+      return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, path);
+  }
+
+  public boolean data_setCookie(long userId, String name, String value, long expires) throws FacebookException, IOException {
+      return this.data_setCookie(userId, name, value, expires, null);
+  }
+
+  public boolean data_setCookie(long userId, String name, String value, Long expires, String path) throws FacebookException, IOException {
+      if ((name == null) || ("".equals(name))) {
+          throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The cookie name cannot be null or empty!");
+      }
+      if (value == null) {
+          value = "";
+      }
+      
+      T doc;
+      ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>();
+      args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+      args.add(new Pair<String, CharSequence>("name", name));
+      args.add(new Pair<String, CharSequence>("value", value));
+      if ((expires != null) || (expires > 0)) {
+          args.add(new Pair<String, CharSequence>("expires", expires.toString()));
+      }
+      if ((path != null) && (! "".equals(path))) {
+          args.add(new Pair<String, CharSequence>("path", path));
+      }
+      doc = this.callMethod(FacebookMethod.DATA_SET_COOKIE, args);
+      
+      return extractBoolean(doc);
+  }
+  
+  public boolean admin_setAppProperties(Map<ApplicationProperty,String> properties) throws FacebookException, IOException {
+      if ((properties == null) || (properties.isEmpty())) {
+          //nothing to do
+          return true;
+      }
+      
+      //Facebook is nonspecific about how they want the parameters encoded in JSON, so we make two attempts
+      JSONObject encoding1 = new JSONObject();
+      JSONArray encoding2 = new JSONArray();
+      for (ApplicationProperty property : properties.keySet()) {
+          JSONObject temp = new JSONObject();
+          if (property.getType().equals("string")) {
+              //simple case, just treat it as a literal string
+              try {
+                  encoding1.put(property.getName(), properties.get(property));
+                  temp.put(property.getName(), properties.get(property));
+                  encoding2.put(temp);
+              }
+              catch (JSONException ignored) {}
+          }
+          else {
+              //we need to parse a boolean value
+              String val = properties.get(property);
+              if ((val == null) || (val.equals("")) || (val.equalsIgnoreCase("false")) || (val.equals("0"))) {
+                  //false
+                  val = "0";
+              }
+              else {
+                  //true
+                  val = "1";
+              }
+              try {
+                  encoding1.put(property.getName(), val);
+                  temp.put(property.getName(), val);
+                  encoding2.put(temp);
+              }
+              catch (JSONException ignored) {}
+          }
+      }
+      
+      //now we've built our JSON-encoded parameter, so attempt to set the properties
+      try {
+          //first assume that Facebook is sensible enough to be able to undestand an associative array
+          T d = this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                  new Pair<String, CharSequence>("properties", encoding1.toString()));
+          return extractBoolean(d);
+      }
+      catch (FacebookException e) {
+          //if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
+          T d = this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                  new Pair<String, CharSequence>("properties", encoding2.toString()));
+          return extractBoolean(d);
+      }
   }
 }

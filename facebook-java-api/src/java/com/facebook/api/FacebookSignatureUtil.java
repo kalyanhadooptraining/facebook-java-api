@@ -71,6 +71,33 @@ public final class FacebookSignatureUtil {
     }
     return result;
   }
+  
+  /**
+   * Out of the passed in <code>reqParams</code>, extracts the parameters that
+   * are in the FacebookParam namespace and returns them.
+   * @param reqParams A map of request parameters to their values. Values
+   *                  are arrays of strings, as returned by
+   *                  ServletRequest.getParameterMap(). Only the first element
+   *                  in a given array is significant.
+   * @return a boolean indicating whether the calculated signature matched the
+   *   expected signature
+   */
+  //Facebook likes to refer to everything as a CharSequence, even when referencing Objects defined by an external API that explicitly 
+  //specifies the use of String, and *not* CharSequence.
+  public static Map<String, CharSequence> extractFacebookParamsFromStandardsCompliantArray(Map<String, String[]> reqParams) {
+    if (null == reqParams)
+      return null;
+    Map<String,CharSequence> result = new HashMap<String,CharSequence>(reqParams.size());
+    for (Map.Entry<String,String[]> entry : reqParams.entrySet()) {
+      String key = entry.getKey();
+      if (FacebookParam.isInNamespace(key)) {
+          String[] value = entry.getValue();
+        if (value.length > 0)
+          result.put(key, value[0]);
+      }
+    }
+    return result;
+  }
 
   /**
    * Out of the passed in <code>reqParams</code>, extracts the parameters that
@@ -166,6 +193,44 @@ public final class FacebookSignatureUtil {
       return false;
     CharSequence sigParam = params.remove(FacebookParam.SIGNATURE.toString());
     return (null == sigParam) ? false : verifySignature(params, secret, sigParam.toString()); 
+  }
+  
+  /**
+   * Verifies that a signature received matches the expected value.  This method will perform 
+   * any necessary conversion of the parameter map passed to it (should the map be immutable, 
+   * etc.), meaning that you may safely call it without doing any manual preprocessing of the 
+   * parameters first.
+   * 
+   * @param requestParams A map of request parameters to their values, as returned by
+   *                  ServletRequest.getParameterMap(), for example.
+   * @param secret the developers 'secret' API key
+   * @param expected the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
+   * 
+   * @return a boolean indicating whether the calculated signature matched the
+   *   expected signature
+   */
+  public static boolean autoVerifySignature(Map<String, String[]> requestParams, String secret, String expected) {
+      Map<String, CharSequence> convertedMap = extractFacebookParamsFromStandardsCompliantArray(requestParams);
+      return verifySignature(convertedMap, secret, expected);
+  }
+  
+  /**
+   * Verifies that a signature received matches the expected value.  This method will perform 
+   * any necessary conversion of the parameter map passed to it (should the map be immutable, 
+   * etc.), meaning that you may safely call it without doing any manual preprocessing of the 
+   * parameters first.
+   * 
+   * @param requestParams A map of request parameters to their values, as returned by
+   *                  ServletRequest.getParameterMap(), for example.
+   * @param secret the developers 'secret' API key
+   * @param expected the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
+   * 
+   * @return a boolean indicating whether the calculated signature matched the
+   *   expected signature
+   */
+  public static boolean autoVerifySignature(Map<String, String[]> requestParams, String secret) {
+      String expected = requestParams.get("fb_sig")[0];
+      return autoVerifySignature(requestParams, secret, expected);
   }
 
   /**
