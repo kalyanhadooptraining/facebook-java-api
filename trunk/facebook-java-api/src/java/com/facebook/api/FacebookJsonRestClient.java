@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 import com.facebook.api.schema.Listing;
 
  /**
@@ -29,6 +31,17 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
   public FacebookJsonRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
+  
+  /**
+   * Constructor.
+   * 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookJsonRestClient(String apiKey, String secret, int timeout) {
+    this(SERVER_URL, apiKey, secret, null, timeout);
+  }
 
   /**
    * Constructor.
@@ -39,6 +52,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    */
   public FacebookJsonRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
+  }
+  
+  /**
+   * Constructor.
+   * 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookJsonRestClient(String apiKey, String secret, String sessionKey, int timeout) {
+    this(SERVER_URL, apiKey, secret, sessionKey, timeout);
   }
 
   
@@ -56,6 +81,22 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
+  
+  /**
+   * Constructor.
+   * 
+   * @param serverAddr the URL of the Facebook API server to use 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * 
+   * @throws MalformedURLException if you specify an invalid URL 
+   */
+  public FacebookJsonRestClient(String serverAddr, String apiKey, String secret,
+                            String sessionKey, int timeout) throws MalformedURLException {
+    this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+  }
 
   
   /**
@@ -69,6 +110,20 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
   public FacebookJsonRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey) {
     super(serverUrl, apiKey, secret, sessionKey);
+  }
+  
+  /**
+   * Constructor.
+   * 
+   * @param serverUrl the URL of the Facebook API server to use 
+   * @param apiKey your Facebook API key
+   * @param secret your 'secret' Facebook key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookJsonRestClient(URL serverUrl, String apiKey, String secret,
+                            String sessionKey, int timeout) {
+    super(serverUrl, apiKey, secret, sessionKey, timeout);
   }
 
   /**
@@ -324,19 +379,24 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
         "Please use an instance of FacebookRestClient instead.");
     }
     
-    /* (non-Javadoc)
-     * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.String, java.lang.Integer, boolean)
-     */
-    public Integer sms_send(String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
-        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
-        "Please use an instance of FacebookRestClient instead.");
+    public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+        String json = this.admin_getAppPropertiesAsString(properties);
+        try {
+            return new JSONArray(json);
+        }
+        catch (Exception e) {
+            //response failed to parse
+            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
+        }
     }
-    
-    /* (non-Javadoc)
-     * @see com.facebook.api.IFacebookRestClient#sms_send(java.lang.Long, java.lang.String, java.lang.Integer, boolean)
-     */
-    public Integer sms_send(Long userId, String message, Integer smsSessionId, boolean makeNewSession) throws FacebookException, IOException {
-        throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
-        "Please use an instance of FacebookRestClient instead.");
+
+    public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+        JSONArray props = new JSONArray();
+        for (ApplicationProperty property : properties) {
+            props.put(property.getName());
+        }
+        this.callMethod(FacebookMethod.ADMIN_GET_APP_PROPERTIES,
+                new Pair<String, CharSequence>("properties", props.toString()));
+        return this.rawResponse;
     }
 }

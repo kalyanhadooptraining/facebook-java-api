@@ -109,6 +109,17 @@ Committing Changes:
 	
 Changelog:
 
+	From 1.6 to 1.6.1
+		- Add 'Facebook' utility class (in seperate JAR file).
+		- Add support for admin.getAppProperties and admin.setAppProperties.
+ 		- Add support for data.getCookies and data.setCookie.
+		- Add support for configurable connection timeout settings for Facebook API requests.
+		- Add autoVerifySignature convenience method.
+		- Update JAXB bindings (add has 'has_added_app' property to user, support new API methods, etc.).
+ 		- Set 'expires' field correctly when getting a session.
+ 		- Fix logic error in photos_addTag (avoid NPE when trying to add a text tag instead of a UID-based tag).
+ 		- Remove some unimplemented methods that are now provided by the official API.
+
 	From v1.5.2 to 1.6
 		- Fix parsing bug in JAXB client.
 		- Support upcoming API changes to profile.setFBML.

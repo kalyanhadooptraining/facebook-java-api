@@ -40,6 +40,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.json.JSONArray;
 import com.facebook.api.schema.Listing;
 
 /**
@@ -1623,4 +1624,208 @@ public interface IFacebookRestClient<T> {
    */
   public String notifications_sendEmailStr(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text)
     throws FacebookException, IOException;
+  
+  /**
+   * Set application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * @param properties a Map containing the properties to set.
+   * 
+   * @return true if the properties are set successfully
+   *         false otherwise
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean admin_setAppProperties(Map<ApplicationProperty, String> properties) throws FacebookException, IOException;
+  
+  /**
+   * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * @param properties a collection indicating the properties you are interested in retrieving.
+   * 
+   * @return a JSON array containing a list of JSON objects, where each JSON object maps a single property name to 
+   *         a property value (what was Facebook thinking with this?  I don't know.)
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
+  
+  /**
+   * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * @param properties a collection indicating the properties you are interested in retrieving.
+   * 
+   * @return a JSON-encoded string containing the properties.  It is your responsibility to parse the string.  Details 
+   *         can be found at http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+   *         
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
+  
+  /**
+   * Get all cookies for the currently logged-in user.
+   * 
+   * @return all cookies for the current user.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T data_getCookies() throws FacebookException, IOException;
+  
+  /**
+   * Get all cookies for the specified user.
+   * 
+   * @param userId the id of the user to get the cookies for.
+   * 
+   * @return all cookies for the specified user.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T data_getCookies(long userId) throws FacebookException, IOException;
+  
+  /**
+   * Get a specific cookie for the currently logged-in user.
+   * 
+   * @param name the name of the cookie to retrieve.
+   * 
+   * @return the specified cookie for the current user.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T data_getCookies(String name) throws FacebookException, IOException;
+  
+  /**
+   * Get a specific cookie for the specified user.
+   * 
+   * @param userId the id of the user to get the cookies for.
+   * @param name the name of the cookie to retrieve.
+   * 
+   * @return the specified cookie for the specified user.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T data_getCookies(long userId, String name) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the current user.  It will use the default expiry (never), and the 
+   * default path ("/").
+   * 
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(String name, String value) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the current user, under the specified path.  It will use the default expiry (never).
+   * 
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param path the path relative to the application's callback URL, with which the cookie should be associated. (default is "/")
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(String name, String value, String path) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the specified user.  The cookie will use the default expiry (never)
+   * and the default path ("/").
+   * 
+   * @param userId the id of the user to set the cookie for.
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(long userId, String name, String value) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the specified user, with the specified path.  The cookie will use the default expiry (never).
+   * 
+   * @param userId the id of the user to set the cookie for.
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param path the path relative to the application's callback URL, with which the cookie should be associated. (default is "/")
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(long userId, String name, String value, String path) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the current user, with the specified expiration date.  It will use the default path ("/").
+   * 
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param expires the timestamp at which the cookie expires
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(String name, String value, long expires) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the current user, with the specified expiration date and path.
+   * 
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param expires the timestamp at which the cookie expires
+   * @param path the path relative to the application's callback URL, with which the cookie should be associated. (default is "/")
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(String name, String value, long expires, String path) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the specified user, with the specified expiration date.  The cookie will use the default path ("/").
+   * 
+   * @param userId the id of the user to set the cookie for.
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param expires the timestamp at which the cookie expires
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(long userId, String name, String value, long expires) throws FacebookException, IOException;
+  
+  /**
+   * Set a cookie for the specified user, with the specified expiration date and path.
+   * 
+   * @param userId the id of the user to set the cookie for.
+   * @param name the name of the cookie to set
+   * @param value the value of the cookie
+   * @param expires the timestamp at which the cookie expires
+   * @param path the path relative to the application's callback URL, with which the cookie should be associated. (default is "/")
+   * 
+   * @return true if the cookie is set successfully, false otherwise.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean data_setCookie(long userId, String name, String value, Long expires, String path) throws FacebookException, IOException;
 }

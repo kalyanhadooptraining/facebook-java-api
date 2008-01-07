@@ -129,6 +129,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected boolean _isDesktop = false;
   protected String _sessionSecret; // only used for desktop apps
   protected long _userId;
+  protected int _timeout;
 
   /**
    * number of params that the client automatically appends to every API call
@@ -155,6 +156,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   public FacebookRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
+  
+  /**
+   * Constructor
+   *
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookRestClient(String apiKey, String secret, int timeout) {
+    this(SERVER_URL, apiKey, secret, null, timeout);
+  }
 
   /**
    * Constructor
@@ -165,6 +177,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public FacebookRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
+  }
+  
+  /**
+   * Constructor
+   *
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookRestClient(String apiKey, String secret, String sessionKey, int timeout) {
+    this(SERVER_URL, apiKey, secret, sessionKey, timeout);
   }
 
   /**
@@ -181,6 +205,22 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
   }
+  
+  /**
+   * Constructor
+   *
+   * @param serverAddr the URL of the Facebook API server to use, allows overriding of the default API server.
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   *
+   * @throws MalformedURLException if the specified serverAddr is invalid
+   */
+  public FacebookRestClient(String serverAddr, String apiKey, String secret,
+                            String sessionKey, int timeout) throws MalformedURLException {
+    this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+  }
 
   /**
    * Constructor
@@ -195,6 +235,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     _apiKey = apiKey;
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
+    _timeout = -1;
+  }
+  
+  /**
+   * Constructor
+   *
+   * @param serverUrl the URL of the Facebook API server to use, allows overriding of the default API server.
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookRestClient(URL serverUrl, String apiKey, String secret, String sessionKey, int timeout) {
+      this(serverUrl, apiKey, secret, sessionKey);
+      _timeout = timeout;
   }
 
   /**
@@ -488,6 +543,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     }
 
     HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
+    if (this._timeout != -1) {
+        conn.setConnectTimeout(this._timeout);
+    }
     try {
       conn.setRequestMethod("POST");
     }
@@ -1211,10 +1269,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     assert (null != taggedUserId || null != tagText);
     assert (null != xPct && xPct >= 0 && xPct <= 100);
     assert (null != yPct && yPct >= 0 && yPct <= 100);
+    Pair<String, CharSequence> tagData;
+    if (taggedUserId != null) {
+        tagData = new Pair<String, CharSequence>("tag_uid", taggedUserId.toString());
+    }
+    else {
+        tagData = new Pair<String, CharSequence>("tag_text", tagText.toString());
+    }
     Document d =
       this.callMethod(FacebookMethod.PHOTOS_ADD_TAG, new Pair<String, CharSequence>("pid",
                                                                                     photoId.toString()),
-                      new Pair<String, CharSequence>("tag_uid", taggedUserId.toString()),
+                      tagData,
                       new Pair<String, CharSequence>("x", xPct.toString()),
                       new Pair<String, CharSequence>("y", yPct.toString()));
     return extractBoolean(d);
@@ -2496,7 +2561,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * @deprecated use the version that treats actorId as a Long.  UID's *are not ever to be* expressed as Integers.
      */
     public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images) throws FacebookException, IOException {
-        return this.feed_publishTemplatizedAction((long)actorId.intValue(), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images);
+        return this.feed_publishTemplatizedAction((long)(actorId.intValue()), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images);
     }
 
     public void notifications_send(Collection<Long> recipientIds, CharSequence notification) throws FacebookException, IOException {
@@ -2697,5 +2762,155 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      */
     public String extractString(Document d) {
         return d.getFirstChild().getTextContent();
+    }
+
+    public boolean admin_setAppProperties(Map<ApplicationProperty,String> properties) throws FacebookException, IOException {
+        if ((properties == null) || (properties.isEmpty())) {
+            //nothing to do
+            return true;
+        }
+        
+        //Facebook is nonspecific about how they want the parameters encoded in JSON, so we make two attempts
+        JSONObject encoding1 = new JSONObject();
+        JSONArray encoding2 = new JSONArray();
+        for (ApplicationProperty property : properties.keySet()) {
+            JSONObject temp = new JSONObject();
+            if (property.getType().equals("string")) {
+                //simple case, just treat it as a literal string
+                try {
+                    encoding1.put(property.getName(), properties.get(property));
+                    temp.put(property.getName(), properties.get(property));
+                    encoding2.put(temp);
+                }
+                catch (JSONException ignored) {}
+            }
+            else {
+                //we need to parse a boolean value
+                String val = properties.get(property);
+                if ((val == null) || (val.equals("")) || (val.equalsIgnoreCase("false")) || (val.equals("0"))) {
+                    //false
+                    val = "0";
+                }
+                else {
+                    //true
+                    val = "1";
+                }
+                try {
+                    encoding1.put(property.getName(), val);
+                    temp.put(property.getName(), val);
+                    encoding2.put(temp);
+                }
+                catch (JSONException ignored) {}
+            }
+        }
+        
+        //now we've built our JSON-encoded parameter, so attempt to set the properties
+        try {
+            //first assume that Facebook is sensible enough to be able to undestand an associative array
+            Document d = this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                    new Pair<String, CharSequence>("properties", encoding1.toString()));
+            return extractBoolean(d);
+        }
+        catch (FacebookException e) {
+            //if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
+            Document d = this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                    new Pair<String, CharSequence>("properties", encoding2.toString()));
+            return extractBoolean(d);
+        }
+    }
+
+    public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+        String json = this.admin_getAppPropertiesAsString(properties);
+        try {
+            return new JSONArray(json);
+        }
+        catch (Exception e) {
+            //response failed to parse
+            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
+        }
+    }
+
+    public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+        JSONArray props = new JSONArray();
+        for (ApplicationProperty property : properties) {
+            props.put(property.getName());
+        }
+        Document d = this.callMethod(FacebookMethod.ADMIN_GET_APP_PROPERTIES,
+                new Pair<String, CharSequence>("properties", props.toString()));
+        return extractString(d);
+    }
+
+    public Document data_getCookies() throws FacebookException, IOException {
+        return this.data_getCookies(this.users_getLoggedInUser(), null);
+    }
+
+    public Document data_getCookies(long userId) throws FacebookException, IOException {
+        return this.data_getCookies(userId, null);
+    }
+
+    public Document data_getCookies(String name) throws FacebookException, IOException {
+        return this.data_getCookies(this.users_getLoggedInUser(), name);
+    }
+
+    public Document data_getCookies(long userId, String name) throws FacebookException, IOException {
+        ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>();
+        args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+        if ((name != null) && (! "".equals(name))) {
+            args.add(new Pair<String, CharSequence>("name", name));
+        }
+        
+        return this.callMethod(FacebookMethod.DATA_GET_COOKIES, args);
+    }
+
+    public boolean data_setCookie(String name, String value) throws FacebookException, IOException {
+        return this.data_setCookie(this.users_getLoggedInUser(), name, value, null, null);
+    }
+
+    public boolean data_setCookie(String name, String value, String path) throws FacebookException, IOException {
+        return this.data_setCookie(this.users_getLoggedInUser(), name, value, null, path);
+    }
+
+    public boolean data_setCookie(long userId, String name, String value) throws FacebookException, IOException {
+        return this.data_setCookie(userId, name, value, null, null);
+    }
+
+    public boolean data_setCookie(long userId, String name, String value, String path) throws FacebookException, IOException {
+        return this.data_setCookie(userId, name, value, null, path);
+    }
+
+    public boolean data_setCookie(String name, String value, long expires) throws FacebookException, IOException {
+        return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, null);
+    }
+
+    public boolean data_setCookie(String name, String value, long expires, String path) throws FacebookException, IOException {
+        return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, path);
+    }
+
+    public boolean data_setCookie(long userId, String name, String value, long expires) throws FacebookException, IOException {
+        return this.data_setCookie(userId, name, value, expires, null);
+    }
+
+    public boolean data_setCookie(long userId, String name, String value, Long expires, String path) throws FacebookException, IOException {
+        if ((name == null) || ("".equals(name))) {
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The cookie name cannot be null or empty!");
+        }
+        if (value == null) {
+            value = "";
+        }
+        
+        Document doc;
+        ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>();
+        args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+        args.add(new Pair<String, CharSequence>("name", name));
+        args.add(new Pair<String, CharSequence>("value", value));
+        if ((expires != null) || (expires > 0)) {
+            args.add(new Pair<String, CharSequence>("expires", expires.toString()));
+        }
+        if ((path != null) && (! "".equals(path))) {
+            args.add(new Pair<String, CharSequence>("path", path));
+        }
+        doc = this.callMethod(FacebookMethod.DATA_SET_COOKIE, args);
+        
+        return extractBoolean(doc);
     }
 }

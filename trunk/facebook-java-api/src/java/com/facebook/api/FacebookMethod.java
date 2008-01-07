@@ -125,10 +125,13 @@ public enum FacebookMethod
   MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 3), 
   
   //Data
+  DATA_SET_COOKIE("facebook.data.setCookie", 6),
   DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
   DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),
+  DATA_GET_COOKIES("facebook.data.getCookies", 3),
   DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference", 2),
   DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
+  
   //SMS - Mobile
   SMS_CAN_SEND("facebook.sms.canSend", 2),
   /**
@@ -142,6 +145,10 @@ public enum FacebookMethod
   PAGES_IS_FAN("facebook.pages.isFan", 2),
   PAGES_GET_INFO("facebook.pages.getInfo", 2),
   PAGES_GET_INFO_NO_SESSION("facebook.pages.getInfo", 2),
+  
+  //Admin
+  ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2),
+  ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2)
   ;
 
   private String methodName;
@@ -159,7 +166,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES);
     return preAuth;
   }
 
