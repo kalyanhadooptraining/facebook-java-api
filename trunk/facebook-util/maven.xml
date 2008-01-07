@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:ant="jelly:ant" 
+	xmlns:artifact="artifact" xmlns:maven="jelly:maven" xmlns:deploy="deploy"
+   default="help" >
+   
+    <goal name="help">
+<!--
+01234567890123456789012345678901234567890123456789012345678901234567890123456789  -->
+        <echo ><![CDATA[
+The following maven goals are available here:
+  help     This message. 
+  install  Build production code with debug information, run junit tests, 
+           generate jar file
+  clean    Remove all compiled class files, generated sources, etc.
+]]></echo>
+    </goal>    
+
+    <goal name="install" prereqs="jar:install" />
+</project>
