@@ -20,15 +20,15 @@
 </xsd:simpleType>
 
 <xsd:simpleType name="nid">
-  <xsd:restriction base="xsd:long" />
+  <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
 
 <xsd:simpleType name="hsid">
-  <xsd:restriction base="xsd:long" />
+  <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
 
 <xsd:simpleType name="uid">
-  <xsd:restriction base="xsd:long" />
+  <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
 
 <xsd:simpleType name="id">
@@ -526,15 +526,15 @@
 <xsd:complexType name="object_type_info">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string" />
-    <xsd:element name="object_class" type="xsd:long" />
+    <xsd:element name="object_class" type="xsd:int" />
   </xsd:sequence>
 </xsd:complexType>
 
 <xsd:complexType name="object_property_info">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string" />
-    <xsd:element name="data_type" type="xsd:long" />
-    <xsd:element name="index_type" type="xsd:long" />
+    <xsd:element name="data_type" type="xsd:int" />
+    <xsd:element name="index_type" type="xsd:int" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -549,7 +549,7 @@
 <xsd:complexType name="object_assoc_info">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string" />
-    <xsd:element name="assoc_type" type="xsd:long" />
+    <xsd:element name="assoc_type" type="xsd:int" />
     <xsd:element name="assoc_info1" type="assoc_object_type" />
     <xsd:element name="assoc_info2" type="assoc_object_type" />
   </xsd:sequence>
@@ -609,6 +609,16 @@
   <xsd:sequence>
     <xsd:element name="pref_id" type="xsd:int" />
     <xsd:element name="value" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="cookie">
+  <xsd:sequence>
+    <xsd:element name="uid" type="uid" />
+    <xsd:element name="name" type="xsd:string" />
+    <xsd:element name="value" type="xsd:string" />
+    <xsd:element name="expires" type="xsd:int" />
+    <xsd:element name="path" type="xsd:string" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -689,6 +699,17 @@
 </xsd:element>
 
 <xsd:element name="groups_getMembers_response" type="group_members" />
+
+<xsd:element name="data_getCookies_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="cookie" type="cookie" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="data_setCookie_response" type="xsd:boolean" />
 
 <xsd:element name="marketplace_getCategories_response">
   <xsd:complexType>
