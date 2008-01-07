@@ -5,9 +5,9 @@
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
   </classpathentry>
-  <classpathentry path="MAVEN_REPO/json/jars/json-simple-1.0.jar" kind="var">
+  <classpathentry kind="var" path="MAVEN_REPO/json/jars/json-simple-1.0.jar">
   </classpathentry>
-  <classpathentry path="MAVEN_REPO/json/jars/json-1.0.jar" kind="var">
+  <classpathentry kind="var" path="MAVEN_REPO/json/jars/json-1.0.jar">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
