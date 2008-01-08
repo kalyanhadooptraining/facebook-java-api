@@ -282,7 +282,7 @@ public class Facebook {
 	 * @param next indicates the page to which facebook should redirect the user has logged in.
 	 * @return
 	 */
-	private String getLoginUrl(String next, boolean canvas) {
+	public String getLoginUrl(String next, boolean canvas) {
 		String url = getFacebookUrl(null) + "/login.php?v=1.0&api_key=" + apiKey;
 		try {
 			url += next !=null ? "&next=" + URLEncoder.encode(next, "UTF-8") : "";
@@ -298,7 +298,7 @@ public class Facebook {
 	 * @param next indicates the page to which facebook should redirect the user after the application is added.
 	 * @return
 	 */
-	private String getAddUrl(String next) {
+	public String getAddUrl(String next) {
 		String url = getFacebookUrl(null) + "/add.php?api_key=" + apiKey;
 		try {
 			url += next !=null ? "&next=" + URLEncoder.encode(next, "UTF-8") : "";
