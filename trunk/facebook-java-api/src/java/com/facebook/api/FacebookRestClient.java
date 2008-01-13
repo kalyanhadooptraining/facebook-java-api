@@ -53,6 +53,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2819,15 +2821,67 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         }
     }
 
-    public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+    /**
+     * @deprecated use admin_getAppPropertiesMap() instead
+     */
+    public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
         String json = this.admin_getAppPropertiesAsString(properties);
         try {
-            return new JSONArray(json);
+            if (json.matches("\\{.*\\}")) {
+                return new JSONObject(json);
+            }
+            else {
+                JSONArray temp = new JSONArray(json);
+                JSONObject result = new JSONObject();
+                for (int count = 0; count < temp.length(); count++) {
+                    JSONObject obj = (JSONObject)temp.get(count);
+                    Iterator it = obj.keys();
+                    while (it.hasNext()) {
+                        String next = (String)it.next();
+                        result.put(next, obj.get(next));
+                    }
+                }
+                return result;
+            }
         }
         catch (Exception e) {
             //response failed to parse
             throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
         }
+    }
+    
+    public Map<ApplicationProperty, String> admin_getAppPropertiesMap(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
+        Map<ApplicationProperty, String> result = new LinkedHashMap<ApplicationProperty, String>();
+        String json = this.admin_getAppPropertiesAsString(properties);
+        if (json.matches("\\{.*\\}")) {
+            //first, strip the leading and trailing braces
+            json = json.substring(1, json.lastIndexOf("}"));
+            String[] parts = json.split("\\,");
+            for (String part : parts) {
+                //each peice should look like "application_name":"App Name" (string) or "desktop":1 (boolean)
+                String keyString = part.substring(1);
+                keyString = keyString.substring(0, keyString.indexOf('"'));
+                ApplicationProperty key = ApplicationProperty.getPropertyForString(keyString);
+                String value = part.substring(part.indexOf(":") + 1).replaceAll("\\\\", "");  //strip escape characters
+                if (key.getType().equals("string")) {
+                    result.put(key, value.substring(1, value.lastIndexOf('"')));
+                }
+                else {
+                    if (value.equals("1")) {
+                        result.put(key, "true");
+                    }
+                    else {
+                        result.put(key, "false");
+                    }
+                }
+            }
+        }
+        else {
+            //FIXME:  implement array parse
+            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
+        }
+        
+        return result;
     }
 
     public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {

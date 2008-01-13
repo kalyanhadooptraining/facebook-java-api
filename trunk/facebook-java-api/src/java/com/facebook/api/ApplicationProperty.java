@@ -1,5 +1,8 @@
 package com.facebook.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An enumeration for managing the different application properties that Facebook 
  * supports.  These properties can be managed using the admin.* API calls.
@@ -10,7 +13,7 @@ package com.facebook.api;
  * 
  * @author aroth
  */
-public enum ApplicationProperty {
+public enum ApplicationProperty {    
     /**
      * The name of your app
      */
@@ -112,6 +115,18 @@ public enum ApplicationProperty {
      */
     PRELOAD_FQL("preload_fql", "string");
     
+    /**
+     * A map of property names to their associated ApplicationProperty value
+     */
+    protected static final Map<String, ApplicationProperty> PROP_TABLE;
+    
+    static {
+        PROP_TABLE = new HashMap<String, ApplicationProperty>();
+        for (ApplicationProperty prop : ApplicationProperty.values()) {
+            PROP_TABLE.put(prop.getName(), prop);
+        }
+    }
+    
     private String name;
     private String type;
     
@@ -130,7 +145,26 @@ public enum ApplicationProperty {
         return name;
     }
     
+    /**
+     * Gets the type which Facebook assigns to this property.  The returned value 
+     * will be "string" for string-typed properties, and "bool" for boolean typed 
+     * properties.
+     * 
+     * @return the type Facebook gives to this property.
+     */
     public String getType() {
         return type;
+    }
+    
+    /**
+     * Lookup an ApplicationProperty value by its name.
+     * 
+     * @param propName the name to lookup
+     * 
+     * @return the ApplicationProperty value that corresponds to the specified name, or 
+     *         null if the name cannot be found/is not valid.
+     */
+    public static ApplicationProperty getPropertyForString(String propName) {
+        return PROP_TABLE.get(propName);
     }
 }

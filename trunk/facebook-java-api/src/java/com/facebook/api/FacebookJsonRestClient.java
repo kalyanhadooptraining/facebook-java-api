@@ -12,7 +12,6 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
 import com.facebook.api.schema.Listing;
 
  /**
@@ -377,17 +376,6 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     public List<Listing> marketplace_search(MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm) throws FacebookException, IOException {
         throw new FacebookException(ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  " +
         "Please use an instance of FacebookRestClient instead.");
-    }
-    
-    public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
-        String json = this.admin_getAppPropertiesAsString(properties);
-        try {
-            return new JSONArray(json);
-        }
-        catch (Exception e) {
-            //response failed to parse
-            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
-        }
     }
 
     public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {

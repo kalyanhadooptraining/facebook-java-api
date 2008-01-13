@@ -40,7 +40,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.json.JSONArray;
+import org.json.JSONObject;
 import com.facebook.api.schema.Listing;
 
 /**
@@ -1648,8 +1648,24 @@ public interface IFacebookRestClient<T> {
    * 
    * @throws FacebookException
    * @throws IOException
+   * 
+   * @deprecated use admin_getAppPropertiesMap() instead
    */
-  public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
+  public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
+  
+  /**
+   * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * @param properties a collection indicating the properties you are interested in retrieving.
+   * 
+   * @return a mapping of ApplicationProperty's to the corresponding values that are set for those properties.  Properties are 
+   *         represented as strings, so properties that are of boolean type will have a value of "true" when true, and "false" 
+   *         when false.  The properties returned will never be null, an unset property is represented by an empty string.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public Map<ApplicationProperty, String> admin_getAppPropertiesMap(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
   
   /**
    * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.

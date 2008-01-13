@@ -378,17 +378,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
         MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.getResponsePOJO();
         return resp.getListing();
     }
-    
-    public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
-        String json = this.admin_getAppPropertiesAsString(properties);
-        try {
-            return new JSONArray(json);
-        }
-        catch (Exception e) {
-            //response failed to parse
-            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
-        }
-    }
 
     public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
         JSONArray props = new JSONArray();
