@@ -109,7 +109,7 @@ Committing Changes:
 	
 Changelog:
 
-	From 1.6 to 1.6.1
+	From v1.6 to 1.6.1
 		- Add 'Facebook' utility class (in seperate JAR file).
 		- Add support for admin.getAppProperties and admin.setAppProperties.
  		- Add support for data.getCookies and data.setCookie.

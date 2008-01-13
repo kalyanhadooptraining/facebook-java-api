@@ -35,7 +35,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
-import org.w3c.dom.Document;
 import com.facebook.api.schema.FacebookApiException;
 import com.facebook.api.schema.Listing;
 import com.facebook.api.schema.MarketplaceGetListingsResponse;
@@ -337,17 +336,6 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
       public List<Listing> marketplace_search(MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm) throws FacebookException, IOException {
           MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.marketplace_search(category.getName(), subcategory.getName(), searchTerm);
           return resp.getListing();
-      }
-      
-      public JSONArray admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
-          String json = this.admin_getAppPropertiesAsString(properties);
-          try {
-              return new JSONArray(json);
-          }
-          catch (Exception e) {
-              //response failed to parse
-              throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
-          }
       }
 
       public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
