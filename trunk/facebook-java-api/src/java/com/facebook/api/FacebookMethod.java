@@ -138,7 +138,7 @@ public enum FacebookMethod
    * @deprecated use SMS_SEND_MESSAGE instead.
    */
   SMS_SEND("facebook.sms.send", 4),
-  SMS_SEND_MESSAGE("facebook.sms.sendMessage", 3),
+  SMS_SEND_MESSAGE("facebook.sms.send", 3),
   // Facebook Pages
   PAGES_IS_APP_ADDED("facebook.pages.isAppAdded", 1),
   PAGES_IS_ADMIN("facebook.pages.isAdmin", 1),
