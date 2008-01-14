@@ -2854,34 +2854,38 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         Map<ApplicationProperty, String> result = new LinkedHashMap<ApplicationProperty, String>();
         String json = this.admin_getAppPropertiesAsString(properties);
         if (json.matches("\\{.*\\}")) {
-            //first, strip the leading and trailing braces
             json = json.substring(1, json.lastIndexOf("}"));
-            String[] parts = json.split("\\,");
-            for (String part : parts) {
-                //each peice should look like "application_name":"App Name" (string) or "desktop":1 (boolean)
-                String keyString = part.substring(1);
-                keyString = keyString.substring(0, keyString.indexOf('"'));
-                ApplicationProperty key = ApplicationProperty.getPropertyForString(keyString);
-                String value = part.substring(part.indexOf(":") + 1).replaceAll("\\\\", "");  //strip escape characters
-                if (key.getType().equals("string")) {
-                    result.put(key, value.substring(1, value.lastIndexOf('"')));
-                }
-                else {
-                    if (value.equals("1")) {
-                        result.put(key, "true");
-                    }
-                    else {
-                        result.put(key, "false");
-                    }
-                }
-            }
         }
         else {
-            //FIXME:  implement array parse
-            throw new FacebookException(ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json);
+            json = json.substring(1, json.lastIndexOf("]"));
+        }
+        String[] parts = json.split("\\,");
+        for (String part : parts) {
+            parseFragment(part, result);
         }
         
         return result;
+    }
+    
+    private void parseFragment(String fragment, Map<ApplicationProperty, String> result) {
+        if (fragment.startsWith("{")) {
+            fragment = fragment.substring(1, fragment.lastIndexOf("}"));
+        }
+        String keyString = fragment.substring(1);
+        keyString = keyString.substring(0, keyString.indexOf('"'));
+        ApplicationProperty key = ApplicationProperty.getPropertyForString(keyString);
+        String value = fragment.substring(fragment.indexOf(":") + 1).replaceAll("\\\\", "");  //strip escape characters
+        if (key.getType().equals("string")) {
+            result.put(key, value.substring(1, value.lastIndexOf('"')));
+        }
+        else {
+            if (value.equals("1")) {
+                result.put(key, "true");
+            }
+            else {
+                result.put(key, "false");
+            }
+        }
     }
 
     public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
