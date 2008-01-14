@@ -699,7 +699,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
           String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
 
-      return templatizedFeedHandler(FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
+      return templatizedFeedHandler(null, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
               bodyData, bodyGeneral, pictures, targetIds);
   }
 
@@ -903,11 +903,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
   
   
-  protected boolean templatizedFeedHandler(FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
+  protected boolean templatizedFeedHandler(Long actorId, FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
           String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
-      long actorId = this.users_getLoggedInUser();
+      if ((actorId == null) || (actorId <= 0)) {
+          actorId = this.users_getLoggedInUser();
+      }
       ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>(method.numParams());
 
       //these are always required parameters
@@ -2203,15 +2205,33 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence)
      */
     public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate) throws FacebookException, IOException {
-        return this.feed_publishTemplatizedAction(titleTemplate.toString(), null, null, null, null, null, null);
+        return this.feed_publishTemplatizedAction(actorId, titleTemplate.toString(), null, null, null, null, null, null);
     }
     
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
      */
     public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object, URL>> images) throws FacebookException, IOException {
-        return this.feed_publishTemplatizedAction(titleTemplate.toString(), 
-                titleData.toString(), bodyTemplate.toString(), bodyData.toString(), bodyGeneral.toString(), images, targetIds.toString());
+        return this.feed_publishTemplatizedActionInternal(actorId, titleTemplate.toString(), 
+                mapToJsonString(titleData), bodyTemplate.toString(), mapToJsonString(bodyData), bodyGeneral.toString(), images, targetIds);
+    }
+    
+    private String mapToJsonString(Map<String, CharSequence> map) {
+        if (null == map || map.isEmpty()) {
+            return null;
+        }
+        JSONObject titleDataJson = new JSONObject();
+        for (String key : map.keySet()) {
+            try {
+                titleDataJson.put(key, map.get(key));
+            }
+            catch (Exception ignored) {}
+        }
+        return titleDataJson.toString();
+    }
+    
+    private boolean feed_publishTemplatizedActionInternal(Long actor, String titleTemp, String titleData, String bodyTemp, String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> images, Collection<Long> targetIds) throws FacebookException, IOException {
+        return this.templatizedFeedHandler(actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, delimit(targetIds).toString());
     }
     
     /** 
