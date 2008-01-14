@@ -1643,8 +1643,7 @@ public interface IFacebookRestClient<T> {
    * 
    * @param properties a collection indicating the properties you are interested in retrieving.
    * 
-   * @return a JSON array containing a list of JSON objects, where each JSON object maps a single property name to 
-   *         a property value (what was Facebook thinking with this?  I don't know.)
+   * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
    * 
    * @throws FacebookException
    * @throws IOException

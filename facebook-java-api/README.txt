@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.6.1.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.6.2.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.6.1.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.6.2.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,13 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.6.1 to 1.6.2
+		- Fix bug where calling admin_getAppProperties would throw an Exception.
+ 		- Add ability to retrieve app properties as a Map<ApplicationProperty, String> (admin_getAppPropertiesMap).
+ 		- Fix bug where sms_sendMessage would call the wrong API method.
+ 		- Fix multiple bugs in feed_publishTemplatizedAction (encode maps properly, don't ignore actorId parameter).
+ 		- Add ability to lookup an ApplicationProperty by name. 
+		
 	From v1.6 to 1.6.1
 		- Add 'Facebook' utility class (in seperate JAR file).
 		- Add support for admin.getAppProperties and admin.setAppProperties.
