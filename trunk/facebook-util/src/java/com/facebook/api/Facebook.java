@@ -212,6 +212,10 @@ public class Facebook {
 		return "1".equals(fbParams.get(FacebookParam.ADDED.getSignatureName()));
 	}
 	
+	public boolean isLogin () {
+		return getUser() != null;
+	}
+	
 	/**
 	 * Synonym for {@link #getUser()}
 	 * @return
@@ -248,7 +252,7 @@ public class Facebook {
 	 * @return true if the user hasn't logged in yet and a redirect was issued.
 	 */
 	public boolean requireLogin (String next) {
-		if (get_loggedin_user() != null) return false;
+		if (getUser() != null) return false;
 		redirect(getLoginUrl(next, inFrame()));
 		return true;
 	}
@@ -259,7 +263,7 @@ public class Facebook {
 	 * @return true if the user hasn't added the application yet and a redirect was issued.
 	 */
 	public boolean requireAdd(String next) {
-		if (get_loggedin_user() != null && isAdded()) return false;
+		if (getUser() != null && isAdded()) return false;
 		redirect(getAddUrl(next));
 		return true;
 	}
