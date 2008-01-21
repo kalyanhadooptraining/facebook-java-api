@@ -2,7 +2,7 @@
  +---------------------------------------------------------------------------+
  | Facebook Development Platform Java Client                                 |
  +---------------------------------------------------------------------------+
- | Copyright (c) 2007 Facebook, Inc.                                         |
+ | Copyright (c) 2007-2008 Facebook, Inc.                                    |
  | All rights reserved.                                                      |
  |                                                                           |
  | Redistribution and use in source and binary forms, with or without        |
@@ -41,8 +41,9 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
     // Events
     EVENTS_GET("facebook.events.get", 5), EVENTS_GET_MEMBERS("facebook.events.getMembers", 1),
     // Friends
-    FRIENDS_GET("facebook.friends.get"), FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"), FRIENDS_GET_REQUESTS(
-            "facebook.friends.getRequests"), FRIENDS_ARE_FRIENDS("facebook.friends.areFriends", 2),
+    FRIENDS_GET("facebook.friends.get", 1), FRIENDS_GET_LISTS("facebook.friends.getLists"), FRIENDS_GET_APP_USERS(
+            "facebook.friends.getAppUsers"), FRIENDS_GET_REQUESTS("facebook.friends.getRequests"), FRIENDS_ARE_FRIENDS(
+            "facebook.friends.areFriends", 2),
     // Users
     USERS_GET_INFO("facebook.users.getInfo", 2), USERS_GET_LOGGED_IN_USER(
             "facebook.users.getLoggedInUser"), USERS_SET_STATUS("facebook.users_setStatus", 1), USERS_IS_APP_ADDED(
@@ -62,7 +63,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
     // Groups
     GROUPS_GET("facebook.groups.get", 1), GROUPS_GET_MEMBERS("facebook.groups.getMembers", 1),
     // FBML
-    PROFILE_SET_FBML("facebook.profile.setFBML", 2), PROFILE_GET_FBML("facebook.profile.getFBML", 1), FBML_REFRESH_REF_URL(
+    PROFILE_SET_FBML("facebook.profile.setFBML", 4), PROFILE_GET_FBML("facebook.profile.getFBML", 1), FBML_REFRESH_REF_URL(
             "facebook.fbml.refreshRefUrl", 1), FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc",
             1), FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 2),
     // Feed
@@ -81,7 +82,12 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
     // Facebook Pages
     PAGES_IS_APP_ADDED("facebook.pages.isAppAdded", 1), PAGES_IS_ADMIN("facebook.pages.isAdmin", 1), PAGES_IS_FAN(
             "facebook.pages.isFan", 2), PAGES_GET_INFO("facebook.pages.getInfo", 2), PAGES_GET_INFO_NO_SESSION(
-            "facebook.pages.getInfo", 2), ;
+            "facebook.pages.getInfo", 2),
+    // Administration
+    ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2), ADMIN_SET_APP_PROPERTIES(
+            "facebook.admin.setAppProperties", 2),
+    // Data
+    DATA_SET_COOKIE("facebook.data.setCookie", 5), DATA_GET_COOKIES("facebook.data.getCookies", 2), ;
     private String methodName;
     private int numParams;
     private int maxParamsWithSession;
@@ -97,7 +103,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
     public static EnumSet<FacebookMethod> preAuthMethods() {
         if (null == preAuth)
             preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND_MESSAGE,
-                    PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL);
+                    PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, ADMIN_GET_APP_PROPERTIES,
+                    ADMIN_SET_APP_PROPERTIES);
         return preAuth;
     }
 
