@@ -51,10 +51,11 @@ public enum FacebookMethod
   EVENTS_GET("facebook.events.get", 5),
   EVENTS_GET_MEMBERS("facebook.events.getMembers", 1),
   // Friends
-  FRIENDS_GET("facebook.friends.get"),
   FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
   FRIENDS_GET_REQUESTS("facebook.friends.getRequests"),  //deprectaed/unofficial
   FRIENDS_ARE_FRIENDS("facebook.friends.areFriends", 2),
+  FRIENDS_GET("facebook.friends.get", 1), 
+  FRIENDS_GET_LISTS("facebook.friends.getLists"), 
   // Users
   USERS_GET_INFO("facebook.users.getInfo", 2),
   USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
@@ -87,7 +88,7 @@ public enum FacebookMethod
   PROFILE_GET_FBML("facebook.profile.getFBML", 1),
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
-  FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 3),
+  FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 2),
   // Feed
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),  //deprecated
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
@@ -125,10 +126,10 @@ public enum FacebookMethod
   MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 3), 
   
   //Data
-  DATA_SET_COOKIE("facebook.data.setCookie", 6),
+  DATA_SET_COOKIE("facebook.data.setCookie", 5),
   DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
   DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),
-  DATA_GET_COOKIES("facebook.data.getCookies", 3),
+  DATA_GET_COOKIES("facebook.data.getCookies", 2),
   DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference", 2),
   DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
   
