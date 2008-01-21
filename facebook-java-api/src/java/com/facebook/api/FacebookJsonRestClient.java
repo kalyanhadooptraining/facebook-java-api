@@ -240,10 +240,17 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
     if (json instanceof JSONObject) {
       JSONObject jsonObj = (JSONObject) json;
       try {
-            Long errorCode = (Long) jsonObj.get("error_code");
+            Object errorCode = jsonObj.get("error_code");
             if (errorCode != null) {
                 String message = (String) jsonObj.get("error_msg");
-                throw new FacebookException(errorCode.intValue(), message);
+                Integer code;
+                if (errorCode instanceof Integer) {
+                    code = (Integer)errorCode;
+                }
+                else {
+                    code = ((Long)errorCode).intValue();
+                }
+                throw new FacebookException(code, message);
             }
       }
       catch (JSONException ignored) {

@@ -47,6 +47,7 @@ public class TemplatizedAction {
     private JSONObject titleParams;
     private JSONObject bodyParams;
     private List<IPair<Object, URL>> pictures;
+    private Long pageActorId;
     
     private TemplatizedAction() {
         //empty constructor not allowed, at a minimum the titleTemplate parameter is needed
@@ -65,6 +66,7 @@ public class TemplatizedAction {
         this.bodyGeneral = null;
         this.targetIds = null;
         this.pictures = new ArrayList<IPair<Object, URL>>();
+        this.pageActorId = null;
     }
     
     /**
@@ -406,5 +408,19 @@ public class TemplatizedAction {
             throw new RuntimeException(titleTemplate + " is an invalid template!  The title-template must contain the \"{actor}\" token.");
         }
         this.titleTemplate = titleTemplate;
+    }
+
+    /**
+     * @return the page actor-id
+     */
+    public Long getPageActorId() {
+        return pageActorId;
+    }
+
+    /**
+     * @param pageActorId the page actor-id to set
+     */
+    public void setPageActorId(Long pageActorId) {
+        this.pageActorId = pageActorId;
     }
 }

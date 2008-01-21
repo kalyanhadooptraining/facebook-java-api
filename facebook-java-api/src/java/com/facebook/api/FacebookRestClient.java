@@ -700,7 +700,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
           String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
 
       return templatizedFeedHandler(null, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
-              bodyData, bodyGeneral, pictures, targetIds);
+              bodyData, bodyGeneral, pictures, targetIds, null);
+  }
+  
+  public boolean feed_publishTemplatizedAction(String titleTemplate, String titleData, String bodyTemplate,
+          String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds, Long pageId) throws FacebookException, IOException {
+
+      return templatizedFeedHandler(null, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemplate, titleData, bodyTemplate,
+              bodyData, bodyGeneral, pictures, targetIds, pageId);
   }
 
   /**
@@ -744,7 +751,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws IOException
    */
   public boolean feed_PublishTemplatizedAction(TemplatizedAction action) throws FacebookException, IOException {
-      return this.feed_publishTemplatizedAction(action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds());
+      return this.feed_publishTemplatizedAction(action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(), action.getPictures(), action.getTargetIds(), action.getPageActorId());
   }
 
   /**
@@ -904,16 +911,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   
   
   protected boolean templatizedFeedHandler(Long actorId, FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate,
-          String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds) throws FacebookException, IOException {
+          String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> pictures, String targetIds, Long pageId) throws FacebookException, IOException {
       assert (pictures == null || pictures.size() <= 4);
 
-      if ((actorId == null) || (actorId <= 0)) {
-          actorId = this.users_getLoggedInUser();
-      }
       ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>(method.numParams());
 
       //these are always required parameters
-      params.add(new Pair<String, CharSequence>("actor_id", Long.toString(actorId)));
       params.add(new Pair<String, CharSequence>("title_template", titleTemplate));
 
       //these are optional parameters
@@ -941,6 +944,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       }
       if (targetIds != null) {
           params.add(new Pair<String, CharSequence>("target_ids", targetIds));
+      }
+      if (pageId != null) {
+          params.add(new Pair<String, CharSequence>("page_actor_id", Long.toString(pageId)));
       }
       this.callMethod(method, params);
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
@@ -2205,15 +2211,15 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence)
      */
     public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate) throws FacebookException, IOException {
-        return this.feed_publishTemplatizedAction(actorId, titleTemplate.toString(), null, null, null, null, null, null);
+        return this.feed_publishTemplatizedAction(actorId, titleTemplate == null ? null : titleTemplate.toString(), null, null, null, null, null, null);
     }
     
     /* (non-Javadoc)
      * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
      */
     public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object, URL>> images) throws FacebookException, IOException {
-        return this.feed_publishTemplatizedActionInternal(actorId, titleTemplate.toString(), 
-                mapToJsonString(titleData), bodyTemplate.toString(), mapToJsonString(bodyData), bodyGeneral.toString(), images, targetIds);
+        return this.feed_publishTemplatizedActionInternal(actorId, titleTemplate == null ? null : titleTemplate.toString(), 
+                mapToJsonString(titleData), bodyTemplate == null ? null : bodyTemplate.toString(), mapToJsonString(bodyData), bodyGeneral == null ? null : bodyGeneral.toString(), images, targetIds, null);
     }
     
     private String mapToJsonString(Map<String, CharSequence> map) {
@@ -2230,8 +2236,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         return titleDataJson.toString();
     }
     
-    private boolean feed_publishTemplatizedActionInternal(Long actor, String titleTemp, String titleData, String bodyTemp, String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> images, Collection<Long> targetIds) throws FacebookException, IOException {
-        return this.templatizedFeedHandler(actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, delimit(targetIds).toString());
+    private boolean feed_publishTemplatizedActionInternal(Long actor, String titleTemp, String titleData, String bodyTemp, String bodyData, String bodyGeneral, Collection<? extends IPair<? extends Object, URL>> images, Collection<Long> targetIds, Long pageId) throws FacebookException, IOException {
+        if ((targetIds != null) && (! targetIds.isEmpty())) {
+            return this.templatizedFeedHandler(actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, delimit(targetIds).toString(), pageId);
+        }
+        else {
+            return this.templatizedFeedHandler(actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, null, pageId);
+        }
     }
     
     /** 
@@ -2922,7 +2933,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         return this.data_getCookies(this.users_getLoggedInUser(), null);
     }
 
-    public Document data_getCookies(long userId) throws FacebookException, IOException {
+    public Document data_getCookies(Long userId) throws FacebookException, IOException {
         return this.data_getCookies(userId, null);
     }
 
@@ -2930,7 +2941,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         return this.data_getCookies(this.users_getLoggedInUser(), name);
     }
 
-    public Document data_getCookies(long userId, String name) throws FacebookException, IOException {
+    public Document data_getCookies(Long userId, CharSequence name) throws FacebookException, IOException {
         ArrayList<Pair<String, CharSequence>> args = new ArrayList<Pair<String, CharSequence>>();
         args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
         if ((name != null) && (! "".equals(name))) {
@@ -2948,27 +2959,27 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         return this.data_setCookie(this.users_getLoggedInUser(), name, value, null, path);
     }
 
-    public boolean data_setCookie(long userId, String name, String value) throws FacebookException, IOException {
+    public boolean data_setCookie(Long userId, CharSequence name, CharSequence value) throws FacebookException, IOException {
         return this.data_setCookie(userId, name, value, null, null);
     }
 
-    public boolean data_setCookie(long userId, String name, String value, String path) throws FacebookException, IOException {
+    public boolean data_setCookie(Long userId, CharSequence name, CharSequence value, CharSequence path) throws FacebookException, IOException {
         return this.data_setCookie(userId, name, value, null, path);
     }
 
-    public boolean data_setCookie(String name, String value, long expires) throws FacebookException, IOException {
+    public boolean data_setCookie(String name, String value, Long expires) throws FacebookException, IOException {
         return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, null);
     }
 
-    public boolean data_setCookie(String name, String value, long expires, String path) throws FacebookException, IOException {
+    public boolean data_setCookie(String name, String value, Long expires, String path) throws FacebookException, IOException {
         return this.data_setCookie(this.users_getLoggedInUser(), name, value, expires, path);
     }
 
-    public boolean data_setCookie(long userId, String name, String value, long expires) throws FacebookException, IOException {
+    public boolean data_setCookie(Long userId, CharSequence name, CharSequence value, Long expires) throws FacebookException, IOException {
         return this.data_setCookie(userId, name, value, expires, null);
     }
 
-    public boolean data_setCookie(long userId, String name, String value, Long expires, String path) throws FacebookException, IOException {
+    public boolean data_setCookie(Long userId, CharSequence name, CharSequence value, Long expires, CharSequence path) throws FacebookException, IOException {
         if ((name == null) || ("".equals(name))) {
             throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The cookie name cannot be null or empty!");
         }
@@ -2990,5 +3001,128 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         doc = this.callMethod(FacebookMethod.DATA_SET_COOKIE, args);
         
         return extractBoolean(doc);
+    }
+
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate) throws FacebookException, IOException {
+        return this.feed_publishTemplatizedAction(titleTemplate, null);
+    }
+
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate, Long pageActorId) throws FacebookException, IOException {
+        return this.feed_publishTemplatizedAction(titleTemplate, null, null, null, null, null, null, pageActorId);
+    }
+
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate, Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object, URL>> images, Long pageActorId) throws FacebookException, IOException {
+        return this.feed_publishTemplatizedActionInternal(null, titleTemplate == null ? null : titleTemplate.toString(), 
+                mapToJsonString(titleData), bodyTemplate == null ? null : bodyTemplate.toString(), mapToJsonString(bodyData), bodyGeneral == null ? null : bodyGeneral.toString(), images, targetIds, pageActorId);
+    }
+
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup) throws FacebookException, IOException {
+        return this.profile_setFBML(this.users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), null);
+    }
+
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId) throws FacebookException, IOException {
+        return this.profile_setFBML(profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), null);
+    }
+
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup) throws FacebookException, IOException {
+        return this.profile_setFBML(this.users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString());
+    }
+
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId) throws FacebookException, IOException {
+        return this.profile_setFBML(profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString());
+    }
+
+    public boolean profile_setMobileFBML(CharSequence fbmlMarkup) throws FacebookException, IOException {
+        return this.profile_setFBML(this.users_getLoggedInUser(), null, null, fbmlMarkup == null ? null : fbmlMarkup.toString());
+    }
+
+    public boolean profile_setMobileFBML(CharSequence fbmlMarkup, Long profileId) throws FacebookException, IOException {
+        return this.profile_setFBML(profileId, null, null, fbmlMarkup == null ? null : fbmlMarkup.toString());
+    }
+
+    public boolean profile_setProfileActionFBML(CharSequence fbmlMarkup) throws FacebookException, IOException {
+        return this.profile_setFBML(this.users_getLoggedInUser(), null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null);
+    }
+
+    public boolean profile_setProfileActionFBML(CharSequence fbmlMarkup, Long profileId) throws FacebookException, IOException {
+        return this.profile_setFBML(profileId, null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null);
+    }
+
+    public boolean profile_setProfileFBML(CharSequence fbmlMarkup) throws FacebookException, IOException {
+        return this.profile_setFBML(this.users_getLoggedInUser(), fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null);
+    }
+
+    public boolean profile_setProfileFBML(CharSequence fbmlMarkup, Long profileId) throws FacebookException, IOException {
+        return this.profile_setFBML(profileId, fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null);
+    }
+    
+    /**
+     * Retrieves the friends of the currently logged in user that are members of the friends list
+     * with ID <code>friendListId</code>.
+     * 
+     * @param friendListId the friend list for which friends should be fetched. if <code>null</code>,
+     *            all friends will be retrieved.
+     * @return T of friends
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki:
+     *      Friends.get</a>
+     */
+    public Document friends_get(Long friendListId) throws FacebookException, IOException {
+        FacebookMethod method = FacebookMethod.FRIENDS_GET;
+        Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
+                method.numParams());
+        if (null != friendListId) {
+            if (0L >= friendListId) {
+                throw new IllegalArgumentException("given invalid friendListId "
+                        + friendListId.toString());
+            }
+            params.add(new Pair<String,CharSequence>("flid", friendListId.toString()));
+        }
+        return this.callMethod(method, params);
+    }
+
+    /**
+     * Retrieves the friend lists of the currently logged in user.
+     * 
+     * @return T of friend lists
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers
+     *      Wiki: Friends.getLists</a>
+     */
+    public Document friends_getLists() throws FacebookException, IOException {
+        return this.callMethod(FacebookMethod.FRIENDS_GET_LISTS);
+    }
+    
+    /**
+     * Sets several property values for an application. The properties available are analogous to
+     * the ones editable via the Facebook Developer application. A session is not required to use
+     * this method.
+     * 
+     * @param properties an ApplicationPropertySet that is translated into a single JSON String.
+     * @return a boolean indicating whether the properties were successfully set
+     */
+    public boolean admin_setAppProperties(ApplicationPropertySet properties)
+            throws FacebookException, IOException {
+        if (null == properties || properties.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "expecting a non-empty set of application properties");
+        }
+        return extractBoolean(this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                new Pair<String,CharSequence>("properties", properties.toJsonString())));
+    }
+
+    /**
+     * Gets property values previously set for an application on either the Facebook Developer
+     * application or the with the <code>admin.setAppProperties</code> call. A session is not
+     * required to use this method.
+     * 
+     * @param properties an enumeration of the properties to get
+     * @return an ApplicationPropertySet
+     * @see ApplicationProperty
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties">
+     *      Developers Wiki: Admin.getAppProperties</a>
+     */
+    public ApplicationPropertySet admin_getAppPropertiesAsSet(EnumSet<ApplicationProperty> properties)
+            throws FacebookException, IOException {
+        String propJson = this.admin_getAppPropertiesAsString(properties);
+        return new ApplicationPropertySet(propJson);
     }
 }
