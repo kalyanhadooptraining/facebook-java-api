@@ -4,13 +4,13 @@
     <groupId>com.facebook.api</groupId>
     <artifactId>facebook-util</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.1</version>
+    <version>1.7</version>
 	<name>Facebook Java Utility</name>
 	<dependencies>
 		<dependency>
 			<groupId>bigtribe</groupId>
 			<artifactId>facebook-java-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>servletapi</groupId>

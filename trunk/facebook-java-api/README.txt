@@ -109,6 +109,12 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.6.2 to 1.7
+		- Merge in changes from official Facebook API made on 1/20/2008.
+		- Add 'pageActorId' attribute to TemplatizedAction utility class. 
+		- Fix several NPE issues in feed_publishTemplatizedAction.
+		- Fix ClassCastException in FacebookJsonRestClient.
+
 	From v1.6.1 to 1.6.2
 		- Fix bug where calling admin_getAppProperties would throw an Exception.
  		- Add ability to retrieve app properties as a Map<ApplicationProperty, String> (admin_getAppPropertiesMap).

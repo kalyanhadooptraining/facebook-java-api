@@ -5,7 +5,7 @@
 	<id>facebook-util</id>
 	<name>Facebook Java Utility</name>
 	<groupId>bigtribe</groupId>
-	<currentVersion>1.6.1</currentVersion>
+	<currentVersion>1.7</currentVersion>
 	<organization>
 		<name>BigTribe Corporation</name>
 		<logo>http://www.bigtribe.com/img/logo.gif</logo>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>bigtribe</groupId>
 			<artifactId>facebook-java-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>servletapi</groupId>
