@@ -2,7 +2,7 @@
  +---------------------------------------------------------------------------+
  | Facebook Development Platform Java Client                                 |
  +---------------------------------------------------------------------------+
- | Copyright (c) 2007 Facebook, Inc.                                         |
+ | Copyright (c) 2007-2008 Facebook, Inc.                                    |
  | All rights reserved.                                                      |
  |                                                                           |
  | Redistribution and use in source and binary forms, with or without        |
@@ -165,7 +165,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      * Gets the FBML for a user's profile, including the content for both the profile box and the
      * profile actions.
      * 
-     * @param userId - the user whose profile FBML to set
+     * @param userId the user whose profile FBML to set
      * @return a T containing FBML markup
      */
     public T profile_getFBML(Integer userId) throws FacebookException, IOException {
@@ -336,7 +336,31 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      * News Feed stories to the friends of that user. Stories are identified as being combinable if
      * they have matching templates and substituted values.
      * 
-     * @param actorId the user into whose mini-feed the story is being published.
+     * @param actorId deprecated
+     * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
+     *            section. Must include the token <code>{actor}</code>.
+     * @return whether the action story was successfully published; false in case of a permission
+     *         error
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
+     *      Developers Wiki: Feed.publishTemplatizedAction</a>
+     * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed
+     *      Preview Console </a>
+     * @deprecated since 01/18/2008
+     */
+    public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate)
+            throws FacebookException, IOException {
+        if (null != actorId && actorId != this._userId) {
+            throw new IllegalArgumentException("Actor ID parameter is deprecated");
+        }
+        return feed_publishTemplatizedAction(titleTemplate, null, null, null, null, null, null, /* pageActorId */
+                null);
+    }
+
+    /**
+     * Publishes a Mini-Feed story describing an action taken by the logged-in user, and publishes
+     * aggregating News Feed stories to their friends. Stories are identified as being combinable if
+     * they have matching templates and substituted values.
+     * 
      * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
      *            section. Must include the token <code>{actor}</code>.
      * @return whether the action story was successfully published; false in case of a permission
@@ -346,18 +370,41 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed
      *      Preview Console </a>
      */
-    public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate)
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate)
             throws FacebookException, IOException {
-        return feed_publishTemplatizedAction(actorId, titleTemplate, null, null, null, null, null,
+        return feed_publishTemplatizedAction(titleTemplate, null, null, null, null, null, null, /* pageActorId */
                 null);
     }
 
     /**
-     * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating
-     * News Feed stories to the friends of that user. Stories are identified as being combinable if
+     * Publishes a Mini-Feed story describing an action taken by the logged-in user (or, if
+     * <code>pageActorId</code> is provided, page), and publishes aggregating News Feed stories to
+     * the user's friends/page's fans. Stories are identified as being combinable if they have
+     * matching templates and substituted values.
+     * 
+     * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
+     *            section. Must include the token <code>{actor}</code>.
+     * @param pageActorId (optional) the ID of the page into whose mini-feed the story is being
+     *            published
+     * @return whether the action story was successfully published; false in case of a permission
+     *         error
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
+     *      Developers Wiki: Feed.publishTemplatizedAction</a>
+     * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed
+     *      Preview Console </a>
+     */
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate, Long pageActorId)
+            throws FacebookException, IOException {
+        return feed_publishTemplatizedAction(titleTemplate, null, null, null, null, null, null,
+                pageActorId);
+    }
+
+    /**
+     * Publishes a Mini-Feed story describing an action taken by the logged-in user, and publishes
+     * aggregating News Feed stories to their friends. Stories are identified as being combinable if
      * they have matching templates and substituted values.
      * 
-     * @param actorId the user into whose mini-feed the story is being published.
+     * @param actorId deprecated.
      * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
      *            section. Must include the token <code>{actor}</code>.
      * @param titleData (optional) contains token-substitution mappings for tokens that appear in
@@ -385,18 +432,62 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      *      Developers Wiki: Feed.publishTemplatizedAction</a>
      * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed
      *      Preview Console </a>
+     * @deprecated since 01/18/2008
      */
     public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate,
             Map<String,CharSequence> titleData, CharSequence bodyTemplate,
             Map<String,CharSequence> bodyData, CharSequence bodyGeneral,
             Collection<Integer> targetIds, Collection<IFeedImage> images) throws FacebookException,
             IOException {
-        assert null != actorId && actorId > 0 : "Invalid actorId: " + Integer.toString(actorId);
+        return feed_publishTemplatizedAction(titleTemplate, titleData, bodyTemplate, bodyData,
+                bodyGeneral, targetIds, images, /* pageActorId */null);
+    }
+
+    /**
+     * Publishes a Mini-Feed story describing an action taken by the logged-in user (or, if
+     * <code>pageActorId</code> is provided, page), and publishes aggregating News Feed stories to
+     * the user's friends/page's fans. Stories are identified as being combinable if they have
+     * matching templates and substituted values.
+     * 
+     * @param titleTemplate markup (up to 60 chars, tags excluded) for the feed story's title
+     *            section. Must include the token <code>{actor}</code>.
+     * @param titleData (optional) contains token-substitution mappings for tokens that appear in
+     *            titleTemplate. Should not contain mappings for the <code>{actor}</code> or
+     *            <code>{target}</code> tokens. Required if tokens other than <code>{actor}</code>
+     *            or <code>{target}</code> appear in the titleTemplate.
+     * @param bodyTemplate (optional) markup to be displayed in the feed story's body section. can
+     *            include tokens, of the form <code>{token}</code>, to be substituted using
+     *            bodyData.
+     * @param bodyData (optional) contains token-substitution mappings for tokens that appear in
+     *            bodyTemplate. Required if the bodyTemplate contains tokens other than
+     *            <code>{actor}</code> and <code>{target}</code>.
+     * @param bodyGeneral (optional) additional body markup that is not aggregated. If multiple
+     *            instances of this templated story are combined together, the markup in the
+     *            bodyGeneral of one of their stories may be displayed.
+     * @param targetIds The user ids of friends of the actor, used for stories about a direct action
+     *            between the actor and these targets of his/her action. Required if either the
+     *            titleTemplate or bodyTemplate includes the token <code>{target}</code>.
+     * @param images (optional) additional body markup that is not aggregated. If multiple instances
+     *            of this templated story are combined together, the markup in the bodyGeneral of
+     *            one of their stories may be displayed.
+     * @param pageActorId (optional) the ID of the page into whose mini-feed the story is being
+     *            published
+     * @return whether the action story was successfully published; false in case of a permission
+     *         error
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction">
+     *      Developers Wiki: Feed.publishTemplatizedAction</a>
+     * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed
+     *      Preview Console </a>
+     */
+    public boolean feed_publishTemplatizedAction(CharSequence titleTemplate,
+            Map<String,CharSequence> titleData, CharSequence bodyTemplate,
+            Map<String,CharSequence> bodyData, CharSequence bodyGeneral,
+            Collection<Integer> targetIds, Collection<IFeedImage> images, Long pageActorId)
+            throws FacebookException, IOException {
         assert null != titleTemplate && !"".equals(titleTemplate);
         FacebookMethod method = FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION;
         ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
                 method.numParams());
-        params.add(new Pair<String,CharSequence>("actor_id", actorId.toString()));
         params.add(new Pair<String,CharSequence>("title_template", titleTemplate));
         if (null != titleData && !titleData.isEmpty()) {
             JSONObject titleDataJson = new JSONObject();
@@ -416,6 +507,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
         }
         if (null != targetIds && !targetIds.isEmpty()) {
             params.add(new Pair<String,CharSequence>("target_ids", delimit(targetIds)));
+        }
+        if (null != pageActorId) {
+            params.add(new Pair<String,CharSequence>("page_actor_id", pageActorId.toString()));
         }
         handleFeedImages(params, images);
         return extractBoolean(this.callMethod(method, params));
@@ -1001,7 +1095,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
             throws FacebookException, IOException {
         assert (null != notification);
         ArrayList<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>(3);
-        args.add(new Pair<String,CharSequence>("to_ids", delimit(recipientIds)));
+        if (null != recipientIds && !recipientIds.isEmpty()) {
+            args.add(new Pair<String,CharSequence>("to_ids", delimit(recipientIds)));
+        }
         args.add(new Pair<String,CharSequence>("notification", notification));
         this.callMethod(FacebookMethod.NOTIFICATIONS_SEND, args);
     }
@@ -1263,10 +1359,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      * Sets the FBML for a user's profile, including the content for both the profile box and the
      * profile actions.
      * 
-     * @param userId - the user whose profile FBML to set
-     * @param fbmlMarkup - refer to the FBML documentation for a description of the markup and its
+     * @param userId the user whose profile FBML to set
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
      *            role in various contexts
      * @return a boolean indicating whether the FBML was successfully set
+     * @deprecated Use {@link FacebookRestClient#profile_setFBML(CharSequence,CharSequence,Long)}
+     *             instead.
+     * @see #profile_setFBML(CharSequence,CharSequence,Long)
      */
     public boolean profile_setFBML(CharSequence fbmlMarkup, Integer userId)
             throws FacebookException, IOException {
@@ -1276,13 +1375,202 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
     }
 
     /**
+     * Sets the FBML for a profile box on the logged-in user's profile.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFbml</a>
+     */
+    public boolean profile_setProfileFBML(CharSequence fbmlMarkup) throws FacebookException,
+            IOException {
+        return profile_setFBML(fbmlMarkup, /* profileActionFbmlMarkup */null, /* mobileFbmlMarkup */
+                null,
+                /* profileId */null);
+    }
+
+    /**
+     * Sets the FBML for profile actions for the logged-in user.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setProfileActionFBML(CharSequence fbmlMarkup) throws FacebookException,
+            IOException {
+        return profile_setFBML( /* profileFbmlMarkup */null, fbmlMarkup, /* mobileFbmlMarkup */
+                null,
+                /* profileId */null);
+    }
+
+    /**
+     * Sets the FBML for the logged-in user's profile on mobile devices.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setMobileFBML(CharSequence fbmlMarkup) throws FacebookException,
+            IOException {
+        return profile_setFBML( /* profileFbmlMarkup */null, /* profileActionFbmlMarkup */null,
+                fbmlMarkup,
+                /* profileId */null);
+    }
+
+    /**
+     * Sets the FBML for a profile box on the user or page profile with ID <code>profileId</code>.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @param profileId a page or user ID (null for the logged-in user)
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFbml</a>
+     */
+    public boolean profile_setProfileFBML(CharSequence fbmlMarkup, Long profileId)
+            throws FacebookException, IOException {
+        return profile_setFBML(fbmlMarkup, /* profileActionFbmlMarkup */null, /* mobileFbmlMarkup */
+                null, profileId);
+    }
+
+    /**
+     * Sets the FBML for profile actions for the user or page profile with ID <code>profileId</code>.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @param profileId a page or user ID (null for the logged-in user)
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setProfileActionFBML(CharSequence fbmlMarkup, Long profileId)
+            throws FacebookException, IOException {
+        return profile_setFBML( /* profileFbmlMarkup */null, fbmlMarkup, /* mobileFbmlMarkup */
+                null, profileId);
+    }
+
+    /**
+     * Sets the FBML for the user or page profile with ID <code>profileId</code> on mobile
+     * devices.
+     * 
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
+     *            role in various contexts
+     * @param profileId a page or user ID (null for the logged-in user)
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setMobileFBML(CharSequence fbmlMarkup, Long profileId)
+            throws FacebookException, IOException {
+        return profile_setFBML( /* profileFbmlMarkup */null, /* profileActionFbmlMarkup */null,
+                fbmlMarkup, profileId);
+    }
+
+    /**
+     * Sets the FBML for the profile box and profile actions for the logged-in user. Refer to the
+     * FBML documentation for a description of the markup and its role in various contexts.
+     * 
+     * @param profileFbmlMarkup the FBML for the profile box
+     * @param profileActionFbmlMarkup the FBML for the profile actions
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup,
+            CharSequence profileActionFbmlMarkup) throws FacebookException, IOException {
+        return profile_setFBML(profileFbmlMarkup, profileActionFbmlMarkup, /* mobileFbmlMarkup */
+                null, /* profileId */null);
+    }
+
+    /**
+     * Sets the FBML for the profile box and profile actions for the user or page profile with ID
+     * <code>profileId</code>. Refer to the FBML documentation for a description of the markup
+     * and its role in various contexts.
+     * 
+     * @param profileFbmlMarkup the FBML for the profile box
+     * @param profileActionFbmlMarkup the FBML for the profile actions
+     * @param profileId a page or user ID (null for the logged-in user)
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup,
+            CharSequence profileActionFbmlMarkup, Long profileId) throws FacebookException,
+            IOException {
+        return profile_setFBML(profileFbmlMarkup, profileActionFbmlMarkup, /* mobileFbmlMarkup */
+                null, profileId);
+    }
+
+    /**
+     * Sets the FBML for the profile box, profile actions, and mobile devices for the logged-in
+     * user. Refer to the FBML documentation for a description of the markup and its role in various
+     * contexts.
+     * 
+     * @param profileFbmlMarkup the FBML for the profile box
+     * @param profileActionFbmlMarkup the FBML for the profile actions
+     * @param mobileFbmlMarkup the FBML for mobile devices
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup,
+            CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup)
+            throws FacebookException, IOException {
+        return profile_setFBML(profileFbmlMarkup, profileActionFbmlMarkup, mobileFbmlMarkup, /* profileId */
+                null);
+    }
+
+    /**
+     * Sets the FBML for the profile box, profile actions, and mobile devices for the user or page
+     * profile with ID <code>profileId</code>. Refer to the FBML documentation for a description
+     * of the markup and its role in various contexts.
+     * 
+     * @param profileFbmlMarkup the FBML for the profile box
+     * @param profileActionFbmlMarkup the FBML for the profile actions
+     * @param mobileFbmlMarkup the FBML for mobile devices
+     * @param profileId a page or user ID (null for the logged-in user)
+     * @return a boolean indicating whether the FBML was successfully set
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+     *      wiki: Profile.setFBML</a>
+     */
+    public boolean profile_setFBML(CharSequence profileFbmlMarkup,
+            CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId)
+            throws FacebookException, IOException {
+        if (null == profileFbmlMarkup && null == profileActionFbmlMarkup
+                && null == mobileFbmlMarkup) {
+            throw new IllegalArgumentException(
+                    "At least one of the FBML parameters must be provided");
+        }
+        if (this.isDesktop() && (null != profileId && this._userId != profileId)) {
+            throw new IllegalArgumentException("Can't set FBML for another user from desktop app");
+        }
+        FacebookMethod method = FacebookMethod.PROFILE_SET_FBML;
+        ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
+                method.numParams());
+        if (null != profileId && !this.isDesktop())
+            params.add(new Pair<String,CharSequence>("uid", profileId.toString()));
+        if (null != profileFbmlMarkup)
+            params.add(new Pair<String,CharSequence>("profile", profileFbmlMarkup));
+        if (null != profileActionFbmlMarkup)
+            params.add(new Pair<String,CharSequence>("profile_action", profileActionFbmlMarkup));
+        if (null != mobileFbmlMarkup)
+            params.add(new Pair<String,CharSequence>("mobile_fbml", mobileFbmlMarkup));
+        return extractBoolean(this.callMethod(method, params));
+    }
+
+    /**
      * Associates a "<code>handle</code>" with FBML markup so that the handle can be used within
      * the <a href="http://wiki.developers.facebook.com/index.php/Fb:ref">fb:ref</a> FBML tag. A
      * handle is unique within an application and allows an application to publish identical FBML to
      * many user profiles and do subsequent updates without having to republish FBML for each user.
      * 
-     * @param handle - a string, unique within the application, that
-     * @param fbmlMarkup - refer to the FBML documentation for a description of the markup and its
+     * @param handle a string, unique within the application, that
+     * @param fbmlMarkup refer to the FBML documentation for a description of the markup and its
      *            role in various contexts
      * @return a boolean indicating whether the FBML was successfully set
      * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle"> Developers
@@ -1525,10 +1813,47 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
     /**
      * Retrieves the friends of the currently logged in user.
      * 
-     * @return array of friends
+     * @return T of friends
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki:
+     *      Friends.get</a>
      */
     public T friends_get() throws FacebookException, IOException {
-        return this.callMethod(FacebookMethod.FRIENDS_GET);
+        return this.friends_get( /* friendListId */null);
+    }
+
+    /**
+     * Retrieves the friends of the currently logged in user that are members of the friends list
+     * with ID <code>friendListId</code>.
+     * 
+     * @param friendListId the friend list for which friends should be fetched. if <code>null</code>,
+     *            all friends will be retrieved.
+     * @return T of friends
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki:
+     *      Friends.get</a>
+     */
+    public T friends_get(Long friendListId) throws FacebookException, IOException {
+        FacebookMethod method = FacebookMethod.FRIENDS_GET;
+        Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
+                method.numParams());
+        if (null != friendListId) {
+            if (0L >= friendListId) {
+                throw new IllegalArgumentException("given invalid friendListId "
+                        + friendListId.toString());
+            }
+            params.add(new Pair<String,CharSequence>("flid", friendListId.toString()));
+        }
+        return this.callMethod(method, params);
+    }
+
+    /**
+     * Retrieves the friend lists of the currently logged in user.
+     * 
+     * @return T of friend lists
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers
+     *      Wiki: Friends.getLists</a>
+     */
+    public T friends_getLists() throws FacebookException, IOException {
+        return this.callMethod(FacebookMethod.FRIENDS_GET_LISTS);
     }
 
     private InputStream postRequest(CharSequence method, Map<String,CharSequence> params,
@@ -1873,5 +2198,175 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
     public boolean pages_isAdmin(Long pageId) throws FacebookException, IOException {
         return extractBoolean(this.callMethod(FacebookMethod.PAGES_IS_ADMIN,
                 new Pair<String,CharSequence>("page_id", pageId.toString())));
+    }
+
+    /**
+     * Sets several property values for an application. The properties available are analogous to
+     * the ones editable via the Facebook Developer application. A session is not required to use
+     * this method.
+     * 
+     * @param properties an ApplicationPropertySet that is translated into a single JSON String.
+     * @return a boolean indicating whether the properties were successfully set
+     */
+    public boolean admin_setAppProperties(ApplicationPropertySet properties)
+            throws FacebookException, IOException {
+        if (null == properties || properties.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "expecting a non-empty set of application properties");
+        }
+        return extractBoolean(this.callMethod(FacebookMethod.ADMIN_SET_APP_PROPERTIES,
+                new Pair<String,CharSequence>("properties", properties.toJsonString())));
+    }
+
+    /**
+     * Gets property values previously set for an application on either the Facebook Developer
+     * application or the with the <code>admin.setAppProperties</code> call. A session is not
+     * required to use this method.
+     * 
+     * @param properties an enumeration of the properties to get
+     * @return an ApplicationPropertySet
+     * @see ApplicationProperty
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties">
+     *      Developers Wiki: Admin.getAppProperties</a>
+     */
+    public ApplicationPropertySet admin_getAppProperties(EnumSet<ApplicationProperty> properties)
+            throws FacebookException, IOException {
+        if (null == properties || properties.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "expecting a non-empty set of application properties");
+        }
+        JSONArray propList = new JSONArray();
+        for (ApplicationProperty prop: properties) {
+            propList.add(prop.propertyName());
+        }
+        String propJson = extractString(this.callMethod(FacebookMethod.ADMIN_GET_APP_PROPERTIES,
+                new Pair<String,CharSequence>("properties", propList.toString())));
+        return new ApplicationPropertySet(propJson);
+    }
+
+    /**
+     * Retrieves all cookies for the application and the given <code>userId</code>. If a
+     * <code>cookieName</code> is specified, only that cookie will be returned.
+     * 
+     * @param userId The user from whom to get the cookies (defaults to logged-in user).
+     * @param cookieName The name of the cookie to get. If null, all cookies will be returned
+     * @return a T of cookies.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.getCookies</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public T data_getCookies(Integer userId, CharSequence cookieName) throws FacebookException,
+            IOException {
+        Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
+                FacebookMethod.DATA_GET_COOKIES.numParams());
+        params.add(new Pair<String,CharSequence>("uid", userId.toString()));
+        if (null != cookieName) {
+            params.add(new Pair<String,CharSequence>("name", cookieName.toString()));
+        }
+        return this.callMethod(FacebookMethod.DATA_GET_COOKIES, params);
+    }
+
+    /**
+     * Retrieves all cookies for the application and the given <code>userId</code>.
+     * 
+     * @param userId The user from whom to get the cookies (defaults to logged-in user).
+     * @return a T of cookies.
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.getCookies</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public T data_getCookies(Integer userId) throws FacebookException, IOException {
+        return data_getCookies(userId, /* cookieName */null);
+    }
+
+    /**
+     * Sets a cookie for a given user and application.
+     * 
+     * @param userId The user for whom this cookie needs to be set
+     * @param cookieName Name of the cookie.
+     * @param cookieValue Value of the cookie.
+     * @return true if cookie was successfully set, false otherwise
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.setCookie</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public boolean data_setCookie(Integer userId, CharSequence cookieName, CharSequence cookieValue)
+            throws FacebookException, IOException {
+        return data_setCookie(userId, cookieName, cookieValue, /* expiresTimestamp */null, /* path */
+                null);
+    }
+
+    /**
+     * Sets a cookie for a given user and application.
+     * 
+     * @param userId The user for whom this cookie needs to be set
+     * @param cookieName Name of the cookie.
+     * @param cookieValue Value of the cookie.
+     * @param path Path relative to the application's callback URL, with which the cookie should be
+     *            associated. If null, defaulted to "/"
+     * @return true if cookie was successfully set, false otherwise
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.setCookie</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public boolean data_setCookie(Integer userId, CharSequence cookieName,
+            CharSequence cookieValue, CharSequence path) throws FacebookException, IOException {
+        return data_setCookie(userId, cookieName, cookieValue, /* expiresTimestamp */null, path);
+    }
+
+    /**
+     * Sets a cookie for a given user and application.
+     * 
+     * @param userId The user for whom this cookie needs to be set
+     * @param cookieName Name of the cookie.
+     * @param cookieValue Value of the cookie.
+     * @param expiresTimestamp Time stamp when the cookie should expire. If not specified, the
+     *            cookie never expires.
+     * @return true if cookie was successfully set, false otherwise
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.setCookie</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public boolean data_setCookie(Integer userId, CharSequence cookieName,
+            CharSequence cookieValue, Long expiresTimestamp) throws FacebookException, IOException {
+        return data_setCookie(userId, cookieName, cookieValue, expiresTimestamp, /* path */null);
+    }
+
+    /**
+     * Sets a cookie for a given user and application.
+     * 
+     * @param userId The user for whom this cookie needs to be set
+     * @param cookieName Name of the cookie.
+     * @param cookieValue Value of the cookie.
+     * @param expiresTimestamp Time stamp when the cookie should expire. If not specified, the
+     *            cookie never expires.
+     * @return true if cookie was successfully set, false otherwise
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getCookies"> Developers
+     *      Wiki: Data.setCookie</a>
+     * @see <a href="http://wiki.developers.facebook.com/index.php/Cookies"> Developers Wiki:
+     *      Cookies</a>
+     */
+    public boolean data_setCookie(Integer userId, CharSequence cookieName,
+            CharSequence cookieValue, Long expiresTimestamp, CharSequence path)
+            throws FacebookException, IOException {
+        if (null == userId || 0 >= userId)
+            throw new IllegalArgumentException("userId should be provided.");
+        if (null == cookieName || null == cookieValue)
+            throw new IllegalArgumentException("cookieName and cookieValue should be provided.");
+        ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>(
+                FacebookMethod.DATA_GET_COOKIES.numParams());
+        params.add(new Pair<String,CharSequence>("uid", userId.toString()));
+        params.add(new Pair<String,CharSequence>("name", cookieName));
+        params.add(new Pair<String,CharSequence>("value", cookieValue));
+        if (null != expiresTimestamp && expiresTimestamp >= 0L)
+            params.add(new Pair<String,CharSequence>("expires", expiresTimestamp.toString()));
+        if (null != path)
+            params.add(new Pair<String,CharSequence>("path", path));
+        return extractBoolean(this.callMethod(FacebookMethod.DATA_GET_COOKIES, params));
     }
 }
