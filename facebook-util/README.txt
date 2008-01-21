@@ -25,3 +25,12 @@ Quick Start (project users):
 		place them on your runtime classpath.  This will allow you to use the companion utility.
 		
 	5.  If you need help using the API, consult the project Javadoc at http://64.81.51.104:54321/facebook/helper/javadoc/index.html
+	
+	
+Changelog:
+	
+	From v1.6 to v1.7
+		- Added an isLogin() method, similar to how isAdd() works.
+	
+	v1.6
+		- Initial version.
