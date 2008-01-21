@@ -2,7 +2,7 @@
  +---------------------------------------------------------------------------+
  | Facebook Development Platform Java Client                                 |
  +---------------------------------------------------------------------------+
- | Copyright (c) 2007 Facebook, Inc.                                         |
+ | Copyright (c) 2007-2008 Facebook, Inc.                                    |
  | All rights reserved.                                                      |
  |                                                                           |
  | Redistribution and use in source and binary forms, with or without        |
@@ -68,6 +68,7 @@ public enum FacebookParam implements CharSequence {
 
     /**
      * @param key
+     * @return
      */
     public static boolean isSignature(String key) {
         return SIGNATURE.equals(get(key));
