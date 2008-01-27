@@ -2995,7 +2995,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         args.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
         args.add(new Pair<String, CharSequence>("name", name));
         args.add(new Pair<String, CharSequence>("value", value));
-        if ((expires != null) || (expires > 0)) {
+        if ((expires != null) && (expires > 0)) {
             args.add(new Pair<String, CharSequence>("expires", expires.toString()));
         }
         if ((path != null) && (! "".equals(path))) {
