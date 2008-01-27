@@ -2622,10 +2622,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         }
         Document d;
         String paramName = "text";
-        String paramValue = email.toString();
-        if ((paramValue == null) || ("".equals(paramValue))) {
+        String paramValue;
+        if ((email == null) || ("".equals(email.toString()))) {
             paramValue = fbml.toString();
             paramName = "fbml";
+        }
+        else {
+            paramValue = email.toString();
         }
         
         //session is only required to send email from a desktop app
