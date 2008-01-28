@@ -32,11 +32,16 @@
 
 package com.facebook.api;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -61,6 +66,50 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  *             to use the Facebook Platform XML API. 
  */
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
+    
+    //  used so that executeBatch can return the correct types in its list, without killing efficiency.
+    private static final Map<FacebookMethod, String> RETURN_TYPES;
+    static {
+        RETURN_TYPES = new HashMap<FacebookMethod, String>();
+        Method[] candidates = FacebookXmlRestClient.class.getMethods();
+        //this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
+        for (FacebookMethod method : EnumSet.allOf(FacebookMethod.class)) {
+            String name = method.methodName();
+            name = name.substring(name.indexOf(".") + 1);
+            name = name.replace(".", "_");
+            for (Method candidate : candidates) {
+                if (candidate.getName().equalsIgnoreCase(name)) {
+                    String typeName = candidate.getReturnType().getName().toLowerCase();
+                    //possible types are Document, String, Boolean, Integer, Long, void
+                    if (typeName.indexOf("document") != -1) {
+                        RETURN_TYPES.put(method, "default");
+                    }
+                    else if (typeName.indexOf("string") != -1) {
+                        RETURN_TYPES.put(method, "string");
+                    }
+                    else if (typeName.indexOf("bool") != -1) {
+                        RETURN_TYPES.put(method, "bool");
+                    }
+                    else if (typeName.indexOf("long") != -1) {
+                        RETURN_TYPES.put(method, "long");
+                    }
+                    else if (typeName.indexOf("int") != -1) {
+                        RETURN_TYPES.put(method, "int");
+                    }
+                    else if ((typeName.indexOf("applicationpropertyset") != -1) || (typeName.indexOf("list") != -1) 
+                        || (typeName.indexOf("url") != -1) || (typeName.indexOf("map") != -1) 
+                        || (typeName.indexOf("object") != -1)) {
+                        //we don't autobox these for now, the user can parse them on their own
+                        RETURN_TYPES.put(method, "default");
+                    }
+                    else {
+                        RETURN_TYPES.put(method, "void");
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
   /**
    * Constructor.  Don't use this, use FacebookRestClient instead.
@@ -197,7 +246,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @return the String
    */
   public String extractString(Document d) {
-    return d.getFirstChild().getTextContent();
+      if (d == null) {
+          return null;
+      }
+      return d.getFirstChild().getTextContent();
   }
 
   /**
@@ -257,8 +309,11 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @return the URL
    */
   protected URL extractURL(Document doc) throws IOException {
-    String url = doc.getFirstChild().getTextContent();
-    return (null == url || "".equals(url)) ? null : new URL(url);
+      if (doc == null) {
+          return null;
+      }
+      String url = doc.getFirstChild().getTextContent();
+      return (null == url || "".equals(url)) ? null : new URL(url);
   }
 
   /**
@@ -267,7 +322,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @return the Integer
    */
   protected int extractInt(Document doc) {
-    return Integer.parseInt(doc.getFirstChild().getTextContent());
+      if (doc == null) {
+          return 0;
+      }
+      return Integer.parseInt(doc.getFirstChild().getTextContent());
   }
 
   /**
@@ -276,7 +334,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @return the Long
    */
   protected Long extractLong(Document doc) {
-    return Long.parseLong(doc.getFirstChild().getTextContent());
+      if (doc == null) {
+          return 0l;
+      }
+      return Long.parseLong(doc.getFirstChild().getTextContent());
   }
 
   /**
@@ -387,5 +448,82 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
         Document d = this.callMethod(FacebookMethod.ADMIN_GET_APP_PROPERTIES,
                 new Pair<String, CharSequence>("properties", props.toString()));
         return extractString(d);
+    }
+    
+    /**
+     * Executes a batch of queries.  You define the queries to execute by calling 'beginBatch' and then 
+     * invoking the desired API methods that you want to execute as part of your batch as normal.  Invoking 
+     * this method will then execute the API calls you made in the interim as a single batch query.  
+     * 
+     * @param serial set to true, and your batch queries will always execute serially, in the same order in which 
+     *               your specified them.  If set to false, the Facebook API server may execute your queries in 
+     *               parallel and/or out of order in order to improve performance.
+     * 
+     * @return a list containing the results of the batch execution.  The list will be ordered such that the first 
+     *         element corresponds to the result of the first query in the batch, and the second element corresponds 
+     *         to the result of the second query, and so on.  The types of the objects in the list will match the 
+     *         type normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a 
+     *         batch will place a Long in the list, and calling friends_get will place a Document in the list, etc.).
+     *         
+     *         The list may be empty, it will never be null.
+     * 
+     * @throws FacebookException
+     * @throws IOException
+     */
+    public List<? extends Object> executeBatch(boolean serial) throws FacebookException,
+        IOException {
+        this.batchMode = false;
+        List<Object> result = new ArrayList<Object>();
+        List<BatchQuery> buffer = new ArrayList<BatchQuery>();
+        while (! this.queries.isEmpty()) {
+            buffer.add(this.queries.remove(0));
+            if ((buffer.size() == 15) || (this.queries.isEmpty())) {
+                //we can only actually batch up to 15 at once
+                Document doc = this.batch_run(this.encodeMethods(buffer), serial);
+                NodeList responses = doc.getElementsByTagName("batch_run_response_elt");
+                for (int count = 0; count < responses.getLength(); count++) {
+                    String response = extractNodeString(responses.item(count));
+                    try {
+                        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                        Document respDoc = builder.parse(new ByteArrayInputStream(response.getBytes("UTF-8")));
+                        String type = RETURN_TYPES.get(buffer.get(count).getMethod());
+                        //possible types are document, string, bool, int, long, void
+                        if (type.equals("default")) {
+                            result.add(respDoc);
+                        }
+                        else if (type.equals("string")) {
+                            result.add(extractString(respDoc));
+                        }
+                        else if (type.equals("bool")) {
+                            result.add(extractBoolean(respDoc));
+                        }
+                        else if (type.equals("int")) {
+                            result.add(extractInt(respDoc));
+                        }
+                        else if (type.equals("long")) {
+                            result.add((long)extractInt(respDoc));
+                        }
+                        else {
+                            //void
+                            result.add(null);
+                        }
+                    }
+                    catch (Exception ignored) {
+                        if (result.size() < count + 1) {
+                            result.add(null);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    public static String extractNodeString(Node d) {
+        if (d == null) {
+            return null;
+        }
+        return d.getFirstChild().getTextContent();
     }
 }

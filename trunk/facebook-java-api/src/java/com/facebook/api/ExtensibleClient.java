@@ -92,13 +92,15 @@ public abstract class ExtensibleClient<T>
       System.exit(1);
     }
   }
-
+  
   protected final String _secret;
   protected final String _apiKey;
   protected final URL _serverUrl;
   protected String rawResponse;
   protected Long _expires;
   protected int _timeout;
+  protected boolean batchMode;
+  protected List<BatchQuery> queries;
 
   protected String _sessionKey;
   protected boolean _isDesktop = false;
@@ -135,6 +137,8 @@ public abstract class ExtensibleClient<T>
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
     _timeout = -1;
+    batchMode = false;
+    queries = new ArrayList<BatchQuery>();
   }
   
   protected ExtensibleClient(URL serverUrl, String apiKey, String secret, String sessionKey, int timeout) {
@@ -727,6 +731,30 @@ public abstract class ExtensibleClient<T>
     String signature =
       generateSignature(FacebookSignatureUtil.convert(params.entrySet()), method.requiresSession());
     params.put("sig", signature);
+    
+    if (this.batchMode) {
+        //if we are running in batch mode, don't actually execute the query now, just add it to the list
+        boolean addToBatch = true;
+        if (method.methodName().equals(FacebookMethod.USERS_GET_LOGGED_IN_USER.methodName())) {
+            Exception trace = new Exception();
+            StackTraceElement[] traceElems = trace.getStackTrace();
+            int index = 0;
+            for (StackTraceElement elem : traceElems) {
+                if (elem.getMethodName().indexOf("_") != -1) {
+                    StackTraceElement caller = traceElems[index + 1];
+                    if ((caller.getClassName().equals(ExtensibleClient.class.getName())) && (! caller.getMethodName().startsWith("auth_"))) {
+                        addToBatch = false;
+                    }
+                    break;
+                }
+                index++;
+            }
+        }
+        if (addToBatch) {
+            this.queries.add(new BatchQuery(method, params));
+        }
+        return null;
+    }
 
     boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals(method);
     InputStream data =
@@ -1246,7 +1274,10 @@ public abstract class ExtensibleClient<T>
    * @return the Boolean
    */
   protected boolean extractBoolean(T result) {
-    return 1 == extractInt(result);
+      if (result == null) {
+          return false;
+      }
+      return 1 == extractInt(result);
   }
 
   /**
@@ -1462,6 +1493,9 @@ public abstract class ExtensibleClient<T>
   public List<String> marketplace_getCategories()
     throws FacebookException, IOException {
     T temp = this.callMethod(FacebookMethod.MARKETPLACE_GET_CATEGORIES);
+    if (temp == null) {
+        return null;
+    }
     List<String> results = new ArrayList<String>();
     if (temp instanceof Document) {
         Document d = (Document)temp;
@@ -1671,6 +1705,9 @@ public abstract class ExtensibleClient<T>
           params.add(new Pair<String, CharSequence>("page_actor_id", Long.toString(pageId)));
       }
       this.callMethod(method, params);
+      if (this.rawResponse == null) {
+          return false;
+      }
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
   
@@ -2344,6 +2381,9 @@ public abstract class ExtensibleClient<T>
    */
   public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
       String json = this.admin_getAppPropertiesAsString(properties);
+      if (json == null) {
+          return null;
+      }
       try {
           if (json.matches("\\{.*\\}")) {
               return new JSONObject(json);
@@ -2371,6 +2411,9 @@ public abstract class ExtensibleClient<T>
   public Map<ApplicationProperty, String> admin_getAppPropertiesMap(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
       Map<ApplicationProperty, String> result = new LinkedHashMap<ApplicationProperty, String>();
       String json = this.admin_getAppPropertiesAsString(properties);
+      if (json == null) {
+          return null;
+      }
       if (json.matches("\\{.*\\}")) {
           json = json.substring(1, json.lastIndexOf("}"));
       }
@@ -2387,6 +2430,9 @@ public abstract class ExtensibleClient<T>
   
   static Map<ApplicationProperty, String> parseProperties(String json) {
       Map<ApplicationProperty, String> result = new HashMap<ApplicationProperty, String>();
+      if (json == null) {
+          return null;
+      }
       if (json.matches("\\{.*\\}")) {
           json = json.substring(1, json.lastIndexOf("}"));
       }
@@ -2592,5 +2638,51 @@ public abstract class ExtensibleClient<T>
           throws FacebookException, IOException {
       String propJson = this.admin_getAppPropertiesAsString(properties);
       return new ApplicationPropertySet(propJson);
+  }
+  
+  /**
+   * Starts a batch of queries.  Any API calls made after invoking 'beginBatch' will be deferred 
+   * until the next time you call 'executeBatch', at which time they will be processed as a 
+   * batch query.  All API calls made in the interim will return null as their result.
+   */
+  public void beginBatch() {
+      this.batchMode = true;
+      this.queries = new ArrayList<BatchQuery>();
+  }
+  
+  protected String encodeMethods(List<BatchQuery> queries) throws FacebookException {
+      JSONArray result = new JSONArray();
+      for (BatchQuery query : queries) {
+          if (query.getMethod().takesFile()) {
+              throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "File upload API calls cannot be batched:  " 
+                      + query.getMethod().methodName());
+          }
+          result.put(delimit(query.getParams().entrySet(), "&", "=", true));
+      }
+      
+      return result.toString();
+  }
+  
+  /**
+   * Executes a batch of queries.  It is your responsibility to encode the method feed 
+   * correctly.  It is not recommended that you call this method directly.  Instead use 
+   * 'beginBatch' and 'executeBatch', which will take care of the hard parts for you.
+   * 
+   * @param methods A JSON encoded array of strings. Each element in the array should contain 
+   *        the full parameters for a method, including method name, sig, etc. Currently, there 
+   *        is a maximum limit of 15 elements in the array.
+   * @param serial An optional parameter to indicate whether the methods in the method_feed 
+   *               must be executed in order. The default value is false.
+   * 
+   * @return a result containing the response to each individual query in the batch.
+   */
+  public T batch_run(String methods, boolean serial) throws FacebookException,
+  IOException {
+      ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("method_feed", methods));
+      if (serial)
+          params.add(new Pair<String, CharSequence>("serial_only", "1"));
+        
+      return this.callMethod(FacebookMethod.BATCH_RUN, params);
   }
 }

@@ -4,9 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
@@ -21,6 +25,50 @@ import com.facebook.api.schema.Listing;
   * transformed into Java <code>Object</code>'s.
   */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+    //  used so that executeBatch can return the correct types in its list, without killing efficiency.
+    private static final Map<FacebookMethod, String> RETURN_TYPES;
+    static {
+        RETURN_TYPES = new HashMap<FacebookMethod, String>();
+        Method[] candidates = FacebookJsonRestClient.class.getMethods();
+        //this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
+        for (FacebookMethod method : EnumSet.allOf(FacebookMethod.class)) {
+            String name = method.methodName();
+            name = name.substring(name.indexOf(".") + 1);
+            name = name.replace(".", "_");
+            for (Method candidate : candidates) {
+                if (candidate.getName().equalsIgnoreCase(name)) {
+                    String typeName = candidate.getReturnType().getName().toLowerCase();
+                    //possible types are Document, String, Boolean, Integer, Long, void
+                    if (typeName.indexOf("object") != -1) {
+                        RETURN_TYPES.put(method, "default");
+                    }
+                    else if (typeName.indexOf("string") != -1) {
+                        RETURN_TYPES.put(method, "string");
+                    }
+                    else if (typeName.indexOf("bool") != -1) {
+                        RETURN_TYPES.put(method, "bool");
+                    }
+                    else if (typeName.indexOf("long") != -1) {
+                        RETURN_TYPES.put(method, "long");
+                    }
+                    else if (typeName.indexOf("int") != -1) {
+                        RETURN_TYPES.put(method, "int");
+                    }
+                    else if ((typeName.indexOf("applicationpropertyset") != -1) || (typeName.indexOf("list") != -1) 
+                        || (typeName.indexOf("url") != -1) || (typeName.indexOf("map") != -1) 
+                        || (typeName.indexOf("object") != -1)) {
+                        //we don't autobox these for now, the user can parse them on their own
+                        RETURN_TYPES.put(method, "default");
+                    }
+                    else {
+                        RETURN_TYPES.put(method, "void");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
   /**
    * Constructor.
    * 
@@ -139,6 +187,9 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @return the String
    */
   public String extractString(Object val) {
+    if (val == null) {
+        return null;
+    }
     try {
       return (String) val;
     } catch (ClassCastException cce) {
@@ -173,16 +224,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
           this._userId = Long.parseLong((String) uid);
         }
         try {
-            this._expires = (Long) expires;
+            this._expires = Long.parseLong(expires.toString());
         }
         catch (ClassCastException cce) {
             this._expires = Long.parseLong((String) expires);
         }
         if (this.isDesktop()) {
-          this._sessionSecret = (String) d.get("secret");
+            this._sessionSecret = (String) d.get("secret");
         }
     }
-    catch (Exception ignored) {}
+    catch (Exception ignored) {
+        ignored.printStackTrace();
+    }
     return this._sessionKey;
   }
 
@@ -267,6 +320,9 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @return the URL
    */
   protected URL extractURL(Object url) throws IOException {
+    if (url == null) {
+          return null;
+    }
     if (!(url instanceof String)) {
       return null;
     }
@@ -279,6 +335,9 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @return the Integer
    */
   protected int extractInt(Object val) {
+    if (val == null) {
+        return 0;
+    }
     try {
       if (val instanceof String) {
           //shouldn't happen, really
@@ -301,11 +360,14 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @return the Boolean
    */
   protected boolean extractBoolean(Object val) {
+    if (val == null) {
+        return false;
+    }
     try {
         if (val instanceof String) {
-            return ! ((val == null) || (val.equals("false")) || (val.equals("0")));
+            return ((val != null) && ((val.equals("true")) || (val.equals("1"))));
         }
-        return ((Long)val != 0l);
+        return ((Long)val == 1l);
     } catch (ClassCastException cce) {
       logException(cce);
       return false;
@@ -318,6 +380,9 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
    * @return the Integer
    */
   protected Long extractLong(Object val) {
+    if (val == null) {
+        return 0l;
+    }
     try {
       if (val instanceof String) {
           //shouldn't happen, really
@@ -393,5 +458,82 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
         this.callMethod(FacebookMethod.ADMIN_GET_APP_PROPERTIES,
                 new Pair<String, CharSequence>("properties", props.toString()));
         return this.rawResponse;
+    }
+    
+    /**
+     * Executes a batch of queries.  You define the queries to execute by calling 'beginBatch' and then 
+     * invoking the desired API methods that you want to execute as part of your batch as normal.  Invoking 
+     * this method will then execute the API calls you made in the interim as a single batch query.  
+     * 
+     * @param serial set to true, and your batch queries will always execute serially, in the same order in which 
+     *               your specified them.  If set to false, the Facebook API server may execute your queries in 
+     *               parallel and/or out of order in order to improve performance.
+     * 
+     * @return a list containing the results of the batch execution.  The list will be ordered such that the first 
+     *         element corresponds to the result of the first query in the batch, and the second element corresponds 
+     *         to the result of the second query, and so on.  The types of the objects in the list will match the 
+     *         type normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a 
+     *         batch will place a Long in the list, and calling friends_get will place a Document in the list, etc.).
+     *         
+     *         The list may be empty, it will never be null.
+     * 
+     * @throws FacebookException
+     * @throws IOException
+     */
+    public List<? extends Object> executeBatch(boolean serial) throws FacebookException,
+        IOException {
+        this.batchMode = false;
+        List<Object> result = new ArrayList<Object>();
+        List<BatchQuery> buffer = new ArrayList<BatchQuery>();
+        while (! this.queries.isEmpty()) {
+            buffer.add(this.queries.remove(0));
+            if ((buffer.size() == 15) || (this.queries.isEmpty())) {
+                //we can only actually batch up to 15 at once
+                JSONArray doc = (JSONArray)this.batch_run(this.encodeMethods(buffer), serial);
+                for (int count = 0; count < doc.length(); count++) {
+                    try {
+                        String response = (String)doc.get(count);
+                        if (response.startsWith("\"")) {
+                            //remove extraneous quote characters
+                            response = response.substring(1, response.length() - 1);
+                        }
+                        String type = RETURN_TYPES.get(buffer.get(count).getMethod());
+                        //possible types are document, string, bool, int, long, void
+                        if (type.equals("default")) {
+                            if (response.matches("\\{.*\\}")) {
+                                result.add(new JSONObject(response.replace("\\", "")));
+                            }
+                            else {
+                                result.add(new JSONArray(response));
+                            }
+                        }
+                        else if (type.equals("string")) {
+                            result.add(response);
+                        }
+                        else if (type.equals("bool")) {
+                            result.add(extractBoolean(response));
+                        }
+                        else if (type.equals("int")) {
+                            result.add(extractInt(response));
+                        }
+                        else if (type.equals("long")) {
+                            result.add(extractLong(response));
+                        }
+                        else {
+                            //void
+                            result.add(null);
+                        }
+                    }
+                    catch (Exception ignored) {
+                        ignored.printStackTrace();
+                        if (result.size() < count + 1) {
+                            result.add(null);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return result;
     }
 }
