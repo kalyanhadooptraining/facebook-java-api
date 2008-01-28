@@ -149,7 +149,10 @@ public enum FacebookMethod
   
   //Admin
   ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2),
-  ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2)
+  ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2),
+  
+  //Batch
+  BATCH_RUN("facebook.batch.run", 3)
   ;
 
   private String methodName;
