@@ -2113,4 +2113,48 @@ public interface IFacebookRestClient<T> {
    */
   public ApplicationPropertySet admin_getAppPropertiesAsSet(EnumSet<ApplicationProperty> properties)
       throws FacebookException, IOException;
+  
+  /**
+   * Starts a batch of queries.  Any API calls made after invoking 'beginBatch' will be deferred 
+   * until the next time you call 'executeBatch', at which time they will be processed as a 
+   * batch query.  All API calls made in the interim will return null as their result.
+   */
+  public void beginBatch();
+  
+  /**
+   * Executes a batch of queries.  It is your responsibility to encode the method feed 
+   * correctly.  It is not recommended that you call this method directly.  Instead use 
+   * 'beginBatch' and 'executeBatch', which will take care of the hard parts for you.
+   * 
+   * @param methods A JSON encoded array of strings. Each element in the array should contain 
+   *        the full parameters for a method, including method name, sig, etc. Currently, there 
+   *        is a maximum limit of 15 elements in the array.
+   * @param serial An optional parameter to indicate whether the methods in the method_feed 
+   *               must be executed in order. The default value is false.
+   * 
+   * @return a result containing the response to each individual query in the batch.
+   */
+  public T batch_run(String methods, boolean serial) throws FacebookException,IOException;
+  
+  /**
+   * Executes a batch of queries.  You define the queries to execute by calling 'beginBatch' and then 
+   * invoking the desired API methods that you want to execute as part of your batch as normal.  Invoking 
+   * this method will then execute the API calls you made in the interim as a single batch query.  
+   * 
+   * @param serial set to true, and your batch queries will always execute serially, in the same order in which 
+   *               your specified them.  If set to false, the Facebook API server may execute your queries in 
+   *               parallel and/or out of order in order to improve performance.
+   * 
+   * @return a list containing the results of the batch execution.  The list will be ordered such that the first 
+   *         element corresponds to the result of the first query in the batch, and the second element corresponds 
+   *         to the result of the second query, and so on.  The types of the objects in the list will match the 
+   *         type normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a 
+   *         batch will place a Long in the list, and calling friends_get will place a Document in the list, etc.).
+   *         
+   *         The list may be empty, it will never be null.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public List<? extends Object> executeBatch(boolean serial) throws FacebookException, IOException;
 }

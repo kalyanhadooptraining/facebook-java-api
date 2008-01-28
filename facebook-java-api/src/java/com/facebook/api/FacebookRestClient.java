@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -120,6 +121,50 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       System.exit(1);
     }
   }
+  
+  //used so that executeBatch can return the correct types in its list, without killing efficiency.
+  private static final Map<FacebookMethod, String> RETURN_TYPES;
+  static {
+      RETURN_TYPES = new HashMap<FacebookMethod, String>();
+      Method[] candidates = FacebookRestClient.class.getMethods();
+      //this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
+      for (FacebookMethod method : EnumSet.allOf(FacebookMethod.class)) {
+          String name = method.methodName();
+          name = name.substring(name.indexOf(".") + 1);
+          name = name.replace(".", "_");
+          for (Method candidate : candidates) {
+              if (candidate.getName().equalsIgnoreCase(name)) {
+                  String typeName = candidate.getReturnType().getName().toLowerCase();
+                  //possible types are Document, String, Boolean, Integer, Long, void
+                  if (typeName.indexOf("document") != -1) {
+                      RETURN_TYPES.put(method, "default");
+                  }
+                  else if (typeName.indexOf("string") != -1) {
+                      RETURN_TYPES.put(method, "string");
+                  }
+                  else if (typeName.indexOf("bool") != -1) {
+                      RETURN_TYPES.put(method, "bool");
+                  }
+                  else if (typeName.indexOf("long") != -1) {
+                      RETURN_TYPES.put(method, "long");
+                  }
+                  else if (typeName.indexOf("int") != -1) {
+                      RETURN_TYPES.put(method, "int");
+                  }
+                  else if ((typeName.indexOf("applicationpropertyset") != -1) || (typeName.indexOf("list") != -1) 
+                      || (typeName.indexOf("url") != -1) || (typeName.indexOf("map") != -1) 
+                      || (typeName.indexOf("object") != -1)) {
+                      //we don't autobox these for now, the user can parse them on their own
+                      RETURN_TYPES.put(method, "default");
+                  }
+                  else {
+                      RETURN_TYPES.put(method, "void");
+                  }
+                  break;
+              }
+          }
+      }
+  }
 
   protected final String _secret;
   protected final String _apiKey;
@@ -132,6 +177,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected String _sessionSecret; // only used for desktop apps
   protected long _userId;
   protected int _timeout;
+  protected boolean batchMode;
+  protected List<BatchQuery> queries;
 
   /**
    * number of params that the client automatically appends to every API call
@@ -238,6 +285,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
     _timeout = -1;
+    batchMode = false;
+    queries = new ArrayList<BatchQuery>();
   }
   
   /**
@@ -385,6 +434,122 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
                                                                                  IOException {
     return callMethod(method, Arrays.asList(paramPairs));
   }
+  
+  /**
+   * Starts a batch of queries.  Any API calls made after invoking 'beginBatch' will be deferred 
+   * until the next time you call 'executeBatch', at which time they will be processed as a 
+   * batch query.  All API calls made in the interim will return null as their result.
+   */
+  public void beginBatch() {
+      this.batchMode = true;
+      this.queries = new ArrayList<BatchQuery>();
+  }
+  
+  /**
+   * Executes a batch of queries.  You define the queries to execute by calling 'beginBatch' and then 
+   * invoking the desired API methods that you want to execute as part of your batch as normal.  Invoking 
+   * this method will then execute the API calls you made in the interim as a single batch query.  
+   * 
+   * @param serial set to true, and your batch queries will always execute serially, in the same order in which 
+   *               your specified them.  If set to false, the Facebook API server may execute your queries in 
+   *               parallel and/or out of order in order to improve performance.
+   * 
+   * @return a list containing the results of the batch execution.  The list will be ordered such that the first 
+   *         element corresponds to the result of the first query in the batch, and the second element corresponds 
+   *         to the result of the second query, and so on.  The types of the objects in the list will match the 
+   *         type normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a 
+   *         batch will place a Long in the list, and calling friends_get will place a Document in the list, etc.).
+   *         
+   *         The list may be empty, it will never be null.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public List<? extends Object> executeBatch(boolean serial) throws FacebookException,
+      IOException {
+      this.batchMode = false;
+      List<Object> result = new ArrayList<Object>();
+      List<BatchQuery> buffer = new ArrayList<BatchQuery>();
+      while (! this.queries.isEmpty()) {
+          buffer.add(this.queries.remove(0));
+          if ((buffer.size() == 15) || (this.queries.isEmpty())) {
+              //we can only actually batch up to 15 at once
+              Document doc = this.batch_run(this.encodeMethods(buffer), serial);
+              NodeList responses = doc.getElementsByTagName("batch_run_response_elt");
+              for (int count = 0; count < responses.getLength(); count++) {
+                  String response = extractString(responses.item(count));
+                  try {
+                      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                      Document respDoc = builder.parse(new ByteArrayInputStream(response.getBytes("UTF-8")));
+                      String type = RETURN_TYPES.get(buffer.get(count).getMethod());
+                      //possible types are document, string, bool, int, long, void
+                      if (type.equals("default")) {
+                          result.add(respDoc);
+                      }
+                      else if (type.equals("string")) {
+                          result.add(extractString(respDoc));
+                      }
+                      else if (type.equals("bool")) {
+                          result.add(extractBoolean(respDoc));
+                      }
+                      else if (type.equals("int")) {
+                          result.add(extractInt(respDoc));
+                      }
+                      else if (type.equals("long")) {
+                          result.add((long)extractInt(respDoc));
+                      }
+                      else {
+                          //void
+                          result.add(null);
+                      }
+                  }
+                  catch (Exception ignored) {
+                      if (result.size() < count + 1) {
+                          result.add(null);
+                      }
+                  }
+              }
+          }
+      }
+      
+      return result;
+  }
+  
+  private String encodeMethods(List<BatchQuery> queries) throws FacebookException {
+      JSONArray result = new JSONArray();
+      for (BatchQuery query : queries) {
+          if (query.getMethod().takesFile()) {
+              throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "File upload API calls cannot be batched:  " 
+                      + query.getMethod().methodName());
+          }
+          result.put(delimit(query.getParams().entrySet(), "&", "=", true));
+      }
+      
+      return result.toString();
+  }
+  
+  /**
+   * Executes a batch of queries.  It is your responsibility to encode the method feed 
+   * correctly.  It is not recommended that you call this method directly.  Instead use 
+   * 'beginBatch' and 'executeBatch', which will take care of the hard parts for you.
+   * 
+   * @param methods A JSON encoded array of strings. Each element in the array should contain 
+   *        the full parameters for a method, including method name, sig, etc. Currently, there 
+   *        is a maximum limit of 15 elements in the array.
+   * @param serial An optional parameter to indicate whether the methods in the method_feed 
+   *               must be executed in order. The default value is false.
+   * 
+   * @return a result containing the response to each individual query in the batch.
+   */
+  public Document batch_run(String methods, boolean serial) throws FacebookException,
+  IOException {
+      ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+      params.add(new Pair<String, CharSequence>("method_feed", methods));
+      if (serial)
+          params.add(new Pair<String, CharSequence>("serial_only", "1"));
+        
+      return this.callMethod(FacebookMethod.BATCH_RUN, params);
+  }
 
   /**
    * Call the specified method, with the given parameters, and return a DOM tree with the results.
@@ -419,6 +584,30 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     assert (!params.containsKey("sig"));
     String signature = generateSignature(FacebookSignatureUtil.convert(params.entrySet()), method.requiresSession());
     params.put("sig", signature);
+    
+    if (this.batchMode) {
+        //if we are running in bach mode, don't actually execute the query now, just add it to the list
+        boolean addToBatch = true;
+        if (method.methodName().equals(FacebookMethod.USERS_GET_LOGGED_IN_USER.methodName())) {
+            Exception trace = new Exception();
+            StackTraceElement[] traceElems = trace.getStackTrace();
+            int index = 0;
+            for (StackTraceElement elem : traceElems) {
+                if (elem.getMethodName().indexOf("_") != -1) {
+                    StackTraceElement caller = traceElems[index + 1];
+                    if ((caller.getClassName().equals(this.getClass().getName())) && (! caller.getMethodName().startsWith("auth_"))) {
+                        addToBatch = false;
+                    }
+                    break;
+                }
+                index++;
+            }
+        }
+        if (addToBatch) {
+            this.queries.add(new BatchQuery(method, params));
+        }
+        return null;
+    }
 
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -906,6 +1095,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
           }
       }
       this.callMethod(feedMethod, params);
+      if (this.rawResponse == null) {
+          return false;
+      }
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
   
@@ -949,6 +1141,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
           params.add(new Pair<String, CharSequence>("page_actor_id", Long.toString(pageId)));
       }
       this.callMethod(method, params);
+      if (this.rawResponse == null) {
+          return false;
+      }
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
 
@@ -1079,6 +1274,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public long users_getLoggedInUser() throws FacebookException, IOException {
     Document d = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
+    if (d == null) {
+        return 0l;
+    }
     return Long.parseLong(d.getFirstChild().getTextContent());
   }
 
@@ -1406,6 +1604,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
                       new Pair<String, CharSequence>("content", content),
                       new Pair<String, CharSequence>("image", image.toString()),
                       new Pair<String, CharSequence>("invite", isInvite ? "1" : "0"));
+    if (d == null) {
+        return null;
+    }
     String url = d.getFirstChild().getTextContent();
     return (null == url || "".equals(url)) ? null : new URL(url);
   }
@@ -1420,9 +1621,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     return null;
   }
 
-  protected static boolean extractBoolean(Document doc) {
-    String content = doc.getFirstChild().getTextContent();
-    return 1 == Integer.parseInt(content);
+  public static boolean extractBoolean(Node doc) {
+      if (doc == null) {
+          return false;
+      }
+      String content = doc.getFirstChild().getTextContent();
+      return "1".equals(content);
   }
 
   public InputStream postFileRequest(String methodName,
@@ -1486,6 +1690,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public String auth_createToken() throws FacebookException, IOException {
     Document d = this.callMethod(FacebookMethod.AUTH_CREATE_TOKEN);
+    if (d == null) {
+        return null;
+    }
     return d.getFirstChild().getTextContent();
   }
 
@@ -1498,6 +1705,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     Document d =
       this.callMethod(FacebookMethod.AUTH_GET_SESSION, new Pair<String, CharSequence>("auth_token",
                                                                                       authToken.toString()));
+    if (d == null) {
+        return null;
+    }
     this._sessionKey =
         d.getElementsByTagName("session_key").item(0).getFirstChild().getTextContent();
     this._userId =
@@ -1576,14 +1786,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200.");
       }
       this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCE, new Pair<String, CharSequence>("pref_id", Integer.toString(prefId)));
-      this.checkError();
-
-      if (! this.rawResponse.contains("</data_getUserPreference_response>")) {
-          //there is no value set for this preference yet
+      if ((this.rawResponse == null) || (! this.rawResponse.contains("</data_getUserPreference_response>"))){
           return null;
       }
-      String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</data_getUserPreference_response>"));
-      result = result.substring(result.indexOf("facebook.xsd\">") + "facebook.xsd\">".length());
+      String result;
+      if (this.rawResponse != null) {
+          result = this.rawResponse.substring(0, this.rawResponse.indexOf("</data_getUserPreference_response>"));
+          result = result.substring(result.indexOf("facebook.xsd\">") + "facebook.xsd\">".length());
+      }
+      else {
+          result = null;
+      }
 
       return reconstructValue(result);
   }
@@ -1600,7 +1813,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public Map<Integer, String> data_getUserPreferences() throws FacebookException, IOException {
       Document response = this.callMethod(FacebookMethod.DATA_GET_USER_PREFERENCES);
-      this.checkError();
+      if (response == null) {
+          return null;
+      }
 
       Map<Integer, String> results = new HashMap<Integer, String>();
       NodeList ids = response.getElementsByTagName("pref_id");
@@ -1743,6 +1958,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public boolean sms_canSend(Long userId) throws FacebookException, IOException {
       this.callMethod(FacebookMethod.SMS_CAN_SEND, new Pair<String, CharSequence>("uid", userId.toString()));
+      if (this.rawResponse == null) {
+          return false;
+      }
       return this.rawResponse.contains(">0<");  //a status code of "0" indicates that the app can send messages
   }
 
@@ -1800,7 +2018,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 
       //XXX:  needs testing to make sure it's correct (Facebook always gives me a code 270 permissions error no matter what I do)
       Integer response = null;
-      if ((this.rawResponse.indexOf("</sms") != -1) && (makeNewSession)) {
+      if ((this.rawResponse != null) && (this.rawResponse.indexOf("</sms") != -1) && (makeNewSession)) {
           String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</sms"));
           result = result.substring(result.lastIndexOf(">") + 1);
           response = Integer.parseInt(result);
@@ -1825,6 +2043,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException {
       this.callMethod(FacebookMethod.USERS_HAS_PERMISSION, new Pair<String, CharSequence>("ext_perm", perm.getName()));
+      if (this.rawResponse == null) {
+          return false;
+      }
       return this.rawResponse.contains(">1<");  //a code of '1' is sent back to indicate that the user has the request permission
   }
 
@@ -1901,8 +2122,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      params.add(new Pair<String, CharSequence>("listing_attrs", attributes));
 
      this.callMethod(FacebookMethod.MARKET_CREATE_LISTING, params);
-     String result = this.rawResponse.substring(0, this.rawResponse.indexOf("</marketplace"));
-     result = result.substring(result.lastIndexOf(">") + 1);
+     String result;
+     if (this.rawResponse != null) {
+         result = this.rawResponse.substring(0, this.rawResponse.indexOf("</marketplace"));
+         result = result.substring(result.lastIndexOf(">") + 1);
+     }
+     else {
+         return null;
+     }
      return Long.parseLong(result);
   }
 
@@ -1978,6 +2205,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public List<String> marketplace_getCategories() throws FacebookException, IOException{
       this.callMethod(FacebookMethod.MARKET_GET_CATEGORIES);
+      if (this.rawResponse == null) {
+          return null;
+      }
       MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceCategory();
   }
@@ -2004,6 +2234,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    */
   public List<String> marketplace_getSubCategories() throws FacebookException, IOException{
       this.callMethod(FacebookMethod.MARKET_GET_SUBCATEGORIES);
+      if (this.rawResponse == null) {
+          return null;
+      }
       MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse)this.getResponsePOJO();
       return resp.getMarketplaceSubcategory();
   }
@@ -2032,6 +2265,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       }
 
       this.callMethod(FacebookMethod.MARKET_GET_LISTINGS, params);
+      if (this.rawResponse == null) {
+          return null;
+      }
       MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse)this.getResponsePOJO();
       return resp.getListing();
   }
@@ -2082,6 +2318,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       }
 
       this.callMethod(FacebookMethod.MARKET_SEARCH, params);
+      if (this.rawResponse == null) {
+          return null;
+      }
       MarketplaceSearchResponse resp = (MarketplaceSearchResponse)this.getResponsePOJO();
       return resp.getListing();
   }
@@ -2110,6 +2349,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
       params.add(new Pair<String, CharSequence>("status", status.getName()));
       this.callMethod(FacebookMethod.MARKET_REMOVE_LISTING, params);
+      if (this.rawResponse == null) {
+          return false;
+      }
 
       return this.rawResponse.contains(">1<"); //a code of '1' indicates success
   }
@@ -2316,6 +2558,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      */
     public boolean users_hasAppPermission(CharSequence permission) throws FacebookException, IOException {
         this.callMethod(FacebookMethod.USERS_HAS_PERMISSION, new Pair<String, CharSequence>("ext_perm", permission));
+        if (this.rawResponse == null) {
+            return false;
+        }
         return this.rawResponse.contains(">1<");  //a code of '1' is sent back to indicate that the user has the request permission
     }
     
@@ -2432,8 +2677,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * @param doc
      * @return the Integer
      */
-    protected int extractInt(Document doc) {
-      return Integer.parseInt(doc.getFirstChild().getTextContent());
+    public static int extractInt(Node doc) {
+        if (doc == null) {
+            return 0;
+        }
+        return Integer.parseInt(doc.getFirstChild().getTextContent());
     }
     
     /**
@@ -2689,7 +2937,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         }
 
         this.callMethod(FacebookMethod.USERS_SET_STATUS, params);
-
+        if (this.rawResponse == null) {
+            return false;
+        }
         return this.rawResponse.contains(">1<"); //a code of '1' is sent back to indicate that the request was successful, any other response indicates error
     }
     
@@ -2796,7 +3046,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * Extracts a String from a T consisting entirely of a String.
      * @return the String
      */
-    public String extractString(Document d) {
+    public static String extractString(Node d) {
+        if (d == null) {
+            return null;
+        }
         return d.getFirstChild().getTextContent();
     }
 
@@ -2860,6 +3113,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      */
     public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
         String json = this.admin_getAppPropertiesAsString(properties);
+        if (json == null) {
+            return null;
+        }
         try {
             if (json.matches("\\{.*\\}")) {
                 return new JSONObject(json);
@@ -2887,6 +3143,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     public Map<ApplicationProperty, String> admin_getAppPropertiesMap(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
         Map<ApplicationProperty, String> result = new LinkedHashMap<ApplicationProperty, String>();
         String json = this.admin_getAppPropertiesAsString(properties);
+        if (json == null) {
+            return null;
+        }
         if (json.matches("\\{.*\\}")) {
             json = json.substring(1, json.lastIndexOf("}"));
         }
