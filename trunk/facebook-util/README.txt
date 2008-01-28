@@ -17,7 +17,7 @@ Quick Start (project users):
 
 	1.  Configure the Facebook Java API by following the instructions at http://code.google.com/p/facebook-java-api
 	
-	2.  Download the latest companion JAR file at http://facebook-java-api.googlecode.com/files/facebook-util-1.6.1.jar
+	2.  Download the latest companion JAR file at http://facebook-java-api.googlecode.com/files/facebook-util-1.7.1.jar
 	
 	3.  Download the required servlet-api library at http://facebook-java-api.googlecode.com/files/servlet-api-2.4.jar
 		
@@ -29,7 +29,7 @@ Quick Start (project users):
 	
 Changelog:
 	
-	From v1.6 to v1.7
+	From v1.6 to v1.7.1
 		- Added an isLogin() method, similar to how isAdd() works.
 	
 	v1.6
