@@ -12,6 +12,31 @@
 }}}
 
 
+*Executing a Batch Query*
+{{{
+    //set the client to run in batch mode
+    client.beginBatch();
+            
+    //these commands will be batched
+    client.users_getLoggedInUser();
+    client.friends_get();
+            
+    //execute the batch (which also terminates batch mode until beginBatch is called again)
+    List<? extends Object> batchResponse = client.executeBatch(false);
+            
+    //the list contains the results of the queries, in the same order they were defined
+    Long userId = (Long) batchResponse.get(0);
+    Document friends = (Document)batchResponse.get(1);
+    NodeList nodes = friends.getElementsByTagName("uid");
+            
+    //print the results
+    System.out.println("USER:  " + userId);
+    for (int index = 0; index < nodes.getLength(); index++) {
+        System.out.println("FRIEND:  " + nodes.item(index).getFirstChild().getTextContent());
+    }
+}}}
+
+
 *Update a User's Status Message:*
 {{{
     if (client.users_hasAppPermission(Permission.STATUS_UPDATE)) {
