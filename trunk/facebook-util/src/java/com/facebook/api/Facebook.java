@@ -108,13 +108,20 @@ public class Facebook {
 		}
 		// finally we check the auth_token for a round-trip from the facebook login page
 		else if (request.getParameter("auth_token") != null) {
-			doGetSession(request.getParameter("auth_token"));
-			setUser(apiClient._userId, apiClient._sessionKey, null);
+			try {
+				apiClient.auth_getSession(request.getParameter("auth_token"));
+				setUser(apiClient._userId, apiClient._sessionKey, null);
+			} catch (Exception e) {
+				// if auth_token is stale (browser url doesn't change, server is restarted, then auth_getSession throws
+				// an exception. This happens a lot during development. To recover, we do nothing. Then when
+				// requireLogin or requireAdd kick in, a new auth_token is created by redirecting the user.
+//				e.printStackTrace(System.err);
+			}
 		}
 	}
 
 	/**
-	 * Sets the user
+	 * Sets the user. This method also saves the user and session information in the HttpSession
 	 * @param user_id
 	 * @param session_key
 	 * @param expires
@@ -157,15 +164,6 @@ public class Facebook {
 			return new HashMap<String, String> ();
 		}
 		return fb_params;
-	}
-
-	private String doGetSession(String auth_token) {
-		try {
-			return apiClient.auth_getSession(auth_token);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 
 	private void redirect (String url) {
