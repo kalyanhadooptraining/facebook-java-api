@@ -820,9 +820,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
                 method.requiresSession());
         params.put("sig", signature);
         boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals(method);
-        InputStream data = method.takesFile()
-                ? postFileRequest(method.methodName(), params)
-                : postRequest(method.methodName(), params, doHttps, true);
+        InputStream data = method.takesFile()? postFileRequest(method.methodName(), params, /* doEncode */
+                true): postRequest(method.methodName(), params, doHttps, /* doEncode */true);
         return parseCallResult(data, method);
     }
 
@@ -990,7 +989,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
     }
 
     /**
-     * Helper function for posting a request that includes raw file data, eg {@link #photos_upload}.
+     * Helper function for posting a request that includes raw file data, eg
+     * {@link #photos_upload(File)}.
      * 
      * @param methodName the name of the method
      * @param params request parameters (not including the file)
@@ -999,6 +999,21 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
      */
     protected InputStream postFileRequest(String methodName, Map<String,CharSequence> params)
             throws IOException {
+        return postFileRequest(methodName, params, /* doEncode */true);
+    }
+
+    /**
+     * Helper function for posting a request that includes raw file data, eg
+     * {@link #photos_upload(File)}.
+     * 
+     * @param methodName the name of the method
+     * @param params request parameters (not including the file)
+     * @param doEncode whether to UTF8-encode the parameters
+     * @return an InputStream with the request response
+     * @see #photos_upload(File)
+     */
+    protected InputStream postFileRequest(String methodName, Map<String,CharSequence> params,
+            boolean doEncode) throws IOException {
         assert (null != _uploadFile);
         try {
             BufferedInputStream bufin = new BufferedInputStream(new FileInputStream(_uploadFile));
@@ -1014,7 +1029,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
                 out.writeBytes(PREF + boundary + CRLF);
                 out.writeBytes("Content-disposition: form-data; name=\"" + entry.getKey() + "\"");
                 out.writeBytes(CRLF + CRLF);
-                out.writeBytes(entry.getValue().toString());
+                out.writeBytes(doEncode? encode(entry.getValue()): entry.getValue().toString());
                 out.writeBytes(CRLF);
             }
             out.writeBytes(PREF + boundary + CRLF);
