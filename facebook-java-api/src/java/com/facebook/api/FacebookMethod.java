@@ -151,6 +151,9 @@ public enum FacebookMethod
   ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2),
   ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2),
   
+  //Application
+  APPLICATION_GET_PUBLIC_INFO("facebook.application.getPublicInfo", 1),
+  
   //Batch
   BATCH_RUN("facebook.batch.run", 3)
   ;
@@ -170,7 +173,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES, APPLICATION_GET_PUBLIC_INFO);
     return preAuth;
   }
 

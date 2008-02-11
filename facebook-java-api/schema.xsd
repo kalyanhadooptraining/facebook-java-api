@@ -31,11 +31,19 @@
   <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
 
+<xsd:simpleType name="flid">
+  <xsd:restriction base="xsd:long" />
+</xsd:simpleType>
+
 <xsd:simpleType name="id">
   <xsd:restriction base="xsd:long" />
 </xsd:simpleType>
 
 <xsd:simpleType name="lid">
+  <xsd:restriction base="xsd:long" />
+</xsd:simpleType>
+
+<xsd:simpleType name="page_id">
   <xsd:restriction base="xsd:long" />
 </xsd:simpleType>
 
@@ -72,6 +80,10 @@
 </xsd:simpleType>
 
 <xsd:simpleType name="lid_list">
+  <xsd:restriction base="xsd:string" />
+</xsd:simpleType>
+
+<xsd:simpleType name="pageid_list">
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
 
@@ -523,6 +535,14 @@
   </xsd:all>
 </xsd:complexType>
 
+<xsd:complexType name="friendlist">
+  <xsd:sequence>
+    <xsd:element name="flid" type="flid" />
+    <xsd:element name="name" type="xsd:string" />
+    <xsd:element name="owner" type="uid" minOccurs="0" />
+  </xsd:sequence>
+</xsd:complexType>
+
 <xsd:complexType name="object_type_info">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string" />
@@ -612,6 +632,142 @@
   </xsd:sequence>
 </xsd:complexType>
 
+<xsd:complexType name="page_hours">
+  <xsd:sequence>
+    <xsd:element name="mon_1_open" type="time" />
+    <xsd:element name="mon_1_close" type="time" />
+    <xsd:element name="tue_1_open" type="time" />
+    <xsd:element name="tue_1_close" type="time" />
+    <xsd:element name="wed_1_open" type="time" />
+    <xsd:element name="thu_1_open" type="time" />
+    <xsd:element name="thu_1_close" type="time" />
+    <xsd:element name="fri_1_open" type="time" />
+    <xsd:element name="fri_1_close" type="time" />
+    <xsd:element name="sat_1_open" type="time" />
+    <xsd:element name="sat_1_close" type="time" />
+    <xsd:element name="sun_1_open" type="time" />
+    <xsd:element name="sun_1_close" type="time" />
+    <xsd:element name="mon_2_open" type="time" />
+    <xsd:element name="mon_2_close" type="time" />
+    <xsd:element name="tue_2_open" type="time" />
+    <xsd:element name="tue_2_close" type="time" />
+    <xsd:element name="wed_2_open" type="time" />
+    <xsd:element name="wed_2_close" type="time" />
+    <xsd:element name="thu_2_open" type="time" />
+    <xsd:element name="thu_2_close" type="time" />
+    <xsd:element name="fri_2_open" type="time" />
+    <xsd:element name="fri_2_close" type="time" />
+    <xsd:element name="sat_2_open" type="time" />
+    <xsd:element name="sat_2_close" type="time" />
+    <xsd:element name="sun_2_open" type="time" />
+    <xsd:element name="sun_2_close" type="time" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="page_parking">
+  <xsd:sequence>
+    <xsd:element name="street" type="xsd:boolean" />
+    <xsd:element name="lot" type="xsd:boolean" />
+    <xsd:element name="valet" type="xsd:boolean" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="page_restaurant_services">
+  <xsd:sequence>
+    <xsd:element name="reserve" type="xsd:boolean" />
+    <xsd:element name="walkins" type="xsd:boolean" />
+    <xsd:element name="groups" type="xsd:boolean" />
+    <xsd:element name="kids" type="xsd:boolean" />
+    <xsd:element name="takeout" type="xsd:boolean" />
+    <xsd:element name="delivery" type="xsd:boolean" />
+    <xsd:element name="catering" type="xsd:boolean" />
+    <xsd:element name="waiter" type="xsd:boolean" />
+    <xsd:element name="outdoor" type="xsd:boolean" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="page_restaurant_specialties">
+  <xsd:sequence>
+    <xsd:element name="breakfast" type="xsd:boolean" />
+    <xsd:element name="lunch" type="xsd:boolean" />
+    <xsd:element name="dinner" type="xsd:boolean" />
+    <xsd:element name="coffee" type="xsd:boolean" />
+    <xsd:element name="drinks" type="xsd:boolean" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="page_payment_options">
+  <xsd:sequence>
+    <xsd:element name="cash_only" type="xsd:boolean" />
+    <xsd:element name="visa" type="xsd:boolean" />
+    <xsd:element name="amex" type="xsd:boolean" />
+    <xsd:element name="mastercard" type="xsd:boolean" />
+    <xsd:element name="discover" type="xsd:boolean" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="page">
+  <xsd:all>
+    <xsd:element name="page_id" type="page_id" minOccurs="0" />
+    <xsd:element name="name" type="xsd:string" minOccurs="0" />
+    <xsd:element name="pic_small" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_big" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_square" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_large" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="status" type="user_status" minOccurs="0" nillable="true" />
+    <xsd:element name="type" type="xsd:string" minOccurs="0" />
+    <xsd:element name="website" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="has_added_app" type="xsd:boolean" minOccurs="0" nillable="true" />
+    <xsd:element name="founded" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="company_overview" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="mission" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="products" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="location" type="location" minOccurs="0" nillable="true" />
+    <xsd:element name="parking" type="page_parking" minOccurs="0" nillable="true" />
+    <xsd:element name="public_transit" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="hours" type="page_hours" minOccurs="0" nillable="true" />
+    <xsd:element name="attire" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="payment_options" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="culinary_team" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="general_manager" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="price_range" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="restaurant_services" type="page_restaurant_services" minOccurs="0" nillable="true" />
+    <xsd:element name="restaurant_specialties" type="page_restaurant_specialties" minOccurs="0" nillable="true" />
+    <xsd:element name="release_date" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="genre" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="starring" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="screenplay_by" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="directed_by" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="produced_by" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="studio" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="awards" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="plot_outline" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="network" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="season" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="schedule" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="written_by" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="band_members" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="hometown" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="current_location" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="record_label" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="booking_agent" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="artists_we_like" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="influences" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="band_interests" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="bio" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="affiliation" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="birthday" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="personal_info" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="personal_interests" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="members" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="built" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="features" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="mpg" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="general_info" type="xsd:string" minOccurs="0" nillable="true" />
+  </xsd:all>
+</xsd:complexType>
+
 <xsd:complexType name="cookie">
   <xsd:sequence>
     <xsd:element name="uid" type="uid" />
@@ -619,6 +775,40 @@
     <xsd:element name="value" type="xsd:string" />
     <xsd:element name="expires" type="xsd:int" />
     <xsd:element name="path" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="phrase">
+  <xsd:sequence>
+    <xsd:element name="description" type="xsd:string" />
+    <xsd:element name="text" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="developer_info">
+  <xsd:sequence>
+    <xsd:element name="uid" type="xsd:int" />
+    <xsd:element name="name" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="app_info">
+  <xsd:sequence>
+    <xsd:element name="app_id" type="xsd:long" />
+    <xsd:element name="api_key" type="xsd:string" />
+    <xsd:element name="canvas_name" type="xsd:string" />
+    <xsd:element name="display_name" type="xsd:string" />
+    <xsd:element name="icon_url" type="xsd:string" />
+    <xsd:element name="logo_url" type="xsd:string" />
+    <xsd:element name="developers">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="developer_info" type="developer_info" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="company_name" type="xsd:string" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -658,6 +848,8 @@
 
 <xsd:element name="fbml_refreshImgSrc_response" type="xsd:boolean" />
 
+<xsd:element name="fbml_uploadNativeStrings_response" type="xsd:boolean" />
+
 <xsd:element name="feed_publishStoryToUser_response" type="xsd:boolean" />
 
 <xsd:element name="feed_publishActionOfUser_response" type="xsd:boolean" />
@@ -684,6 +876,15 @@
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="friends_getLists_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="friendlist" type="friendlist" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
@@ -820,6 +1021,21 @@
 
 <xsd:element name="users_setStatus_response" type="xsd:boolean" />
 
+<xsd:element name="pages_getInfo_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="page" type="page" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="pages_isAdmin_response" type="xsd:boolean" />
+
+<xsd:element name="pages_isFan_response" type="xsd:boolean" />
+
+<xsd:element name="pages_isAppAdded_response" type="xsd:boolean" />
+
 <xsd:element name="data_setUserPreference_response" type="xsd:boolean" />
 
 <xsd:element name="data_setUserPreferences_response" type="xsd:boolean" />
@@ -946,6 +1162,15 @@
 <xsd:element name="admin_getAppProperties_response" type="xsd:string" />
 
 <xsd:element name="admin_setAppProperties_response" type="xsd:boolean" />
+
+<xsd:element name="application_getPublicInfo_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="app_info" type="app_info" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
 
 <xsd:element name="error_response" type="FacebookApiException" />
 

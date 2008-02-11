@@ -47,6 +47,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.facebook.api.schema.FacebookApiException;
+import com.facebook.api.schema.FriendsGetResponse;
 import com.facebook.api.schema.Listing;
 import com.facebook.api.schema.MarketplaceGetListingsResponse;
 import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
@@ -177,6 +178,11 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
     public FacebookJaxbRestClient(String serverAddr, String apiKey, String secret,
                               String sessionKey, int timeout) throws MalformedURLException {
       this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+    }
+    
+    @Override
+    public FriendsGetResponse friends_get() throws IOException, FacebookException{
+        return (FriendsGetResponse)super.friends_get();
     }
 
     

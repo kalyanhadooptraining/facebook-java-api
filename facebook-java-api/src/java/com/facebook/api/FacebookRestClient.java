@@ -3401,4 +3401,71 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         String propJson = this.admin_getAppPropertiesAsString(properties);
         return new ApplicationPropertySet(propJson);
     }
+    
+    /**
+     * Gets the public information about the specified application.  Only one of the 3 parameters needs to be 
+     * specified.  
+     * 
+     * @param applicationId the id of the application to get the info for.
+     * @param applicationKey the public API key of the application to get the info for.
+     * @param applicationCanvas the canvas-page name of the application to get the info for.
+     * 
+     * @return the public information for the specified application
+     */
+    public Document application_getPublicInfo(Long applicationId, String applicationKey, String applicationCanvas) throws FacebookException,
+    IOException {
+        ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+        
+        if ((applicationId != null) && (applicationId > 0)) {
+            params.add(new Pair<String, CharSequence>("application_id", Long.toString(applicationId)));
+        }
+        else if ((applicationKey != null) && (! "".equals(applicationKey))) {
+            params.add(new Pair<String, CharSequence>("application_api_key", applicationKey));
+        }
+        else if ((applicationCanvas != null) && (! "".equals(applicationCanvas))) {
+            params.add(new Pair<String, CharSequence>("application_canvas_name", applicationCanvas));
+        }
+        else {
+            //we need at least one of them to be valid
+            throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least on of {applicationId, applicationKey, applicationCanvas}");
+        }
+        
+        return this.callMethod(FacebookMethod.APPLICATION_GET_PUBLIC_INFO, params);
+    }
+    
+    /**
+     * Gets the public information about the specified application, by application id.
+     * 
+     * @param applicationId the id of the application to get the info for.
+     * 
+     * @return the public information for the specified application
+     */
+    public Document application_getPublicInfoById(Long applicationId) throws FacebookException,
+    IOException {
+        return application_getPublicInfo(applicationId, null, null);
+    }
+    
+    /**
+     * Gets the public information about the specified application, by API key.
+     * 
+     * @param applicationKey the public API key of the application to get the info for.
+     * 
+     * @return the public information for the specified application
+     */
+    public Document application_getPublicInfoByApiKey(String applicationKey) throws FacebookException,
+    IOException {
+        return application_getPublicInfo(null, applicationKey, null);
+    }
+    
+    /**
+     * Gets the public information about the specified application, by canvas-page name.
+     * 
+     * @param applicationCanvas the canvas-page name of the application to get the info for.
+     * 
+     * @return the public information for the specified application
+     */
+    public Document application_getPublicInfoByCanvasName(String applicationCanvas) throws FacebookException,
+    IOException {
+        return application_getPublicInfo(null, null, applicationCanvas);
+    }
 }
