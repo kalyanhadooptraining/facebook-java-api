@@ -757,11 +757,10 @@ public abstract class ExtensibleClient<T>
     }
 
     boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals(method);
-    InputStream data =
-      method.takesFile() ? postFileRequest(method.methodName(), params) : postRequest(method.methodName(),
-                                                                                      params,
-                                                                                      doHttps,
-                                                                                      true);
+    
+    InputStream data = method.takesFile()? postFileRequest(method.methodName(), params, /* doEncode */
+            true): postRequest(method.methodName(), params, doHttps, /* doEncode */true);
+    
     BufferedReader in = new BufferedReader(new InputStreamReader(data, "UTF-8"));
     StringBuffer buffer = new StringBuffer();
     String line;
@@ -946,15 +945,30 @@ public abstract class ExtensibleClient<T>
     throws FacebookException, IOException {
     return photos_addTag(photoId, xPct, yPct, null, tagText);
   }
+  
+  /**
+   * Helper function for posting a request that includes raw file data, eg
+   * {@link #photos_upload(File)}.
+   * 
+   * @param methodName the name of the method
+   * @param params request parameters (not including the file)
+   * @return an InputStream with the request response
+   * @see #photos_upload(File)
+   */
+  protected InputStream postFileRequest(String methodName, Map<String,CharSequence> params)
+          throws IOException {
+      return postFileRequest(methodName, params, /* doEncode */true);
+  }
 
   /**
    * Helper function for posting a request that includes raw file data, eg {@link #photos_upload}.
    * @param methodName the name of the method
    * @param params request parameters (not including the file)
+   * @param doEncode whether to UTF8-encode the parameters
    * @return an InputStream with the request response  
    * @see #photos_upload
    */
-  protected InputStream postFileRequest(String methodName, Map<String, CharSequence> params)
+  protected InputStream postFileRequest(String methodName, Map<String, CharSequence> params, boolean doEncode)
     throws IOException {
     assert (null != _uploadFile);
     try {
@@ -974,7 +988,7 @@ public abstract class ExtensibleClient<T>
         out.writeBytes(PREF + boundary + CRLF);
         out.writeBytes("Content-disposition: form-data; name=\"" + entry.getKey() + "\"");
         out.writeBytes(CRLF + CRLF);
-        out.writeBytes(entry.getValue().toString());
+        out.writeBytes(doEncode? encode(entry.getValue()): entry.getValue().toString());
         out.writeBytes(CRLF);
       }
 

@@ -612,11 +612,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals(method);
-      InputStream data =
-        method.takesFile() ? postFileRequest(method.methodName(), params) : postRequest(method.methodName(),
-                                                                                        params,
-                                                                                        doHttps,
-                                                                                        true);
+      
+      InputStream data = method.takesFile()? postFileRequest(method.methodName(), params, /* doEncode */
+              true): postRequest(method.methodName(), params, doHttps, /* doEncode */true);
+      
       /*int current = 0;
       StringBuffer buffer = new StringBuffer();
       while (current != -1) {
@@ -1628,9 +1627,24 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       String content = doc.getFirstChild().getTextContent();
       return "1".equals(content);
   }
+  
+  /**
+   * Helper function for posting a request that includes raw file data, eg
+   * {@link #photos_upload(File)}.
+   * 
+   * @param methodName the name of the method
+   * @param params request parameters (not including the file)
+   * @param doEncode whether to UTF8-encode the parameters
+   * @return an InputStream with the request response
+   * @see #photos_upload(File)
+   */
+  protected InputStream postFileRequest(String methodName, Map<String,CharSequence> params)
+          throws IOException {
+      return postFileRequest(methodName, params, /* doEncode */true);
+  }
 
   public InputStream postFileRequest(String methodName,
-                                     Map<String, CharSequence> params) {
+                                     Map<String, CharSequence> params, boolean doEncode) {
     assert (null != _uploadFile);
     try {
       BufferedInputStream bufin = new BufferedInputStream(new FileInputStream(_uploadFile));
@@ -1649,7 +1663,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
         out.writeBytes(PREF + boundary + CRLF);
         out.writeBytes("Content-disposition: form-data; name=\"" + entry.getKey() + "\"");
         out.writeBytes(CRLF + CRLF);
-        out.writeBytes(entry.getValue().toString());
+        out.writeBytes(doEncode? encode(entry.getValue()): entry.getValue().toString());
         out.writeBytes(CRLF);
       }
 
