@@ -2157,4 +2157,77 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public List<? extends Object> executeBatch(boolean serial) throws FacebookException, IOException;
+  
+  /**
+   * Gets the public information about the specified application.  Only one of the 3 parameters needs to be 
+   * specified.  
+   * 
+   * @param applicationId the id of the application to get the info for.
+   * @param applicationKey the public API key of the application to get the info for.
+   * @param applicationCanvas the canvas-page name of the application to get the info for.
+   * 
+   * @return the public information for the specified application
+   */
+  public T application_getPublicInfo(Long applicationId, String applicationKey, String applicationCanvas) throws FacebookException,
+  IOException;
+  
+  /**
+   * Gets the public information about the specified application, by application id.
+   * 
+   * @param applicationId the id of the application to get the info for.
+   * 
+   * @return the public information for the specified application
+   */
+  public T application_getPublicInfoById(Long applicationId) throws FacebookException,
+  IOException;
+  
+  /**
+   * Gets the public information about the specified application, by API key.
+   * 
+   * @param applicationKey the public API key of the application to get the info for.
+   * 
+   * @return the public information for the specified application
+   */
+  public T application_getPublicInfoByApiKey(String applicationKey) throws FacebookException,
+  IOException;
+  
+  /**
+   * Gets the public information about the specified application, by canvas-page name.
+   * 
+   * @param applicationCanvas the canvas-page name of the application to get the info for.
+   * 
+   * @return the public information for the specified application
+   */
+  public T application_getPublicInfoByCanvasName(String applicationCanvas) throws FacebookException,
+  IOException;
+  
+  /**
+   * Get your application's current allocation of the specified type of request (i.e. the number 
+   * of requests that it is currently allowed to send per user per day).
+   * 
+   * @param allocationType the type of request to check the allocation for, currently the only valid 
+   *                       values are "notifications_per_day" and "requests_per_day".
+   * 
+   * @return the number of the specified type of requests that the application is permitted to send per user 
+   *         per day.
+   */
+  public int admin_getAllocation(String allocationType) throws FacebookException, IOException;
+  
+  /**
+   * Get your application's current allocation for invites/requests (i.e. the total number of 
+   * invites/requests that it is allowed to send per user, per day).
+   * 
+   * @return the number of invites/requests that the application is permitted to send per user 
+   *         per day.
+   */
+  public int admin_getRequestAllocation() throws FacebookException, IOException;
+  
+  /**
+   * Get your application's current allocation for notifications (i.e. the total number of 
+   * notifications that it is allowed to send per user, per day).
+   * 
+   * @return the number of notifications that the application is permitted to send per user 
+   *         per day.
+   */
+  public int admin_getNotificationAllocation() throws FacebookException, IOException;
 }

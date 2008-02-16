@@ -3468,4 +3468,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     IOException {
         return application_getPublicInfo(null, null, applicationCanvas);
     }
+
+    public int admin_getAllocation(String allocationType) throws FacebookException, IOException {
+        return extractInt(this.callMethod(FacebookMethod.ADMIN_GET_ALLOCATION,
+                new Pair<String,CharSequence>("integration_point_name ", allocationType)));
+    }
+
+    public int admin_getNotificationAllocation() throws FacebookException, IOException {
+        return this.admin_getAllocation("notifications_per_day");
+    }
+
+    public int admin_getRequestAllocation() throws FacebookException, IOException {
+        return this.admin_getAllocation("requests_per_day");
+    }
 }
