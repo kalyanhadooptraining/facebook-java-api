@@ -70,6 +70,8 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.facebook.api.schema.FriendsGetResponse;
 import com.facebook.api.schema.Listing;
 import com.facebook.api.schema.MarketplaceGetCategoriesResponse;
 import com.facebook.api.schema.MarketplaceGetListingsResponse;
@@ -179,6 +181,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected int _timeout;
   protected boolean batchMode;
   protected List<BatchQuery> queries;
+  
+  protected List<Long> friendsList; // to save making the friends.get api call, this will get prepopulated on canvas pages
+  public Boolean added;        // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
+  
 
   /**
    * number of params that the client automatically appends to every API call
@@ -1219,6 +1225,29 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     return this.callMethod(FacebookMethod.FRIENDS_GET);
   }
 
+	/**
+	 * A wrapper method for {@link FacebookRestClient#friends_get()}. When a session is started
+	 * in a canvas, the Facebook server sends a list of friends as an fb_friends parameter, and
+	 * it is cached in this instance. This method first checks the
+	 * cached list, and then calls {@link FacebookRestClient#friends_get()} only if necessary.
+	 * @return A list of friends uids.
+	 */
+	// In the php client this method is the normal friends_get() method, which
+	// returns a list. However, in the current state of this Java client it is
+	// not possible because friends_get has to return a Document, not a List.
+	public List<Long> friends_getAsList () {
+		if (friendsList != null) {
+			try {
+				friends_get();
+			} catch (Exception e) {
+				throw new RuntimeException (e);
+			}
+			FriendsGetResponse response = (FriendsGetResponse) getResponsePOJO();
+			friendsList = response.getUid();
+		}
+		return friendsList;
+	}
+
   /**
    * Retrieves the friends of the currently logged in user, who are also users
    * of the calling application.
@@ -1285,7 +1314,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return boolean indicating whether the user has installed the app
    */
   public boolean users_isAppAdded() throws FacebookException, IOException {
-    return extractBoolean(this.callMethod(FacebookMethod.USERS_IS_APP_ADDED));
+	// a null value for added means that facebook didn't send an
+	// fb_added param
+    if (added==null) {
+        added = extractBoolean(this.callMethod(FacebookMethod.USERS_IS_APP_ADDED));
+    }
+	return added.booleanValue();
   }
 
   /**
@@ -2453,7 +2487,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     public long auth_getUserId(String authToken) throws FacebookException, IOException {
         if (null == this._sessionKey)
             auth_getSession(authToken);
-        return this.users_getLoggedInUser();
+        return this._userId;
     }
     
     /** 
