@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -48,6 +50,20 @@ public class Facebook {
 		this.secret = secret;
 		this.apiClient = new FacebookRestClient(this.apiKey, this.secret);
 		validateFbParams();
+		// caching of friends
+		String friends = fbParams.get("friends");
+		if (friends!=null && !friends.equals("")) {
+			List<Long> friendsList = new ArrayList<Long> ();
+			for (String friend : friends.split(",")) {
+				friendsList.add(Long.parseLong(friend));
+			}
+			apiClient.friendsList = friendsList;
+		}
+		// caching of the "added" value
+		String added = fbParams.get("added");
+		if (added != null) {
+			apiClient.added = new Boolean (added.equals("1"));
+		}
 	}
 
 	/**
@@ -133,7 +149,7 @@ public class Facebook {
 			// facebook login page
 			else if (request.getParameter("auth_token") != null) {
 				try {
-					apiClient.auth_getSession(request
+					doGetSession(request
 							.getParameter("auth_token"));
 					setUser(apiClient._userId, apiClient._sessionKey, apiClient._expires);
 				} catch (Exception e) {
@@ -150,6 +166,13 @@ public class Facebook {
 		}
 	}
 
+	public String doGetSession (String authToken) {
+		try {
+			return apiClient.auth_getSession(authToken);
+		} catch (Exception e) {
+			throw new RuntimeException (e);
+		}
+	}
 	/**
 	 * Sets the user. This method also saves the user and session information in
 	 * the HttpSession
@@ -478,5 +501,5 @@ public class Facebook {
 		}
 		return results;
 	}
-
+	
 }
