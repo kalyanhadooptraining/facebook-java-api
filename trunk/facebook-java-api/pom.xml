@@ -4,7 +4,7 @@
     <groupId>com.facebook.api</groupId>
     <artifactId>facebook-java-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.7.1</version>
+    <version>1.7.3</version>
 	<name>Facebook Java Library</name>
 	<dependencies>
 	<dependency>
@@ -28,7 +28,7 @@
             <artifactId>jsr173_api</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- END OF JAVA 5 SECTION -->
+     <!-- END OF JAVA 5 SECTION -->
     </dependencies>
     <build>
     	<sourceDirectory>src/java</sourceDirectory>
@@ -57,8 +57,12 @@
     </build>
     <repositories>
         <repository>
-            <id>gnuranch.com</id>
-            <url>http://gnuranch.com/maven/repository/</url>
+            <id>maven</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>mergere</id>
+            <url>http://repo.mergere.com/maven2/</url>
         </repository>
     </repositories>
 </project>
