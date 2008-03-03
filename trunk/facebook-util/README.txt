@@ -29,6 +29,12 @@ Quick Start (project users):
 	
 Changelog:
 	
+	From 1.7.1 to 1.7.2
+		- Use cookies to keep track of state, as the PHP version of this utility does.
+	
+	From 1.7.1 to 1.7.2
+		- Better handling of stale auth_token.
+	
 	From v1.6 to v1.7.1
 		- Added an isLogin() method, similar to how isAdd() works.
 	
