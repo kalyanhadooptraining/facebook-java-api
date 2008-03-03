@@ -53,12 +53,12 @@
 	</licenses>
 	<dependencies>
 		<dependency>
-			<groupId>bigtribe</groupId>
+			<groupId>com.facebook.api</groupId>
 			<artifactId>facebook-java-api</artifactId>
-			<version>1.7.1</version>
+			<version>1.7.3</version>
 		</dependency>
 		<dependency>
-			<groupId>servletapi</groupId>
+			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.4</version>
 		</dependency>
