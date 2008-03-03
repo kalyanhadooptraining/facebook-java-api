@@ -291,6 +291,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
     _timeout = -1;
+    _userId = -1;
     batchMode = false;
     queries = new ArrayList<BatchQuery>();
   }
@@ -1301,11 +1302,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return the Facebook user ID of the logged-in user
    */
   public long users_getLoggedInUser() throws FacebookException, IOException {
-    Document d = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
-    if (d == null) {
-        return 0l;
+    if (this._userId == -1) {
+    	Document d = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
+    	if (d == null) {
+        	return 0l;
+    	}
+    	this._userId = Long.parseLong(d.getFirstChild().getTextContent());
     }
-    return Long.parseLong(d.getFirstChild().getTextContent());
+    return this._userId;
   }
 
   /**
@@ -2487,7 +2491,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     public long auth_getUserId(String authToken) throws FacebookException, IOException {
         if (null == this._sessionKey)
             auth_getSession(authToken);
-        return this._userId;
+        return this.users_getLoggedInUser();
     }
     
     /** 
@@ -3505,7 +3509,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 
     public int admin_getAllocation(String allocationType) throws FacebookException, IOException {
         return extractInt(this.callMethod(FacebookMethod.ADMIN_GET_ALLOCATION,
-                new Pair<String,CharSequence>("integration_point_name ", allocationType)));
+                new Pair<String,CharSequence>("integration_point_name", allocationType)));
     }
 
     public int admin_getNotificationAllocation() throws FacebookException, IOException {

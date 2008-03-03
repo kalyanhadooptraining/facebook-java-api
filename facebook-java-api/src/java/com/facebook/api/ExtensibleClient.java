@@ -832,8 +832,11 @@ public abstract class ExtensibleClient<T>
    * @return the Facebook user ID of the logged-in user
    */
   public long users_getLoggedInUser() throws FacebookException, IOException {
-    T result = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
-    return extractLong(result);
+    if (this._userId == -1) {
+    	T result = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
+    	this._userId = extractLong(result);
+    }
+    return this._userId;
   }
 
   /**
@@ -849,7 +852,7 @@ public abstract class ExtensibleClient<T>
        */
     if (null == this._sessionKey)
       auth_getSession(authToken);
-    return this._userId;
+    return this.users_getLoggedInUser();
   }
 
   public boolean isDesktop() {
