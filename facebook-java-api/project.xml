@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>facebook-java-api</id>
 	<name>Facebook Java Library</name>
-	<groupId>bigtribe</groupId>
+	<groupId>com.facebook.api</groupId>
 	<currentVersion>1.7.3</currentVersion>
 	<organization>
 		<name>BigTribe Corporation</name>
