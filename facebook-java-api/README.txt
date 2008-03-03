@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.7.1.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.7.3.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.7.1.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.7.3.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,16 @@ Committing Changes:
 	
 Changelog:
 
+	From v1.7.2 to 1.7.3
+		- Fix bug where calling 'Admin.getAllocation' would always throw an exception.
+		- Minor optimizations to user-id caching.
+	
+	From v1.7.1 to 1.7.2
+	    - Add 'Application.getPublicInfo' API call.
+		- Update JAXB bindings (adds support for several newer API calls).
+		- Add 'Admin.getAllocation' API call.
+		- Fold in official API changes made on 2/8/09.
+	
 	From v1.7 to 1.7.1
 		- Implement the 'batch' API.
 		- Fix some bugs in the JSON and JAXB clients.
