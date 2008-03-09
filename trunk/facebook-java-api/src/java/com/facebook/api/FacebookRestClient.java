@@ -1237,7 +1237,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	// returns a list. However, in the current state of this Java client it is
 	// not possible because friends_get has to return a Document, not a List.
 	public List<Long> friends_getAsList () {
-		if (friendsList != null) {
+		if (friendsList == null) {
 			try {
 				friends_get();
 			} catch (Exception e) {
