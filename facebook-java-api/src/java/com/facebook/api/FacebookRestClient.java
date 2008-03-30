@@ -297,6 +297,82 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   }
   
   /**
+   * Return the object's session-key property.  This method 
+   * does not call the Facebook API server.
+   * 
+   * @return the session-key stored in the API client.
+   */
+  public String _getSessionKey() {
+	return _sessionKey;
+  }
+
+  /**
+   * Set/override the session-key used by the client.
+   * 
+   * @param key the new key to use.
+   */
+  public void _setSessionKey(String key) {
+	_sessionKey = key;
+  }
+
+  /**
+   * Return the object's 'expires' property.  This method 
+   * does not call the Facebook API server.
+   * 
+   * @return the expiration value stored in the API client.
+   */
+  public Long _getExpires() {
+	return _expires;
+  }
+
+  /**
+   * Set/override the session expiration timestamp used by the client.
+   * 
+   * @param _expires the new timestamp to use.
+   */
+  public void _setExpires(Long _expires) {
+	this._expires = _expires;
+  }
+
+  /**
+   * Return the object's user-id property.  This method 
+   * does not call the Facebook API server.
+   * 
+   * @return the user-id stored in the API client.
+   */
+  public long _getUserId() {
+	return _userId;
+  }
+
+  /**
+   * Set/override the user-id stored in the client.
+   * 
+   * @param id the new user-id to use.
+   */
+  public void _setUserId(long id) {
+	_userId = id;
+  }
+
+  /**
+   * Return the object's 'friendsList' property.  This method 
+   * does not call the Facebook API server.
+   * 
+   * @return the friends-list stored in the API client.
+   */
+  public List<Long> _getFriendsList() {
+	return friendsList;
+  }
+
+  /**
+   * Set/override the list of friends stored in the client.
+   * 
+   * @param friendsList the new list to use.
+   */
+  public void _setFriendsList(List<Long> friendsList) {
+	this.friendsList = friendsList;
+  }
+
+  /**
    * Constructor
    *
    * @param serverUrl the URL of the Facebook API server to use, allows overriding of the default API server.
