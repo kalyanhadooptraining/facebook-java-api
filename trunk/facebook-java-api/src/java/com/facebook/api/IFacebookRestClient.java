@@ -1402,6 +1402,8 @@ public interface IFacebookRestClient<T> {
    * tag, to allow a given snippet to be reused easily across multiple users, and also to allow the application to update
    * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML
    * markup that is associated with the handle/id.
+   * 
+   * This method cannot be called by desktop apps.
    *
    * @param handle the id to associate the specified markup with.  Put this in fb:ref FBML tags to reference your markup.
    * @param markup the FBML markup to store.
@@ -1873,6 +1875,8 @@ public interface IFacebookRestClient<T> {
   /**
    * Set application properties.  The properties are used by Facebook to describe the configuration of your application.
    * 
+   * This method cannot be called by desktop apps.
+   * 
    * @param properties a Map containing the properties to set.
    * 
    * @return true if the properties are set successfully
@@ -1885,6 +1889,8 @@ public interface IFacebookRestClient<T> {
   
   /**
    * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * This method cannot be called by desktop apps.
    * 
    * @param properties a collection indicating the properties you are interested in retrieving.
    * 
@@ -1900,6 +1906,8 @@ public interface IFacebookRestClient<T> {
   /**
    * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
    * 
+   * This method cannot be called by desktop apps.
+   * 
    * @param properties a collection indicating the properties you are interested in retrieving.
    * 
    * @return a mapping of ApplicationProperty's to the corresponding values that are set for those properties.  Properties are 
@@ -1913,6 +1921,8 @@ public interface IFacebookRestClient<T> {
   
   /**
    * Retrieve application properties.  The properties are used by Facebook to describe the configuration of your application.
+   * 
+   * This method cannot be called by desktop apps.
    * 
    * @param properties a collection indicating the properties you are interested in retrieving.
    * 
@@ -2094,6 +2104,8 @@ public interface IFacebookRestClient<T> {
    * the ones editable via the Facebook Developer application. A session is not required to use
    * this method.
    * 
+   * This method cannot be called by desktop apps.
+   * 
    * @param properties an ApplicationPropertySet that is translated into a single JSON String.
    * @return a boolean indicating whether the properties were successfully set
    */
@@ -2104,6 +2116,8 @@ public interface IFacebookRestClient<T> {
    * Gets property values previously set for an application on either the Facebook Developer
    * application or the with the <code>admin.setAppProperties</code> call. A session is not
    * required to use this method.
+   * 
+   * This method cannot be called by desktop apps.
    * 
    * @param properties an enumeration of the properties to get
    * @return an ApplicationPropertySet

@@ -399,7 +399,11 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
       }
 
       public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
-          JSONArray props = new JSONArray();
+    	  if (this._isDesktop) {
+          	//this method cannot be called from a desktop app
+          	throw new FacebookException(ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'");
+          }
+    	  JSONArray props = new JSONArray();
           for (ApplicationProperty property : properties) {
               props.put(property.getName());
           }

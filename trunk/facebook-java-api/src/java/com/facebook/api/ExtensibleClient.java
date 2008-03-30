@@ -1933,7 +1933,10 @@ public abstract class ExtensibleClient<T>
    */
   public boolean fbml_setRefHandle(String handle, String fbmlMarkup)
     throws FacebookException, IOException {
-
+	if (this._isDesktop) {
+		//this method cannot be called from a desktop app
+	    return false;
+	}
     return extractBoolean(this.callMethod(FacebookMethod.FBML_SET_REF_HANDLE,
                                           new Pair<String, CharSequence>("handle", handle),
                                           new Pair<String, CharSequence>("fbml", fbmlMarkup)));
@@ -2339,7 +2342,12 @@ public abstract class ExtensibleClient<T>
   }
   
   public boolean admin_setAppProperties(Map<ApplicationProperty,String> properties) throws FacebookException, IOException {
-      if ((properties == null) || (properties.isEmpty())) {
+	  if (this._isDesktop) {
+		  //this method cannot be called from a desktop app
+		  return false;
+	  }
+	  
+	  if ((properties == null) || (properties.isEmpty())) {
           //nothing to do
           return true;
       }
@@ -2632,7 +2640,11 @@ public abstract class ExtensibleClient<T>
    */
   public boolean admin_setAppProperties(ApplicationPropertySet properties)
           throws FacebookException, IOException {
-      if (null == properties || properties.isEmpty()) {
+	  if (this._isDesktop) {
+		  //this method cannot be called from a desktop app
+		  return false;
+	  }
+	  if (null == properties || properties.isEmpty()) {
           throw new IllegalArgumentException(
                   "expecting a non-empty set of application properties");
       }
