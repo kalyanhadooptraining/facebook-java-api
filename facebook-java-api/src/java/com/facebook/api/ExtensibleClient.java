@@ -2784,7 +2784,7 @@ public abstract class ExtensibleClient<T>
   
   public int admin_getAllocation(String allocationType) throws FacebookException, IOException {
       return extractInt(this.callMethod(FacebookMethod.ADMIN_GET_ALLOCATION,
-              new Pair<String,CharSequence>("integration_point_name ", allocationType)));
+              new Pair<String,CharSequence>("integration_point_name", allocationType)));
   }
 
   public int admin_getNotificationAllocation() throws FacebookException, IOException {
