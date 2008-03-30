@@ -2125,6 +2125,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * the fbml for multiple users more easily without having to make a seperate call for each user, by just changing the FBML
    * markup that is associated with the handle/id.
    *
+   * This method cannot be called by desktop apps.
+   *
    * @param handle the id to associate the specified markup with.  Put this in fb:ref FBML tags to reference your markup.
    * @param markup the FBML markup to store.
    *
@@ -2132,7 +2134,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @throws IOException if a communication/network error happens.
    */
   public boolean fbml_setRefHandle(String handle, String markup) throws FacebookException, IOException {
-      if ((handle == null) || ("".equals(handle))) {
+	  if (this._isDesktop) {
+      	//this method cannot be called from a desktop app
+      	return false;
+      }
+	  if ((handle == null) || ("".equals(handle))) {
           throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The FBML handle may not be null or empty!");
       }
       if (markup == null) {
@@ -3106,7 +3112,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     }
 
     public boolean admin_setAppProperties(Map<ApplicationProperty,String> properties) throws FacebookException, IOException {
-        if ((properties == null) || (properties.isEmpty())) {
+        if (this._isDesktop) {
+        	//this method cannot be called from a desktop app
+        	return false;
+        }
+    	
+    	if ((properties == null) || (properties.isEmpty())) {
             //nothing to do
             return true;
         }
@@ -3234,7 +3245,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     }
 
     public String admin_getAppPropertiesAsString(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
-        JSONArray props = new JSONArray();
+    	if (this._isDesktop) {
+        	//this method cannot be called from a desktop app
+        	throw new FacebookException(ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'");
+        }
+    	JSONArray props = new JSONArray();
         for (ApplicationProperty property : properties) {
             props.put(property.getName());
         }
@@ -3410,12 +3425,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
      * the ones editable via the Facebook Developer application. A session is not required to use
      * this method.
      * 
+     * This method cannot be called from a desktop app.
+     * 
      * @param properties an ApplicationPropertySet that is translated into a single JSON String.
      * @return a boolean indicating whether the properties were successfully set
      */
     public boolean admin_setAppProperties(ApplicationPropertySet properties)
             throws FacebookException, IOException {
-        if (null == properties || properties.isEmpty()) {
+    	if (this._isDesktop) {
+        	//this method cannot be called from a desktop app
+        	return false;
+        }
+    	if (null == properties || properties.isEmpty()) {
             throw new IllegalArgumentException(
                     "expecting a non-empty set of application properties");
         }
