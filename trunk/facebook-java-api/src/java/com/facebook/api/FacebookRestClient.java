@@ -698,23 +698,44 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       
       InputStream data = method.takesFile()? postFileRequest(method.methodName(), params, /* doEncode */
               true): postRequest(method.methodName(), params, doHttps, /* doEncode */true);
-      
-      /*int current = 0;
-      StringBuffer buffer = new StringBuffer();
-      while (current != -1) {
-          current = data.read();
-          if (current != -1) {
-              buffer.append((char)current);
-          }
-      }*/
 
       BufferedReader in = new BufferedReader(new InputStreamReader(data, "UTF-8"));
       StringBuffer buffer = new StringBuffer();
       String line;
+      boolean insideTagBody = false;
       while ((line = in.readLine()) != null) {
-        buffer.append(line);
+    	  /*
+    	  is the last char a close ('>')?
+    	  if not, we need to add a comma to the string as FB (unfortunately)
+    	  lets people enter profile information and use hard returns, which are stripped out
+    	  For example, this is a "valid" XML from FB:
+    	  <?xml version="1.0" encoding="UTF-8"?>
+			<users_getInfo_response xmlns="http://api.facebook.com/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" list="true">
+  				<user>
+    				<uid>12345678</uid>
+    				<first_name>Bob</first_name>
+    				<music>My Morning Jacket, Libertines
+					The Clash</music>
+  				</user>
+			</users_getInfo_response>
+			
+			When the buffer is built, <music> ends up like this:
+			"My Morning Jacket, LibertinesTheClash"
+			which makes it impossible to parse as the delimiters are destroyed 
+    	  */
+    	  if (method != FacebookMethod.BATCH_RUN) {
+    		  if (line.trim().startsWith("<") && line.contains(">")) {
+    			  insideTagBody = true;
+    	  	  }
+    	  	  if (line.trim().endsWith(">")) {
+    	  		  insideTagBody = false;
+    	  	  }
+    	  	  if(insideTagBody) {
+    	  		  line += ",";
+    	  	  }
+    	  }
+    	  buffer.append(line);
       }
-
 
       String xmlResp = new String(buffer);
       this.rawResponse = xmlResp;
