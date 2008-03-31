@@ -17,7 +17,7 @@ Quick Start (project users):
 
 	1.  Configure the Facebook Java API by following the instructions at http://code.google.com/p/facebook-java-api
 	
-	2.  Download the latest companion JAR file at http://facebook-java-api.googlecode.com/files/facebook-util-1.7.3.jar
+	2.  Download the latest companion JAR file at http://facebook-java-api.googlecode.com/files/facebook-util-1.7.4.jar
 	
 	3.  Download the required servlet-api library at http://facebook-java-api.googlecode.com/files/servlet-api-2.4.jar
 		
