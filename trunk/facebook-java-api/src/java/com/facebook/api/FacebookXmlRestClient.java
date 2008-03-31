@@ -279,7 +279,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
   protected Document parseCallResult(InputStream data, IFacebookMethod method) throws FacebookException, IOException {
     try {
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      //DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance (); 
+      factory.setNamespaceAware(true); 
+      DocumentBuilder builder = factory.newDocumentBuilder(); 
       Document doc = builder.parse(data);
       doc.normalizeDocument();
       stripEmptyTextNodes(doc);
