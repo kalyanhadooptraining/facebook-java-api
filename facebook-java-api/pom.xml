@@ -4,13 +4,13 @@
     <groupId>com.facebook.api</groupId>
     <artifactId>facebook-java-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.7.3</version>
+    <version>1.7.4</version>
 	<name>Facebook Java Library</name>
 	<dependencies>
 	<dependency>
 		<groupId>org.json</groupId>
 		<artifactId>json</artifactId>
-		<version>1.0</version>
+		<version>20070829</version>
 	</dependency>
 	<!-- THIS SECTION FOR JAVA 5 ONLY, NOT REQUIRED WITH JAVA 6-->
         <dependency>
