@@ -693,7 +693,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     }
 
     try {
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      //DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
+      factory.setNamespaceAware(true); 
+      DocumentBuilder builder = factory.newDocumentBuilder(); 
       boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals(method);
       
       InputStream data = method.takesFile()? postFileRequest(method.methodName(), params, /* doEncode */
