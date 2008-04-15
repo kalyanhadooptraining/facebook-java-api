@@ -116,7 +116,19 @@ public enum ApplicationProperty {
     /**
      * "A preloaded FQL query".
      */
-    PRELOAD_FQL("preload_fql", "string");
+    PRELOAD_FQL("preload_fql", "string"),
+    /**
+     * canvas_name.
+     */
+    CANVAS_NAME("canvas_name","string"),
+    /**
+     * icon_url.
+     */
+    ICON_URL("icon_url", "string"),
+    /**
+     * logo_url
+     */
+    LOGO_URL("logo_url", "string");
     /**
      * A map of property names to their associated ApplicationProperty value
      */
