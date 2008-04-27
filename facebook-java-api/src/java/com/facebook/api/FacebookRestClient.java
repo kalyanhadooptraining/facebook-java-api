@@ -190,7 +190,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * number of params that the client automatically appends to every API call
    */
   public static int NUM_AUTOAPPENDED_PARAMS = 6;
-  private static boolean DEBUG = false;
+  protected static boolean DEBUG = false;
   protected Boolean _debug = null;
 
   protected File _uploadFile = null;

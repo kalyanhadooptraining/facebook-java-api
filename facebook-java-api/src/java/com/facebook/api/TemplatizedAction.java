@@ -125,8 +125,10 @@ public class TemplatizedAction {
             addPicture(new URL(imageHref), new URL(linkHref));
         }
         catch (Exception e) {
-            System.out.println("Could not add entry for picture!");
-            e.printStackTrace();
+        	if (FacebookRestClient.DEBUG || ExtensibleClient.DEBUG) { 
+        		System.out.println("Could not add entry for picture!");
+            	e.printStackTrace();
+        	}
         }
     }
 
@@ -143,8 +145,10 @@ public class TemplatizedAction {
             addPicture(new URL(imageHref), null);
         }
         catch (Exception e) {
-            System.out.println("Could not add entry for picture!");
-            e.printStackTrace();
+        	if (FacebookRestClient.DEBUG || ExtensibleClient.DEBUG) {
+        		System.out.println("Could not add entry for picture!");
+            	e.printStackTrace();
+        	}
         }
     }
     
@@ -225,8 +229,10 @@ public class TemplatizedAction {
             map.put(key, value);
         }
         catch (JSONException e) {
-            System.out.println("JSONException for key=" + key + ", value=" + value + "!");
-            e.printStackTrace();
+        	if (FacebookRestClient.DEBUG || ExtensibleClient.DEBUG) {
+        		System.out.println("JSONException for key=" + key + ", value=" + value + "!");
+            	e.printStackTrace();
+        	}
         }
     }
     
