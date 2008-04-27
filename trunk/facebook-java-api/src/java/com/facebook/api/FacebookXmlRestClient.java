@@ -374,7 +374,9 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
     } else {
       outString += n.getNodeName();
     }
-    System.out.println(outString);
+    if (DEBUG) {
+    	System.out.println(outString);
+    }
     NodeList children = n.getChildNodes();
     int length = children.getLength();
     for (int i = 0; i < length; i++) {

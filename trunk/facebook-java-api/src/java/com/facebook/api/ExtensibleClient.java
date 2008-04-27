@@ -118,7 +118,7 @@ public abstract class ExtensibleClient<T>
    */
   public static int NUM_AUTOAPPENDED_PARAMS = 6;
 
-  private static boolean DEBUG = false;
+  protected static boolean DEBUG = false;
   protected Boolean _debug = null;
 
   protected File _uploadFile = null;
@@ -152,6 +152,27 @@ public abstract class ExtensibleClient<T>
    */
   public String getResponseFormat() {
     return null;
+  }
+  
+  /**
+   * Gets the session-token used by Facebook to authenticate a desktop application.  If your application 
+   * does not run in desktop mode, than this field is not relevent to you.
+   * 
+   * @return the desktop-app session token.
+   */
+  public String getSessionSecret() {
+	  return _sessionSecret;
+  }
+  
+  /**
+   * Allows the session-token to be manually overridden when running a desktop application.  If your 
+   * application does not run in desktop mode, then setting this field will have no effect.  If you 
+   * set an incorrect value here, your application will probably fail to run.
+   * 
+   * @param key the new value to set.  Incorrect values may cause your application to fail to run.
+   */
+  public void setSessionSecret(String key) {
+	  _sessionSecret = key;
   }
 
   /**
@@ -1080,7 +1101,9 @@ public abstract class ExtensibleClient<T>
    * @param message
    */
   protected void log(CharSequence message) {
-    System.out.println(message);
+    if (isDebug()) {
+    	System.out.println(message);
+    }
   }
 
   /**

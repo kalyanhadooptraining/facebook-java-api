@@ -101,8 +101,10 @@ public class MarketListing {
             attribs.put(name, value);
         }
         catch (Exception e) {
-            System.out.println("Exception when setting listing attribute!");
-            e.printStackTrace();
+        	if (FacebookRestClient.DEBUG || ExtensibleClient.DEBUG) {
+        		System.out.println("Exception when setting listing attribute!");
+            	e.printStackTrace();
+        	}
         }
     }
     
