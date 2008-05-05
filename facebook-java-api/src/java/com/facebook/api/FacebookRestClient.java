@@ -52,6 +52,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3640,4 +3641,60 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     public int admin_getRequestAllocation() throws FacebookException, IOException {
         return this.admin_getAllocation("requests_per_day");
     }
+
+	public Document admin_getDailyMetrics(Set<Metric> metrics, Date start,
+			Date end) throws FacebookException, IOException {
+		return this.admin_getDailyMetrics(metrics, start.getTime(), end.getTime());
+	}
+
+	public Document admin_getDailyMetrics(Set<Metric> metrics, long start,
+			long end) throws FacebookException, IOException {
+		ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		
+		if ((metrics != null) && (! metrics.isEmpty())) {
+			JSONArray metricsJson = new JSONArray();
+			for (Metric metric : metrics) {
+				metricsJson.put(metric.getName());
+			}
+			params.add(new Pair<String, CharSequence>("metrics", metricsJson.toString()));
+		}
+		params.add(new Pair<String, CharSequence>("start_date", Long.toString(start)));
+		params.add(new Pair<String, CharSequence>("end_date", Long.toString(end)));
+		
+		return this.callMethod(FacebookMethod.ADMIN_GET_DAILY_METRICS, params);
+	}
+
+	public Document checkGrantedApiAccess(String apiKey) throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.PERM_CHECK_GRANTED_API_ACCESS,
+                new Pair<String,CharSequence>("permissions_apikey", apiKey));
+	}
+
+	public Document permissions_checkAvailableApiAccess(String apiKey) throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.PERM_CHECK_AVAILABLE_API_ACCESS,
+                new Pair<String,CharSequence>("permissions_apikey", apiKey));
+	}
+
+	public boolean permissions_grantApiAccess(String apiKey, Set<FacebookMethod> methods) throws FacebookException, IOException {
+		ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		
+		if ((methods != null) && (! methods.isEmpty())) {
+			JSONArray methodsJson = new JSONArray();
+			for (FacebookMethod method : methods) {
+				methodsJson.put(method.methodName());
+			}
+			params.add(new Pair<String, CharSequence>("metrics", methodsJson.toString()));
+		}
+		params.add(new Pair<String, CharSequence>("permissions_apikey", apiKey));
+		
+		return this.extractBoolean(this.callMethod(FacebookMethod.PERM_GRANT_API_ACCESS, params));
+	}
+
+	public boolean permissions_grantFullApiAccess(String apiKey) throws FacebookException, IOException {
+		return this.permissions_grantApiAccess(apiKey, null);
+	}
+
+	public boolean revokeApiAccess(String apiKey) throws FacebookException, IOException {
+		return this.extractBoolean(this.callMethod(FacebookMethod.PERM_REVOKE_API_ACCESS,
+                new Pair<String,CharSequence>("permissions_apikey", apiKey)));
+	}
 }
