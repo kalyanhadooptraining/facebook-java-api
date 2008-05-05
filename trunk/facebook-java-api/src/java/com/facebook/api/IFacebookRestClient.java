@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -2244,4 +2245,94 @@ public interface IFacebookRestClient<T> {
    *         per day.
    */
   public int admin_getNotificationAllocation() throws FacebookException, IOException;
+  
+  /**
+   * Retrieve the daily metrics for the current application.
+   * 
+   * @param metrics a set specifying the specific metrics to retrieve
+   * @param start the starting date to retrieve data for (range must not exceed 30 days)
+   * @param end the ending to to retrive data for (range must not exceed 30 days)
+   * 
+   * @return daily metrics for your app, for each day in the specified range
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T admin_getDailyMetrics(Set<Metric> metrics, Date start, Date end) throws FacebookException, IOException;
+  
+  /**
+   * Retrieve the daily metrics for the current application.
+   * 
+   * @param metrics a set specifying the specific metrics to retrieve
+   * @param start the starting date to retrieve data for (range must not exceed 30 days)
+   * @param end the ending to to retrive data for (range must not exceed 30 days)
+   * 
+   * @return daily metrics for your app, for each day in the specified range
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T admin_getDailyMetrics(Set<Metric> metrics, long start, long end) throws FacebookException, IOException;
+
+  /**
+   * Grant permission to an external app to make API calls on behalf of the current application.
+   * 
+   * @param apiKey the API-key of the application to grant permission to.
+   * @param methods the API methods to allow the other application to call.  If the set is empty or null, permission is granted for all API methods.
+   * 
+   * @return true if the operation succeeds
+   *         false otherwise
+   */
+  public boolean permissions_grantApiAccess(String apiKey, Set<FacebookMethod> methods) throws FacebookException, IOException;
+  
+  /**
+   * Grant permission to an external app to make API calls on behalf of the current application.  Access is granted to the full 
+   * set of allowed API methods.
+   * 
+   * @param apiKey the API-key of the application to grant permission to.
+   *
+   * @return true if the operation succeeds
+   *         false otherwise
+   */
+  public boolean permissions_grantFullApiAccess(String apiKey) throws FacebookException, IOException;
+  
+  /**
+   * Check to see what permissions have been granted to current app by the specified external application.
+   * 
+   * For example:
+   * 
+   * 	Application A grants permission on users.getInfo to Application B, Applicatio B can
+   *    then call permissions_checkAvailableApiAccess(A) and will recieve "users.getInfo" as 
+   *    a result.
+   * 
+   * @param apiKey the API key of the application to check for permissions from.
+   * 
+   * @return a list of all API methods that the specified application has permission to use.
+   */
+  public T permissions_checkAvailableApiAccess(String apiKey) throws FacebookException, IOException;
+  
+  /**
+   * Revokes the specified application's permission to call API methods on behalf of the current app.
+   * 
+   * @param apiKey the API key of the application to remove permissions for.
+   * 
+   * @return true if the operation succeeds
+   *         false otherwise
+   */
+  public boolean revokeApiAccess(String apiKey) throws FacebookException, IOException;
+  
+  /**
+   * Check to see what permissions have been granted to specified external application by the current application.
+   * 
+   * For example:
+   * 
+   * 	Application A grants permission on users.getInfo to Application B, Applicatio A can
+   *    then call permissions_checkGrantedApiAccess(B) and will recieve "users.getInfo" as 
+   *    a result.
+   * 
+   * @param apiKey the API key of the application to check permissions for.
+   * 
+   * @return a list of all API methods that the specified application has permission to use.
+   */
+  public T checkGrantedApiAccess(String apiKey) throws FacebookException, IOException;
 }

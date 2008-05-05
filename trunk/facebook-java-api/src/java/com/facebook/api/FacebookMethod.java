@@ -151,6 +151,13 @@ public enum FacebookMethod
   ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2),
   ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2),
   ADMIN_GET_ALLOCATION("facebook.admin.getAllocation", 2),
+  ADMIN_GET_DAILY_METRICS("facebook.admin.getDailyMetrics", 4),
+  
+  //Permissions
+  PERM_GRANT_API_ACCESS("facebook.permissions.grantApiAccess", 3),
+  PERM_CHECK_AVAILABLE_API_ACCESS("facebook.permissions.checkAvailableApiAccess", 2),
+  PERM_REVOKE_API_ACCESS("facebook.permissions.revokeApiAccess", 2),
+  PERM_CHECK_GRANTED_API_ACCESS("facebook.permissions.checkGrantedApiAccess", 2),
   
   //Application
   APPLICATION_GET_PUBLIC_INFO("facebook.application.getPublicInfo", 1),
@@ -174,7 +181,7 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES/*, APPLICATION_GET_PUBLIC_INFO*/);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, PERM_CHECK_AVAILABLE_API_ACCESS, PERM_GRANT_API_ACCESS, PERM_CHECK_GRANTED_API_ACCESS, PERM_REVOKE_API_ACCESS, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES/*, APPLICATION_GET_PUBLIC_INFO*/);
     return preAuth;
   }
 
