@@ -2867,13 +2867,13 @@ public abstract class ExtensibleClient<T>
 			}
 			params.add(new Pair<String, CharSequence>("metrics", metricsJson.toString()));
 		}
-		params.add(new Pair<String, CharSequence>("start_date", Long.toString(start)));
-		params.add(new Pair<String, CharSequence>("end_date", Long.toString(end)));
+		params.add(new Pair<String, CharSequence>("start_date", Long.toString(start / 1000)));
+		params.add(new Pair<String, CharSequence>("end_date", Long.toString(end / 1000)));
 		
 		return this.callMethod(FacebookMethod.ADMIN_GET_DAILY_METRICS, params);
 	}
 
-	public T checkGrantedApiAccess(String apiKey) throws FacebookException, IOException {
+	public T permissions_checkGrantedApiAccess(String apiKey) throws FacebookException, IOException {
 		return this.callMethod(FacebookMethod.PERM_CHECK_GRANTED_API_ACCESS,
               new Pair<String,CharSequence>("permissions_apikey", apiKey));
 	}
@@ -2902,7 +2902,7 @@ public abstract class ExtensibleClient<T>
 		return this.permissions_grantApiAccess(apiKey, null);
 	}
 
-	public boolean revokeApiAccess(String apiKey) throws FacebookException, IOException {
+	public boolean permissions_revokeApiAccess(String apiKey) throws FacebookException, IOException {
 		return this.extractBoolean(this.callMethod(FacebookMethod.PERM_REVOKE_API_ACCESS,
               new Pair<String,CharSequence>("permissions_apikey", apiKey)));
 	}
