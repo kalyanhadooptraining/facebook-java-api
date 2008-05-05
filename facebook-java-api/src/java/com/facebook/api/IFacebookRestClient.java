@@ -2264,8 +2264,8 @@ public interface IFacebookRestClient<T> {
    * Retrieve the daily metrics for the current application.
    * 
    * @param metrics a set specifying the specific metrics to retrieve
-   * @param start the starting date to retrieve data for (range must not exceed 30 days)
-   * @param end the ending to to retrive data for (range must not exceed 30 days)
+   * @param start the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+   * @param end the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
    * 
    * @return daily metrics for your app, for each day in the specified range
    * 
@@ -2319,7 +2319,7 @@ public interface IFacebookRestClient<T> {
    * @return true if the operation succeeds
    *         false otherwise
    */
-  public boolean revokeApiAccess(String apiKey) throws FacebookException, IOException;
+  public boolean permissions_revokeApiAccess(String apiKey) throws FacebookException, IOException;
   
   /**
    * Check to see what permissions have been granted to specified external application by the current application.
@@ -2334,5 +2334,5 @@ public interface IFacebookRestClient<T> {
    * 
    * @return a list of all API methods that the specified application has permission to use.
    */
-  public T checkGrantedApiAccess(String apiKey) throws FacebookException, IOException;
+  public T permissions_checkGrantedApiAccess(String apiKey) throws FacebookException, IOException;
 }
