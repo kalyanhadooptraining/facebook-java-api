@@ -2906,4 +2906,8 @@ public abstract class ExtensibleClient<T>
 		return this.extractBoolean(this.callMethod(FacebookMethod.PERM_REVOKE_API_ACCESS,
               new Pair<String,CharSequence>("permissions_apikey", apiKey)));
 	}
+	
+	public boolean auth_expireSession() throws FacebookException, IOException {
+		return this.extractBoolean(this.callMethod(FacebookMethod.AUTH_EXPIRE_SESSION));
+	}
 }

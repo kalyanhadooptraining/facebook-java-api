@@ -2335,4 +2335,15 @@ public interface IFacebookRestClient<T> {
    * @return a list of all API methods that the specified application has permission to use.
    */
   public T permissions_checkGrantedApiAccess(String apiKey) throws FacebookException, IOException;
+  
+  /**
+   * Expires the curently active session.
+   * 
+   * @return true if the call succeeds
+   *         false otherwise
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public boolean auth_expireSession() throws FacebookException, IOException;
 }
