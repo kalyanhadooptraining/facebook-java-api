@@ -45,6 +45,7 @@ public enum FacebookMethod
   // Authentication
   AUTH_CREATE_TOKEN("facebook.auth.createToken"),
   AUTH_GET_SESSION("facebook.auth.getSession", 1),
+  AUTH_EXPIRE_SESSION("facebook.auth.expireSession", 1),
   // FQL Query
   FQL_QUERY("facebook.fql.query",1),
   // Events
@@ -157,6 +158,7 @@ public enum FacebookMethod
   PERM_GRANT_API_ACCESS("facebook.permissions.grantApiAccess", 3),
   PERM_CHECK_AVAILABLE_API_ACCESS("facebook.permissions.checkAvailableApiAccess", 2),
   PERM_REVOKE_API_ACCESS("facebook.permissions.revokeApiAccess", 2),
+  //                             facebook.permissions.checkGrantedApiAccess
   PERM_CHECK_GRANTED_API_ACCESS("facebook.permissions.checkGrantedApiAccess", 2),
   
   //Application
