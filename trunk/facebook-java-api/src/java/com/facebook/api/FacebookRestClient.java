@@ -114,14 +114,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * Facebook API server, part 3b
    */
   public static URL HTTPS_SERVER_URL = null;
+  protected static JAXBContext JAXB_CONTEXT;
   static {
     try {
+      JAXB_CONTEXT = JAXBContext.newInstance("com.facebook.api.schema");
       SERVER_URL = new URL(SERVER_ADDR);
       HTTPS_SERVER_URL = new URL(HTTPS_SERVER_ADDR);
     }
     catch (MalformedURLException e) {
       System.err.println("MalformedURLException: " + e.getMessage());
       System.exit(1);
+    }
+    catch (JAXBException e) {
+    	JAXB_CONTEXT = null;
+    	System.err.println("Could not get JAXB context:  " + e.getMessage());
+    	e.printStackTrace();
     }
   }
   
@@ -182,6 +189,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected int _timeout;
   protected boolean batchMode;
   protected List<BatchQuery> queries;
+  
+  protected String permissionsApiKey = null;
   
   protected List<Long> friendsList; // to save making the friends.get api call, this will get prepopulated on canvas pages
   public Boolean added;        // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
@@ -295,6 +304,22 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     _userId = -1;
     batchMode = false;
     queries = new ArrayList<BatchQuery>();
+  }
+  
+  public void beginPermissionsMode(String apiKey) {
+	  this.permissionsApiKey = apiKey;
+  }
+  
+  public void endPermissionsMode() {
+	  this.permissionsApiKey = null;
+  }
+  
+  public JAXBContext getJaxbContext() {
+	  return JAXB_CONTEXT;
+  }
+  
+  public void setJaxbContext(JAXBContext context) {
+	  JAXB_CONTEXT = context;
   }
   
   /**
@@ -649,6 +674,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     HashMap<String, CharSequence> params =
       new HashMap<String, CharSequence>(2 * method.numTotalParams());
 
+    if (this.permissionsApiKey != null) {
+    	params.put("call_as_apikey", permissionsApiKey);
+    }
     params.put("method", method.methodName());
     params.put("api_key", _apiKey);
     params.put("v", TARGET_API_VERSION);
@@ -1904,11 +1932,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       if (this.rawResponse == null) {
           return null;
       }
-      JAXBContext jc;
+      if (JAXB_CONTEXT == null) {
+    	  return null;
+      }
       Object pojo = null;
       try {
-          jc = JAXBContext.newInstance("com.facebook.api.schema");
-          Unmarshaller unmarshaller = jc.createUnmarshaller();
+          Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
           pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));
       } catch (JAXBException e) {
           System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO");

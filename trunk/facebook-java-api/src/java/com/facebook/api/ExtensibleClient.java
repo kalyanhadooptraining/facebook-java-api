@@ -84,13 +84,20 @@ public abstract class ExtensibleClient<T>
 
   public static URL SERVER_URL = null;
   public static URL HTTPS_SERVER_URL = null;
+  protected static JAXBContext JAXB_CONTEXT;
   static {
     try {
+      JAXB_CONTEXT = JAXBContext.newInstance("com.facebook.api.schema");
       SERVER_URL = new URL(SERVER_ADDR);
       HTTPS_SERVER_URL = new URL(HTTPS_SERVER_ADDR);
     } catch (MalformedURLException e) {
       System.err.println("MalformedURLException: " + e.getMessage());
       System.exit(1);
+    }
+    catch (JAXBException e) {
+    	JAXB_CONTEXT = null;
+    	System.err.println("Could not get JAXB context:  " + e.getMessage());
+    	e.printStackTrace();
     }
   }
   
@@ -106,6 +113,7 @@ public abstract class ExtensibleClient<T>
   protected String _sessionKey;
   protected boolean _isDesktop = false;
   protected long _userId = -1;
+  protected String permissionsApiKey = null;
 
   /** 
    * filled in when session is established
@@ -146,6 +154,14 @@ public abstract class ExtensibleClient<T>
       this(serverUrl, apiKey, secret, sessionKey);
       _timeout = timeout;
     }
+  
+  public void beginPermissionsMode(String apiKey) {
+	  this.permissionsApiKey = apiKey;
+  }
+  
+  public void endPermissionsMode() {
+	  this.permissionsApiKey = null;
+  }
 
   /**
    * The response format in which results to FacebookMethod calls are returned
@@ -163,6 +179,14 @@ public abstract class ExtensibleClient<T>
    */
   public String getSessionSecret() {
 	  return _sessionSecret;
+  }
+  
+  public JAXBContext getJaxbContext() {
+	  return JAXB_CONTEXT;
+  }
+  
+  public void setJaxbContext(JAXBContext context) {
+	  JAXB_CONTEXT = context;
   }
   
   /**
@@ -728,6 +752,9 @@ public abstract class ExtensibleClient<T>
     HashMap<String, CharSequence> params =
       new HashMap<String, CharSequence>(2 * method.numTotalParams());
 
+    if (this.permissionsApiKey != null) {
+    	params.put("call_as_apikey", permissionsApiKey);
+    }
     params.put("method", method.methodName());
     params.put("api_key", _apiKey);
     params.put("v", TARGET_API_VERSION);
@@ -1705,15 +1732,16 @@ public abstract class ExtensibleClient<T>
       if (this.rawResponse == null) {
           return null;
       }
+      if (JAXB_CONTEXT == null) {
+    	  return null;
+      }
       if ((this.getResponseFormat() != null) && (! "xml".equals(this.getResponseFormat().toLowerCase()))) {
           //JAXB will not work with JSON
           throw new RuntimeException("You can only generate a response POJO when using XML formatted API responses!  JSON users go elsewhere!");
       }
-      JAXBContext jc;
       Object pojo = null;
       try {
-          jc = JAXBContext.newInstance("com.facebook.api.schema");
-          Unmarshaller unmarshaller = jc.createUnmarshaller();
+          Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
           pojo =  unmarshaller.unmarshal(new ByteArrayInputStream(this.rawResponse.getBytes("UTF-8")));
       } catch (JAXBException e) {
           System.err.println("getResponsePOJO() - Could not unmarshall XML stream into POJO");
