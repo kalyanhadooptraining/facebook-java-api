@@ -41,6 +41,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.bind.JAXBContext;
+
 import org.json.JSONObject;
 import com.facebook.api.schema.Listing;
 
@@ -2346,4 +2349,35 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public boolean auth_expireSession() throws FacebookException, IOException;
+  
+  /**
+   * Begins permissions mode, and allows the current application to begin making requests on behalf 
+   * of the application associated with the specified API key.
+   * 
+   * This method must be invoked prior to making an API request on behalf of another application.  When 
+   * you are done, be sure to call endPermissionsMode().
+   * 
+   * @param apiKey the API key of the application to being making requests for.
+   */
+  public void beginPermissionsMode(String apiKey);
+  
+  /**
+   * Terminates permissions mode.  After calling this, the current application will be unable 
+   * to make requests on behalf of another app, until beginPermissionsMode is called again.
+   */
+  public void endPermissionsMode();
+  
+  /**
+   * Get the JAXB context that is being used by the client.
+   * 
+   * @return the JAXB context object.
+   */
+  public JAXBContext getJaxbContext();
+  
+  /**
+   * Set the JAXB context that the client will use.
+   * 
+   * @param context the context to use.
+   */
+  public void setJaxbContext(JAXBContext context);
 }
