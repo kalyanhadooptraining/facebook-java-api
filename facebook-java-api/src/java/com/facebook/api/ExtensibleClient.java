@@ -2919,7 +2919,7 @@ public abstract class ExtensibleClient<T>
 			for (FacebookMethod method : methods) {
 				methodsJson.put(method.methodName());
 			}
-			params.add(new Pair<String, CharSequence>("metrics", methodsJson.toString()));
+			params.add(new Pair<String, CharSequence>("method_arr", methodsJson.toString()));
 		}
 		params.add(new Pair<String, CharSequence>("permissions_apikey", apiKey));
 		
