@@ -87,6 +87,10 @@
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
 
+<xsd:simpleType name="id_list">
+  <xsd:restriction base="xsd:string" />
+</xsd:simpleType>
+
 <xsd:simpleType name="time">
   <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
@@ -104,6 +108,10 @@
 </xsd:simpleType>
 
 <xsd:simpleType name="session_key">
+  <xsd:restriction base="xsd:string" />
+</xsd:simpleType>
+
+<xsd:simpleType name="session_secret">
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
 
@@ -161,6 +169,21 @@
   <xsd:sequence>
     <xsd:element name="key" type="xsd:string" />
     <xsd:element name="value" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="FacebookApiException">
+  <xsd:sequence>
+    <xsd:element name="error_code" type="xsd:int" />
+    <xsd:element name="error_msg" type="xsd:string" />
+    <xsd:element name="request_args">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="arg" type="arg" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
   </xsd:sequence>
 </xsd:complexType>
 
@@ -715,6 +738,7 @@
     <xsd:element name="pic_square" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="pic" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="pic_large" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="page_url" type="xsd:string" minOccurs="0" />
     <xsd:element name="status" type="user_status" minOccurs="0" nillable="true" />
     <xsd:element name="type" type="xsd:string" minOccurs="0" />
     <xsd:element name="website" type="xsd:string" minOccurs="0" nillable="true" />
@@ -809,27 +833,36 @@
       </xsd:complexType>
     </xsd:element>
     <xsd:element name="company_name" type="xsd:string" />
+    <xsd:element name="description" type="xsd:string" />
+    <xsd:element name="daily_active_users" type="xsd:int" />
+    <xsd:element name="daily_active_percentage" type="xsd:int" />
   </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="FacebookApiException">
-  <xsd:sequence>
-    <xsd:element name="error_code" type="xsd:int" />
-    <xsd:element name="error_msg" type="xsd:string" />
-    <xsd:element name="request_args">
-      <xsd:complexType>
-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-          <xsd:element name="arg" type="arg" minOccurs="0" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attribute name="list" type="xsd:boolean" />
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:sequence>
+<xsd:complexType name="daily_metrics">
+  <xsd:all>
+    <xsd:element name="date" type="time" minOccurs="0" />
+    <xsd:element name="daily_active_users" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_adds" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_removes" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_blocks" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_unblocks" type="xsd:int" minOccurs="0" />
+    <xsd:element name="api_calls" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_api_calls" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_page_views" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
+  </xsd:all>
 </xsd:complexType>
 
 <xsd:element name="auth_createToken_response" type="auth_token" />
 
 <xsd:element name="auth_getSession_response" type="session_info" />
+
+<xsd:element name="auth_promoteSession_response" type="session_secret" />
+
+<xsd:element name="auth_expireSession_response" type="xsd:boolean" />
 
 <xsd:element name="events_get_response">
   <xsd:complexType>
@@ -901,6 +934,15 @@
 
 <xsd:element name="groups_getMembers_response" type="group_members" />
 
+<xsd:element name="privacy_canSee_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="privacy_canSee_response_elt" type="xsd:boolean" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
 <xsd:element name="data_getCookies_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
@@ -911,6 +953,28 @@
 </xsd:element>
 
 <xsd:element name="data_setCookie_response" type="xsd:boolean" />
+
+<xsd:element name="permissions_checkGrantedApiAccess_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="permissions_checkGrantedApiAccess_response_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="permissions_checkAvailableApiAccess_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="permissions_checkAvailableApiAccess_response_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="permissions_grantApiAccess_response" type="xsd:boolean" />
+
+<xsd:element name="permissions_revokeApiAccess_response" type="xsd:boolean" />
 
 <xsd:element name="marketplace_getCategories_response">
   <xsd:complexType>
@@ -1163,10 +1227,21 @@
 
 <xsd:element name="admin_setAppProperties_response" type="xsd:boolean" />
 
+<xsd:element name="admin_getAllocation_response" type="xsd:int" />
+
 <xsd:element name="application_getPublicInfo_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="app_info" type="app_info" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="admin_getDailyMetrics_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="daily_metrics" type="daily_metrics" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
