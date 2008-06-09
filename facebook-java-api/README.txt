@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.7.4.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.8-alpha.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.7.4.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.8-alpha.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,17 @@ Committing Changes:
 	
 Changelog:
 
+	From 1.7.4 to 1.8-alpha
+		- Implement all new methods described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
+		- Implement all session-id changes described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
+		- Add support for Permissions API [NOT TESTED!].
+		- Refresh all JAXB generated classes using latest Facebook schema document.
+		- Cache JAXBContext instead of creating a new one on each API call.
+	 	- Add auth.promoteSession and auth_expireSession API calls.
+		- Add admin.getDailyMetrics API call.
+		- Reduce output when not running in debug mode.
+		- Add missing ApplicationProperty fields to enum.
+	
 	From v1.7.3 to 1.7.4
 		- Disable admin.getAppProperties, admin.setAppProperties, and fbml.setRefHandle from desktop apps (as per API spec).
 		- Fix bug where FacebookXmlRestClient/FacebookJsonRestClient could not call admin.getAllocation.
