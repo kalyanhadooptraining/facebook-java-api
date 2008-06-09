@@ -46,6 +46,7 @@ public enum FacebookMethod
   AUTH_CREATE_TOKEN("facebook.auth.createToken"),
   AUTH_GET_SESSION("facebook.auth.getSession", 1),
   AUTH_EXPIRE_SESSION("facebook.auth.expireSession", 1),
+  AUTH_PROMOTE_SESSION("facebook.auth.promoteSession", 1),
   // FQL Query
   FQL_QUERY("facebook.fql.query",1),
   // Events
@@ -61,20 +62,26 @@ public enum FacebookMethod
   USERS_GET_INFO("facebook.users.getInfo", 2),
   USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
   USERS_IS_APP_ADDED("facebook.users.isAppAdded"),
+  USERS_IS_APP_ADDED_NOSESSION("facebook.users.isAppAdded",1),
   USERS_HAS_PERMISSION("facebook.users.hasAppPermission", 2),
+  USERS_HAS_PERMISSION_NOSESSION("facebook.users.hasAppPermission", 2),
   /**
    * @deprecated provided for legacy support only.  Please use USERS_HAS_PERMISSION instead.
    */
   USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 2),  //duplicated above
   USERS_SET_STATUS("facebook.users.setStatus", 4),
+  USERS_SET_STATUS_NOSESSION("facebook.users.setStatus", 4),
   // Photos
   PHOTOS_GET("facebook.photos.get", 2),
   PHOTOS_GET_ALBUMS("facebook.photos.getAlbums", 1),
   PHOTOS_GET_TAGS("facebook.photos.getTags", 1),
   // PhotoUploads
   PHOTOS_CREATE_ALBUM("facebook.photos.createAlbum",3),
+  PHOTOS_CREATE_ALBUM_NOSESSION("facebook.photos.createAlbum", 3),
   PHOTOS_ADD_TAG("facebook.photos.addTag", 5),
+  PHOTOS_ADD_TAG_NOSESSION("facebook.photos.addTag",5),
   PHOTOS_UPLOAD("facebook.photos.upload", 3, true),
+  PHOTOS_UPLOAD_NOSESSION("facebook.photos.upload",3,true),
   // Notifications
   NOTIFICATIONS_GET("facebook.notifications.get"),
   NOTIFICATIONS_SEND("facebook.notifications.send",4),
@@ -84,9 +91,16 @@ public enum FacebookMethod
   // Groups
   GROUPS_GET("facebook.groups.get", 1),
   GROUPS_GET_MEMBERS("facebook.groups.getMembers", 1),
-  // FBML
+  // Profile
   PROFILE_SET_FBML("facebook.profile.setFBML", 4),
+  PROFILE_SET_FBML_NOSESSION("facebook.profile.setFBML", 4),
   PROFILE_GET_FBML("facebook.profile.getFBML", 1),
+  PROFILE_GET_FBML_NOSESSION("facebook.profile.getFBML", 1),
+  PROFILE_SET_INFO("facebook.profile.setInfo", 5),
+  PROFILE_SET_INFO_OPTIONS("facebook.profile.setInfoOptions", 3),
+  PROFILE_GET_INFO("facebook.profile.getInfo", 2),
+  PROFILE_GET_INFO_OPTIONS("facebook.profile.getInfoOptions", 2),
+  // FBML
   FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl", 1),
   FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
   FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 2),
@@ -94,12 +108,18 @@ public enum FacebookMethod
   FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11),  //deprecated
   FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
   FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 15),
+  FEED_REGISTER_TEMPLATE("facebook.feed.registerTemplateBundle", 4),
+  FEED_GET_TEMPLATES("facebook.feed.getRegisteredTemplateBundles", 1),
+  FEED_GET_TEMPLATE_BY_ID("facebook.feed.getRegisteredTemplateBundleByID", 2),
+  FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction", 5),
   //Marketplace
   MARKET_CREATE_LISTING("facebook.marketplace.createListing", 4),
+  MARKET_CREATE_LISTING_NOSESSION("facebook.marketplace.createListing", 4),
   MARKET_GET_CATEGORIES("facebook.marketplace.getCategories", 1),
   MARKET_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories", 1),
   MARKET_GET_LISTINGS("facebook.marketplace.getListings", 3),
   MARKET_REMOVE_LISTING("facebook.marketplace.removeListing", 3),
+  MARKET_REMOVE_LISTING_NOSESSION("facebook.marketplace.removeListing", 3),
   MARKET_SEARCH("facebook.marketplace.search", 4),
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_GET_CATEGORIES instead.
@@ -183,7 +203,18 @@ public enum FacebookMethod
    */
   public static EnumSet<FacebookMethod> preAuthMethods() {
     if (null == preAuth)
-      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, SMS_SEND, SMS_SEND_MESSAGE, PAGES_GET_INFO_NO_SESSION, NOTIFICATIONS_SEND_EMAIL, PERM_CHECK_AVAILABLE_API_ACCESS, PERM_GRANT_API_ACCESS, PERM_CHECK_GRANTED_API_ACCESS, PERM_REVOKE_API_ACCESS, ADMIN_GET_APP_PROPERTIES, ADMIN_SET_APP_PROPERTIES/*, APPLICATION_GET_PUBLIC_INFO*/, DATA_SET_COOKIE, DATA_GET_COOKIES);
+      preAuth = EnumSet.of(AUTH_CREATE_TOKEN, AUTH_GET_SESSION, 
+    		  SMS_SEND, SMS_SEND_MESSAGE, NOTIFICATIONS_SEND_EMAIL, PERM_CHECK_AVAILABLE_API_ACCESS, PERM_GRANT_API_ACCESS, 
+    		  PERM_CHECK_GRANTED_API_ACCESS, PERM_REVOKE_API_ACCESS, ADMIN_GET_APP_PROPERTIES, 
+    		  ADMIN_SET_APP_PROPERTIES/*, APPLICATION_GET_PUBLIC_INFO*/, DATA_SET_COOKIE, 
+    		  DATA_GET_COOKIES, FBML_REFRESH_IMG_SRC, FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE,
+    		  MARKETPLACE_GET_CATEGORIES, MARKET_GET_CATEGORIES, MARKETPLACE_GET_SUBCATEGORIES, 
+    		  MARKET_GET_SUBCATEGORIES, PAGES_IS_APP_ADDED, PROFILE_SET_FBML_NOSESSION, 
+    		  PROFILE_GET_FBML_NOSESSION, USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, 
+    		  MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION, 
+    		  PHOTOS_UPLOAD_NOSESSION, USERS_HAS_PERMISSION_NOSESSION, USERS_IS_APP_ADDED_NOSESSION, PAGES_GET_INFO_NO_SESSION, 
+    		  FEED_REGISTER_TEMPLATE, FEED_GET_TEMPLATES, FEED_GET_TEMPLATE_BY_ID, PROFILE_GET_INFO, PROFILE_GET_INFO_OPTIONS,
+    		  PROFILE_SET_INFO, PROFILE_SET_INFO_OPTIONS);
     return preAuth;
   }
 
