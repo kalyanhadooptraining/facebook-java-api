@@ -45,6 +45,8 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+
 import com.facebook.api.schema.Listing;
 
 /**
@@ -2767,4 +2769,15 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public void profile_setInfoOptions(ProfileInfoField field) throws FacebookException, IOException;
+  
+  /**
+   * Adds several tags to a photo.
+   * 
+   * @param photoId The photo id of the photo to be tagged.
+   * @param tags A list of PhotoTags.
+   * @param userId the id of the user adding the tags.
+   * 
+   * @return a list of booleans indicating whether the tag was successfully added.
+   */
+  public T photos_addTags(Long photoId, Collection<PhotoTag> tags, Long userId) throws FacebookException, IOException;
 }
