@@ -1,7 +1,7 @@
 #summary This page contains a top-level overview of the current project status.
 
 ===== Current project version =====
-1.7.4
+1.8-alpha
 
 
 ===== Javadoc =====
