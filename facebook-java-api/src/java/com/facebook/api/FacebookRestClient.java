@@ -3730,4 +3730,192 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	public boolean auth_expireSession() throws FacebookException, IOException {
 		return this.extractBoolean(this.callMethod(FacebookMethod.AUTH_EXPIRE_SESSION));
 	}
+
+	public String auth_promoteSession() throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document feed_getRegisteredTemplateBundleByID(Long id)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document feed_getRegisteredTemplateBundles()
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean feed_publishUserAction(Long bundleId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean feed_publishUserAction(Long bundleId,
+			Map<String, String> templateData, List<Long> targetIds,
+			String bodyGeneral) throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Long feed_registerTemplateBundle(String template)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Long feed_registerTemplateBundle(String template,
+			String shortTemplate, String longTemplate)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Long marketplace_createListing(Long listingId,
+			boolean showOnProfile, String attributes, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Long marketplace_createListing(Long listingId,
+			boolean showOnProfile, MarketListing listing, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Long marketplace_createListing(boolean showOnProfile,
+			MarketListing listing, Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean marketplace_removeListing(Long listingId, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean marketplace_removeListing(Long listingId,
+			MarketListingStatus status, Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean photos_addTag(Long photoId, Long taggedUserId, Double pct,
+			Double pct2, Long userId) throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean photos_addTag(Long photoId, CharSequence tagText,
+			Double pct, Double pct2, Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Document photos_createAlbum(String albumName, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_createAlbum(String name, String description,
+			String location, Long userId) throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload(Long userId, File photo)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload(Long userId, File photo, String caption)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload(Long userId, File photo, Long albumId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload(Long userId, File photo, String caption,
+			Long albumId) throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getFBML() throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getInfo(Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getInfoOptions(String field)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void profile_setInfo(Long userId, String title, boolean textOnly,
+			List<ProfileInfoField> fields) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void profile_setInfoOptions(ProfileInfoField field)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean users_hasAppPermission(Permission perm, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean users_isAppAdded(Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean users_setStatus(String status, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean users_setStatus(String newStatus, boolean clear, Long userId)
+			throws FacebookException, IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean users_setStatus(String newStatus, boolean clear,
+			boolean statusIncludesVerb, Long userId) throws FacebookException,
+			IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }

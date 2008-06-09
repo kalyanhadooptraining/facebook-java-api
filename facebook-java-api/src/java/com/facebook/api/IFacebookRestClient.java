@@ -227,22 +227,6 @@ public interface IFacebookRestClient<T> {
           IOException;
 
   /**
-   * Sets the FBML for the profile box, profile actions, and mobile devices for the logged-in
-   * user. Refer to the FBML documentation for a description of the markup and its role in various
-   * contexts.
-   * 
-   * @param profileFbmlMarkup the FBML for the profile box
-   * @param profileActionFbmlMarkup the FBML for the profile actions
-   * @param mobileFbmlMarkup the FBML for mobile devices
-   * @return a boolean indicating whether the FBML was successfully set
-   * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
-   *      wiki: Profile.setFBML</a>
-   */
-  public boolean profile_setFBML(CharSequence profileFbmlMarkup,
-          CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup)
-          throws FacebookException, IOException;
-
-  /**
    * Sets the FBML for the profile box, profile actions, and mobile devices for the user or page
    * profile with ID <code>profileId</code>. Refer to the FBML documentation for a description
    * of the markup and its role in various contexts.
@@ -258,6 +242,23 @@ public interface IFacebookRestClient<T> {
   public boolean profile_setFBML(CharSequence profileFbmlMarkup,
           CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId)
           throws FacebookException, IOException;
+  
+  /**
+   * Sets the FBML for the profile box, profile actions, and mobile devices for the current user. 
+   * Refer to the FBML documentation for a description
+   * of the markup and its role in various contexts.
+   * 
+   * @param profileFbmlMarkup the FBML for the profile box
+   * @param profileActionFbmlMarkup the FBML for the profile actions
+   * @param mobileFbmlMarkup the FBML for mobile devices
+   * @param profileId a page or user ID (null for the logged-in user)
+   * @return a boolean indicating whether the FBML was successfully set
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers
+   *      wiki: Profile.setFBML</a>
+   */
+  public boolean profile_setFBML(CharSequence profileFbmlMarkup,
+          CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup)
+          throws FacebookException, IOException;
 
   /**
    * Gets the FBML for a user's profile, including the content for both the profile box
@@ -266,6 +267,15 @@ public interface IFacebookRestClient<T> {
    * @return a T containing FBML markup
    */
   public T profile_getFBML(Long userId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Gets the FBML for the current user's profile, including the content for both the profile box
+   * and the profile actions.
+   * @param userId - the user whose profile FBML to get
+   * @return a T containing FBML markup
+   */
+  public T profile_getFBML()
     throws FacebookException, IOException;
 
   /**
@@ -634,6 +644,17 @@ public interface IFacebookRestClient<T> {
    */
   public boolean users_isAppAdded()
     throws FacebookException, IOException;
+  
+  /**
+   * Retrieves an indicator of whether the specified user has added the
+   * application associated with the _apiKey.
+   * @param userId the if of the user to check for.
+   * @return boolean indicating whether the user has added the app
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">
+   *      Developers Wiki: Users.isAppAdded</a>
+   */
+  public boolean users_isAppAdded(Long userId)
+    throws FacebookException, IOException;
 
   /**
    * Retrieves whether the logged-in user has granted the specified permission to this application.
@@ -662,6 +683,18 @@ public interface IFacebookRestClient<T> {
     throws FacebookException, IOException;
   
   /**
+   * Sets the spedified user's Facebook status.
+   * Requires the status_update extended permission.
+   * @return whether the status was successfully set
+   * @see #users_hasAppPermission
+   * @see FacebookExtendedPerm#STATUS_UPDATE
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus">
+   *      Developers Wiki: Users.setStatus</a>
+   */
+  public boolean users_setStatus(String status, Long userId)
+    throws FacebookException, IOException;
+  
+  /**
    * Set the user's profile status message.  This requires that the user has granted the application the
    * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
    * to check to see if the user has granted your app the abbility to update their status.
@@ -680,6 +713,23 @@ public interface IFacebookRestClient<T> {
   /**
    * Set the user's profile status message.  This requires that the user has granted the application the
    * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
+   * to check to see if the user has granted your app the abbility to update their status.
+   *
+   * @param newStatus the new status message to set.
+   * @param clear whether or not to clear the old status message.
+   * @param userId the id of the user to set the status for.
+   *
+   * @return true if the call succeeds
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_setStatus(String newStatus, boolean clear, Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Set the user's profile status message.  This requires that the user has granted the application the
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
    * to check to see if the user has granted your app the abbility to update their status
    * 
    * @param newStatus the new status message to set.
@@ -694,6 +744,25 @@ public interface IFacebookRestClient<T> {
    * @throws IOException if a communication/network error happens.
    */
   public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb) throws FacebookException, IOException;
+  
+  /**
+   * Set the user's profile status message.  This requires that the user has granted the application the
+   * 'status_update' permission, otherwise the call will return an error.  You can use 'users_hasAppPermission'
+   * to check to see if the user has granted your app the abbility to update their status
+   * 
+   * @param newStatus the new status message to set.
+   * @param clear whether or not to clear the old status message.
+   * @param statusIncludesVerb set to true if you do not want the Facebook Platform to automatically prepend "is " to your status message
+   *                           set to false if you want the "is " prepended (default behavior)
+   * @param userId the id of the user to set the status for.
+   * 
+   * @return true if the call succeeds
+   *         false otherwise
+   * 
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb, Long userId) throws FacebookException, IOException;
 
   /**
    * Clears the logged-in user's Facebook status.
@@ -832,6 +901,26 @@ public interface IFacebookRestClient<T> {
    */
   public T photos_createAlbum(String name, String description, String location)
     throws FacebookException, IOException;
+  
+  /**
+   * Creates an album.
+   * @param albumName The list of photos from which to extract photo tags.
+   * @param userId the id of the user creating the album.
+   * @return the created album
+   */
+  public T photos_createAlbum(String albumName, Long userId)
+    throws FacebookException, IOException;
+
+  /**
+   * Creates an album.
+   * @param name The album name.
+   * @param location The album location (optional).
+   * @param description The album description (optional).
+   * @param userId the id of the user creating the album.
+   * @return an array of photo objects.
+   */
+  public T photos_createAlbum(String name, String description, String location, Long userId)
+    throws FacebookException, IOException;
 
   /**
    * Adds several tags to a photo.
@@ -862,6 +951,30 @@ public interface IFacebookRestClient<T> {
    * @return whether the tag was successfully added.
    */
   public boolean photos_addTag(Long photoId, CharSequence tagText, Double xPct, Double yPct)
+    throws FacebookException, IOException;
+  
+  /**
+   * Adds a tag to a photo.
+   * @param photoId The photo id of the photo to be tagged.
+   * @param xPct The horizontal position of the tag, as a percentage from 0 to 100, from the left of the photo.
+   * @param yPct The vertical position of the tag, as a percentage from 0 to 100, from the top of the photo.
+   * @param taggedUserId The list of photos from which to extract photo tags.
+   * @param userId the user tagging the photo.
+   * @return whether the tag was successfully added.
+   */
+  public boolean photos_addTag(Long photoId, Long taggedUserId, Double xPct, Double yPct, Long userId)
+    throws FacebookException, IOException;
+
+  /**
+   * Adds a tag to a photo.
+   * @param photoId The photo id of the photo to be tagged.
+   * @param xPct The horizontal position of the tag, as a percentage from 0 to 100, from the left of the photo.
+   * @param yPct The list of photos from which to extract photo tags.
+   * @param tagText The text of the tag.
+   * @param userId the user tagging the photo.
+   * @return whether the tag was successfully added.
+   */
+  public boolean photos_addTag(Long photoId, CharSequence tagText, Double xPct, Double yPct, Long userId)
     throws FacebookException, IOException;
 
   /**
@@ -906,6 +1019,54 @@ public interface IFacebookRestClient<T> {
    * Developers wiki: Photos.upload</a>
    */
   public T photos_upload(File photo, String caption, Long albumId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Uploads a photo to Facebook.
+   * @param photo an image file
+   * @param userId the id of the user uploading the photo
+   * @return a T with the standard Facebook photo information
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload">
+   * Developers wiki: Photos.upload</a>
+   */
+  public T photos_upload(Long userId, File photo)
+    throws FacebookException, IOException;
+
+  /**
+   * Uploads a photo to Facebook.
+   * @param photo an image file
+   * @param caption a description of the image contents
+   * @param userId the id of the user uploading the photo
+   * @return a T with the standard Facebook photo information
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload">
+   * Developers wiki: Photos.upload</a>
+   */
+  public T photos_upload(Long userId, File photo, String caption)
+    throws FacebookException, IOException;
+
+  /**
+   * Uploads a photo to Facebook.
+   * @param photo an image file
+   * @param albumId the album into which the photo should be uploaded
+   * @param userId the id of the user uploading the photo
+   * @return a T with the standard Facebook photo information
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload">
+   * Developers wiki: Photos.upload</a>
+   */
+  public T photos_upload(Long userId, File photo, Long albumId)
+    throws FacebookException, IOException;
+
+  /**
+   * Uploads a photo to Facebook.
+   * @param photo an image file
+   * @param caption a description of the image contents
+   * @param albumId the album into which the photo should be uploaded
+   * @param userId the id of the user uploading the photo
+   * @return a T with the standard Facebook photo information
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload">
+   * Developers wiki: Photos.upload</a>
+   */
+  public T photos_upload(Long userId, File photo, String caption, Long albumId)
     throws FacebookException, IOException;
 
   /**
@@ -1030,6 +1191,19 @@ public interface IFacebookRestClient<T> {
    *      Developers Wiki: marketplace.removeListing</a>
    */
   public boolean marketplace_removeListing(Long listingId)
+    throws FacebookException, IOException;
+  
+  /**
+   * Remove a marketplace listing. The create_listing extended permission is required.
+   * @param listingId the listing to be removed
+   * @param userId the id of the user removing the listing
+   * @return boolean indicating whether the listing was removed
+   * @see #users_hasAppPermission
+   * @see FacebookExtendedPerm#MARKETPLACE
+   * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing">
+   *      Developers Wiki: marketplace.removeListing</a>
+   */
+  public boolean marketplace_removeListing(Long listingId, Long userId)
     throws FacebookException, IOException;
 
   /**
@@ -1348,6 +1522,23 @@ public interface IFacebookRestClient<T> {
   public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException;
   
   /**
+   * Check to see if the user has granted the app a specific external permission.  In order to be granted a
+   * permission, an application must direct the user to a URL of the form:
+   *
+   * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
+   *
+   * @param perm the permission to check for
+   * @param userId the id of the user to check for
+   *
+   * @return true if the user has granted the application the specified permission
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean users_hasAppPermission(Permission perm, Long userId) throws FacebookException, IOException;
+  
+  /**
    * Publishes a templatized action for the current user.  The action will appear in their minifeed,
    * and may appear in their friends' newsfeeds depending upon a number of different factors.  When
    * a template match exists between multiple distinct users (like "Bob recommends Bizou" and "Sally
@@ -1504,6 +1695,50 @@ public interface IFacebookRestClient<T> {
   public Long marketplace_createListing(boolean showOnProfile, MarketListing listing) throws FacebookException, IOException;
   
   /**
+   * Create a new marketplace listing, or modify an existing one.
+   *
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+   * @param attributes JSON-encoded attributes for this listing.
+   * @param userId the id of the user to create the listing for.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, String attributes, Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Create a new marketplace listing, or modify an existing one.
+   *
+   * @param listingId the id of the listing to modify, set to 0 (or null) to create a new listing.
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * @param userId the id of the user to create the listing for.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(Long listingId, boolean showOnProfile, MarketListing listing, Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Create a new marketplace listing.
+   *
+   * @param showOnProfile set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+   * @param listing the listing to publish.
+   * @param userId the id of the user to create the listing for.
+   *
+   * @return the id of the listing created (or modified).
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public Long marketplace_createListing(boolean showOnProfile, MarketListing listing, Long userId) throws FacebookException, IOException;
+  
+  /**
    * Return a list of all valid Marketplace subcategories.
    *
    * @return a list of marketplace subcategories allowed by Facebook.
@@ -1553,6 +1788,21 @@ public interface IFacebookRestClient<T> {
    * @throws IOException if a communication/network error happens.
    */
   public boolean marketplace_removeListing(Long listingId, MarketListingStatus status) throws FacebookException, IOException;
+  
+  /**
+   * Remove a listing from the marketplace by id.
+   *
+   * @param listingId the id of the listing to remove.
+   * @param status the status to apply when removing the listing.  Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+   * @param userId the id of the user removing the listing.
+   *
+   * @return true if the listing was successfully removed
+   *         false otherwise
+   *
+   * @throws FacebookException if an error happens when executing the API call.
+   * @throws IOException if a communication/network error happens.
+   */
+  public boolean marketplace_removeListing(Long listingId, MarketListingStatus status, Long userId) throws FacebookException, IOException;
   
   /**
    * Modify a marketplace listing
@@ -2380,4 +2630,141 @@ public interface IFacebookRestClient<T> {
    * @param context the context to use.
    */
   public void setJaxbContext(JAXBContext context);
+  
+  /**
+   * Generate a key for the current session that can be used to authenticate client-side components.
+   *  
+   * @return the key.
+   */
+  public String auth_promoteSession() throws FacebookException, IOException;
+  
+  /**
+   * Registers a feed template.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+   * 
+   * @param template the template to store
+   * 
+   * @return the id which Facebook assigns to your template
+   */
+  public Long feed_registerTemplateBundle(String template) throws FacebookException, IOException;
+  
+  /**
+   * Registers a feed template.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+   * 
+   * @param template the template to store.
+   * @param shortTemplate the short template to store.
+   * @param longTemplate the long template to store.
+   * 
+   * @return the id which Facebook assigns to your template
+   */
+  public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate) throws FacebookException, IOException;
+  
+  /**
+   * Get a list of all registered template bundles for your application.
+   * 
+   * @return a list describing all registered feed templates.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T feed_getRegisteredTemplateBundles() throws FacebookException, IOException;
+  
+  /**
+   * Retrieve a template bundle by id.
+   * 
+   * @param id the id to retrieve.
+   * 
+   * @return the specified template bundle definition.
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T feed_getRegisteredTemplateBundleByID(Long id) throws FacebookException, IOException;
+  
+  /**
+   * Publishes a user action to the feed.  
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
+   * 
+   * @param bundleId the template bundle-id to use to render the feed.
+   * 
+   * @return true if the call succeeds
+   *         false otherwise
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public Boolean feed_publishUserAction(Long bundleId) throws FacebookException, IOException;
+  
+  /**
+   * Publishes a user action to the feed.  
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
+   * 
+   * @param bundleId the template bundle-id to use to render the feed.
+   * @param templateData a map of name-value pairs to substitute into the template being rendered.
+   * @param targetIds the ids of individuals that are the target of this action.
+   * @param bodyGeneral additional markup to include in the feed story.
+   * 
+   * @return true if the call succeeds
+   *         false otherwise
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public Boolean feed_publishUserAction(Long bundleId, Map<String, String> templateData, List<Long> targetIds, String bodyGeneral) throws FacebookException, IOException;
+  
+  /**
+   * Get the specified user's application-info section.
+   * 
+   * @param userId the id of the user to get the info section for.
+   * 
+   * @return the user's application-info section.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T profile_getInfo(Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Get the options associated with the specified field for an application info section.
+   * 
+   * @param field the field to get the options for.
+   * 
+   * @return the options associated with the specified field for an application info section.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T profile_getInfoOptions(String field) throws FacebookException, IOException;
+  
+  /**
+   * Configures an application info section that the specified user can install on the Info tab of her profile.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Profile.setInfo
+   * 
+   * @param userId the user to set the info section for.
+   * @param title the title to use for the section.
+   * @param textOnly set to true if your info fields are text only.
+   *                 set to false for thumbnail mode.
+   * @param fields the fields to set.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public void profile_setInfo(Long userId, String title, boolean textOnly, List<ProfileInfoField> fields) throws FacebookException, IOException;
+  
+  /**
+   * Specifies the objects for a field for an application info section. These options populate the typeahead for a thumbnail.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Profile.setInfoOptions
+   * 
+   * @param field the field to set.
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public void profile_setInfoOptions(ProfileInfoField field) throws FacebookException, IOException;
 }
