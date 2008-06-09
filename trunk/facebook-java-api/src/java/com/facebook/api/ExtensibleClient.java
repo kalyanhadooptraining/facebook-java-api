@@ -1805,11 +1805,7 @@ public abstract class ExtensibleClient<T>
       if (pageId != null) {
           params.add(new Pair<String, CharSequence>("page_actor_id", Long.toString(pageId)));
       }
-      this.callMethod(method, params);
-      if (this.rawResponse == null) {
-          return false;
-      }
-      return this.rawResponse.contains(">1<"); //a code of '1' indicates success
+      return extractBoolean(this.callMethod(method, params));
   }
   
   public boolean users_hasAppPermission(Permission perm) throws FacebookException, IOException {
@@ -2307,22 +2303,6 @@ public abstract class ExtensibleClient<T>
   public String notifications_sendEmailPlain(Collection<Long> recipientIds, CharSequence subject, CharSequence text)
     throws FacebookException, IOException {
     return notifications_sendEmailStr(recipientIds, subject, /*fbml*/null, text);
-  }
-  
-  public boolean profile_setFBML(Long userId, String profileFbml, String actionFbml, String mobileFbml) throws FacebookException, IOException {
-      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-      params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
-      if ((profileFbml != null) && (! "".equals(profileFbml))) {
-          params.add(new Pair<String, CharSequence>("profile", profileFbml));
-      }
-      if ((actionFbml != null) && (! "".equals(actionFbml))) {
-          params.add(new Pair<String, CharSequence>("profile_action", actionFbml));
-      }
-      if ((mobileFbml != null) && (! "".equals(mobileFbml))) {
-          params.add(new Pair<String, CharSequence>("mobile_fbml", mobileFbml));
-      }
-      
-      return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML, params));
   }
   
   /* (non-Javadoc)
@@ -2940,189 +2920,384 @@ public abstract class ExtensibleClient<T>
 	}
 	
 	public String auth_promoteSession() throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public T feed_getRegisteredTemplateBundleByID(Long id)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public T feed_getRegisteredTemplateBundles()
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Boolean feed_publishUserAction(Long bundleId)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Boolean feed_publishUserAction(Long bundleId,
-			Map<String, String> templateData, List<Long> targetIds,
-			String bodyGeneral) throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Long feed_registerTemplateBundle(String template)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Long feed_registerTemplateBundle(String template,
-			String shortTemplate, String longTemplate)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return extractString(this.callMethod(FacebookMethod.AUTH_PROMOTE_SESSION));
 	}
 
 	public Long marketplace_createListing(Long listingId,
 			boolean showOnProfile, String attributes, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		if (listingId == null) {
+	         listingId = 0l;
+	     }
+	     MarketListing test = new MarketListing(attributes);
+	     if (!test.verify()) {
+	         throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "The specified listing is invalid!");
+	     }
+
+	     Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+	     params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
+	     if (showOnProfile) {
+	         params.add(new Pair<String, CharSequence>("show_on_profile", "true"));
+	     }
+	     params.add(new Pair<String, CharSequence>("listing_attrs", attributes));
+	     
+	     params.add(new Pair<String, CharSequence>("uid", Long.toString(listingId)));
+
+	     return this.marketplace_createListing(FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params);
 	}
 
 	public Long marketplace_createListing(Long listingId,
 			boolean showOnProfile, MarketListing listing, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.marketplace_createListing(listingId, showOnProfile, listing.getAttribs(), userId);
 	}
 
 	public Long marketplace_createListing(boolean showOnProfile,
 			MarketListing listing, Long userId) throws FacebookException,
 			IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.marketplace_createListing(0l, showOnProfile, listing.getAttribs(), userId);
 	}
 
 	public boolean marketplace_removeListing(Long listingId, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return this.marketplace_removeListing(listingId, MarketListingStatus.DEFAULT, userId);
 	}
 
 	public boolean marketplace_removeListing(Long listingId,
 			MarketListingStatus status, Long userId) throws FacebookException,
 			IOException {
-		// TODO Auto-generated method stub
-		return false;
+		if (status == null) {
+	          status = MarketListingStatus.DEFAULT;
+	      }
+	      if (listingId == null) {
+	          return false;
+	      }
+
+	      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+	      params.add(new Pair<String, CharSequence>("listing_id", listingId.toString()));
+	      params.add(new Pair<String, CharSequence>("status", status.getName()));
+	      params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+	      return this.marketplace_removeListing(FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params);
 	}
+
+	  private boolean photos_addTag(Long photoId, Double xPct, Double yPct, Long taggedUserId,
+	                                CharSequence tagText, Long userId) throws FacebookException, IOException {
+	    assert (null != photoId && !photoId.equals(0));
+	    assert (null != taggedUserId || null != tagText);
+	    assert (null != xPct && xPct >= 0 && xPct <= 100);
+	    assert (null != yPct && yPct >= 0 && yPct <= 100);
+	    Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+	    Pair<String, CharSequence> tagData;
+	    if (taggedUserId != null) {
+	        tagData = new Pair<String, CharSequence>("tag_uid", taggedUserId.toString());
+	    }
+	    else {
+	        tagData = new Pair<String, CharSequence>("tag_text", tagText.toString());
+	    }
+	    params.add(tagData);
+	    params.add(new Pair<String, CharSequence>("x", xPct.toString()));
+	    params.add(new Pair<String, CharSequence>("y", yPct.toString()));
+	    params.add(new Pair<String, CharSequence>("pid", photoId.toString()));
+	    params.add(new Pair<String, CharSequence>("owner_uid", Long.toString(userId)));
+	    
+	    return this.photos_addTag(FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params);
+	  }
 
 	public boolean photos_addTag(Long photoId, Long taggedUserId, Double pct,
 			Double pct2, Long userId) throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return photos_addTag(photoId, pct, pct2, taggedUserId, null, userId);
 	}
 
 	public boolean photos_addTag(Long photoId, CharSequence tagText,
 			Double pct, Double pct2, Long userId) throws FacebookException,
 			IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return photos_addTag(photoId, pct, pct2, null, tagText);
 	}
 
 	public T photos_createAlbum(String albumName, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.photos_createAlbum(albumName, null, null, userId);
 	}
 
 	public T photos_createAlbum(String name, String description,
 			String location, Long userId) throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		assert (null != name && !"".equals(name));
+	    ArrayList<Pair<String, CharSequence>> params =
+	      new ArrayList<Pair<String, CharSequence>>(FacebookMethod.PHOTOS_CREATE_ALBUM.numParams());
+	    params.add(new Pair<String, CharSequence>("name", name));
+	    if (null != description)
+	      params.add(new Pair<String, CharSequence>("description", description));
+	    if (null != location)
+	      params.add(new Pair<String, CharSequence>("location", location));
+	    params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+	    return this.photos_createAlbum(FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params);
 	}
 
 	public T photos_upload(Long userId, File photo)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.photos_upload(userId, photo, null, null);
 	}
 
 	public T photos_upload(Long userId, File photo, String caption)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.photos_upload(userId, photo, caption, null);
 	}
 
 	public T photos_upload(Long userId, File photo, Long albumId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.photos_upload(userId, photo, null, albumId);
 	}
 
 	public T photos_upload(Long userId, File photo, String caption,
 			Long albumId) throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Pair<String, CharSequence>> params =
+		      new ArrayList<Pair<String, CharSequence>>(FacebookMethod.PHOTOS_UPLOAD.numParams());
+		    assert (photo.exists() && photo.canRead());
+		    this._uploadFile = photo;
+		    if (null != albumId)
+		      params.add(new Pair<String, CharSequence>("aid", Long.toString(albumId)));
+		    if (null != caption)
+		      params.add(new Pair<String, CharSequence>("caption", caption));
+		    params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+		    return this.photos_upload(FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params);
 	}
 
 	public T profile_getFBML() throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public T profile_getInfo(Long userId) throws FacebookException,
-			IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public T profile_getInfoOptions(String field)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void profile_setInfo(Long userId, String title, boolean textOnly,
-			List<ProfileInfoField> fields) throws FacebookException,
-			IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void profile_setInfoOptions(ProfileInfoField field)
-			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		
+		return this.callMethod(FacebookMethod.PROFILE_GET_FBML);
 	}
 
 	public boolean users_hasAppPermission(Permission perm, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return extractBoolean(this.callMethod(FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, 
+				new Pair<String, CharSequence>("ext_perm", perm.getName()), new Pair<String, CharSequence>("uid", Long.toString(userId))));
 	}
 
 	public boolean users_isAppAdded(Long userId) throws FacebookException,
 			IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return extractBoolean(this.callMethod(FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String, CharSequence>("uid", Long.toString(userId))));
 	}
 
 	public boolean users_setStatus(String status, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return this.users_setStatus(status, false, userId);
 	}
 
 	public boolean users_setStatus(String newStatus, boolean clear, Long userId)
 			throws FacebookException, IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return this.users_setStatus(newStatus, clear, false, userId);
 	}
 
-	public boolean users_setStatus(String newStatus, boolean clear,
-			boolean statusIncludesVerb, Long userId) throws FacebookException,
-			IOException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean users_setStatus(String newStatus, boolean clear, boolean statusIncludesVerb, Long userId) 
+	throws FacebookException,IOException {
+		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+
+        if (newStatus != null) {
+            params.add(new Pair<String, CharSequence>("status", newStatus));
+        }
+        if (clear) {
+            params.add(new Pair<String, CharSequence>("clear", "true"));
+        }
+        if (statusIncludesVerb) {
+            params.add(new Pair<String, CharSequence>("status_includes_verb", "true"));
+        }
+        params.add(new Pair<String, CharSequence>("uid", "true"));
+
+        return this.users_setStatus(FacebookMethod.USERS_SET_STATUS_NOSESSION, params);
 	}
+	
+	public T feed_getRegisteredTemplateBundleByID(Long id)
+	throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.FEED_GET_TEMPLATE_BY_ID, new Pair<String, CharSequence>("template_bundle_id", Long.toString(id)));
+	}
+	
+	public T feed_getRegisteredTemplateBundles()
+	throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.FEED_GET_TEMPLATES);
+	}
+	
+	public Boolean feed_publishUserAction(Long bundleId)
+	throws FacebookException, IOException {
+		return this.feed_publishUserAction(bundleId, null, null, null);
+	}
+	
+	public Boolean feed_publishUserAction(Long bundleId, Map<String, String> templateData, List<Long> targetIds, String bodyGeneral) 
+	throws FacebookException, IOException {
+		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		params.add(new Pair<String, CharSequence>("template_bundle_id", Long.toString(bundleId)));
+		if (targetIds != null && !targetIds.isEmpty()) {
+			params.add(new Pair<String, CharSequence>("target_ids", this.delimit(targetIds)));
+		}
+		if (bodyGeneral != null && ! "".equals(bodyGeneral)) {
+			params.add(new Pair<String, CharSequence>("body_general", bodyGeneral));
+		}
+		if (templateData != null && ! templateData.isEmpty()) {
+			JSONObject json = new JSONObject();
+			for (String key : templateData.keySet()) {
+				try {
+					json.put(key, templateData.get(key));
+				}
+				catch (Exception ignored) {
+					ignored.printStackTrace();
+				}
+			}
+			params.add(new Pair<String, CharSequence>("template_data", json.toString()));
+		}
+		
+		return extractBoolean(this.callMethod(FacebookMethod.FEED_PUBLISH_USER_ACTION, params));
+	}
+	
+	public Long feed_registerTemplateBundle(String template)
+	throws FacebookException, IOException {
+		return this.feed_registerTemplateBundle(template, null, null);
+	}
+	
+	public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate)
+	throws FacebookException, IOException {
+		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		params.add(new Pair<String, CharSequence>("one_line_story_template", template));
+		if (shortTemplate != null && ! "".equals(shortTemplate)) {
+			params.add(new Pair<String, CharSequence>("short_story_template", shortTemplate));
+		}
+		if (longTemplate != null && ! "".equals(longTemplate)) {
+			params.add(new Pair<String, CharSequence>("long_story_template", longTemplate));
+		}
+		
+		return (long)extractInt(this.callMethod(FacebookMethod.FEED_REGISTER_TEMPLATE, params));
+	}
+	
+	public T profile_getInfo(Long userId) throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.PROFILE_GET_INFO, new Pair<String, CharSequence>("uid", Long.toString(userId)));
+	}
+	
+	public T profile_getInfoOptions(String field)
+		throws FacebookException, IOException {
+		return this.callMethod(FacebookMethod.PROFILE_GET_INFO_OPTIONS, new Pair<String, CharSequence>("field", field));
+	}
+	
+	public void profile_setInfo(Long userId, String title, boolean textOnly,
+		List<ProfileInfoField> fields) throws FacebookException,
+		IOException {
+		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		JSONArray json = new JSONArray();
+		params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+		params.add(new Pair<String, CharSequence>("title", title));
+		if (textOnly) {
+			params.add(new Pair<String, CharSequence>("type", "1"));
+		}
+		else {
+			params.add(new Pair<String, CharSequence>("type", "5"));
+		}
+		for (ProfileInfoField field : fields) {
+			try {
+				JSONObject innerJSON = new JSONObject();
+				JSONArray fieldItems = new JSONArray();
+				innerJSON.put("field", field.getFieldName());
+				for (ProfileFieldItem item : field.getItems()) {
+					JSONObject itemJSON = new JSONObject();
+					for (String key : item.getMap().keySet()){
+						itemJSON.put(key, item.getMap().get(key));
+					}
+					fieldItems.put(itemJSON);
+ 				}
+				
+				innerJSON.put("items", fieldItems);
+				json.put(innerJSON);
+			}
+			catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+		}
+		params.add(new Pair<String, CharSequence>("fields", json.toString()));
+		this.callMethod(FacebookMethod.PROFILE_SET_INFO, params);
+	}
+	
+	public void profile_setInfoOptions(ProfileInfoField field)
+		throws FacebookException, IOException {
+		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		JSONArray json = new JSONArray();
+		params.add(new Pair<String, CharSequence>("field", field.getFieldName()));
+
+		for (ProfileFieldItem item : field.getItems()) {
+			JSONObject itemJSON = new JSONObject();
+			for (String key : item.getMap().keySet()){
+				try {
+					itemJSON.put(key, item.getMap().get(key));
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			json.put(itemJSON);
+		}
+		params.add(new Pair<String, CharSequence>("options", json.toString()));
+		this.callMethod(FacebookMethod.PROFILE_SET_INFO_OPTIONS, params);
+	}
+	
+	/**
+	   * Adds several tags to a photo.
+	   * @param photoId The photo id of the photo to be tagged.
+	   * @param tags A list of PhotoTags.
+	   * @return a list of booleans indicating whether the tag was successfully added.
+	   */
+	  public T photos_addTags(Long photoId, Collection<PhotoTag> tags, Long userId)
+	    throws FacebookException, IOException {
+	    assert (photoId > 0);
+	    assert (null != tags && !tags.isEmpty());
+	    String tagStr = null;
+	    try {
+	        JSONArray jsonTags=new JSONArray();
+	        for (PhotoTag tag : tags) {
+	          jsonTags.put(tag.jsonify());
+	        }
+	        tagStr = jsonTags.toString();
+	    }
+	    catch (Exception ignored) {}
+
+	    return this.callMethod(FacebookMethod.PHOTOS_ADD_TAG_NOSESSION,
+	                           new Pair<String, CharSequence>("pid", photoId.toString()),
+	                           new Pair<String, CharSequence>("tags", tagStr), 
+	                           new Pair<String, CharSequence>("uid", Long.toString(userId)));
+	  }
+	
+	private Long marketplace_createListing(IFacebookMethod method, Collection<Pair<String, CharSequence>> params) throws FacebookException, IOException {
+	  return extractLong(this.callMethod(method, params));
+  }
+	
+	 private boolean marketplace_removeListing(IFacebookMethod method, Collection<Pair<String, CharSequence>> params) throws FacebookException, IOException {
+		  return extractBoolean(this.callMethod(method, params));
+	  }
+	 
+	 private boolean photos_addTag(IFacebookMethod method, Collection<Pair<String, CharSequence>> params) throws FacebookException, IOException{
+		  T d =
+		      this.callMethod(method, params);
+		    return extractBoolean(d);
+	  }
+	 
+	 private T photos_createAlbum(IFacebookMethod method, ArrayList<Pair<String, CharSequence>> params) throws FacebookException, IOException {
+		  return this.callMethod(method, params);
+	  }
+	 
+	 private T photos_upload(IFacebookMethod method, ArrayList<Pair<String, CharSequence>> params) throws FacebookException, IOException {
+		  return callMethod(method, params);
+	  }
+	 
+	 private boolean users_setStatus(IFacebookMethod method, Collection<Pair<String, CharSequence>> params) throws FacebookException, IOException {
+	    	return extractBoolean(this.callMethod(method, params));
+	    }
+	 
+	 public boolean profile_setFBML(Long userId, String profileFbml, String actionFbml, String mobileFbml) throws FacebookException, IOException {
+	      Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+	      params.add(new Pair<String, CharSequence>("uid", Long.toString(userId)));
+	      if ((profileFbml != null) && (! "".equals(profileFbml))) {
+	          params.add(new Pair<String, CharSequence>("profile", profileFbml));
+	      }
+	      if ((actionFbml != null) && (! "".equals(actionFbml))) {
+	          params.add(new Pair<String, CharSequence>("profile_action", actionFbml));
+	      }
+	      if ((mobileFbml != null) && (! "".equals(mobileFbml))) {
+	          params.add(new Pair<String, CharSequence>("mobile_fbml", mobileFbml));
+	      }
+	      
+	      return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML_NOSESSION, params));
+	  }
 }
