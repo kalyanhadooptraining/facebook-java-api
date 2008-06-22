@@ -25,7 +25,7 @@ public class ProfileFieldItem {
 	}
 	
 	public String getUrl() {
-		return properties.get("url");
+		return properties.get("link");
 	}
 	
 	public String getDescription() {
