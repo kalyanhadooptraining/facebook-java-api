@@ -2656,13 +2656,41 @@ public interface IFacebookRestClient<T> {
    * 
    * See:  http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
    * 
+   * @param templates the templates to store
+   * 
+   * @return the id which Facebook assigns to your template
+   */
+  public Long feed_registerTemplateBundle(Collection<String> templates) throws FacebookException, IOException;
+  
+  /**
+   * Registers a feed template.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+   * 
+   * @param template the template to store.
+   * @param shortTemplate the short template to store.
+   * @param longTemplate the long template to store.
+   * 
+   * @return the id which Facebook assigns to your template
+   * 
+   * @deprecated Facebook has greatly modified the syntax required for the 'shortTemplate' and 'longTemplate' parameters.  
+   *             As such this method will now ignore those parameters.  You are encouraged to use one of the alternate 
+   *             versions.
+   */
+  public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate) throws FacebookException, IOException;
+  
+  /**
+   * Registers a feed template.
+   * 
+   * See:  http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+   * 
    * @param template the template to store.
    * @param shortTemplate the short template to store.
    * @param longTemplate the long template to store.
    * 
    * @return the id which Facebook assigns to your template
    */
-  public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate) throws FacebookException, IOException;
+  public Long feed_registerTemplateBundle(Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate) throws FacebookException, IOException;
   
   /**
    * Get a list of all registered template bundles for your application.
@@ -2780,4 +2808,18 @@ public interface IFacebookRestClient<T> {
    * @return a list of booleans indicating whether the tag was successfully added.
    */
   public T photos_addTags(Long photoId, Collection<PhotoTag> tags, Long userId) throws FacebookException, IOException;
+  
+  /**
+   * Override the default Facebook API server used for making requests.  Can be used to tell the client to run against 
+   * the 
+   * 
+   * @param newUrl the new URL to use, for example:  "http://api.new.facebook.com/restserver.php"
+   */
+  public void setServerUrl(String newUrl);
+  
+  /**
+   * Configure the client to use the beta Facebook API server, which is assumed to 
+   * exist at 'http://api.new.facebook.com/restserver.php'.
+   */
+  public void useBetaApiServer();
 }
