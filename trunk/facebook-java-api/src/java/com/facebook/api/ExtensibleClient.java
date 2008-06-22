@@ -1792,7 +1792,11 @@ public abstract class ExtensibleClient<T>
       if (pictures != null) {
           int count = 1;
           for (IPair picture : pictures) {
-                params.add(new Pair<String, CharSequence>("image_" + count, picture.getFirst().toString()));
+                String url = picture.getFirst().toString();
+                if (url.startsWith(TemplatizedAction.UID_TOKEN)) {
+                    url = url.substring(TemplatizedAction.UID_TOKEN.length());
+                }
+                params.add(new Pair<String, CharSequence>("image_" + count, url));
                 if (picture.getSecond() != null) {
                     params.add(new Pair<String, CharSequence>("image_" + count + "_link", picture.getSecond().toString()));
                 }
