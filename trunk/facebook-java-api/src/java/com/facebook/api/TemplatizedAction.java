@@ -432,7 +432,7 @@ public class TemplatizedAction {
         if (titleTemplate == null) {
             throw new RuntimeException("The title-template cannot be null!");
         }
-        if (! titleTemplate.contains("{actor}")) {
+        if (! titleTemplate.contains("{actor}") && ! titleTemplate.contains("{*actor*}")) {
             throw new RuntimeException(titleTemplate + " is an invalid template!  The title-template must contain the \"{actor}\" token.");
         }
         this.titleTemplate = titleTemplate;
