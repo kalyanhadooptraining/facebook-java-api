@@ -184,6 +184,9 @@ public enum FacebookMethod
   //Application
   APPLICATION_GET_PUBLIC_INFO("facebook.application.getPublicInfo", 1),
   
+  //LiveMessage
+  LIVEMESSAGE_SEND("facebook.livemessage.send", 4),
+  
   //Batch
   BATCH_RUN("facebook.batch.run", 3)
   ;
