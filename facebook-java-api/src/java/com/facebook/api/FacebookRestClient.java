@@ -1388,7 +1388,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 
     return this.callMethod(FacebookMethod.USERS_GET_INFO,
                            new Pair<String, CharSequence>("uids", delimit(userIds)),
-                           new Pair<String, CharSequence>("fields", delimit(fields)));
+                           new Pair<String, CharSequence>("info_fields", delimit(fields)));
   }
 
   /**
