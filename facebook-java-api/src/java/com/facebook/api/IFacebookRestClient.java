@@ -2822,4 +2822,22 @@ public interface IFacebookRestClient<T> {
    * exist at 'http://api.new.facebook.com/restserver.php'.
    */
   public void useBetaApiServer();
+  
+  /**
+   * Sends a message using the LiveMessage API.  Note that for the message to be recieved by the recipent, 
+   * you must set up a FBJS handler function.  See http://wiki.developers.facebook.com/index.php/LiveMessage 
+   * for details.
+   * 
+   * @param recipient the id of the user to send the message to.
+   * @param eventName the name associated with the FBJS handler you want to recieve your message.
+   * @param message the JSON-object to send, the object will be passed to the FBJS handler that you have mapped to 'eventName'.  See 
+   *                http://wiki.developers.facebook.com/index.php/LiveMessage for details.
+   * 
+   * @return true if the message is sent, 
+   *         false otherwise
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public Boolean liveMessage_send(Long recipient, String eventName, JSONObject message) throws FacebookException, IOException;
 }
