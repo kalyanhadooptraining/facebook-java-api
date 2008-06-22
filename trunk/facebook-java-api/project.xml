@@ -5,7 +5,7 @@
 	<id>facebook-java-api</id>
 	<name>Facebook Java Library</name>
 	<groupId>com.facebook.api</groupId>
-	<currentVersion>1.8-alpha</currentVersion>
+	<currentVersion>1.8-beta</currentVersion>
 	<organization>
 		<name>BigTribe Corporation</name>
 		<logo>http://www.bigtribe.com/img/logo.gif</logo>

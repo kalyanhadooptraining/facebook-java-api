@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.8-alpha.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.8-beta.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
 	    type "maven clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.8-alpha.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.8-beta.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,15 @@ Committing Changes:
 	
 Changelog:
 
+	From 1.8-alpha to 1.8-beta
+		- Update feed_registerTemplateBundle to latest specs (Facebook changed some params). 
+ 		- Add 'setServerUrl()' and 'useBetaApiServer()' utility methods to change API server URL/point client at beta server.
+ 		- Fix several bugs in new feed and profile methods.
+ 		- Allow TemplatizedAction to use UID's/Photo ID's to specify images.
+ 		- Add support for LiveMessage.send API call.
+ 		- Add support for Admin.getMetrics API call.
+ 		- New feed and profile methods are tested and should work.
+	
 	From 1.7.4 to 1.8-alpha
 		- Implement all new methods described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
 		- Implement all session-id changes described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
