@@ -178,7 +178,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 
   protected final String _secret;
   protected final String _apiKey;
-  protected final URL _serverUrl;
+  protected URL _serverUrl;
   protected String rawResponse;
 
   protected String _sessionKey; // filled in when session is established
@@ -605,7 +605,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
                           result.add(extractInt(respDoc));
                       }
                       else if (type.equals("long")) {
-                          result.add((long)extractInt(respDoc));
+                          result.add(extractLong(respDoc));
                       }
                       else {
                           //void
@@ -1415,7 +1415,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @return the Facebook user ID of the logged-in user
    */
   public long users_getLoggedInUser() throws FacebookException, IOException {
-    if (this._userId == -1) {
+    if (this._userId == -1 || this.batchMode) {
     	Document d = this.callMethod(FacebookMethod.USERS_GET_LOGGED_IN_USER);
     	if (d == null) {
         	return 0l;
@@ -3934,21 +3934,44 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	
 	public Long feed_registerTemplateBundle(String template)
 	throws FacebookException, IOException {
-		return this.feed_registerTemplateBundle(template, null, null);
+        List<String> temp = new ArrayList<String>();
+        temp.add(template);
+		return this.feed_registerTemplateBundle(temp);
 	}
+    
+    public Long feed_registerTemplateBundle(Collection<String> templates) throws FacebookException, IOException {
+        return this.feed_registerTemplateBundle(templates, null, null);
+    }
+
+    public Long feed_registerTemplateBundle(Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate) throws FacebookException, IOException {
+        Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+        JSONArray templateArray = new JSONArray();
+        for (String template : templates) {
+            templateArray.put(template);
+        }
+        params.add(new Pair<String, CharSequence>("one_line_story_templates", templateArray.toString()));
+        if (shortTemplates != null && ! shortTemplates.isEmpty()) {
+            JSONArray shortArray = new JSONArray();
+            for (BundleStoryTemplate template : shortTemplates) {
+                shortArray.put(template.toJson());
+            }
+            params.add(new Pair<String, CharSequence>("short_story_templates", shortArray.toString()));
+        }
+        if (longTemplate != null) {
+            params.add(new Pair<String, CharSequence>("long_story_template", longTemplate.toJsonString()));
+        }
+        
+        return extractLong(this.callMethod(FacebookMethod.FEED_REGISTER_TEMPLATE, params));
+    }
 	
+    /**
+     * @deprecated
+     */
 	public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate)
 	throws FacebookException, IOException {
-		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-		params.add(new Pair<String, CharSequence>("one_line_story_template", template));
-		if (shortTemplate != null && ! "".equals(shortTemplate)) {
-			params.add(new Pair<String, CharSequence>("short_story_template", shortTemplate));
-		}
-		if (longTemplate != null && ! "".equals(longTemplate)) {
-			params.add(new Pair<String, CharSequence>("long_story_template", longTemplate));
-		}
-		
-		return (long)extractInt(this.callMethod(FacebookMethod.FEED_REGISTER_TEMPLATE, params));
+        List<String> templates = new ArrayList<String>();
+        templates.add(template);
+        return this.feed_registerTemplateBundle(templates, null, null);
 	}
 	
 	public Document profile_getInfo(Long userId) throws FacebookException, IOException {
@@ -4104,5 +4127,28 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	      
 	      return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML_NOSESSION, params));
 	  }
-
+     
+     public void setServerUrl(String newUrl) {
+         String base = newUrl;
+         if (base.startsWith("http")) {
+             base = base.substring(base.indexOf("://") + 3);
+         }
+         try {
+             SERVER_URL = new URL("http://" + base);
+             //HTTPS_SERVER_URL = new URL("https://" + base);
+             _serverUrl = SERVER_URL;
+         }
+         catch (Exception ignored) {}
+     }
+     
+     public void useBetaApiServer() {
+         setServerUrl("http://api.new.facebook.com/restserver.php");
+     }
+     
+     protected Long extractLong(Document doc) {
+         if (doc == null) {
+             return 0l;
+         }
+         return Long.parseLong(doc.getFirstChild().getTextContent());
+     }
 }
