@@ -14,9 +14,13 @@ import java.util.Map;
  */
 public enum Metric {
 	/**
-     * Daily active users for your app.
+     * Daily active users for your app.  For use with Admin.getDailyMetrics only.
      */
     DAILY_ACTIVE_USERS("daily_active_users"),
+    /**
+     * Active users for your app.  For use with Admin.getMetrics only.
+     */
+    ACTIVE_USERS("active_users"),
     /**
      * Number of unique users adding your app.
      */
@@ -125,6 +129,19 @@ public enum Metric {
      * Number of requests that produced a status 505 error.
      */
     REQUEST_ERROR_505("canvas_page_views_http_code_505");
+    
+    /**
+     * Use in Admin.getMetrics calls to specify a daily time-period.
+     */
+    public static final Long PERIOD_DAY = 86400l;
+    /**
+     * Use in Admin.getMetrics calls to specify a weekly time-period.
+     */
+    public static final Long PERIOD_WEEK = 604800l;
+    /**
+     * Use in Admin.getMetrics calls to specify a monthly time-period.
+     */
+    public static final Long PERIOD_MONTH = 2592000l;
     
     private String name;
     

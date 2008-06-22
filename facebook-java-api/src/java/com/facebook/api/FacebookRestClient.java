@@ -3650,7 +3650,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	public Document admin_getDailyMetrics(Set<Metric> metrics, long start,
 			long end) throws FacebookException, IOException {
 		ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-		
+		metrics.remove(Metric.ACTIVE_USERS);
 		if ((metrics != null) && (! metrics.isEmpty())) {
 			JSONArray metricsJson = new JSONArray();
 			for (Metric metric : metrics) {
@@ -3663,6 +3663,27 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 		
 		return this.callMethod(FacebookMethod.ADMIN_GET_DAILY_METRICS, params);
 	}
+    
+    public Document admin_getMetrics(Set<Metric> metrics, Date start, Date end, long period) throws FacebookException, IOException {
+        return this.admin_getMetrics(metrics, start.getTime(), end.getTime(), period);
+    }
+
+    public Document admin_getMetrics(Set<Metric> metrics, long start, long end, long period) throws FacebookException, IOException {
+        ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+        metrics.remove(Metric.DAILY_ACTIVE_USERS);
+        if ((metrics != null) && (! metrics.isEmpty())) {
+            JSONArray metricsJson = new JSONArray();
+            for (Metric metric : metrics) {
+                metricsJson.put(metric.getName());
+            }
+            params.add(new Pair<String, CharSequence>("metrics", metricsJson.toString()));
+        }
+        params.add(new Pair<String, CharSequence>("start_time", Long.toString(start / 1000)));
+        params.add(new Pair<String, CharSequence>("end_time", Long.toString(end / 1000)));
+        params.add(new Pair<String, CharSequence>("period", Long.toString(period)));
+        
+        return this.callMethod(FacebookMethod.ADMIN_GET_METRICS, params);
+    }
 
 	public Document permissions_checkGrantedApiAccess(String apiKey) throws FacebookException, IOException {
 		return this.callMethod(FacebookMethod.PERM_CHECK_GRANTED_API_ACCESS,
@@ -4164,5 +4185,5 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
 	    params.add(new Pair<String, CharSequence>("message", message.toString()));
 	    
 	    return extractBoolean(this.callMethod(FacebookMethod.LIVEMESSAGE_SEND, params));
-	}
+    }
 }

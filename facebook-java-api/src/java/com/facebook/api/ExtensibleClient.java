@@ -2871,7 +2871,7 @@ public abstract class ExtensibleClient<T>
 	public T admin_getDailyMetrics(Set<Metric> metrics, long start,
 			long end) throws FacebookException, IOException {
 		ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
-		
+        metrics.remove(Metric.ACTIVE_USERS);
 		if ((metrics != null) && (! metrics.isEmpty())) {
 			JSONArray metricsJson = new JSONArray();
 			for (Metric metric : metrics) {
@@ -3354,4 +3354,25 @@ public abstract class ExtensibleClient<T>
  	    
  	    return extractBoolean(this.callMethod(FacebookMethod.LIVEMESSAGE_SEND, params));
  	}
+     
+     public T admin_getMetrics(Set<Metric> metrics, Date start, Date end, long period) throws FacebookException, IOException {
+         return this.admin_getMetrics(metrics, start.getTime(), end.getTime(), period);
+     }
+
+     public T admin_getMetrics(Set<Metric> metrics, long start, long end, long period) throws FacebookException, IOException {
+         ArrayList<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+         metrics.remove(Metric.DAILY_ACTIVE_USERS);
+         if ((metrics != null) && (! metrics.isEmpty())) {
+             JSONArray metricsJson = new JSONArray();
+             for (Metric metric : metrics) {
+                 metricsJson.put(metric.getName());
+             }
+             params.add(new Pair<String, CharSequence>("metrics", metricsJson.toString()));
+         }
+         params.add(new Pair<String, CharSequence>("start_time", Long.toString(start / 1000)));
+         params.add(new Pair<String, CharSequence>("end_time", Long.toString(end / 1000)));
+         params.add(new Pair<String, CharSequence>("period", Long.toString(period)));
+         
+         return this.callMethod(FacebookMethod.ADMIN_GET_METRICS, params);
+     }
 }
