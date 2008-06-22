@@ -16,17 +16,37 @@ public class ProfileInfoField {
 	String fieldName;
 	List<ProfileFieldItem> items;
 	
+    /**
+     * Constructor, constructs a new profile field with the specified name.
+     * 
+     * @param name the name to use for this field.
+     */
 	public ProfileInfoField(String name) {
 		this.fieldName = name;
 		this.items = new ArrayList<ProfileFieldItem>();
 	}
 	
+    /**
+     * @return the name of thi field
+     */
 	public String getFieldName() {
 		return fieldName;
 	}
+    
+    /**
+     * Get the items that currently comprise this field.
+     * 
+     * @return the items that comprise this field.
+     */
 	public List<ProfileFieldItem> getItems() {
 		return items;
-	}
+    }
+    
+    /**
+     * Set the items associated with this profile field.
+     * 
+     * @param items the items to set.
+     */
 	public void setItems(List<ProfileFieldItem> items) {
 		this.items = items;
 	}

@@ -44,6 +44,9 @@ public class ApplicationPropertySet {
     private Map<ApplicationProperty,Boolean> _attributesBool = null;
     private Map<ApplicationProperty,CharSequence> _attributesString = null;
 
+    /**
+     * Constructor
+     */
     public ApplicationPropertySet() {
     }
 
@@ -67,6 +70,12 @@ public class ApplicationPropertySet {
         }
     }
 
+    /**
+     * Sets a boolean property value.
+     * 
+     * @param prop the property to set, it should be of boolean type.
+     * @param value the value to set.
+     */
     public void setBoolProperty(ApplicationProperty prop, boolean value) {
         if (null == prop || !prop.isBooleanProperty()) {
             throw new IllegalArgumentException("Boolean property expected");
@@ -77,6 +86,13 @@ public class ApplicationPropertySet {
         this._attributesBool.put(prop, value);
     }
 
+    /**
+     * Gets a boolean property value.
+     * 
+     * @param prop the property to get, it should be of boolean type.
+     * 
+     * @return the value of the property.
+     */
     public Boolean getBoolProperty(ApplicationProperty prop) {
         if (null == prop || !prop.isBooleanProperty()) {
             throw new IllegalArgumentException("Boolean property expected");
@@ -84,6 +100,12 @@ public class ApplicationPropertySet {
         return (null == this._attributesBool)? null: this._attributesBool.get(prop);
     }
 
+    /**
+     * Sets a String property value.
+     * 
+     * @param prop the property to set, it should be of String type.
+     * @param value the value to set.
+     */
     public void setStringProperty(ApplicationProperty prop, CharSequence value) {
         if (null == prop || !prop.isStringProperty()) {
             throw new IllegalArgumentException("String property expected");
@@ -94,6 +116,13 @@ public class ApplicationPropertySet {
         this._attributesString.put(prop, value);
     }
 
+    /**
+     * Gets a String property value.
+     * 
+     * @param prop the property to get, it should be of String type.
+     * 
+     * @return the value of the property.
+     */
     public CharSequence getStringProperty(ApplicationProperty prop) {
         if (null == prop || !prop.isStringProperty()) {
             throw new IllegalArgumentException("String property expected");
@@ -101,6 +130,11 @@ public class ApplicationPropertySet {
         return (null == this._attributesString)? null: this._attributesString.get(prop);
     }
 
+    /**
+     * Remove a property from the set.
+     * 
+     * @param prop the property to remove.
+     */
     public void removeProperty(ApplicationProperty prop) {
         if (prop.isBooleanProperty()) {
             this._attributesBool.remove(prop);
@@ -109,6 +143,10 @@ public class ApplicationPropertySet {
         }
     }
 
+    /**
+     * @return true if this set is empty
+     *         false otherwise
+     */
     public boolean isEmpty() {
         return (null == this._attributesString || this._attributesString.isEmpty())
                 && (null == this._attributesBool || this._attributesBool.isEmpty());
