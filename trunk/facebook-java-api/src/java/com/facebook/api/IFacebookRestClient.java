@@ -2516,6 +2516,22 @@ public interface IFacebookRestClient<T> {
   public T admin_getDailyMetrics(Set<Metric> metrics, Date start, Date end) throws FacebookException, IOException;
   
   /**
+   * Retrieve metrics for the current application.
+   * 
+   * @param metrics a set specifying the specific metrics to retrieve
+   * @param start the starting date to retrieve data for (range must not exceed 30 days)
+   * @param end the ending to to retrive data for (range must not exceed 30 days)
+   * @param period a number specifying the desired period to group the metrics by, in seconds, Facebook currently 
+   *               only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and Metric.PERIOD_MONTH
+   * 
+   * @return daily metrics for your app, for each day in the specified range
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T admin_getMetrics(Set<Metric> metrics, Date start, Date end, long period) throws FacebookException, IOException;
+  
+  /**
    * Retrieve the daily metrics for the current application.
    * 
    * @param metrics a set specifying the specific metrics to retrieve
@@ -2528,6 +2544,22 @@ public interface IFacebookRestClient<T> {
    * @throws IOException
    */
   public T admin_getDailyMetrics(Set<Metric> metrics, long start, long end) throws FacebookException, IOException;
+  
+  /**
+   * Retrieve the daily metrics for the current application.
+   * 
+   * @param metrics a set specifying the specific metrics to retrieve
+   * @param start the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+   * @param end the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+   * @param period a number specifying the desired period to group the metrics by, in seconds, Facebook currently 
+   *               only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and Metric.PERIOD_MONTH
+   * 
+   * @return daily metrics for your app, for each day in the specified range
+   * 
+   * @throws FacebookException
+   * @throws IOException
+   */
+  public T admin_getMetrics(Set<Metric> metrics, long start, long end, long period) throws FacebookException, IOException;
 
   /**
    * Grant permission to an external app to make API calls on behalf of the current application.
