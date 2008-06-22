@@ -49,6 +49,8 @@ public class TemplatizedAction {
     private List<IPair<Object, URL>> pictures;
     private Long pageActorId;
     
+    public static final String UID_TOKEN = "http://UID/";
+    
     private TemplatizedAction() {
         //empty constructor not allowed, at a minimum the titleTemplate parameter is needed
     }
@@ -114,6 +116,20 @@ public class TemplatizedAction {
      * Note that only 4 pictures may be present at any given time.  Any pictures beyond this are ignored.  Use removePicture 
      * if you need to change something after 4 pictures have been added.
      * 
+     * @param imageUid the id of the image to display.  This can be a picture id or a Facebook user-id.
+     * @param linkHref the URL of the link to go to when the image is clicked.
+     */
+    public void addPicture(Long imageUid, String linkHref) {
+        addPicture(Long.toString(imageUid), linkHref);
+    }
+    
+    /**
+     * Add a picture to be associated with this feed entry, along with a link to be associated with the picture (clicking 
+     * on the picture in the feed will go to the specified link).<br />
+     * <br />
+     * Note that only 4 pictures may be present at any given time.  Any pictures beyond this are ignored.  Use removePicture 
+     * if you need to change something after 4 pictures have been added.
+     * 
      * @param imageHref the URL of the image to display in the feed.
      * @param linkHref the URL of the link to go to when the image is clicked.
      */
@@ -122,6 +138,9 @@ public class TemplatizedAction {
             this.addPicture(imageHref);
         }
         try {
+            if (! imageHref.startsWith("http")) {
+                imageHref = UID_TOKEN + imageHref;
+            }
             addPicture(new URL(imageHref), new URL(linkHref));
         }
         catch (Exception e) {
@@ -142,6 +161,9 @@ public class TemplatizedAction {
      */
     public void addPicture(String imageHref) {
         try {
+            if (! imageHref.startsWith("http")) {
+                imageHref = UID_TOKEN + imageHref;
+            }
             addPicture(new URL(imageHref), null);
         }
         catch (Exception e) {
