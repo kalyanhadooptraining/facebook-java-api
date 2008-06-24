@@ -700,7 +700,7 @@ public abstract class ExtensibleClient<T>
 
     return this.callMethod(FacebookMethod.USERS_GET_INFO,
                            new Pair<String, CharSequence>("uids", delimit(userIds)),
-                           new Pair<String, CharSequence>("info_fields", delimit(fields)));
+                           new Pair<String, CharSequence>("fields", delimit(fields)));
   }
 
   /**
@@ -3234,7 +3234,7 @@ public abstract class ExtensibleClient<T>
 				ignored.printStackTrace();
 			}
 		}
-		params.add(new Pair<String, CharSequence>("fields", json.toString()));
+		params.add(new Pair<String, CharSequence>("info_fields", json.toString()));
 		this.callMethod(FacebookMethod.PROFILE_SET_INFO, params);
 	}
 	
