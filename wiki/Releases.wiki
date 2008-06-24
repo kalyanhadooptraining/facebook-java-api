@@ -5,7 +5,7 @@ You can use the following table to determine which SVN revision is associated wi
 
 
 ||*Release Version*||*SVN Revision*||
-||1.8-beta||r179||
+||1.8-beta||r188||
 ||1.8-alpha||r169||
 ||1.7.4||r154||
 ||1.7.3||r145||
