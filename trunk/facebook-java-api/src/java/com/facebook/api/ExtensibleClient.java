@@ -107,6 +107,7 @@ public abstract class ExtensibleClient<T>
   protected String rawResponse;
   protected Long _expires;
   protected int _timeout;
+  protected int _readTimeout;
   protected boolean batchMode;
   protected List<BatchQuery> queries;
 
@@ -146,6 +147,7 @@ public abstract class ExtensibleClient<T>
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
     _timeout = -1;
+    _readTimeout = -1;
     batchMode = false;
     queries = new ArrayList<BatchQuery>();
   }
@@ -153,6 +155,12 @@ public abstract class ExtensibleClient<T>
   protected ExtensibleClient(URL serverUrl, String apiKey, String secret, String sessionKey, int timeout) {
       this(serverUrl, apiKey, secret, sessionKey);
       _timeout = timeout;
+    }
+  
+  protected ExtensibleClient(URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout) {
+      this(serverUrl, apiKey, secret, sessionKey);
+      _timeout = connectionTimeout;
+      _readTimeout = readTimeout;
     }
   
   public void beginPermissionsMode(String apiKey) {
@@ -1485,6 +1493,9 @@ public abstract class ExtensibleClient<T>
     HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
     if (this._timeout != -1) {
         conn.setConnectTimeout(this._timeout);
+    }
+    if (this._readTimeout != -1) {
+    	conn.setReadTimeout(this._readTimeout);
     }
     try {
       conn.setRequestMethod("POST");

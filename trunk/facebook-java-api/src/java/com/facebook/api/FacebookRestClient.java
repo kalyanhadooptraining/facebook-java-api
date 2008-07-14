@@ -187,6 +187,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   protected String _sessionSecret; // only used for desktop apps
   protected long _userId;
   protected int _timeout;
+  protected int _readTimeout;
   protected boolean batchMode;
   protected List<BatchQuery> queries;
   
@@ -227,10 +228,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    */
-  public FacebookRestClient(String apiKey, String secret, int timeout) {
-    this(SERVER_URL, apiKey, secret, null, timeout);
+  public FacebookRestClient(String apiKey, String secret, int connectionTimeout) {
+    this(SERVER_URL, apiKey, secret, null, connectionTimeout);
   }
 
   /**
@@ -250,10 +251,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    * @param sessionKey the session-id to use
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    */
-  public FacebookRestClient(String apiKey, String secret, String sessionKey, int timeout) {
-    this(SERVER_URL, apiKey, secret, sessionKey, timeout);
+  public FacebookRestClient(String apiKey, String secret, String sessionKey, int connectionTimeout) {
+    this(SERVER_URL, apiKey, secret, sessionKey, connectionTimeout);
   }
 
   /**
@@ -278,13 +279,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    * @param sessionKey the session-id to use
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    *
    * @throws MalformedURLException if the specified serverAddr is invalid
    */
   public FacebookRestClient(String serverAddr, String apiKey, String secret,
-                            String sessionKey, int timeout) throws MalformedURLException {
-    this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+                            String sessionKey, int connectionTimeout) throws MalformedURLException {
+    this(new URL(serverAddr), apiKey, secret, sessionKey, connectionTimeout);
   }
 
   /**
@@ -301,6 +302,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     _secret = secret;
     _serverUrl = (null != serverUrl) ? serverUrl : SERVER_URL;
     _timeout = -1;
+    _readTimeout = -1;
     _userId = -1;
     batchMode = false;
     queries = new ArrayList<BatchQuery>();
@@ -397,7 +399,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
   public void _setFriendsList(List<Long> friendsList) {
 	this.friendsList = friendsList;
   }
-
+  
   /**
    * Constructor
    *
@@ -405,11 +407,27 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param apiKey the developer's API key
    * @param secret the developer's secret key
    * @param sessionKey the session-id to use
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    */
-  public FacebookRestClient(URL serverUrl, String apiKey, String secret, String sessionKey, int timeout) {
+  public FacebookRestClient(URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout) {
+      this(serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1);
+      _timeout = connectionTimeout;
+  }
+  
+  /**
+   * Constructor
+   *
+   * @param serverUrl the URL of the Facebook API server to use, allows overriding of the default API server.
+   * @param apiKey the developer's API key
+   * @param secret the developer's secret key
+   * @param sessionKey the session-id to use
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
+   * @param readTimeout the read timeout to apply when making API requests to Facebook, in milliseconds
+   */
+  public FacebookRestClient(URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout) {
       this(serverUrl, apiKey, secret, sessionKey);
-      _timeout = timeout;
+      _timeout = connectionTimeout;
+      _readTimeout = readTimeout;
   }
 
   /**
@@ -871,6 +889,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
     HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
     if (this._timeout != -1) {
         conn.setConnectTimeout(this._timeout);
+    }
+    if (this._readTimeout != -1) {
+    	conn.setReadTimeout(this._readTimeout);
     }
     try {
       conn.setRequestMethod("POST");

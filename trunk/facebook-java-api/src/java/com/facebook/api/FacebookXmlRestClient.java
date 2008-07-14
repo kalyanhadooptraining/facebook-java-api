@@ -129,13 +129,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * 
    * @param apiKey
    * @param secret
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    * 
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
-  public FacebookXmlRestClient(String apiKey, String secret, int timeout) {
-    this(SERVER_URL, apiKey, secret, null, timeout);
+  public FacebookXmlRestClient(String apiKey, String secret, int connectionTimeout) {
+    this(SERVER_URL, apiKey, secret, null, connectionTimeout);
   }
 
   /**
@@ -158,13 +158,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @param apiKey
    * @param secret
    * @param sessionKey
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    * 
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
-  public FacebookXmlRestClient(String apiKey, String secret, String sessionKey, int timeout) {
-    this(SERVER_URL, apiKey, secret, sessionKey, timeout);
+  public FacebookXmlRestClient(String apiKey, String secret, String sessionKey, int connectionTimeout) {
+    this(SERVER_URL, apiKey, secret, sessionKey, connectionTimeout);
   }
 
   /**
@@ -190,14 +190,14 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @param apiKey
    * @param secret
    * @param sessionKey
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    * 
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
   public FacebookXmlRestClient(String serverAddr, String apiKey, String secret,
-                            String sessionKey, int timeout) throws MalformedURLException {
-    this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+                            String sessionKey, int connectionTimeout) throws MalformedURLException {
+    this(new URL(serverAddr), apiKey, secret, sessionKey, connectionTimeout);
   }
 
   /**
@@ -223,14 +223,32 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @param apiKey
    * @param secret
    * @param sessionKey
-   * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
    * 
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
   public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
-                            String sessionKey, int timeout) {
-    super(serverUrl, apiKey, secret, sessionKey, timeout);
+                            String sessionKey, int connectionTimeout) {
+    super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1);
+  }
+  
+  /**
+   * Constructor.  Don't use this, use FacebookRestClient instead.
+   * 
+   * @param serverUrl
+   * @param apiKey
+   * @param secret
+   * @param sessionKey
+   * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
+   * @param readTimeout the read timeout to apply when making API requests to Facebook, in milliseconds
+   * 
+   * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
+   *             to use the Facebook Platform XML API. 
+   */
+  public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
+                            String sessionKey, int connectionTimeout, int readTimeout) {
+    super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout);
   }
 
   /**
