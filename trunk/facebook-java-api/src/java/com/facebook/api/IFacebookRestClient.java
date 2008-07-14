@@ -105,6 +105,7 @@ public interface IFacebookRestClient<T> {
    *             instead.
    * @see #profile_setFBML(CharSequence,CharSequence,Long)
    */
+  @Deprecated
   public boolean profile_setFBML(CharSequence fbmlMarkup, Long userId)
     throws FacebookException, IOException;
   
@@ -327,6 +328,7 @@ public interface IFacebookRestClient<T> {
    *      Preview Console </a>
    * @deprecated since 01/18/2008
    */
+  @Deprecated
   public boolean feed_publishTemplatizedAction(Long actorId, CharSequence titleTemplate)
           throws FacebookException, IOException;
 
@@ -461,6 +463,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                           Collection<? extends IPair<? extends Object, URL>> images)
     throws FacebookException, IOException;
@@ -475,6 +478,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated Facebook will be removing this API call.  Please use feed_publishTemplatizedAction instead.
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body)
     throws FacebookException, IOException;
 
@@ -668,6 +672,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only.  Please use the alternate version.
    */
+  @Deprecated
   public boolean users_hasAppPermission(CharSequence permission)
     throws FacebookException, IOException;
 
@@ -1121,6 +1126,7 @@ public interface IFacebookRestClient<T> {
    *             intead when sending e-mail, or the alternate version of notifications.send if all you 
    *             want to send is a notification.       
    */
+  @Deprecated
   public URL notifications_send(Collection<Long> recipientIds, CharSequence notification,
                                 CharSequence email)
     throws FacebookException, IOException;
@@ -1168,6 +1174,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only.  Please use the version that takes a MarketListing instead.
    */
+  @Deprecated
   public Long marketplace_createListing(Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
 
@@ -1179,6 +1186,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only.  Please use the version that takes a MarketListing instead.
    */
+  @Deprecated
   public Long marketplace_editListing(Long listingId, Boolean showOnProfile, MarketplaceListing attrs)
     throws FacebookException, IOException;
 
@@ -1219,6 +1227,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only.  Please use the version that takes a MarketListingStatus instead.
    */
+  @Deprecated
   public boolean marketplace_removeListing(Long listingId, CharSequence status)
     throws FacebookException, IOException;
 
@@ -1263,6 +1272,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only.  Please use the alternate version instead.
    */
+  @Deprecated
   public T marketplace_search(CharSequence category, CharSequence subCategory, CharSequence query)
     throws FacebookException, IOException;
   
@@ -1301,6 +1311,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated use the version that returns a List<String> instead.
    */
+  @Deprecated
   public T marketplace_getCategoriesObject()
     throws FacebookException, IOException;
   
@@ -1644,6 +1655,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated use the version that specified the actorId as a Long instead.  UID's *are not ever to be* expressed as Integers.
    */
+  @Deprecated
   public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate,
                                                Map<String,CharSequence> titleData, 
                                                CharSequence bodyTemplate,
@@ -2087,6 +2099,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmail(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml)
     throws FacebookException, IOException;
   
@@ -2104,6 +2117,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmailPlain(Collection<Long> recipientIds, CharSequence subject, CharSequence text)
     throws FacebookException, IOException;
   
@@ -2124,6 +2138,7 @@ public interface IFacebookRestClient<T> {
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmailStr(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text)
     throws FacebookException, IOException;
   
@@ -2156,6 +2171,7 @@ public interface IFacebookRestClient<T> {
    * 
    * @deprecated use admin_getAppPropertiesMap() instead
    */
+  @Deprecated
   public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException;
   
   /**
@@ -2708,6 +2724,7 @@ public interface IFacebookRestClient<T> {
    *             As such this method will now ignore those parameters.  You are encouraged to use one of the alternate 
    *             versions.
    */
+  @Deprecated
   public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate) throws FacebookException, IOException;
   
   /**

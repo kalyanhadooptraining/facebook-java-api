@@ -483,6 +483,7 @@ public abstract class ExtensibleClient<T>
   /**
    * @deprecated Use the version that takes a Long for the actorId paramter.
    */
+  @Deprecated
   public boolean feed_publishTemplatizedAction(Integer actorId, CharSequence titleTemplate,
           Map<String,CharSequence> titleData, 
           CharSequence bodyTemplate,
@@ -1154,6 +1155,7 @@ public abstract class ExtensibleClient<T>
   /**
    * @deprecated
    */
+  @Deprecated
   public URL notifications_send(Collection<Long> recipientIds, CharSequence notification,
                                 CharSequence email)
     throws FacebookException, IOException {
@@ -1325,6 +1327,7 @@ public abstract class ExtensibleClient<T>
    * 
    * @deprecated Facebook will remove support for this version of the API call on 1/17/2008, please use the alternate version instead.
    */
+  @Deprecated
   public boolean profile_setFBML(CharSequence fbmlMarkup, Long userId)
     throws FacebookException, IOException {
 
@@ -2258,6 +2261,7 @@ public abstract class ExtensibleClient<T>
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmailStr(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text)
     throws FacebookException, IOException {
     if (null == recipientIds || recipientIds.isEmpty()) {
@@ -2298,6 +2302,7 @@ public abstract class ExtensibleClient<T>
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmail(Collection<Long> recipientIds, CharSequence subject, CharSequence fbml)
     throws FacebookException, IOException {
     return notifications_sendEmailStr(recipientIds, subject, fbml, /*text*/null);
@@ -2317,6 +2322,7 @@ public abstract class ExtensibleClient<T>
    *      
    * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
    */
+  @Deprecated
   public String notifications_sendEmailPlain(Collection<Long> recipientIds, CharSequence subject, CharSequence text)
     throws FacebookException, IOException {
     return notifications_sendEmailStr(recipientIds, subject, /*fbml*/null, text);
@@ -2485,6 +2491,7 @@ public abstract class ExtensibleClient<T>
   /**
    * @deprecated use admin_getAppPropertiesMap() instead
    */
+  @Deprecated
   public JSONObject admin_getAppProperties(Collection<ApplicationProperty> properties) throws FacebookException, IOException {
       String json = this.admin_getAppPropertiesAsString(properties);
       if (json == null) {
@@ -3142,7 +3149,7 @@ public abstract class ExtensibleClient<T>
 		Collection<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
 		params.add(new Pair<String, CharSequence>("template_bundle_id", Long.toString(bundleId)));
 		if (targetIds != null && !targetIds.isEmpty()) {
-			params.add(new Pair<String, CharSequence>("target_ids", this.delimit(targetIds)));
+			params.add(new Pair<String, CharSequence>("target_ids", delimit(targetIds)));
 		}
 		if (bodyGeneral != null && ! "".equals(bodyGeneral)) {
 			params.add(new Pair<String, CharSequence>("body_general", bodyGeneral));
@@ -3198,6 +3205,7 @@ public abstract class ExtensibleClient<T>
     /**
      * @deprecated
      */
+    @Deprecated
     public Long feed_registerTemplateBundle(String template, String shortTemplate, String longTemplate)
     throws FacebookException, IOException {
         List<String> templates = new ArrayList<String>();

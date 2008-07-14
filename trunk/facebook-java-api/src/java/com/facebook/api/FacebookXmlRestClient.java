@@ -68,6 +68,7 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
  *             to use the Facebook Platform XML API. 
  */
+@Deprecated
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
     
     //  used so that executeBatch can return the correct types in its list, without killing efficiency.
@@ -123,6 +124,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String apiKey, String secret) {
     this(SERVER_URL, apiKey, secret, null);
   }
@@ -137,6 +139,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String apiKey, String secret, int connectionTimeout) {
     this(SERVER_URL, apiKey, secret, null, connectionTimeout);
   }
@@ -151,6 +154,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String apiKey, String secret, String sessionKey) {
     this(SERVER_URL, apiKey, secret, sessionKey);
   }
@@ -166,6 +170,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String apiKey, String secret, String sessionKey, int connectionTimeout) {
     this(SERVER_URL, apiKey, secret, sessionKey, connectionTimeout);
   }
@@ -181,6 +186,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String serverAddr, String apiKey, String secret,
                             String sessionKey) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey);
@@ -198,6 +204,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(String serverAddr, String apiKey, String secret,
                             String sessionKey, int connectionTimeout) throws MalformedURLException {
     this(new URL(serverAddr), apiKey, secret, sessionKey, connectionTimeout);
@@ -214,6 +221,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey) {
     super(serverUrl, apiKey, secret, sessionKey);
@@ -231,6 +239,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey, int connectionTimeout) {
     super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1);
@@ -249,6 +258,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
    * @deprecated this is provided for legacy support only.  Please use FacebookRestClient instead if you want 
    *             to use the Facebook Platform XML API. 
    */
+    @Deprecated
   public FacebookXmlRestClient(URL serverUrl, String apiKey, String secret,
                             String sessionKey, int connectionTimeout, int readTimeout) {
     super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout);

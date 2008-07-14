@@ -918,6 +918,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * 
    * @deprecated Facebook will remove support for this version of the API call on 1/17/2008, please use the alternate version instead.
    */
+  @Deprecated
   public boolean profile_setFBML(CharSequence fbmlMarkup, Long userId) throws FacebookException, IOException {
 
     return extractBoolean(this.callMethod(FacebookMethod.PROFILE_SET_FBML,
@@ -1095,6 +1096,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                            Collection<? extends IPair<? extends Object, URL>> images,
                                            Integer priority) throws FacebookException,
@@ -1107,6 +1109,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(String title,
                                            String body) throws FacebookException,
                                                                      IOException {
@@ -1118,6 +1121,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(CharSequence title,
                                            CharSequence body) throws FacebookException,
                                                                      IOException {
@@ -1129,6 +1133,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    *
    * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
    */
+  @Deprecated
   public boolean feed_publishActionOfUser(CharSequence title, CharSequence body,
                                            Integer priority) throws FacebookException,
                                                                     IOException {

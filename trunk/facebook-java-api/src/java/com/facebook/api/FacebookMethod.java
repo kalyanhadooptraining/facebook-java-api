@@ -68,6 +68,7 @@ public enum FacebookMethod
   /**
    * @deprecated provided for legacy support only.  Please use USERS_HAS_PERMISSION instead.
    */
+  @Deprecated
   USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 2),  //duplicated above
   USERS_SET_STATUS("facebook.users.setStatus", 4),
   USERS_SET_STATUS_NOSESSION("facebook.users.setStatus", 4),
@@ -124,26 +125,32 @@ public enum FacebookMethod
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_GET_CATEGORIES instead.
    */
+  @Deprecated
   MARKETPLACE_GET_CATEGORIES("facebook.marketplace.getCategories", 1),
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_GET_SUBCATEGORIES instead.
    */
+  @Deprecated
   MARKETPLACE_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories", 1),  
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_GET_LISTINGS instead.
    */
+  @Deprecated
   MARKETPLACE_GET_LISTINGS("facebook.marketplace.getListings", 3),  
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_CREATE_LISTING instead.
    */
+  @Deprecated
   MARKETPLACE_CREATE_LISTING("facebook.marketplace.createListing", 4),  
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_SEARCH instead.
    */
+  @Deprecated
   MARKETPLACE_SEARCH("facebook.marketplace.search", 4),  
   /**
    * @deprecated provided for legacy support only.  Please use MARKET_REMOVE_LISTING instead.
    */
+  @Deprecated
   MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing", 3), 
   
   //Data
@@ -159,6 +166,7 @@ public enum FacebookMethod
   /**
    * @deprecated use SMS_SEND_MESSAGE instead.
    */
+  @Deprecated
   SMS_SEND("facebook.sms.send", 4),
   SMS_SEND_MESSAGE("facebook.sms.send", 3),
   // Facebook Pages
