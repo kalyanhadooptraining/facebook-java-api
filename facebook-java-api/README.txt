@@ -68,8 +68,8 @@ Getting Started (project developers):
 	5.  Unit tests should go under 'src/test/com/facebook/api'.  Add any unit tests you create 
 	    here.
 	    
-	6.  To build the project, go back to the command line where you typed "maven eclipse" and 
-	    type "maven clean install".  This will compile the java files and package them inside 
+	6.  To build the project, go back to the command line where you typed "mvn eclipse:eclipse" and 
+	    type "mvn clean install".  This will compile the java files and package them inside 
 	    of a JAR, which should appear as 'target/facebook-java-api-1.8-beta.jar'.
 	    
 
