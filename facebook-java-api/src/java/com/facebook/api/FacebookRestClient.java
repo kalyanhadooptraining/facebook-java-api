@@ -4140,6 +4140,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the request was successful, any other response indicates error
 	}
 
+	public static boolean addParam( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
+		return addParam( name, Long.toString( value ), params );
+	}
+
+	public static boolean addParamIfNotBlank( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null ) {
+			return addParamIfNotBlank( name, Long.toString( value ), params );
+		}
+		return false;
+	}
+
 	public static boolean addParam( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
 		params.add( new Pair<String,CharSequence>( name, value ) );
 		return true;
