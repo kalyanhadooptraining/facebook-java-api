@@ -51,6 +51,7 @@ import org.json.JSONObject;
  * 
  * @deprecated provided for legacy support only.  Please use MarketListing instead.
  */
+@Deprecated
 public class MarketplaceListing extends MarketListing {
   
   /**
@@ -63,6 +64,7 @@ public class MarketplaceListing extends MarketListing {
    * 
    * @deprecated provided for legacy support only.  Please use MarketListing instead.
    */  
+	  @Deprecated
   public MarketplaceListing(String category, String subCategory, String title, String description) {
       super(title, description, null, null);
       this.setAttribute("category", category);
@@ -79,6 +81,7 @@ public class MarketplaceListing extends MarketListing {
    * 
    * @deprecated provided for legacy support only.  Please use MarketListing instead.
    */
+	  @Deprecated
   public MarketplaceListing(String category, String subCategory, String title, String description, Map<CharSequence,CharSequence> extraAttributes) {
       this(category, subCategory, title, description);
       if (null != extraAttributes) {
@@ -95,6 +98,7 @@ public class MarketplaceListing extends MarketListing {
    * 
    * @deprecated provided for legacy support only.  Please use MarketListing instead.
    */
+	  @Deprecated
   public void putAttribute(CharSequence attr, CharSequence value) {
       super.setAttribute(attr.toString(), value.toString());
   }
@@ -105,6 +109,7 @@ public class MarketplaceListing extends MarketListing {
    * 
    * @deprecated provided for legacy support only.  Please use MarketListing instead.
    */
+	  @Deprecated
   public JSONObject jsonify() {
     return super.attribs;
   }

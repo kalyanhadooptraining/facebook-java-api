@@ -48,6 +48,7 @@ public class FeedImage extends Pair<Object, URL> implements IFeedImage {
      * 
      * @deprecated a FeedImage must include a link url.
      */
+	  @Deprecated
     public FeedImage(URL image) {
         this(image, null);
     }

@@ -44,6 +44,7 @@ import java.net.URL;
  * 
  * @deprecated this class exists for legacy support only.  Please use Permission instead.
  */
+@Deprecated
 public enum FacebookExtendedPerm 
   implements CharSequence {  
   /** Required for users_setStatus method
@@ -51,6 +52,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+	  @Deprecated
   STATUS_UPDATE("status_update"),
   /** Required for photos_upload and photos_addTag API methods
    * @see FacebookRestClient#photos_upload
@@ -58,6 +60,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+  @Deprecated
   PHOTO_UPLOAD("photo_upload"),
   /** Required for marketplace_createListing and marketplace_removeListing API methods 
    * @see FacebookRestClient#marketplace_createListing
@@ -66,6 +69,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+  @Deprecated
   MARKETPLACE("create_listing"),
   /** Required for sending SMS to the user
    * @see FacebookRestClient#sms_canSend
@@ -73,6 +77,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+  @Deprecated
   SMS("sms"),
   ;
 
@@ -91,6 +96,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+  @Deprecated
   public void setPermissionName(String permissionName) {
     this.permissionName = permissionName;
   }
@@ -100,6 +106,7 @@ public enum FacebookExtendedPerm
    * 
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    */
+  @Deprecated
   public String getPermissionName() {
     return permissionName;
   }
@@ -113,6 +120,7 @@ public enum FacebookExtendedPerm
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    * @throws IOException if something bad happens.
    */
+  @Deprecated
   public static URL authorizationUrl(String apiKey, FacebookExtendedPerm permission)
     throws IOException {
     return authorizationUrl(apiKey, permission.getPermissionName());
@@ -127,6 +135,7 @@ public enum FacebookExtendedPerm
    * @deprecated this class exists for legacy support only.  Please use Permission instead.
    * @throws IOException if something bad happens.
    */
+  @Deprecated
   public static URL authorizationUrl(String apiKey, CharSequence permission)
     throws IOException {
     String url = String.format("%s?api_key=%s&v=1.0&ext_perm=%s", PERM_AUTHORIZE_ADDR, apiKey, permission);
