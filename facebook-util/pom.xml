@@ -4,13 +4,25 @@
     <groupId>com.facebook.api</groupId>
     <artifactId>facebook-util</artifactId>
     <packaging>jar</packaging>
-    <version>1.8-beta</version>
-	<name>Facebook Java Utility</name>
-	<dependencies>
+    <version>1.8-SNAPSHOT</version>
+    <name>Facebook Java Utility</name>
+    <description>Facebook Java Utility</description>
+    <url>http://code.google.com/p/facebook-java-api/</url>
+    <licenses>
+        <license>
+	    <name>The MIT License</name>
+	    <url>http://www.opensource.org/licenses/mit-license.php</url>
+	    <distribution>repo</distribution>
+	</license>
+    </licenses>
+    <scm>
+        <url>http://facebook-java-api.googlecode.com/svn/trunk/facebook-util</url>
+    </scm>
+    <dependencies>
 		<dependency>
 			<groupId>com.facebook.api</groupId>
 			<artifactId>facebook-java-api</artifactId>
-			<version>1.8-beta</version>
+			<version>1.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -22,6 +34,17 @@
     	<sourceDirectory>src/java</sourceDirectory>
         <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
         <plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-source-plugin</artifactId>
+			<executions>
+				<execution>
+					<goals>
+						<goal>jar</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -29,18 +52,21 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
-                <!-- J A R  R E S O U R C E S -->
-                <!-- Resources that are packaged up inside the JAR file
-                <resources>
-                    <resource>
-                        <includes>
-                            <include>**/*.properties</include>
-                            <include>**/*.xml</include>
-                        </includes>
-                    </resource>
-                </resources>
-                -->
             </plugin>
+	    <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+		<configuration>
+		    <tagBase>http://facebook-java-api.googlecode.com/svn/tags/</tagBase>
+		</configuration>
+	    </plugin>
+	    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-eclipse-plugin</artifactId>
+		<configuration>
+		    <downloadSources>true</downloadSources>
+		    <downloadJavadocs>true</downloadJavadocs>
+		</configuration>
+	    </plugin>
         </plugins>
     </build>
     <repositories>
