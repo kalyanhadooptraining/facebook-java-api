@@ -477,21 +477,22 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
    * @param n the parent node to start printing from
    * @param prefix string to append to output, should not be null
    */
-  public static void printDom(Node n, String prefix) {
-    String outString = prefix;
+  public void printDom(Node n, String prefix) {
+    if (! isDebug()) {
+    	return;
+    }
+	String outString = prefix;
     if (n.getNodeType() == Node.TEXT_NODE) {
       outString += "'" + n.getTextContent().trim() + "'";
     }
     else {
       outString += n.getNodeName();
     }
-    if (DEBUG) {
-        System.out.println(outString);
-    }
+    System.out.println(outString);
     NodeList children = n.getChildNodes();
     int length = children.getLength();
     for (int i = 0; i < length; i++) {
-      FacebookRestClient.printDom(children.item(i), prefix + "  ");
+      printDom(children.item(i), prefix + "  ");
     }
   }
 
@@ -776,8 +777,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
       doc.normalizeDocument();
       stripEmptyTextNodes(doc);
 
-      if (isDebug())
-        FacebookRestClient.printDom(doc, method.methodName() + "| "); // TEST
+      printDom(doc, method.methodName() + "| "); // TEST
       NodeList errors = doc.getElementsByTagName(ERROR_TAG);
       if (errors.getLength() > 0) {
         int errorCode =
@@ -860,7 +860,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
                                   boolean doHttps, boolean doEncode) throws IOException {
     CharSequence buffer = (null == params) ? "" : delimit(params.entrySet(), "&", "=", doEncode);
     URL serverUrl = (doHttps) ? HTTPS_SERVER_URL : _serverUrl;
-    if (isDebug() && DEBUG) {
+    if (isDebug()) {
         System.out.println(method);
         System.out.println(" POST: ");
         System.out.println(serverUrl.toString());
