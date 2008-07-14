@@ -45,7 +45,6 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 
 import org.json.JSONObject;
-import org.w3c.dom.Document;
 
 import com.facebook.api.schema.Listing;
 
