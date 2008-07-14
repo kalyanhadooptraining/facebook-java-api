@@ -119,10 +119,10 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
      * 
      * @param apiKey your Facebook API key
      * @param secret your 'secret' Facebook key
-     * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+     * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
      */
-    public FacebookJaxbRestClient(String apiKey, String secret, int timeout) {
-      this(SERVER_URL, apiKey, secret, null, timeout);
+    public FacebookJaxbRestClient(String apiKey, String secret, int connectionTimeout) {
+      this(SERVER_URL, apiKey, secret, null, connectionTimeout);
     }
 
     /**
@@ -142,10 +142,10 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
      * @param apiKey your Facebook API key
      * @param secret your 'secret' Facebook key
      * @param sessionKey the session-id to use
-     * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+     * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
      */
-    public FacebookJaxbRestClient(String apiKey, String secret, String sessionKey, int timeout) {
-      this(SERVER_URL, apiKey, secret, sessionKey, timeout);
+    public FacebookJaxbRestClient(String apiKey, String secret, String sessionKey, int connectionTimeout) {
+      this(SERVER_URL, apiKey, secret, sessionKey, connectionTimeout);
     }
 
     
@@ -171,13 +171,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
      * @param apiKey your Facebook API key
      * @param secret your 'secret' Facebook key
      * @param sessionKey the session-id to use
-     * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+     * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
      * 
      * @throws MalformedURLException if you specify an invalid URL 
      */
     public FacebookJaxbRestClient(String serverAddr, String apiKey, String secret,
-                              String sessionKey, int timeout) throws MalformedURLException {
-      this(new URL(serverAddr), apiKey, secret, sessionKey, timeout);
+                              String sessionKey, int connectionTimeout) throws MalformedURLException {
+      this(new URL(serverAddr), apiKey, secret, sessionKey, connectionTimeout);
     }
     
     @Override
@@ -206,11 +206,26 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
      * @param apiKey your Facebook API key
      * @param secret your 'secret' Facebook key
      * @param sessionKey the session-id to use
-     * @param timeout the timeout to apply when making API requests to Facebook, in milliseconds
+     * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
      */
     public FacebookJaxbRestClient(URL serverUrl, String apiKey, String secret,
-                              String sessionKey, int timeout) {
-      super(serverUrl, apiKey, secret, sessionKey, timeout);
+                              String sessionKey, int connectionTimeout) {
+      super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1);
+    }
+    
+    /**
+     * Constructor.
+     * 
+     * @param serverUrl the URL of the Facebook API server to use 
+     * @param apiKey your Facebook API key
+     * @param secret your 'secret' Facebook key
+     * @param sessionKey the session-id to use
+     * @param connectionTimeout the connection timeout to apply when making API requests to Facebook, in milliseconds
+     * @param readTimeout the read timeout to apply when making API requests to Facebook, in milliseconds
+     */
+    public FacebookJaxbRestClient(URL serverUrl, String apiKey, String secret,
+                              String sessionKey, int connectionTimeout, int readTimeout) {
+      super(serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout);
     }
     
     /**
