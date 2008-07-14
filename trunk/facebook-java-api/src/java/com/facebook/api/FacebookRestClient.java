@@ -4140,18 +4140,30 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the request was successful, any other response indicates error
 	}
 
+	public static boolean addParam( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
+		params.add( new Pair<String,CharSequence>( name, value ) );
+		return true;
+	}
+
+	public static boolean addParamIfNotBlank( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
+		if ( ( value != null ) && ( !"".equals( value ) ) ) {
+			params.add( new Pair<String,CharSequence>( name, value ) );
+			return true;
+		}
+		return false;
+	}
+
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException {
+		return profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, null );
+	}
+
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		if ( ( profileFbml != null ) && ( !"".equals( profileFbml ) ) ) {
-			params.add( new Pair<String,CharSequence>( "profile", profileFbml ) );
-		}
-		if ( ( actionFbml != null ) && ( !"".equals( actionFbml ) ) ) {
-			params.add( new Pair<String,CharSequence>( "profile_action", actionFbml ) );
-		}
-		if ( ( mobileFbml != null ) && ( !"".equals( mobileFbml ) ) ) {
-			params.add( new Pair<String,CharSequence>( "mobile_fbml", mobileFbml ) );
-		}
+		addParamIfNotBlank( "profile", profileFbml, params );
+		addParamIfNotBlank( "profile_action", actionFbml, params );
+		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
+		addParamIfNotBlank( "profile_main", profileMain, params );
 		return extractBoolean( this.callMethod( FacebookMethod.PROFILE_SET_FBML_NOSESSION, params ) );
 	}
 
