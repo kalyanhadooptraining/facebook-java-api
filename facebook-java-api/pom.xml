@@ -1,94 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>com.facebook.api</groupId>
-    <artifactId>facebook-java-api</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>parent-pom</artifactId>
     <version>1.8-SNAPSHOT</version>
-    <name>Facebook Java Library</name>
-    <description>Facebook Java Library</description>
-    <url>http://code.google.com/p/facebook-java-api/</url>
-    <licenses>
-        <license>
-	    <name>The MIT License</name>
-	    <url>http://www.opensource.org/licenses/mit-license.php</url>
-	    <distribution>repo</distribution>
-	</license>
-    </licenses>
-    <scm>
-        <url>http://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api</url>
-    </scm>
-    <dependencies>
-	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20070829</version>
-	</dependency>
-	<!-- THIS SECTION FOR JAVA 5 ONLY, NOT REQUIRED WITH JAVA 6-->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jsr173_api</artifactId>
-            <version>1.0</version>
-        </dependency>
-     <!-- END OF JAVA 5 SECTION -->
-    </dependencies>
-    <build>
-    	<sourceDirectory>src/java</sourceDirectory>
-        <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
-        <plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-source-plugin</artifactId>
-			<executions>
-				<execution>
-					<goals>
-						<goal>jar</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-	    <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-		<configuration>
-		    <tagBase>http://facebook-java-api.googlecode.com/svn/tags/</tagBase>
-		</configuration>
-	    </plugin>
-	    <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-eclipse-plugin</artifactId>
-		<configuration>
-		    <downloadSources>true</downloadSources>
-		    <downloadJavadocs>true</downloadJavadocs>
-		</configuration>
-	    </plugin>
-        </plugins>
-    </build>
-    <repositories>
-        <repository>
-            <id>maven</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>mergere</id>
-            <url>http://repo.mergere.com/maven2/</url>
-        </repository>
-    </repositories>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <groupId>com.facebook.api</groupId>
+  <artifactId>facebook-java-api</artifactId>
+  <packaging>jar</packaging>
+  <version>1.8-SNAPSHOT</version>
+  <name>Facebook Java Library</name>
+  <description>Facebook Java Library</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20070829</version>
+    </dependency>
+    <!-- THIS SECTION FOR JAVA 5 ONLY, NOT REQUIRED WITH JAVA 6-->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jsr173_api</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <!-- END OF JAVA 5 SECTION -->
+  </dependencies>
 </project>
