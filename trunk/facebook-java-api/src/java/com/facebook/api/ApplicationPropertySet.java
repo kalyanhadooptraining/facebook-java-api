@@ -38,154 +38,163 @@ import java.util.Set;
 import org.json.JSONObject;
 
 /**
- * This utility represents a set of application properties for use in the
- * facebook.admin_setApplicatoinProperty API call.
+ * This utility represents a set of application properties for use in the facebook.admin_setApplicatoinProperty API call.
  */
 public class ApplicationPropertySet {
-    private Map<ApplicationProperty,Boolean> _attributesBool = null;
-    private Map<ApplicationProperty,CharSequence> _attributesString = null;
 
-    /**
-     * Constructor
-     */
-    public ApplicationPropertySet() {
-    }
+	private Map<ApplicationProperty,Boolean> _attributesBool = null;
+	private Map<ApplicationProperty,CharSequence> _attributesString = null;
 
-    /**
-     * Initialize the ApplicationPropertySet mapping from its JSON representation
-     * 
-     * @param jsonString JSON representing the application properties
-     * @throws ClassCastException if the JSON-encoded mapping doesn't conform to expectations
-     */
-    public ApplicationPropertySet(String jsonString) throws ClassCastException {
-        Map<ApplicationProperty, String> mappings = ExtensibleClient.parseProperties(jsonString);
-        Set<Map.Entry<ApplicationProperty, String>> entries = mappings.entrySet();
-        for (Map.Entry<ApplicationProperty, String> entry: entries) {
-            ApplicationProperty prop = entry.getKey();
-            String value = entry.getValue();
-            if (prop.isBooleanProperty()) {
-                this.setBoolProperty(prop, "1".equals(value));
-            } else if (prop.isStringProperty()) {
-                this.setStringProperty(prop, value);
-            }
-        }
-    }
+	public ApplicationPropertySet() {
+		// empty
+	}
 
-    /**
-     * Sets a boolean property value.
-     * 
-     * @param prop the property to set, it should be of boolean type.
-     * @param value the value to set.
-     */
-    public void setBoolProperty(ApplicationProperty prop, boolean value) {
-        if (null == prop || !prop.isBooleanProperty()) {
-            throw new IllegalArgumentException("Boolean property expected");
-        }
-        if (null == this._attributesBool) {
-            this._attributesBool = new HashMap<ApplicationProperty,Boolean>();
-        }
-        this._attributesBool.put(prop, value);
-    }
+	/**
+	 * Initialize the ApplicationPropertySet mapping from its JSON representation
+	 * 
+	 * @param jsonString
+	 *            JSON representing the application properties
+	 * @throws ClassCastException
+	 *             if the JSON-encoded mapping doesn't conform to expectations
+	 */
+	public ApplicationPropertySet( String jsonString ) throws ClassCastException {
+		Map<ApplicationProperty,String> mappings = ExtensibleClient.parseProperties( jsonString );
+		Set<Map.Entry<ApplicationProperty,String>> entries = mappings.entrySet();
+		for ( Map.Entry<ApplicationProperty,String> entry : entries ) {
+			ApplicationProperty prop = entry.getKey();
+			String value = entry.getValue();
+			if ( prop.isBooleanProperty() ) {
+				this.setBoolProperty( prop, "1".equals( value ) );
+			} else if ( prop.isStringProperty() ) {
+				this.setStringProperty( prop, value );
+			}
+		}
+	}
 
-    /**
-     * Gets a boolean property value.
-     * 
-     * @param prop the property to get, it should be of boolean type.
-     * 
-     * @return the value of the property.
-     */
-    public Boolean getBoolProperty(ApplicationProperty prop) {
-        if (null == prop || !prop.isBooleanProperty()) {
-            throw new IllegalArgumentException("Boolean property expected");
-        }
-        return (null == this._attributesBool)? null: this._attributesBool.get(prop);
-    }
+	/**
+	 * Sets a boolean property value.
+	 * 
+	 * @param prop
+	 *            the property to set, it should be of boolean type.
+	 * @param value
+	 *            the value to set.
+	 */
+	public void setBoolProperty( ApplicationProperty prop, boolean value ) {
+		if ( null == prop || !prop.isBooleanProperty() ) {
+			throw new IllegalArgumentException( "Boolean property expected" );
+		}
+		if ( null == this._attributesBool ) {
+			this._attributesBool = new HashMap<ApplicationProperty,Boolean>();
+		}
+		this._attributesBool.put( prop, value );
+	}
 
-    /**
-     * Sets a String property value.
-     * 
-     * @param prop the property to set, it should be of String type.
-     * @param value the value to set.
-     */
-    public void setStringProperty(ApplicationProperty prop, CharSequence value) {
-        if (null == prop || !prop.isStringProperty()) {
-            throw new IllegalArgumentException("String property expected");
-        }
-        if (null == this._attributesString) {
-            this._attributesString = new HashMap<ApplicationProperty,CharSequence>();
-        }
-        this._attributesString.put(prop, value);
-    }
+	/**
+	 * Gets a boolean property value.
+	 * 
+	 * @param prop
+	 *            the property to get, it should be of boolean type.
+	 * 
+	 * @return the value of the property.
+	 */
+	public Boolean getBoolProperty( ApplicationProperty prop ) {
+		if ( null == prop || !prop.isBooleanProperty() ) {
+			throw new IllegalArgumentException( "Boolean property expected" );
+		}
+		return ( null == this._attributesBool ) ? null : this._attributesBool.get( prop );
+	}
 
-    /**
-     * Gets a String property value.
-     * 
-     * @param prop the property to get, it should be of String type.
-     * 
-     * @return the value of the property.
-     */
-    public CharSequence getStringProperty(ApplicationProperty prop) {
-        if (null == prop || !prop.isStringProperty()) {
-            throw new IllegalArgumentException("String property expected");
-        }
-        return (null == this._attributesString)? null: this._attributesString.get(prop);
-    }
+	/**
+	 * Sets a String property value.
+	 * 
+	 * @param prop
+	 *            the property to set, it should be of String type.
+	 * @param value
+	 *            the value to set.
+	 */
+	public void setStringProperty( ApplicationProperty prop, CharSequence value ) {
+		if ( null == prop || !prop.isStringProperty() ) {
+			throw new IllegalArgumentException( "String property expected" );
+		}
+		if ( null == this._attributesString ) {
+			this._attributesString = new HashMap<ApplicationProperty,CharSequence>();
+		}
+		this._attributesString.put( prop, value );
+	}
 
-    /**
-     * Remove a property from the set.
-     * 
-     * @param prop the property to remove.
-     */
-    public void removeProperty(ApplicationProperty prop) {
-        if (prop.isBooleanProperty()) {
-            this._attributesBool.remove(prop);
-        } else if (prop.isStringProperty()) {
-            this._attributesString.remove(prop);
-        }
-    }
+	/**
+	 * Gets a String property value.
+	 * 
+	 * @param prop
+	 *            the property to get, it should be of String type.
+	 * 
+	 * @return the value of the property.
+	 */
+	public CharSequence getStringProperty( ApplicationProperty prop ) {
+		if ( null == prop || !prop.isStringProperty() ) {
+			throw new IllegalArgumentException( "String property expected" );
+		}
+		return ( null == this._attributesString ) ? null : this._attributesString.get( prop );
+	}
 
-    /**
-     * @return true if this set is empty
-     *         false otherwise
-     */
-    public boolean isEmpty() {
-        return (null == this._attributesString || this._attributesString.isEmpty())
-                && (null == this._attributesBool || this._attributesBool.isEmpty());
-    }
+	/**
+	 * Remove a property from the set.
+	 * 
+	 * @param prop
+	 *            the property to remove.
+	 */
+	public void removeProperty( ApplicationProperty prop ) {
+		if ( prop.isBooleanProperty() ) {
+			this._attributesBool.remove( prop );
+		} else if ( prop.isStringProperty() ) {
+			this._attributesString.remove( prop );
+		}
+	}
 
-    /**
-     * Return a JSON representation of this property set object
-     * 
-     * @return JSONObject
-     */
-    public JSONObject jsonify() {
-        JSONObject ret = new JSONObject();
-        if (null != this._attributesString) {
-            for (Map.Entry<ApplicationProperty,CharSequence> entry: this._attributesString
-                    .entrySet()) {
-                try {
-                    ret.put(entry.getKey().propertyName(), entry.getValue().toString());
-                }
-                catch (Exception ignored) {}
-            }
-        }
-        if (null != this._attributesBool) {
-            for (Map.Entry<ApplicationProperty,Boolean> entry: this._attributesBool.entrySet()) {
-                try {
-                    ret.put(entry.getKey().propertyName(), entry.getValue());
-                }
-                catch (Exception ignored) {}
-            }
-        }
-        return ret;
-    }
+	/**
+	 * @return true if this set is empty false otherwise
+	 */
+	public boolean isEmpty() {
+		return ( null == this._attributesString || this._attributesString.isEmpty() ) && ( null == this._attributesBool || this._attributesBool.isEmpty() );
+	}
 
-    /**
-     * Return a JSON string representation of this object
-     * 
-     * @return a JSON string
-     */
-    public String toJsonString() {
-        return this.jsonify().toString();
-    }
+	/**
+	 * Return a JSON representation of this property set object
+	 * 
+	 * @return JSONObject
+	 */
+	public JSONObject jsonify() {
+		JSONObject ret = new JSONObject();
+		if ( null != this._attributesString ) {
+			for ( Map.Entry<ApplicationProperty,CharSequence> entry : this._attributesString.entrySet() ) {
+				try {
+					ret.put( entry.getKey().propertyName(), entry.getValue().toString() );
+				}
+				catch ( Exception ignored ) {
+					// ignore
+				}
+			}
+		}
+		if ( null != this._attributesBool ) {
+			for ( Map.Entry<ApplicationProperty,Boolean> entry : this._attributesBool.entrySet() ) {
+				try {
+					ret.put( entry.getKey().propertyName(), entry.getValue() );
+				}
+				catch ( Exception ignored ) {
+					// ignore
+				}
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a JSON string representation of this object
+	 * 
+	 * @return a JSON string
+	 */
+	public String toJsonString() {
+		return this.jsonify().toString();
+	}
+
 }
