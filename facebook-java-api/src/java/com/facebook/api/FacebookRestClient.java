@@ -3983,7 +3983,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document>{
             params.add(new Pair<String, CharSequence>("short_story_templates", shortArray.toString()));
         }
         if (longTemplate != null) {
-            params.add(new Pair<String, CharSequence>("long_story_template", longTemplate.toJsonString()));
+            params.add(new Pair<String, CharSequence>("full_story_template", longTemplate.toJsonString()));
         }
         
         return extractLong(this.callMethod(FacebookMethod.FEED_REGISTER_TEMPLATE, params));
