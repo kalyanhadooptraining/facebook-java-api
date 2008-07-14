@@ -13,6 +13,16 @@ public class BundleStoryTemplate {
     private String title;
     
     /**
+     * Constructor.  If you use this version, you must make sure you set both the 
+     * 'title' and 'body' fields before trying to submit your template, otherwise 
+     * it will not serialize correctly.
+     */
+    public BundleStoryTemplate() {
+    	this.title = null;
+    	this.body = null;
+    }
+    
+    /**
      * Constructor.
      * 
      * @param title the title to show for this template.
