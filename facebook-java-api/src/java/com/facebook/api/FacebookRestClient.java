@@ -693,7 +693,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( serial )
 			params.add( new Pair<String,CharSequence>( "serial_only", "1" ) );
 
-		return this.callMethod( FacebookMethod.BATCH_RUN, params );
+		return callMethod( FacebookMethod.BATCH_RUN, params );
 	}
 
 	/**
@@ -761,7 +761,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( true );
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			boolean doHttps = this.isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
+			boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 
 			InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, /* doEncode */
 			true ) : postRequest( method.methodName(), params, doHttps, /* doEncode */true );
@@ -922,7 +922,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	@Deprecated
 	public boolean profile_setFBML( CharSequence fbmlMarkup, Long userId ) throws FacebookException, IOException {
 
-		return extractBoolean( this.callMethod( FacebookMethod.PROFILE_SET_FBML, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ),
+		return extractBoolean( callMethod( FacebookMethod.PROFILE_SET_FBML, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ),
 				new Pair<String,CharSequence>( "markup", fbmlMarkup ) ) );
 
 	}
@@ -935,7 +935,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return a Document containing FBML markup
 	 */
 	public Document profile_getFBML( Long userId ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
+		return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
 
 	}
 
@@ -958,7 +958,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return boolean indicating whether the refresh succeeded
 	 */
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.FBML_REFRESH_REF_URL, new Pair<String,CharSequence>( "url", url.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.FBML_REFRESH_REF_URL, new Pair<String,CharSequence>( "url", url.toString() ) ) );
 	}
 
 	/**
@@ -980,7 +980,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return boolean indicating whether the refresh succeeded
 	 */
 	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.FBML_REFRESH_IMG_SRC, new Pair<String,CharSequence>( "url", imageUrl.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.FBML_REFRESH_IMG_SRC, new Pair<String,CharSequence>( "url", imageUrl.toString() ) ) );
 	}
 
 	/**
@@ -1078,7 +1078,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @throws IOException
 	 */
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException, IOException {
-		return this.feed_publishTemplatizedAction( action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action
+		return feed_publishTemplatizedAction( action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action
 				.getBodyGeneral(), action.getPictures(), action.getTargetIds(), action.getPageActorId() );
 	}
 
@@ -1198,7 +1198,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 					params.add( new Pair<String,CharSequence>( String.format( "image_%d_link", image_count ), image.getSecond().toString() ) );
 			}
 		}
-		return this.callMethod( feedMethod, params );
+		return callMethod( feedMethod, params );
 	}
 
 	protected boolean feedHandlerBoolean( FacebookMethod feedMethod, CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images,
@@ -1222,7 +1222,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 					params.add( new Pair<String,CharSequence>( String.format( "image_%d_link", image_count ), image.getSecond().toString() ) );
 			}
 		}
-		this.callMethod( feedMethod, params );
+		callMethod( feedMethod, params );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -1272,7 +1272,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( pageId != null ) {
 			params.add( new Pair<String,CharSequence>( "page_actor_id", Long.toString( pageId ) ) );
 		}
-		this.callMethod( method, params );
+		callMethod( method, params );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -1300,15 +1300,19 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		boolean hasStart = null != startTime && 0 != startTime;
 		boolean hasEnd = null != endTime && 0 != endTime;
 
-		if ( hasUserId )
+		if ( hasUserId ) {
 			params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		if ( hasEventIds )
+		}
+		if ( hasEventIds ) {
 			params.add( new Pair<String,CharSequence>( "eids", delimit( eventIds ) ) );
-		if ( hasStart )
+		}
+		if ( hasStart ) {
 			params.add( new Pair<String,CharSequence>( "start_time", startTime.toString() ) );
-		if ( hasEnd )
+		}
+		if ( hasEnd ) {
 			params.add( new Pair<String,CharSequence>( "end_time", endTime.toString() ) );
-		return this.callMethod( FacebookMethod.EVENTS_GET, params );
+		}
+		return callMethod( FacebookMethod.EVENTS_GET, params );
 	}
 
 	/**
@@ -1320,7 +1324,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public Document events_getMembers( Number eventId ) throws FacebookException, IOException {
 		assert ( null != eventId );
-		return this.callMethod( FacebookMethod.EVENTS_GET_MEMBERS, new Pair<String,CharSequence>( "eid", eventId.toString() ) );
+		return callMethod( FacebookMethod.EVENTS_GET_MEMBERS, new Pair<String,CharSequence>( "eid", eventId.toString() ) );
 	}
 
 
@@ -1330,7 +1334,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return array of friends
 	 */
 	public Document friends_areFriends( long userId1, long userId2 ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, new Pair<String,CharSequence>( "uids1", Long.toString( userId1 ) ), new Pair<String,CharSequence>(
+		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, new Pair<String,CharSequence>( "uids1", Long.toString( userId1 ) ), new Pair<String,CharSequence>(
 				"uids2", Long.toString( userId2 ) ) );
 	}
 
@@ -1339,8 +1343,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( !userIds1.isEmpty() && !userIds2.isEmpty() );
 		assert ( userIds1.size() == userIds2.size() );
 
-		return this.callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, new Pair<String,CharSequence>( "uids1", delimit( userIds1 ) ), new Pair<String,CharSequence>(
-				"uids2", delimit( userIds2 ) ) );
+		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, new Pair<String,CharSequence>( "uids1", delimit( userIds1 ) ), new Pair<String,CharSequence>( "uids2",
+				delimit( userIds2 ) ) );
 	}
 
 	/**
@@ -1349,7 +1353,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return array of friends
 	 */
 	public Document friends_get() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FRIENDS_GET );
+		return callMethod( FacebookMethod.FRIENDS_GET );
 	}
 
 	/**
@@ -1381,7 +1385,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return array of friends
 	 */
 	public Document friends_getAppUsers() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
+		return callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
 	}
 
 	/**
@@ -1399,7 +1403,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
 
-		return this.callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
+		return callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
 
@@ -1418,7 +1422,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
 
-		return this.callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
+		return callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
 
@@ -1429,7 +1433,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public long users_getLoggedInUser() throws FacebookException, IOException {
 		if ( this._userId == -1 || this.batchMode ) {
-			Document d = this.callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER );
+			Document d = callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER );
 			if ( d == null ) {
 				return 0l;
 			}
@@ -1447,7 +1451,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		// a null value for added means that facebook didn't send an
 		// fb_added param
 		if ( added == null ) {
-			added = extractBoolean( this.callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
+			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
 		return added.booleanValue();
 	}
@@ -1479,7 +1483,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( hasPhotoIds )
 			params.add( new Pair<String,CharSequence>( "pids", delimit( photoIds ) ) );
 
-		return this.callMethod( FacebookMethod.PHOTOS_GET, params );
+		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
 	public Document photos_get( Long albumId, Collection<Long> photoIds, boolean album ) throws FacebookException, IOException {
@@ -1521,11 +1525,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( hasUserId || hasAlbumIds ); // one of the two must be provided
 
 		if ( hasUserId )
-			return ( hasAlbumIds ) ? this.callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ),
-					new Pair<String,CharSequence>( "aids", delimit( albumIds ) ) ) : this.callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>(
-					"uid", Long.toString( userId ) ) );
+			return ( hasAlbumIds ) ? callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ),
+					new Pair<String,CharSequence>( "aids", delimit( albumIds ) ) ) : callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>( "uid",
+					Long.toString( userId ) ) );
 		else
-			return this.callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>( "aids", delimit( albumIds ) ) );
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, new Pair<String,CharSequence>( "aids", delimit( albumIds ) ) );
 	}
 
 	public Document photos_getAlbums( Long userId ) throws FacebookException, IOException {
@@ -1544,7 +1548,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return the created album
 	 */
 	public Document photos_getTags( Collection<Long> photoIds ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PHOTOS_GET_TAGS, new Pair<String,CharSequence>( "pids", delimit( photoIds ) ) );
+		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, new Pair<String,CharSequence>( "pids", delimit( photoIds ) ) );
 	}
 
 	/**
@@ -1555,7 +1559,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return the created album
 	 */
 	public Document photos_createAlbum( String albumName ) throws FacebookException, IOException {
-		return this.photos_createAlbum( albumName, null/* description */, null/* location */);
+		return photos_createAlbum( albumName, null/* description */, null/* location */);
 	}
 
 	/**
@@ -1573,11 +1577,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( null != name && !"".equals( name ) );
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_CREATE_ALBUM.numParams() );
 		params.add( new Pair<String,CharSequence>( "name", name ) );
-		if ( null != description )
+		if ( null != description ) {
 			params.add( new Pair<String,CharSequence>( "description", description ) );
-		if ( null != location )
+		}
+		if ( null != location ) {
 			params.add( new Pair<String,CharSequence>( "location", location ) );
-		return this.photos_createAlbum( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
+		}
+		return photos_createAlbum( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
 	}
 
 	/**
@@ -1601,10 +1607,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			tagStr = jsonTags.toString();
 		}
 		catch ( Exception ignored ) {
+			// ignore
 		}
-
-		return this
-				.callMethod( FacebookMethod.PHOTOS_ADD_TAG, new Pair<String,CharSequence>( "pid", photoId.toString() ), new Pair<String,CharSequence>( "tags", tagStr ) );
+		return callMethod( FacebookMethod.PHOTOS_ADD_TAG, new Pair<String,CharSequence>( "pid", photoId.toString() ), new Pair<String,CharSequence>( "tags", tagStr ) );
 	}
 
 	/**
@@ -1658,7 +1663,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "y", yPct.toString() ) );
 		params.add( new Pair<String,CharSequence>( "pid", photoId.toString() ) );
 
-		return this.photos_addTag( FacebookMethod.PHOTOS_ADD_TAG, params );
+		return photos_addTag( FacebookMethod.PHOTOS_ADD_TAG, params );
 	}
 
 	public Document photos_upload( File photo ) throws FacebookException, IOException {
@@ -1677,11 +1682,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
 		assert ( photo.exists() && photo.canRead() );
 		this._uploadFile = photo;
-		if ( null != albumId )
+		if ( null != albumId ) {
 			params.add( new Pair<String,CharSequence>( "aid", Long.toString( albumId ) ) );
-		if ( null != caption )
+		}
+		if ( null != caption ) {
 			params.add( new Pair<String,CharSequence>( "caption", caption ) );
-		return this.photos_upload( FacebookMethod.PHOTOS_UPLOAD, params );
+		}
+		return photos_upload( FacebookMethod.PHOTOS_UPLOAD, params );
 	}
 
 	/**
@@ -1695,12 +1702,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public Document groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException, IOException {
 		boolean hasGroups = ( null != groupIds && !groupIds.isEmpty() );
-		if ( null != userId )
-			return hasGroups ? this.callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>(
-					"gids", delimit( groupIds ) ) ) : this.callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "uid", userId.toString() ) );
-		else
-			return hasGroups ? this.callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "gids", delimit( groupIds ) ) ) : this
+		if ( null != userId ) {
+			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "gids",
+					delimit( groupIds ) ) ) : callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "uid", userId.toString() ) );
+		} else {
+			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, new Pair<String,CharSequence>( "gids", delimit( groupIds ) ) ) : this
 					.callMethod( FacebookMethod.GROUPS_GET );
+		}
 	}
 
 	/**
@@ -1712,7 +1720,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public Document groups_getMembers( Number groupId ) throws FacebookException, IOException {
 		assert ( null != groupId );
-		return this.callMethod( FacebookMethod.GROUPS_GET_MEMBERS, new Pair<String,CharSequence>( "gid", groupId.toString() ) );
+		return callMethod( FacebookMethod.GROUPS_GET_MEMBERS, new Pair<String,CharSequence>( "gid", groupId.toString() ) );
 	}
 
 	/**
@@ -1724,7 +1732,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public Document fql_query( CharSequence query ) throws FacebookException, IOException {
 		assert ( null != query );
-		return this.callMethod( FacebookMethod.FQL_QUERY, new Pair<String,CharSequence>( "query", query ) );
+		return callMethod( FacebookMethod.FQL_QUERY, new Pair<String,CharSequence>( "query", query ) );
 	}
 
 	/**
@@ -1734,7 +1742,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *         eid list of 'event_invites'
 	 */
 	public Document notifications_get() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.NOTIFICATIONS_GET );
+		return callMethod( FacebookMethod.NOTIFICATIONS_GET );
 	}
 
 	/**
@@ -1761,8 +1769,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		assert ( null != type );
 		assert ( null != content );
 		assert ( null != image );
-
-		Document d = this.callMethod( FacebookMethod.NOTIFICATIONS_SEND_REQUEST, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ),
+		Document d = callMethod( FacebookMethod.NOTIFICATIONS_SEND_REQUEST, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ),
 				new Pair<String,CharSequence>( "type", type ), new Pair<String,CharSequence>( "content", content ), new Pair<String,CharSequence>( "image", image
 						.toString() ), new Pair<String,CharSequence>( "invite", isInvite ? "1" : "0" ) );
 		if ( d == null ) {
@@ -1862,7 +1869,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return String the auth_token string
 	 */
 	public String auth_createToken() throws FacebookException, IOException {
-		Document d = this.callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
+		Document d = callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
 		if ( d == null ) {
 			return null;
 		}
@@ -1876,15 +1883,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		Document d = this.callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
+		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		if ( d == null ) {
 			return null;
 		}
 		this._sessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this._userId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this._expires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
-		if ( this._isDesktop )
+		if ( this._isDesktop ) {
 			this._sessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
+		}
 		return this._sessionKey;
 	}
 
@@ -1955,7 +1963,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( ( prefId < 0 ) || ( prefId > 200 ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "The preference id must be an integer value from 0-200." );
 		}
-		this.callMethod( FacebookMethod.DATA_GET_USER_PREFERENCE, new Pair<String,CharSequence>( "pref_id", Integer.toString( prefId ) ) );
+		callMethod( FacebookMethod.DATA_GET_USER_PREFERENCE, new Pair<String,CharSequence>( "pref_id", Integer.toString( prefId ) ) );
 		if ( ( this.rawResponse == null ) || ( !this.rawResponse.contains( "</data_getUserPreference_response>" ) ) ) {
 			return null;
 		}
@@ -1982,7 +1990,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
-		Document response = this.callMethod( FacebookMethod.DATA_GET_USER_PREFERENCES );
+		Document response = callMethod( FacebookMethod.DATA_GET_USER_PREFERENCES );
 		if ( response == null ) {
 			return null;
 		}
@@ -2049,8 +2057,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( new Pair<String,CharSequence>( "pref_id", Integer.toString( prefId ) ) );
 		params.add( new Pair<String,CharSequence>( "value", value ) );
-		this.callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, params );
-		this.checkError();
+		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, params );
+		checkError();
 	}
 
 	/**
@@ -2099,8 +2107,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "replace", "true" ) );
 		}
 
-		this.callMethod( FacebookMethod.DATA_SET_USER_PREFERENCES, params );
-		this.checkError();
+		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCES, params );
+		checkError();
 	}
 
 	private String normalizePreferenceValue( String input ) {
@@ -2121,7 +2129,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public boolean sms_canSend() throws FacebookException, IOException {
-		return sms_canSend( this.users_getLoggedInUser() );
+		return sms_canSend( users_getLoggedInUser() );
 	}
 
 	/**
@@ -2138,7 +2146,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public boolean sms_canSend( Long userId ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.SMS_CAN_SEND, new Pair<String,CharSequence>( "uid", userId.toString() ) );
+		callMethod( FacebookMethod.SMS_CAN_SEND, new Pair<String,CharSequence>( "uid", userId.toString() ) );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -2166,7 +2174,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException {
-		return sms_send( this.users_getLoggedInUser(), message, smsSessionId, makeNewSession );
+		return sms_send( users_getLoggedInUser(), message, smsSessionId, makeNewSession );
 	}
 
 	/**
@@ -2202,7 +2210,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "req_session", "true" ) );
 		}
 
-		this.callMethod( FacebookMethod.SMS_SEND, params );
+		callMethod( FacebookMethod.SMS_SEND, params );
 
 		// XXX: needs testing to make sure it's correct (Facebook always gives me a code 270 permissions error no matter what I do)
 		Integer response = null;
@@ -2232,7 +2240,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ) );
+		callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ) );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -2256,7 +2264,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException {
-		return this.users_setStatus( newStatus, clear, false );
+		return users_setStatus( newStatus, clear, false );
 	}
 
 	/**
@@ -2291,7 +2299,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "handle", handle ) );
 		params.add( new Pair<String,CharSequence>( "fbml", markup ) );
 
-		return extractBoolean( this.callMethod( FacebookMethod.FBML_SET_REF_HANDLE, params ) );
+		return extractBoolean( callMethod( FacebookMethod.FBML_SET_REF_HANDLE, params ) );
 	}
 
 	/**
@@ -2327,7 +2335,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 		params.add( new Pair<String,CharSequence>( "listing_attrs", attributes ) );
 
-		return this.marketplace_createListing( FacebookMethod.MARKET_CREATE_LISTING, params );
+		return marketplace_createListing( FacebookMethod.MARKET_CREATE_LISTING, params );
 	}
 
 	/**
@@ -2348,7 +2356,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException, IOException {
-		return this.marketplace_createListing( listingId, showOnProfile, listing.getAttribs() );
+		return marketplace_createListing( listingId, showOnProfile, listing.getAttribs() );
 	}
 
 	/**
@@ -2367,7 +2375,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException, IOException {
-		return this.marketplace_createListing( 0l, showOnProfile, listing.getAttribs() );
+		return marketplace_createListing( 0l, showOnProfile, listing.getAttribs() );
 	}
 
 	/**
@@ -2388,7 +2396,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, JSONObject listing ) throws FacebookException, IOException {
-		return this.marketplace_createListing( listingId, showOnProfile, listing.toString() );
+		return marketplace_createListing( listingId, showOnProfile, listing.toString() );
 	}
 
 	/**
@@ -2407,7 +2415,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Long marketplace_createListing( boolean showOnProfile, JSONObject listing ) throws FacebookException, IOException {
-		return this.marketplace_createListing( 0l, showOnProfile, listing.toString() );
+		return marketplace_createListing( 0l, showOnProfile, listing.toString() );
 	}
 
 	/**
@@ -2421,11 +2429,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public List<String> marketplace_getCategories() throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.MARKET_GET_CATEGORIES );
+		callMethod( FacebookMethod.MARKET_GET_CATEGORIES );
 		if ( this.rawResponse == null ) {
 			return null;
 		}
-		MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse) this.getResponsePOJO();
+		MarketplaceGetCategoriesResponse resp = (MarketplaceGetCategoriesResponse) getResponsePOJO();
 		return resp.getMarketplaceCategory();
 	}
 
@@ -2440,7 +2448,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public Document marketplace_getCategoriesObject() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.MARKET_GET_CATEGORIES );
+		return callMethod( FacebookMethod.MARKET_GET_CATEGORIES );
 	}
 
 	/**
@@ -2454,11 +2462,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *             if a communication/network error happens.
 	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES );
+		callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES );
 		if ( this.rawResponse == null ) {
 			return null;
 		}
-		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) this.getResponsePOJO();
+		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) getResponsePOJO();
 		return resp.getMarketplaceSubcategory();
 	}
 
@@ -2489,11 +2497,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "uids", users ) );
 		}
 
-		this.callMethod( FacebookMethod.MARKET_GET_LISTINGS, params );
+		callMethod( FacebookMethod.MARKET_GET_LISTINGS, params );
 		if ( this.rawResponse == null ) {
 			return null;
 		}
-		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) this.getResponsePOJO();
+		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) getResponsePOJO();
 		return resp.getListing();
 	}
 
@@ -2548,11 +2556,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "query", searchTerm ) );
 		}
 
-		this.callMethod( FacebookMethod.MARKET_SEARCH, params );
+		callMethod( FacebookMethod.MARKET_SEARCH, params );
 		if ( this.rawResponse == null ) {
 			return null;
 		}
-		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) this.getResponsePOJO();
+		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) getResponsePOJO();
 		return resp.getListing();
 	}
 
@@ -2582,7 +2590,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( new Pair<String,CharSequence>( "listing_id", listingId.toString() ) );
 		params.add( new Pair<String,CharSequence>( "status", status.getName() ) );
-		return this.marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING, params );
+		return marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING, params );
 
 	}
 
@@ -2595,7 +2603,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
 	 */
 	public boolean users_clearStatus() throws FacebookException, IOException {
-		return this.users_setStatus( null, true );
+		return users_setStatus( null, true );
 	}
 
 	/**
@@ -2613,8 +2621,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
 	 */
+	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException {
-		return this.marketplace_createListing( listingId, showOnProfile, attrs.getAttribs() );
+		return marketplace_createListing( listingId, showOnProfile, attrs.getAttribs() );
 	}
 
 	/**
@@ -2631,7 +2640,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
 	 */
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException, IOException {
-		return this.marketplace_createListing( listingId, showOnProfile, attrs );
+		return marketplace_createListing( listingId, showOnProfile, attrs );
 	}
 
 	/**
@@ -2665,7 +2674,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @deprecated provided for legacy support only.
 	 */
 	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException {
-		return this.marketplace_createListing( null, showOnProfile, attrs.getAttribs() );
+		return marketplace_createListing( null, showOnProfile, attrs.getAttribs() );
 	}
 
 	/*
@@ -2676,15 +2685,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	public long auth_getUserId( String authToken ) throws FacebookException, IOException {
 		if ( null == this._sessionKey )
 			auth_getSession( authToken );
-		return this.users_getLoggedInUser();
+		return users_getLoggedInUser();
 	}
 
 	/**
 	 * @deprecated use feed_publishTemplatizedAction instead.
 	 */
+	@Deprecated
 	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
 			IOException {
-		return this.feed_publishActionOfUser( title, body, images, null );
+		return feed_publishActionOfUser( title, body, images, null );
 	}
 
 	/*
@@ -2693,7 +2703,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence)
 	 */
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException, IOException {
-		return this.feed_publishTemplatizedAction( actorId, titleTemplate == null ? null : titleTemplate.toString(), null, null, null, null, null, null );
+		return feed_publishTemplatizedAction( actorId, titleTemplate == null ? null : titleTemplate.toString(), null, null, null, null, null, null );
 	}
 
 	/*
@@ -2705,7 +2715,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException, IOException {
-		return this.feed_publishTemplatizedActionInternal( actorId, titleTemplate == null ? null : titleTemplate.toString(), mapToJsonString( titleData ),
+		return feed_publishTemplatizedActionInternal( actorId, titleTemplate == null ? null : titleTemplate.toString(), mapToJsonString( titleData ),
 				bodyTemplate == null ? null : bodyTemplate.toString(), mapToJsonString( bodyData ), bodyGeneral == null ? null : bodyGeneral.toString(), images,
 				targetIds, null );
 	}
@@ -2720,6 +2730,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				titleDataJson.put( key, map.get( key ) );
 			}
 			catch ( Exception ignored ) {
+				// ignore
 			}
 		}
 		return titleDataJson.toString();
@@ -2728,17 +2739,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	private boolean feed_publishTemplatizedActionInternal( Long actor, String titleTemp, String titleData, String bodyTemp, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<? extends Object,URL>> images, Collection<Long> targetIds, Long pageId ) throws FacebookException, IOException {
 		if ( ( targetIds != null ) && ( !targetIds.isEmpty() ) ) {
-			return this.templatizedFeedHandler( actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images,
-					delimit( targetIds ).toString(), pageId );
+			return templatizedFeedHandler( actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, delimit(
+					targetIds ).toString(), pageId );
 		} else {
-			return this.templatizedFeedHandler( actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images,
-					null, pageId );
+			return templatizedFeedHandler( actor, FacebookMethod.FEED_PUBLISH_TEMPLATIZED_ACTION, titleTemp, titleData, bodyTemp, bodyData, bodyGeneral, images, null,
+					pageId );
 		}
 	}
 
 	/**
 	 * @deprecated provided for legacy support only. Use the version that returns a List<String> instead.
 	 */
+	@Deprecated
 	public Document marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.MARKETPLACE_GET_LISTINGS.numParams() );
 		if ( null != listingIds && !listingIds.isEmpty() ) {
@@ -2749,7 +2761,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 
 		assert !params.isEmpty() : "Either listingIds or userIds should be provided";
-		return this.callMethod( FacebookMethod.MARKETPLACE_GET_LISTINGS, params );
+		return callMethod( FacebookMethod.MARKETPLACE_GET_LISTINGS, params );
 	}
 
 	/*
@@ -2759,9 +2771,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public Document marketplace_getSubCategories( CharSequence category ) throws FacebookException, IOException {
 		if ( category != null ) {
-			return this.callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES, new Pair<String,CharSequence>( "category", category ) );
+			return callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES, new Pair<String,CharSequence>( "category", category ) );
 		}
-		return this.callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES );
+		return callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES );
 	}
 
 	/*
@@ -2770,19 +2782,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see com.facebook.api.IFacebookRestClient#marketplace_removeListing(java.lang.Long)
 	 */
 	public boolean marketplace_removeListing( Long listingId ) throws FacebookException, IOException {
-		return this.marketplace_removeListing( listingId, MarketListingStatus.DEFAULT );
+		return marketplace_removeListing( listingId, MarketListingStatus.DEFAULT );
 	}
 
 	/**
 	 * @deprecated provided for legacy support only. Use marketplace_removeListing(Long, MarketListingStatus) instead.
 	 */
+	@Deprecated
 	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException, IOException {
-		return this.marketplace_removeListing( listingId );
+		return marketplace_removeListing( listingId );
 	}
 
 	/**
 	 * @deprecated provided for legacy support only. Use the version that returns a List<Listing> instead.
 	 */
+	@Deprecated
 	public Document marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException, IOException {
 		if ( "".equals( query ) ) {
 			query = null;
@@ -2802,14 +2816,15 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "query", query ) );
 		}
 
-		return this.callMethod( FacebookMethod.MARKET_SEARCH, params );
+		return callMethod( FacebookMethod.MARKET_SEARCH, params );
 	}
 
 	/**
 	 * @deprecated provided for legacy support only. Use users_hasAppPermission(Permission) instead.
 	 */
+	@Deprecated
 	public boolean users_hasAppPermission( CharSequence permission ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", permission ) );
+		callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", permission ) );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -2822,7 +2837,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see com.facebook.api.IFacebookRestClient#users_setStatus(java.lang.String)
 	 */
 	public boolean users_setStatus( String status ) throws FacebookException, IOException {
-		return this.users_setStatus( status, false );
+		return users_setStatus( status, false );
 	}
 
 	/**
@@ -2870,8 +2885,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
 	 */
 	public void sms_sendResponse( Integer userId, CharSequence response, Integer mobileSessionId ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ),
-				new Pair<String,CharSequence>( "message", response ), new Pair<String,CharSequence>( "session_id", mobileSessionId.toString() ) );
+		callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "message", response ),
+				new Pair<String,CharSequence>( "session_id", mobileSessionId.toString() ) );
 	}
 
 	/**
@@ -2889,7 +2904,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
 	 */
 	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "message", message ),
+		callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "message", message ),
 				new Pair<String,CharSequence>( "req_session", "0" ) );
 	}
 
@@ -2910,7 +2925,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
 	 */
 	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException {
-		return extractInt( this.callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>(
+		return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>(
 				"message", message ), new Pair<String,CharSequence>( "req_session", "1" ) ) );
 	}
 
@@ -2946,7 +2961,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		IFacebookMethod method = null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
-		return this.callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
+		return callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
 	}
 
 	/**
@@ -2968,7 +2983,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		IFacebookMethod method = null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
-		return this.callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
+		return callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
 	}
 
 	/**
@@ -2988,7 +3003,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( userId == null ) {
 			userId = this._userId;
 		}
-		return this.callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
+		return callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
 
@@ -3009,7 +3024,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( userId == null ) {
 			userId = this._userId;
 		}
-		return this.callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
+		return callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
 
@@ -3022,7 +3037,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded"> Developers Wiki: Pages.isAppAdded</a>
 	 */
 	public boolean pages_isAppAdded( Long pageId ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.PAGES_IS_APP_ADDED, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_APP_ADDED, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
 	}
 
 	/**
@@ -3036,8 +3051,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
 	 */
 	public boolean pages_isFan( Long pageId, Long userId ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.PAGES_IS_FAN, new Pair<String,CharSequence>( "page_id", pageId.toString() ),
-				new Pair<String,CharSequence>( "uid", userId.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_FAN, new Pair<String,CharSequence>( "page_id", pageId.toString() ), new Pair<String,CharSequence>(
+				"uid", userId.toString() ) ) );
 	}
 
 	/**
@@ -3049,7 +3064,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
 	 */
 	public boolean pages_isFan( Long pageId ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.PAGES_IS_FAN, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_FAN, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
 	}
 
 	/**
@@ -3061,16 +3076,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin"> Developers Wiki: Pages.isAdmin</a>
 	 */
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.PAGES_IS_ADMIN, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_ADMIN, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
 	}
 
 	/**
 	 * @deprecated use the version that treats actorId as a Long. UID's *are not ever to be* expressed as Integers.
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException, IOException {
-		return this.feed_publishTemplatizedAction( (long) ( actorId.intValue() ), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
+		return feed_publishTemplatizedAction( (long) ( actorId.intValue() ), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException, IOException {
@@ -3078,10 +3094,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
 		}
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
-			this.callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
 					"notification", notification ) );
 		} else {
-			this.callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ) );
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ) );
 		}
 	}
 
@@ -3105,12 +3121,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 
 		// session is only required to send email from a desktop app
-		FacebookMethod method = this.isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL;
+		FacebookMethod method = isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL;
 		if ( ( subject != null ) && ( !"".equals( subject ) ) ) {
-			d = this.callMethod( method, new Pair<String,CharSequence>( "recipients", recipients ), new Pair<String,CharSequence>( "subject", subject ),
+			d = callMethod( method, new Pair<String,CharSequence>( "recipients", recipients ), new Pair<String,CharSequence>( "subject", subject ),
 					new Pair<String,CharSequence>( paramName, paramValue ) );
 		} else {
-			d = this.callMethod( method, new Pair<String,CharSequence>( "recipients", recipients ), new Pair<String,CharSequence>( paramName, paramValue ) );
+			d = callMethod( method, new Pair<String,CharSequence>( "recipients", recipients ), new Pair<String,CharSequence>( paramName, paramValue ) );
 		}
 
 		return d;
@@ -3118,30 +3134,30 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public Document notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException,
 			IOException {
-		return this.notifications_sendEmail( delimit( recipients ), subject, email, fbml );
+		return notifications_sendEmail( delimit( recipients ), subject, email, fbml );
 	}
 
 	public Document notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException, IOException {
-		Long currentUser = this.users_getLoggedInUser();
-		return this.notifications_sendEmail( currentUser.toString(), subject, email, fbml );
+		Long currentUser = users_getLoggedInUser();
+		return notifications_sendEmail( currentUser.toString(), subject, email, fbml );
 	}
 
 	public Document notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException, IOException {
-		return this.notifications_sendEmail( delimit( recipients ), subject, null, fbml );
+		return notifications_sendEmail( delimit( recipients ), subject, null, fbml );
 	}
 
 	public Document notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException, IOException {
-		Long currentUser = this.users_getLoggedInUser();
-		return this.notifications_sendEmail( currentUser.toString(), subject, null, fbml );
+		Long currentUser = users_getLoggedInUser();
+		return notifications_sendEmail( currentUser.toString(), subject, null, fbml );
 	}
 
 	public Document notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException, IOException {
-		return this.notifications_sendEmail( delimit( recipients ), subject, email, null );
+		return notifications_sendEmail( delimit( recipients ), subject, email, null );
 	}
 
 	public Document notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException, IOException {
-		Long currentUser = this.users_getLoggedInUser();
-		return this.notifications_sendEmail( currentUser.toString(), subject, email, null );
+		Long currentUser = users_getLoggedInUser();
+		return notifications_sendEmail( currentUser.toString(), subject, email, null );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException {
@@ -3157,7 +3173,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "status_includes_verb", "true" ) );
 		}
 
-		return this.users_setStatus( FacebookMethod.USERS_SET_STATUS, params );
+		return users_setStatus( FacebookMethod.USERS_SET_STATUS, params );
 	}
 
 	/**
@@ -3169,7 +3185,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail"> Developers Wiki: notifications.send</a>
 	 */
 	public void notifications_send( CharSequence notification ) throws FacebookException, IOException {
-		Long currentUser = this.users_getLoggedInUser();
+		Long currentUser = users_getLoggedInUser();
 		Collection<Long> coll = new ArrayList<Long>();
 		coll.add( currentUser );
 		notifications_send( coll, notification );
@@ -3193,6 +3209,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
+	@Deprecated
 	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException,
 			IOException {
 		if ( null == recipientIds || recipientIds.isEmpty() ) {
@@ -3213,7 +3230,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			args.add( new Pair<String,CharSequence>( "fbml", fbml ) );
 		}
 		// this method requires a session only if we're dealing with a desktop app
-		Document result = this.callMethod( this.isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL, args );
+		Document result = callMethod( isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL, args );
 		return extractString( result );
 	}
 
@@ -3233,6 +3250,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
+	@Deprecated
 	public String notifications_sendEmail( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml ) throws FacebookException, IOException {
 		return notifications_sendEmailStr( recipientIds, subject, fbml, /* text */null );
 	}
@@ -3252,6 +3270,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
+	@Deprecated
 	public String notifications_sendEmailPlain( Collection<Long> recipientIds, CharSequence subject, CharSequence text ) throws FacebookException, IOException {
 		return notifications_sendEmailStr( recipientIds, subject, /* fbml */null, text );
 	}
@@ -3292,6 +3311,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 					encoding2.put( temp );
 				}
 				catch ( JSONException ignored ) {
+					// ignore
 				}
 			} else {
 				// we need to parse a boolean value
@@ -3309,6 +3329,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 					encoding2.put( temp );
 				}
 				catch ( JSONException ignored ) {
+					// ignore
 				}
 			}
 		}
@@ -3316,12 +3337,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		// now we've built our JSON-encoded parameter, so attempt to set the properties
 		try {
 			// first assume that Facebook is sensible enough to be able to undestand an associative array
-			Document d = this.callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", encoding1.toString() ) );
+			Document d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", encoding1.toString() ) );
 			return extractBoolean( d );
 		}
 		catch ( FacebookException e ) {
 			// if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
-			Document d = this.callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", encoding2.toString() ) );
+			Document d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", encoding2.toString() ) );
 			return extractBoolean( d );
 		}
 	}
@@ -3329,8 +3350,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	/**
 	 * @deprecated use admin_getAppPropertiesMap() instead
 	 */
+	@Deprecated
 	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
-		String json = this.admin_getAppPropertiesAsString( properties );
+		String json = admin_getAppPropertiesAsString( properties );
 		if ( json == null ) {
 			return null;
 		}
@@ -3359,7 +3381,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
 		Map<ApplicationProperty,String> result = new LinkedHashMap<ApplicationProperty,String>();
-		String json = this.admin_getAppPropertiesAsString( properties );
+		String json = admin_getAppPropertiesAsString( properties );
 		if ( json == null ) {
 			return null;
 		}
@@ -3404,20 +3426,20 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		Document d = this.callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
+		Document d = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
 		return extractString( d );
 	}
 
 	public Document data_getCookies() throws FacebookException, IOException {
-		return this.data_getCookies( this.users_getLoggedInUser(), null );
+		return data_getCookies( users_getLoggedInUser(), null );
 	}
 
 	public Document data_getCookies( Long userId ) throws FacebookException, IOException {
-		return this.data_getCookies( userId, null );
+		return data_getCookies( userId, null );
 	}
 
 	public Document data_getCookies( String name ) throws FacebookException, IOException {
-		return this.data_getCookies( this.users_getLoggedInUser(), name );
+		return data_getCookies( users_getLoggedInUser(), name );
 	}
 
 	public Document data_getCookies( Long userId, CharSequence name ) throws FacebookException, IOException {
@@ -3427,35 +3449,35 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			args.add( new Pair<String,CharSequence>( "name", name ) );
 		}
 
-		return this.callMethod( FacebookMethod.DATA_GET_COOKIES, args );
+		return callMethod( FacebookMethod.DATA_GET_COOKIES, args );
 	}
 
 	public boolean data_setCookie( String name, String value ) throws FacebookException, IOException {
-		return this.data_setCookie( this.users_getLoggedInUser(), name, value, null, null );
+		return data_setCookie( users_getLoggedInUser(), name, value, null, null );
 	}
 
 	public boolean data_setCookie( String name, String value, String path ) throws FacebookException, IOException {
-		return this.data_setCookie( this.users_getLoggedInUser(), name, value, null, path );
+		return data_setCookie( users_getLoggedInUser(), name, value, null, path );
 	}
 
 	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value ) throws FacebookException, IOException {
-		return this.data_setCookie( userId, name, value, null, null );
+		return data_setCookie( userId, name, value, null, null );
 	}
 
 	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, CharSequence path ) throws FacebookException, IOException {
-		return this.data_setCookie( userId, name, value, null, path );
+		return data_setCookie( userId, name, value, null, path );
 	}
 
 	public boolean data_setCookie( String name, String value, Long expires ) throws FacebookException, IOException {
-		return this.data_setCookie( this.users_getLoggedInUser(), name, value, expires, null );
+		return data_setCookie( users_getLoggedInUser(), name, value, expires, null );
 	}
 
 	public boolean data_setCookie( String name, String value, Long expires, String path ) throws FacebookException, IOException {
-		return this.data_setCookie( this.users_getLoggedInUser(), name, value, expires, path );
+		return data_setCookie( users_getLoggedInUser(), name, value, expires, path );
 	}
 
 	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires ) throws FacebookException, IOException {
-		return this.data_setCookie( userId, name, value, expires, null );
+		return data_setCookie( userId, name, value, expires, null );
 	}
 
 	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires, CharSequence path ) throws FacebookException, IOException {
@@ -3477,71 +3499,71 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( ( path != null ) && ( !"".equals( path ) ) ) {
 			args.add( new Pair<String,CharSequence>( "path", path ) );
 		}
-		doc = this.callMethod( FacebookMethod.DATA_SET_COOKIE, args );
+		doc = callMethod( FacebookMethod.DATA_SET_COOKIE, args );
 
 		return extractBoolean( doc );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException, IOException {
-		return this.feed_publishTemplatizedAction( titleTemplate, null );
+		return feed_publishTemplatizedAction( titleTemplate, null );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException, IOException {
-		return this.feed_publishTemplatizedAction( titleTemplate, null, null, null, null, null, null, pageActorId );
+		return feed_publishTemplatizedAction( titleTemplate, null, null, null, null, null, null, pageActorId );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images,
 			Long pageActorId ) throws FacebookException, IOException {
-		return this.feed_publishTemplatizedActionInternal( null, titleTemplate == null ? null : titleTemplate.toString(), mapToJsonString( titleData ),
+		return feed_publishTemplatizedActionInternal( null, titleTemplate == null ? null : titleTemplate.toString(), mapToJsonString( titleData ),
 				bodyTemplate == null ? null : bodyTemplate.toString(), mapToJsonString( bodyData ), bodyGeneral == null ? null : bodyGeneral.toString(), images,
 				targetIds, pageActorId );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException {
-		return this.profile_setFBML( this.users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(),
-				profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), null );
+		return profile_setFBML( users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
+				: profileActionFbmlMarkup.toString(), null );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return this.profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
+		return profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
 				: profileActionFbmlMarkup.toString(), null );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException,
 			IOException {
-		return this.profile_setFBML( this.users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(),
-				profileActionFbmlMarkup == null ? null : profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString() );
+		return profile_setFBML( users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
+				: profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString() );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException, IOException {
-		return this.profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
+		return profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
 				: profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString() );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return this.profile_setFBML( this.users_getLoggedInUser(), null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
+		return profile_setFBML( users_getLoggedInUser(), null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return this.profile_setFBML( profileId, null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
+		return profile_setFBML( profileId, null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return this.profile_setFBML( this.users_getLoggedInUser(), null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
+		return profile_setFBML( users_getLoggedInUser(), null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return this.profile_setFBML( profileId, null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
+		return profile_setFBML( profileId, null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return this.profile_setFBML( this.users_getLoggedInUser(), fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
+		return profile_setFBML( users_getLoggedInUser(), fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return this.profile_setFBML( profileId, fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
+		return profile_setFBML( profileId, fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
 	}
 
 	/**
@@ -3561,7 +3583,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			}
 			params.add( new Pair<String,CharSequence>( "flid", friendListId.toString() ) );
 		}
-		return this.callMethod( method, params );
+		return callMethod( method, params );
 	}
 
 	/**
@@ -3571,7 +3593,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers Wiki: Friends.getLists</a>
 	 */
 	public Document friends_getLists() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FRIENDS_GET_LISTS );
+		return callMethod( FacebookMethod.FRIENDS_GET_LISTS );
 	}
 
 	/**
@@ -3592,7 +3614,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( null == properties || properties.isEmpty() ) {
 			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
 		}
-		return extractBoolean( this.callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", properties.toJsonString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", properties.toJsonString() ) ) );
 	}
 
 	/**
@@ -3606,7 +3628,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties"> Developers Wiki: Admin.getAppProperties</a>
 	 */
 	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException, IOException {
-		String propJson = this.admin_getAppPropertiesAsString( properties );
+		String propJson = admin_getAppPropertiesAsString( properties );
 		return new ApplicationPropertySet( propJson );
 	}
 
@@ -3636,7 +3658,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least on of {applicationId, applicationKey, applicationCanvas}" );
 		}
 
-		return this.callMethod( FacebookMethod.APPLICATION_GET_PUBLIC_INFO, params );
+		return callMethod( FacebookMethod.APPLICATION_GET_PUBLIC_INFO, params );
 	}
 
 	/**
@@ -3676,19 +3698,19 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	public int admin_getAllocation( String allocationType ) throws FacebookException, IOException {
-		return extractInt( this.callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, new Pair<String,CharSequence>( "integration_point_name", allocationType ) ) );
+		return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, new Pair<String,CharSequence>( "integration_point_name", allocationType ) ) );
 	}
 
 	public int admin_getNotificationAllocation() throws FacebookException, IOException {
-		return this.admin_getAllocation( "notifications_per_day" );
+		return admin_getAllocation( "notifications_per_day" );
 	}
 
 	public int admin_getRequestAllocation() throws FacebookException, IOException {
-		return this.admin_getAllocation( "requests_per_day" );
+		return admin_getAllocation( "requests_per_day" );
 	}
 
 	public Document admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException {
-		return this.admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
+		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
 	}
 
 	public Document admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException {
@@ -3704,11 +3726,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "start_date", Long.toString( start / 1000 ) ) );
 		params.add( new Pair<String,CharSequence>( "end_date", Long.toString( end / 1000 ) ) );
 
-		return this.callMethod( FacebookMethod.ADMIN_GET_DAILY_METRICS, params );
+		return callMethod( FacebookMethod.ADMIN_GET_DAILY_METRICS, params );
 	}
 
 	public Document admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException, IOException {
-		return this.admin_getMetrics( metrics, start.getTime(), end.getTime(), period );
+		return admin_getMetrics( metrics, start.getTime(), end.getTime(), period );
 	}
 
 	public Document admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException, IOException {
@@ -3725,15 +3747,15 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "end_time", Long.toString( end / 1000 ) ) );
 		params.add( new Pair<String,CharSequence>( "period", Long.toString( period ) ) );
 
-		return this.callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
+		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
 
 	public Document permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PERM_CHECK_GRANTED_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) );
+		return callMethod( FacebookMethod.PERM_CHECK_GRANTED_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) );
 	}
 
 	public Document permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PERM_CHECK_AVAILABLE_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) );
+		return callMethod( FacebookMethod.PERM_CHECK_AVAILABLE_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) );
 	}
 
 	public boolean permissions_grantApiAccess( String apiKey, Set<FacebookMethod> methods ) throws FacebookException, IOException {
@@ -3748,23 +3770,23 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 		params.add( new Pair<String,CharSequence>( "permissions_apikey", apiKey ) );
 
-		return extractBoolean( this.callMethod( FacebookMethod.PERM_GRANT_API_ACCESS, params ) );
+		return extractBoolean( callMethod( FacebookMethod.PERM_GRANT_API_ACCESS, params ) );
 	}
 
 	public boolean permissions_grantFullApiAccess( String apiKey ) throws FacebookException, IOException {
-		return this.permissions_grantApiAccess( apiKey, null );
+		return permissions_grantApiAccess( apiKey, null );
 	}
 
 	public boolean permissions_revokeApiAccess( String apiKey ) throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.PERM_REVOKE_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) ) );
+		return extractBoolean( callMethod( FacebookMethod.PERM_REVOKE_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) ) );
 	}
 
 	public boolean auth_expireSession() throws FacebookException, IOException {
-		return extractBoolean( this.callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
+		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
 	}
 
 	public String auth_promoteSession() throws FacebookException, IOException {
-		return extractString( this.callMethod( FacebookMethod.AUTH_PROMOTE_SESSION ) );
+		return extractString( callMethod( FacebookMethod.AUTH_PROMOTE_SESSION ) );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException, IOException {
@@ -3785,19 +3807,19 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( listingId ) ) );
 
-		return this.marketplace_createListing( FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params );
+		return marketplace_createListing( FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException, IOException {
-		return this.marketplace_createListing( listingId, showOnProfile, listing.getAttribs(), userId );
+		return marketplace_createListing( listingId, showOnProfile, listing.getAttribs(), userId );
 	}
 
 	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException, IOException {
-		return this.marketplace_createListing( 0l, showOnProfile, listing.getAttribs(), userId );
+		return marketplace_createListing( 0l, showOnProfile, listing.getAttribs(), userId );
 	}
 
 	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException, IOException {
-		return this.marketplace_removeListing( listingId, MarketListingStatus.DEFAULT, userId );
+		return marketplace_removeListing( listingId, MarketListingStatus.DEFAULT, userId );
 	}
 
 	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException, IOException {
@@ -3812,7 +3834,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "listing_id", listingId.toString() ) );
 		params.add( new Pair<String,CharSequence>( "status", status.getName() ) );
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		return this.marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params );
+		return marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params );
 	}
 
 	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException, IOException {
@@ -3833,7 +3855,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "pid", photoId.toString() ) );
 		params.add( new Pair<String,CharSequence>( "owner_uid", Long.toString( userId ) ) );
 
-		return this.photos_addTag( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params );
+		return photos_addTag( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params );
 	}
 
 	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
@@ -3845,7 +3867,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	public Document photos_createAlbum( String albumName, Long userId ) throws FacebookException, IOException {
-		return this.photos_createAlbum( albumName, null, null, userId );
+		return photos_createAlbum( albumName, null, null, userId );
 	}
 
 	public Document photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException, IOException {
@@ -3857,19 +3879,19 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( null != location )
 			params.add( new Pair<String,CharSequence>( "location", location ) );
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		return this.photos_createAlbum( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
+		return photos_createAlbum( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
 	}
 
 	public Document photos_upload( Long userId, File photo ) throws FacebookException, IOException {
-		return this.photos_upload( userId, photo, null, null );
+		return photos_upload( userId, photo, null, null );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption ) throws FacebookException, IOException {
-		return this.photos_upload( userId, photo, caption, null );
+		return photos_upload( userId, photo, caption, null );
 	}
 
 	public Document photos_upload( Long userId, File photo, Long albumId ) throws FacebookException, IOException {
-		return this.photos_upload( userId, photo, null, albumId );
+		return photos_upload( userId, photo, null, albumId );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException {
@@ -3881,16 +3903,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( null != caption )
 			params.add( new Pair<String,CharSequence>( "caption", caption ) );
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		return this.photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
+		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
 	public Document profile_getFBML() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PROFILE_GET_FBML );
+		return callMethod( FacebookMethod.PROFILE_GET_FBML );
 	}
 
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
-		this.callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ), new Pair<String,CharSequence>(
-				"uid", Long.toString( userId ) ) );
+		callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ), new Pair<String,CharSequence>( "uid",
+				Long.toString( userId ) ) );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -3899,17 +3921,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
 		if ( added == null ) {
-			added = extractBoolean( this.callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
+			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
 		}
 		return added.booleanValue();
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException {
-		return this.users_setStatus( status, false, userId );
+		return users_setStatus( status, false, userId );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException, IOException {
-		return this.users_setStatus( newStatus, clear, false, userId );
+		return users_setStatus( newStatus, clear, false, userId );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException {
@@ -3926,19 +3948,19 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 		params.add( new Pair<String,CharSequence>( "uid", "true" ) );
 
-		return this.users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
+		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
 	}
 
 	public Document feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FEED_GET_TEMPLATE_BY_ID, new Pair<String,CharSequence>( "template_bundle_id", Long.toString( id ) ) );
+		return callMethod( FacebookMethod.FEED_GET_TEMPLATE_BY_ID, new Pair<String,CharSequence>( "template_bundle_id", Long.toString( id ) ) );
 	}
 
 	public Document feed_getRegisteredTemplateBundles() throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.FEED_GET_TEMPLATES );
+		return callMethod( FacebookMethod.FEED_GET_TEMPLATES );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException, IOException {
-		return this.feed_publishUserAction( bundleId, null, null, null );
+		return feed_publishUserAction( bundleId, null, null, null );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException,
@@ -3946,7 +3968,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( new Pair<String,CharSequence>( "template_bundle_id", Long.toString( bundleId ) ) );
 		if ( targetIds != null && !targetIds.isEmpty() ) {
-			params.add( new Pair<String,CharSequence>( "target_ids", this.delimit( targetIds ) ) );
+			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
 		}
 		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
 			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
@@ -3964,17 +3986,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "template_data", json.toString() ) );
 		}
 
-		return extractBoolean( this.callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
 	}
 
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException, IOException {
 		List<String> temp = new ArrayList<String>();
 		temp.add( template );
-		return this.feed_registerTemplateBundle( temp );
+		return feed_registerTemplateBundle( temp );
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException, IOException {
-		return this.feed_registerTemplateBundle( templates, null, null );
+		return feed_registerTemplateBundle( templates, null, null );
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
@@ -3996,24 +4018,25 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "full_story_template", longTemplate.toJsonString() ) );
 		}
 
-		return extractLong( this.callMethod( FacebookMethod.FEED_REGISTER_TEMPLATE, params ) );
+		return extractLong( callMethod( FacebookMethod.FEED_REGISTER_TEMPLATE, params ) );
 	}
 
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	public Long feed_registerTemplateBundle( String template, String shortTemplate, String longTemplate ) throws FacebookException, IOException {
 		List<String> templates = new ArrayList<String>();
 		templates.add( template );
-		return this.feed_registerTemplateBundle( templates, null, null );
+		return feed_registerTemplateBundle( templates, null, null );
 	}
 
 	public Document profile_getInfo( Long userId ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PROFILE_GET_INFO, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
+		return callMethod( FacebookMethod.PROFILE_GET_INFO, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
 	}
 
 	public Document profile_getInfoOptions( String field ) throws FacebookException, IOException {
-		return this.callMethod( FacebookMethod.PROFILE_GET_INFO_OPTIONS, new Pair<String,CharSequence>( "field", field ) );
+		return callMethod( FacebookMethod.PROFILE_GET_INFO_OPTIONS, new Pair<String,CharSequence>( "field", field ) );
 	}
 
 	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException, IOException {
@@ -4047,7 +4070,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			}
 		}
 		params.add( new Pair<String,CharSequence>( "info_fields", json.toString() ) );
-		this.callMethod( FacebookMethod.PROFILE_SET_INFO, params );
+		callMethod( FacebookMethod.PROFILE_SET_INFO, params );
 	}
 
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException, IOException {
@@ -4068,7 +4091,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			json.put( itemJSON );
 		}
 		params.add( new Pair<String,CharSequence>( "options", json.toString() ) );
-		this.callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
+		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
 	}
 
 	/**
@@ -4092,14 +4115,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			tagStr = jsonTags.toString();
 		}
 		catch ( Exception ignored ) {
+			// ignore
 		}
-
-		return this.callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, new Pair<String,CharSequence>( "pid", photoId.toString() ), new Pair<String,CharSequence>(
-				"tags", tagStr ), new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
+		return callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, new Pair<String,CharSequence>( "pid", photoId.toString() ), new Pair<String,CharSequence>( "tags",
+				tagStr ), new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
 	}
 
 	private Long marketplace_createListing( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		this.callMethod( method, params );
+		callMethod( method, params );
 		String result;
 		if ( this.rawResponse != null ) {
 			result = this.rawResponse.substring( 0, this.rawResponse.indexOf( "</marketplace" ) );
@@ -4111,7 +4134,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	private boolean marketplace_removeListing( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		this.callMethod( method, params );
+		callMethod( method, params );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -4120,12 +4143,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	private boolean photos_addTag( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		Document d = this.callMethod( method, params );
+		Document d = callMethod( method, params );
 		return extractBoolean( d );
 	}
 
 	private Document photos_createAlbum( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return this.callMethod( method, params );
+		return callMethod( method, params );
 	}
 
 	private Document photos_upload( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
@@ -4133,7 +4156,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	private boolean users_setStatus( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		this.callMethod( method, params );
+		callMethod( method, params );
 		if ( this.rawResponse == null ) {
 			return false;
 		}
@@ -4175,7 +4198,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		addParamIfNotBlank( "profile_action", actionFbml, params );
 		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
 		addParamIfNotBlank( "profile_main", profileMain, params );
-		return extractBoolean( this.callMethod( FacebookMethod.PROFILE_SET_FBML_NOSESSION, params ) );
+		return extractBoolean( callMethod( FacebookMethod.PROFILE_SET_FBML_NOSESSION, params ) );
 	}
 
 	public void setServerUrl( String newUrl ) {
@@ -4189,6 +4212,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			_serverUrl = SERVER_URL;
 		}
 		catch ( Exception ignored ) {
+			// ignore
 		}
 	}
 
@@ -4208,7 +4232,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( recipient ) ) );
 		params.add( new Pair<String,CharSequence>( "event_name", eventName ) );
 		params.add( new Pair<String,CharSequence>( "message", message.toString() ) );
-		return extractBoolean( this.callMethod( FacebookMethod.LIVEMESSAGE_SEND, params ) );
+		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, params ) );
 	}
 
 }
