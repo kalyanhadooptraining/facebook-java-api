@@ -136,7 +136,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
 	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
 
-
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
 		_sessionKey = sessionKey;
 		_apiKey = apiKey;
@@ -205,6 +204,27 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		_sessionSecret = key;
 	}
 
+	public static void setDebugAll( boolean isDebug ) {
+		DEBUG = isDebug;
+	}
+
+	private static CharSequence delimit( Collection iterable ) {
+		if ( iterable == null || iterable.isEmpty() ) {
+			return null;
+		}
+		StringBuilder buffer = new StringBuilder();
+		boolean notFirst = false;
+		for ( Object item : iterable ) {
+			if ( notFirst ) {
+				buffer.append( "," );
+			} else {
+				notFirst = true;
+			}
+			buffer.append( item.toString() );
+		}
+		return buffer;
+	}
+
 	/**
 	 * Retrieves whether two users are friends.
 	 * 
@@ -236,7 +256,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			throw new IllegalArgumentException( String.format( "Collections should be same size: got userIds1: %d elts; userIds2: %d elts", userIds1.size(), userIds2
 					.size() ) );
 		}
-
 		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, newPair( "uids1", delimit( userIds1 ) ), newPair( "uids2", delimit( userIds2 ) ) );
 	}
 
@@ -249,7 +268,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	public T profile_getFBML( Long userId ) throws FacebookException, IOException {
 		return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "uid", userId ) );
-
 	}
 
 	/**
@@ -279,16 +297,15 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected boolean feedHandler( IFacebookMethod feedMethod, CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images,
 			Integer priority ) throws FacebookException, IOException {
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( feedMethod.numParams() );
-
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( feedMethod.numParams() );
 		params.add( newPair( "title", title ) );
-		if ( null != body )
+		if ( null != body ) {
 			params.add( newPair( "body", body ) );
-		if ( null != priority )
+		}
+		if ( null != priority ) {
 			params.add( newPair( "priority", priority.toString() ) );
-
+		}
 		handleFeedImages( params, images );
-
 		return extractBoolean( callMethod( feedMethod, params ) );
 	}
 
@@ -542,27 +559,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
-	public static void setDebugAll( boolean isDebug ) {
-		ExtensibleClient.DEBUG = isDebug;
-	}
-
-	private static CharSequence delimit( Collection iterable ) {
-		// could add a thread-safe version that uses StringBuffer as well
-		if ( iterable == null || iterable.isEmpty() )
-			return null;
-
-		StringBuilder buffer = new StringBuilder();
-		boolean notFirst = false;
-		for ( Object item : iterable ) {
-			if ( notFirst )
-				buffer.append( "," );
-			else
-				notFirst = true;
-			buffer.append( item.toString() );
-		}
-		return buffer;
-	}
-
 	/**
 	 * Call the specified method, with the given parameters, and return a DOM tree with the results.
 	 * 
@@ -789,7 +785,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		true ) : postRequest( method.methodName(), params, doHttps, /* doEncode */true );
 
 		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String line;
 		boolean insideTagBody = false;
 		while ( ( line = in.readLine() ) != null ) {
@@ -814,10 +810,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 					line += ",";
 				}
 			}
-
 			buffer.append( line );
 		}
-		String xmlResp = new String( buffer );
+		String xmlResp = buffer.toString();
 		this.rawResponse = xmlResp;
 		return parseCallResult( new ByteArrayInputStream( xmlResp.getBytes( "UTF-8" ) ), method );
 	}
@@ -2753,7 +2748,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		int size = 2 + ( ( metrics != null ) ? metrics.size() : 0 );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( size );
 		if ( metrics != null ) {
 			metrics.remove( Metric.ACTIVE_USERS );
 			if ( !metrics.isEmpty() ) {
@@ -2778,8 +2774,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean permissions_grantApiAccess( String apiKey, Set<FacebookMethod> methods ) throws FacebookException, IOException {
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		if ( ( methods != null ) && ( !methods.isEmpty() ) ) {
 			JSONArray methodsJson = new JSONArray();
 			for ( FacebookMethod method : methods ) {
@@ -2788,7 +2783,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "method_arr", methodsJson.toString() ) );
 		}
 		params.add( newPair( "permissions_apikey", apiKey ) );
-
 		return extractBoolean( callMethod( FacebookMethod.PERM_GRANT_API_ACCESS, params ) );
 	}
 
@@ -2816,8 +2810,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( !test.verify() ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "The specified listing is invalid!" );
 		}
-
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
 		params.add( newPair( "listing_id", listingId.toString() ) );
 		if ( showOnProfile ) {
 			params.add( newPair( "show_on_profile", "true" ) );
@@ -2846,8 +2839,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( listingId == null ) {
 			return false;
 		}
-
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
 		params.add( newPair( "listing_id", listingId ) );
 		params.add( newPair( "status", status.getName() ) );
 		params.add( newPair( "uid", userId ) );
@@ -2859,14 +2851,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		assert ( null != taggedUserId || null != tagText );
 		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
 		assert ( null != yPct && yPct >= 0 && yPct <= 100 );
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		Pair<String,CharSequence> tagData;
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
 		if ( taggedUserId != null ) {
-			tagData = newPair( "tag_uid", taggedUserId.toString() );
+			params.add( newPair( "tag_uid", taggedUserId.toString() ) );
 		} else {
-			tagData = newPair( "tag_text", tagText.toString() );
+			params.add( newPair( "tag_text", tagText.toString() ) );
 		}
-		params.add( tagData );
 		params.add( newPair( "x", xPct.toString() ) );
 		params.add( newPair( "y", yPct.toString() ) );
 		params.add( newPair( "pid", photoId ) );
@@ -2888,7 +2878,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException, IOException {
 		assert ( null != name && !"".equals( name ) );
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_CREATE_ALBUM.numParams() );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_CREATE_ALBUM.numParams() );
 		params.add( newPair( "name", name ) );
 		if ( null != description ) {
 			params.add( newPair( "description", description ) );
@@ -2913,7 +2903,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException {
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
 		assert ( photo.exists() && photo.canRead() );
 		this._uploadFile = photo;
 		if ( null != albumId ) {
@@ -3086,10 +3076,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
+		addParam( "field", field.getFieldName(), params );
 		JSONArray json = new JSONArray();
-		params.add( newPair( "field", field.getFieldName() ) );
-
 		for ( ProfileFieldItem item : field.getItems() ) {
 			JSONObject itemJSON = new JSONObject();
 			for ( String key : item.getMap().keySet() ) {
@@ -3102,7 +3091,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			json.put( itemJSON );
 		}
-		params.add( newPair( "options", json.toString() ) );
+		addParam( "options", json.toString(), params );
 		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
 	}
 
@@ -3146,11 +3135,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( d );
 	}
 
-	private T photos_createAlbum( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
+	private T photos_createAlbum( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
 		return callMethod( method, params );
 	}
 
-	private T photos_upload( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
+	private T photos_upload( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
 		return callMethod( method, params );
 	}
 
@@ -3196,8 +3185,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( newPair( "uid", userId ) );
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
+		addParam( "uid", userId, params );
 		addParamIfNotBlank( "profile", profileFbml, params );
 		addParamIfNotBlank( "profile_action", actionFbml, params );
 		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
@@ -3225,7 +3214,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
 		params.add( newPair( "uid", recipient ) );
 		params.add( newPair( "event_name", eventName ) );
 		params.add( newPair( "message", message.toString() ) );
