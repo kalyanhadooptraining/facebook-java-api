@@ -282,7 +282,7 @@ public class Page {
      *     
      */
     public void setPicSmall(JAXBElement<String> value) {
-        this.picSmall = ((JAXBElement<String> ) value);
+        this.picSmall = value;
     }
 
     /**
@@ -306,7 +306,7 @@ public class Page {
      *     
      */
     public void setPicBig(JAXBElement<String> value) {
-        this.picBig = ((JAXBElement<String> ) value);
+        this.picBig = value;
     }
 
     /**
@@ -330,7 +330,7 @@ public class Page {
      *     
      */
     public void setPicSquare(JAXBElement<String> value) {
-        this.picSquare = ((JAXBElement<String> ) value);
+        this.picSquare = value;
     }
 
     /**
@@ -354,7 +354,7 @@ public class Page {
      *     
      */
     public void setPic(JAXBElement<String> value) {
-        this.pic = ((JAXBElement<String> ) value);
+        this.pic = value;
     }
 
     /**
@@ -378,7 +378,7 @@ public class Page {
      *     
      */
     public void setPicLarge(JAXBElement<String> value) {
-        this.picLarge = ((JAXBElement<String> ) value);
+        this.picLarge = value;
     }
 
     /**
@@ -426,7 +426,7 @@ public class Page {
      *     
      */
     public void setStatus(JAXBElement<UserStatus> value) {
-        this.status = ((JAXBElement<UserStatus> ) value);
+        this.status = value;
     }
 
     /**
@@ -474,7 +474,7 @@ public class Page {
      *     
      */
     public void setWebsite(JAXBElement<String> value) {
-        this.website = ((JAXBElement<String> ) value);
+        this.website = value;
     }
 
     /**
@@ -498,7 +498,7 @@ public class Page {
      *     
      */
     public void setHasAddedApp(JAXBElement<Boolean> value) {
-        this.hasAddedApp = ((JAXBElement<Boolean> ) value);
+        this.hasAddedApp = value;
     }
 
     /**
@@ -522,7 +522,7 @@ public class Page {
      *     
      */
     public void setFounded(JAXBElement<String> value) {
-        this.founded = ((JAXBElement<String> ) value);
+        this.founded = value;
     }
 
     /**
@@ -546,7 +546,7 @@ public class Page {
      *     
      */
     public void setCompanyOverview(JAXBElement<String> value) {
-        this.companyOverview = ((JAXBElement<String> ) value);
+        this.companyOverview = value;
     }
 
     /**
@@ -570,7 +570,7 @@ public class Page {
      *     
      */
     public void setMission(JAXBElement<String> value) {
-        this.mission = ((JAXBElement<String> ) value);
+        this.mission = value;
     }
 
     /**
@@ -594,7 +594,7 @@ public class Page {
      *     
      */
     public void setProducts(JAXBElement<String> value) {
-        this.products = ((JAXBElement<String> ) value);
+        this.products = value;
     }
 
     /**
@@ -618,7 +618,7 @@ public class Page {
      *     
      */
     public void setLocation(JAXBElement<Location> value) {
-        this.location = ((JAXBElement<Location> ) value);
+        this.location = value;
     }
 
     /**
@@ -642,7 +642,7 @@ public class Page {
      *     
      */
     public void setParking(JAXBElement<PageParking> value) {
-        this.parking = ((JAXBElement<PageParking> ) value);
+        this.parking = value;
     }
 
     /**
@@ -666,7 +666,7 @@ public class Page {
      *     
      */
     public void setPublicTransit(JAXBElement<String> value) {
-        this.publicTransit = ((JAXBElement<String> ) value);
+        this.publicTransit = value;
     }
 
     /**
@@ -690,7 +690,7 @@ public class Page {
      *     
      */
     public void setHours(JAXBElement<PageHours> value) {
-        this.hours = ((JAXBElement<PageHours> ) value);
+        this.hours = value;
     }
 
     /**
@@ -714,7 +714,7 @@ public class Page {
      *     
      */
     public void setAttire(JAXBElement<String> value) {
-        this.attire = ((JAXBElement<String> ) value);
+        this.attire = value;
     }
 
     /**
@@ -738,7 +738,7 @@ public class Page {
      *     
      */
     public void setPaymentOptions(JAXBElement<String> value) {
-        this.paymentOptions = ((JAXBElement<String> ) value);
+        this.paymentOptions = value;
     }
 
     /**
@@ -762,7 +762,7 @@ public class Page {
      *     
      */
     public void setCulinaryTeam(JAXBElement<String> value) {
-        this.culinaryTeam = ((JAXBElement<String> ) value);
+        this.culinaryTeam = value;
     }
 
     /**
@@ -786,7 +786,7 @@ public class Page {
      *     
      */
     public void setGeneralManager(JAXBElement<String> value) {
-        this.generalManager = ((JAXBElement<String> ) value);
+        this.generalManager = value;
     }
 
     /**
@@ -810,7 +810,7 @@ public class Page {
      *     
      */
     public void setPriceRange(JAXBElement<String> value) {
-        this.priceRange = ((JAXBElement<String> ) value);
+        this.priceRange = value;
     }
 
     /**
@@ -834,7 +834,7 @@ public class Page {
      *     
      */
     public void setRestaurantServices(JAXBElement<PageRestaurantServices> value) {
-        this.restaurantServices = ((JAXBElement<PageRestaurantServices> ) value);
+        this.restaurantServices = value;
     }
 
     /**
@@ -858,7 +858,7 @@ public class Page {
      *     
      */
     public void setRestaurantSpecialties(JAXBElement<PageRestaurantSpecialties> value) {
-        this.restaurantSpecialties = ((JAXBElement<PageRestaurantSpecialties> ) value);
+        this.restaurantSpecialties = value;
     }
 
     /**
@@ -882,7 +882,7 @@ public class Page {
      *     
      */
     public void setReleaseDate(JAXBElement<String> value) {
-        this.releaseDate = ((JAXBElement<String> ) value);
+        this.releaseDate = value;
     }
 
     /**
@@ -906,7 +906,7 @@ public class Page {
      *     
      */
     public void setGenre(JAXBElement<String> value) {
-        this.genre = ((JAXBElement<String> ) value);
+        this.genre = value;
     }
 
     /**
@@ -930,7 +930,7 @@ public class Page {
      *     
      */
     public void setStarring(JAXBElement<String> value) {
-        this.starring = ((JAXBElement<String> ) value);
+        this.starring = value;
     }
 
     /**
@@ -954,7 +954,7 @@ public class Page {
      *     
      */
     public void setScreenplayBy(JAXBElement<String> value) {
-        this.screenplayBy = ((JAXBElement<String> ) value);
+        this.screenplayBy = value;
     }
 
     /**
@@ -978,7 +978,7 @@ public class Page {
      *     
      */
     public void setDirectedBy(JAXBElement<String> value) {
-        this.directedBy = ((JAXBElement<String> ) value);
+        this.directedBy = value;
     }
 
     /**
@@ -1002,7 +1002,7 @@ public class Page {
      *     
      */
     public void setProducedBy(JAXBElement<String> value) {
-        this.producedBy = ((JAXBElement<String> ) value);
+        this.producedBy = value;
     }
 
     /**
@@ -1026,7 +1026,7 @@ public class Page {
      *     
      */
     public void setStudio(JAXBElement<String> value) {
-        this.studio = ((JAXBElement<String> ) value);
+        this.studio = value;
     }
 
     /**
@@ -1050,7 +1050,7 @@ public class Page {
      *     
      */
     public void setAwards(JAXBElement<String> value) {
-        this.awards = ((JAXBElement<String> ) value);
+        this.awards = value;
     }
 
     /**
@@ -1074,7 +1074,7 @@ public class Page {
      *     
      */
     public void setPlotOutline(JAXBElement<String> value) {
-        this.plotOutline = ((JAXBElement<String> ) value);
+        this.plotOutline = value;
     }
 
     /**
@@ -1098,7 +1098,7 @@ public class Page {
      *     
      */
     public void setNetwork(JAXBElement<String> value) {
-        this.network = ((JAXBElement<String> ) value);
+        this.network = value;
     }
 
     /**
@@ -1122,7 +1122,7 @@ public class Page {
      *     
      */
     public void setSeason(JAXBElement<String> value) {
-        this.season = ((JAXBElement<String> ) value);
+        this.season = value;
     }
 
     /**
@@ -1146,7 +1146,7 @@ public class Page {
      *     
      */
     public void setSchedule(JAXBElement<String> value) {
-        this.schedule = ((JAXBElement<String> ) value);
+        this.schedule = value;
     }
 
     /**
@@ -1170,7 +1170,7 @@ public class Page {
      *     
      */
     public void setWrittenBy(JAXBElement<String> value) {
-        this.writtenBy = ((JAXBElement<String> ) value);
+        this.writtenBy = value;
     }
 
     /**
@@ -1194,7 +1194,7 @@ public class Page {
      *     
      */
     public void setBandMembers(JAXBElement<String> value) {
-        this.bandMembers = ((JAXBElement<String> ) value);
+        this.bandMembers = value;
     }
 
     /**
@@ -1218,7 +1218,7 @@ public class Page {
      *     
      */
     public void setHometown(JAXBElement<String> value) {
-        this.hometown = ((JAXBElement<String> ) value);
+        this.hometown = value;
     }
 
     /**
@@ -1242,7 +1242,7 @@ public class Page {
      *     
      */
     public void setCurrentLocation(JAXBElement<String> value) {
-        this.currentLocation = ((JAXBElement<String> ) value);
+        this.currentLocation = value;
     }
 
     /**
@@ -1266,7 +1266,7 @@ public class Page {
      *     
      */
     public void setRecordLabel(JAXBElement<String> value) {
-        this.recordLabel = ((JAXBElement<String> ) value);
+        this.recordLabel = value;
     }
 
     /**
@@ -1290,7 +1290,7 @@ public class Page {
      *     
      */
     public void setBookingAgent(JAXBElement<String> value) {
-        this.bookingAgent = ((JAXBElement<String> ) value);
+        this.bookingAgent = value;
     }
 
     /**
@@ -1314,7 +1314,7 @@ public class Page {
      *     
      */
     public void setArtistsWeLike(JAXBElement<String> value) {
-        this.artistsWeLike = ((JAXBElement<String> ) value);
+        this.artistsWeLike = value;
     }
 
     /**
@@ -1338,7 +1338,7 @@ public class Page {
      *     
      */
     public void setInfluences(JAXBElement<String> value) {
-        this.influences = ((JAXBElement<String> ) value);
+        this.influences = value;
     }
 
     /**
@@ -1362,7 +1362,7 @@ public class Page {
      *     
      */
     public void setBandInterests(JAXBElement<String> value) {
-        this.bandInterests = ((JAXBElement<String> ) value);
+        this.bandInterests = value;
     }
 
     /**
@@ -1386,7 +1386,7 @@ public class Page {
      *     
      */
     public void setBio(JAXBElement<String> value) {
-        this.bio = ((JAXBElement<String> ) value);
+        this.bio = value;
     }
 
     /**
@@ -1410,7 +1410,7 @@ public class Page {
      *     
      */
     public void setAffiliation(JAXBElement<String> value) {
-        this.affiliation = ((JAXBElement<String> ) value);
+        this.affiliation = value;
     }
 
     /**
@@ -1434,7 +1434,7 @@ public class Page {
      *     
      */
     public void setBirthday(JAXBElement<String> value) {
-        this.birthday = ((JAXBElement<String> ) value);
+        this.birthday = value;
     }
 
     /**
@@ -1458,7 +1458,7 @@ public class Page {
      *     
      */
     public void setPersonalInfo(JAXBElement<String> value) {
-        this.personalInfo = ((JAXBElement<String> ) value);
+        this.personalInfo = value;
     }
 
     /**
@@ -1482,7 +1482,7 @@ public class Page {
      *     
      */
     public void setPersonalInterests(JAXBElement<String> value) {
-        this.personalInterests = ((JAXBElement<String> ) value);
+        this.personalInterests = value;
     }
 
     /**
@@ -1506,7 +1506,7 @@ public class Page {
      *     
      */
     public void setMembers(JAXBElement<String> value) {
-        this.members = ((JAXBElement<String> ) value);
+        this.members = value;
     }
 
     /**
@@ -1530,7 +1530,7 @@ public class Page {
      *     
      */
     public void setBuilt(JAXBElement<String> value) {
-        this.built = ((JAXBElement<String> ) value);
+        this.built = value;
     }
 
     /**
@@ -1554,7 +1554,7 @@ public class Page {
      *     
      */
     public void setFeatures(JAXBElement<String> value) {
-        this.features = ((JAXBElement<String> ) value);
+        this.features = value;
     }
 
     /**
@@ -1578,7 +1578,7 @@ public class Page {
      *     
      */
     public void setMpg(JAXBElement<String> value) {
-        this.mpg = ((JAXBElement<String> ) value);
+        this.mpg = value;
     }
 
     /**
@@ -1602,7 +1602,7 @@ public class Page {
      *     
      */
     public void setGeneralInfo(JAXBElement<String> value) {
-        this.generalInfo = ((JAXBElement<String> ) value);
+        this.generalInfo = value;
     }
 
 }
