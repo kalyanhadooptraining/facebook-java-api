@@ -116,7 +116,7 @@ public class FriendInfo {
      *     
      */
     public synchronized void setAreFriends(JAXBElement<Boolean> value) {
-        this.areFriends = ((JAXBElement<Boolean> ) value);
+        this.areFriends = value;
     }
 
 }
