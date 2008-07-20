@@ -290,7 +290,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
 		try {
-			// DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( true );
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -299,7 +298,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			stripEmptyTextNodes( doc );
 
 			if ( isDebug() ) {
-				FacebookXmlRestClient.printDom( doc, method.methodName() + "| " );
+				printDom( doc, method.methodName() + "| " );
 			}
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
@@ -310,12 +309,11 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			return doc;
 		}
 		catch ( ParserConfigurationException ex ) {
-			System.err.println( "huh?" + ex );
+			throw new RuntimeException( "Trouble configuring XML Parser", ex );
 		}
 		catch ( SAXException ex ) {
-			throw new IOException( "error parsing xml" );
+			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
 		}
-		return null;
 	}
 
 	/**
