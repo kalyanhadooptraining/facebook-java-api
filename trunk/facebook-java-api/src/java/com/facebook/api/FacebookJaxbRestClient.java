@@ -61,6 +61,7 @@ import com.facebook.api.schema.SessionInfo;
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
  */
 public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
+
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
 	static {
@@ -297,7 +298,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		if ( null != this._sessionKey ) {
 			return this._sessionKey;
 		}
-		JAXBElement obj = (JAXBElement) this.callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
+		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		SessionInfo d = (SessionInfo) obj.getValue();
 		this._sessionKey = d.getSessionKey();
 		this._userId = d.getUid();
@@ -325,7 +326,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		if ( isDebug() ) {
 			System.out.println( "Facebook response:  " + this.rawResponse );
 		}
-		Object res = this.getResponsePOJO();
+		Object res = getResponsePOJO();
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
 			int errorCode = error.getErrorCode();
@@ -442,7 +443,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
 	 */
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
-		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) this.marketplace_getListings( listingIds, uids );
+		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) marketplace_getListings( listingIds, uids );
 		return resp.getListing();
 	}
 
@@ -452,7 +453,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
 	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
-		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) this.marketplace_getSubCategories( null );
+		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) marketplace_getSubCategories( null );
 		return resp.getMarketplaceSubcategory();
 	}
 
@@ -463,7 +464,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 */
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
-		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) this.marketplace_search( category.getName(), subcategory.getName(), searchTerm );
+		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) marketplace_search( category.getName(), subcategory.getName(), searchTerm );
 		return resp.getListing();
 	}
 
@@ -506,7 +507,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 			buffer.add( this.queries.remove( 0 ) );
 			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
 				// we can only actually batch up to 15 at once
-				this.batch_run( this.encodeMethods( buffer ), serial );
+				batch_run( encodeMethods( buffer ), serial );
 				try {
 					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 					Document doc = builder.parse( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
@@ -515,7 +516,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 						String response = extractNodeString( responses.item( count ) );
 						try {
 							this.rawResponse = response;
-							Object pojo = this.parseCallResult( null, null );
+							Object pojo = parseCallResult( null, null );
 							String type = RETURN_TYPES.get( buffer.get( count ).getMethod() );
 							// possible types are document, string, bool, int, long, void
 							if ( type.equals( "default" ) ) {
