@@ -716,20 +716,22 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.put( "method", method.methodName() );
 		params.put( "api_key", _apiKey );
 		params.put( "v", TARGET_API_VERSION );
-		if ( method.requiresSession() && _sessionKey != null ) {
-			// some methods like setFBML can take a session key for users, but doesn't require one for pages.
-			params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
+
+		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
+		boolean includeSession = method.requiresSession() && _sessionKey != null;
+		if ( includeSession ) {
 			params.put( "session_key", _sessionKey );
 		}
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
 			oldVal = params.put( p.first, p.second );
-			if ( oldVal != null )
+			if ( oldVal != null ) {
 				System.out.println( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
+			}
 		}
 
 		assert ( !params.containsKey( "sig" ) );
-		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), method.requiresSession() );
+		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), includeSession );
 		params.put( "sig", signature );
 
 		if ( this.batchMode ) {
@@ -1388,40 +1390,34 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
 	}
 
-	/**
-	 * Retrieves the requested info fields for the requested set of users.
-	 * 
-	 * @param userIds
-	 *            a collection of user IDs for which to fetch info
-	 * @param fields
-	 *            a set of ProfileFields
-	 * @return a Document consisting of a list of users, with each user element containing the requested fields.
-	 */
-	public Document users_getInfo( Collection<Long> userIds, EnumSet<ProfileField> fields ) throws FacebookException, IOException {
-		// assertions test for invalid params
+	public Document users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
+		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
+				delimit( fields ) ) );
+	}
 
+	public Document users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException {
+		assert ( userIds != null );
+		assert ( fields != null );
+		assert ( !fields.isEmpty() );
+		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
+				delimit( fields ) ) );
+	}
+
+	public Document users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException {
+		assert ( userIds != null );
+		assert ( fields != null );
+		assert ( !fields.isEmpty() );
 		return callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
 
-	/**
-	 * Retrieves the requested info fields for the requested set of users.
-	 * 
-	 * @param userIds
-	 *            a collection of user IDs for which to fetch info
-	 * @param fields
-	 *            a set of strings describing the info fields desired, such as "last_name", "sex"
-	 * @return a Document consisting of a list of users, with each user element containing the requested fields.
-	 */
 	public Document users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException {
-		// assertions test for invalid params
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
-
 		return callMethod( FacebookMethod.USERS_GET_INFO, new Pair<String,CharSequence>( "uids", delimit( userIds ) ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
 	}
@@ -1763,6 +1759,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated this method has been removed from the Facebook API server
 	 */
+	@Deprecated
 	public URL notifications_sendRequest( Collection<Long> recipientIds, CharSequence type, CharSequence content, URL image, boolean isInvite ) throws FacebookException,
 			IOException {
 		assert ( null != recipientIds && !recipientIds.isEmpty() );
@@ -1782,6 +1779,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException, IOException {
 		this.notifications_send( recipientIds, notification );
 		return null;
@@ -2673,6 +2671,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @deprecated provided for legacy support only.
 	 */
+	@Deprecated
 	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException {
 		return marketplace_createListing( null, showOnProfile, attrs.getAttribs() );
 	}
@@ -3781,12 +3780,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return extractBoolean( callMethod( FacebookMethod.PERM_REVOKE_API_ACCESS, new Pair<String,CharSequence>( "permissions_apikey", apiKey ) ) );
 	}
 
-	public boolean auth_expireSession() throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
-	}
-
 	public String auth_promoteSession() throws FacebookException, IOException {
 		return extractString( callMethod( FacebookMethod.AUTH_PROMOTE_SESSION ) );
+	}
+
+	public boolean auth_revokeAuthorization() throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.AUTH_REVOKE_AUTHORIZATION ) );
+	}
+
+	public boolean auth_expireSession() throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException, IOException {
