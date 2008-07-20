@@ -3,13 +3,13 @@
   <parent>
     <groupId>com.facebook.api</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1.8</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>com.facebook.api</groupId>
   <artifactId>facebook-java-api</artifactId>
   <packaging>jar</packaging>
-  <version>1.8</version>
+  <version>1.9-SNAPSHOT</version>
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
 
