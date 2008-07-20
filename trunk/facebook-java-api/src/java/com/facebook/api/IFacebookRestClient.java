@@ -587,8 +587,9 @@ public interface IFacebookRestClient<T> {
 	 * @param fields
 	 *            a set of ProfileFields
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	public T users_getInfo( Collection<Long> userIds, EnumSet<ProfileField> fields ) throws FacebookException, IOException;
+	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -598,8 +599,35 @@ public interface IFacebookRestClient<T> {
 	 * @param fields
 	 *            a set of strings describing the info fields desired, such as "last_name", "sex"
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
 	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException;
+
+	/**
+	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
+	 * is limited to: uid, first_name, last_name, name, timezone, birthday, sex, affiliations (regional type only)
+	 * 
+	 * @param userIds
+	 *            a collection of user IDs for which to fetch info
+	 * @param fields
+	 *            a set of ProfileFields
+	 * @return a T consisting of a list of users, with each user element containing the requested fields.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
+	 */
+	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException;
+
+	/**
+	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
+	 * is limited to: uid, first_name, last_name, name, timezone, birthday, sex, affiliations (regional type only)
+	 * 
+	 * @param userIds
+	 *            a collection of user IDs for which to fetch info
+	 * @param fields
+	 *            a set of strings describing the info fields desired, such as "last_name", "sex"
+	 * @return a T consisting of a list of users, with each user element containing the requested fields.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
+	 */
+	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the user ID of the user logged in to this API session
@@ -1150,6 +1178,7 @@ public interface IFacebookRestClient<T> {
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
 	 * 
 	 * @return an authentication token
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.createToken
 	 */
 	public String auth_createToken() throws FacebookException, IOException;
 
@@ -1158,6 +1187,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param authToken
 	 *            the token returned by auth_createToken or passed back to your callback_url.
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.getSession
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException;
 
@@ -2480,6 +2510,7 @@ public interface IFacebookRestClient<T> {
 	 * @param properties
 	 *            an ApplicationPropertySet that is translated into a single JSON String.
 	 * @return a boolean indicating whether the properties were successfully set
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
 	 */
 	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException, IOException;
 
@@ -2493,7 +2524,7 @@ public interface IFacebookRestClient<T> {
 	 *            an enumeration of the properties to get
 	 * @return an ApplicationPropertySet
 	 * @see ApplicationProperty
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties"> Developers Wiki: Admin.getAppProperties</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
 	 */
 	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException, IOException;
 
@@ -2548,6 +2579,7 @@ public interface IFacebookRestClient<T> {
 	 *            the canvas-page name of the application to get the info for.
 	 * 
 	 * @return the public information for the specified application
+	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException, IOException;
 
@@ -2558,6 +2590,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the application to get the info for.
 	 * 
 	 * @return the public information for the specified application
+	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException, IOException;
 
@@ -2568,6 +2601,7 @@ public interface IFacebookRestClient<T> {
 	 *            the public API key of the application to get the info for.
 	 * 
 	 * @return the public information for the specified application
+	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
 	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException, IOException;
 
@@ -2578,6 +2612,7 @@ public interface IFacebookRestClient<T> {
 	 *            the canvas-page name of the application to get the info for.
 	 * 
 	 * @return the public information for the specified application
+	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException, IOException;
 
@@ -2588,6 +2623,7 @@ public interface IFacebookRestClient<T> {
 	 *            the type of request to check the allocation for, currently the only valid values are "notifications_per_day" and "requests_per_day".
 	 * 
 	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	public int admin_getAllocation( String allocationType ) throws FacebookException, IOException;
 
@@ -2595,6 +2631,7 @@ public interface IFacebookRestClient<T> {
 	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
 	 * 
 	 * @return the number of invites/requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	public int admin_getRequestAllocation() throws FacebookException, IOException;
 
@@ -2602,6 +2639,7 @@ public interface IFacebookRestClient<T> {
 	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
 	 * 
 	 * @return the number of notifications that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	public int admin_getNotificationAllocation() throws FacebookException, IOException;
 
@@ -2619,6 +2657,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException;
 
@@ -2639,6 +2678,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
 	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException, IOException;
 
@@ -2656,6 +2696,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException;
 
@@ -2676,6 +2717,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
 	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException, IOException;
 
@@ -2750,6 +2792,17 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 */
 	public boolean auth_expireSession() throws FacebookException, IOException;
+
+	/**
+	 * If this method is called for the logged in user, then no further API calls can be made on that user's behalf until the user decides to authorize the application
+	 * again.
+	 * 
+	 * @return true if the call succeeds false otherwise
+	 * 
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public boolean auth_revokeAuthorization() throws FacebookException, IOException;
 
 	/**
 	 * Begins permissions mode, and allows the current application to begin making requests on behalf of the application associated with the specified API key.
