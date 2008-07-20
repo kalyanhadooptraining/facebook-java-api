@@ -69,6 +69,16 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
 @Deprecated
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
+	protected boolean namespaceAware = true;
+
+	public boolean isNamespaceAware() {
+		return namespaceAware;
+	}
+
+	public void setNamespaceAware( boolean v ) {
+		this.namespaceAware = v;
+	}
+
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
 	static {
@@ -291,7 +301,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware( true );
+			factory.setNamespaceAware( namespaceAware );
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse( data );
 			doc.normalizeDocument();
