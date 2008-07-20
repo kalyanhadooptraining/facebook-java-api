@@ -16,7 +16,8 @@
     </license>
   </licenses>
   <scm>
-    <url>scm:svn:http://facebook-java-api.googlecode.com/svn/trunk/</url>
+    <url>http://code.google.com/p/facebook-java-api/source/browse/trunk</url>
+    <connection>scm:svn:http://facebook-java-api.googlecode.com/svn/trunk/</connection>
     <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/</developerConnection>
   </scm>
   <modules>
