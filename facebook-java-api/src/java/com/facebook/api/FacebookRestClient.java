@@ -66,6 +66,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +74,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.facebook.api.schema.FriendsGetResponse;
 import com.facebook.api.schema.Listing;
@@ -759,17 +761,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 
 		try {
-			// DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( true );
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 
-			InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, /* doEncode */
-			true ) : postRequest( method.methodName(), params, doHttps, /* doEncode */true );
+			boolean doEncode = true;
+			InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, doEncode ) : postRequest( method.methodName(), params, doHttps,
+					doEncode );
 
 			BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			String line;
 			boolean insideTagBody = false;
 			while ( ( line = in.readLine() ) != null ) {
@@ -797,7 +799,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				buffer.append( line );
 			}
 
-			String xmlResp = new String( buffer );
+			String xmlResp = buffer.toString();
 			this.rawResponse = xmlResp;
 
 			Document doc = builder.parse( new ByteArrayInputStream( xmlResp.getBytes( "UTF-8" ) ) );
@@ -817,17 +819,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			}
 			return doc;
 		}
-		catch ( java.net.SocketException ex ) {
-			System.err.println( "Socket exception when calling facebook method: " + ex.getMessage() );
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( "Trouble configuring XML Parser", ex );
 		}
-		catch ( javax.xml.parsers.ParserConfigurationException ex ) {
-			System.err.println( "huh?" );
-			ex.printStackTrace();
+		catch ( SAXException ex ) {
+			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
 		}
-		catch ( org.xml.sax.SAXException ex ) {
-			throw new IOException( "error parsing xml" );
-		}
-		return null;
 	}
 
 	/**
