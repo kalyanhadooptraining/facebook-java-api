@@ -24,12 +24,6 @@
     <module>facebook-java-api</module>
     <module>facebook-util</module>
   </modules>
-  <repositories>
-    <repository>
-      <id>mergere</id>
-      <url>http://repo.mergere.com/maven2/</url>
-    </repository>
-  </repositories>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
