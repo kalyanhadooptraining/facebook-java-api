@@ -89,6 +89,7 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  * Allocate an instance of this class to make Facebook API requests.
  */
 public class FacebookRestClient implements IFacebookRestClient<Document> {
+
 	/**
 	 * API version to request when making calls to the server
 	 */
@@ -176,6 +177,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	protected final String _apiKey;
 	protected URL _serverUrl;
 	protected String rawResponse;
+	protected boolean namespaceAware = true;
 
 	protected String _sessionKey; // filled in when session is established
 	protected Long _expires; // also filled in when session is established
@@ -327,6 +329,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		_userId = -1;
 		batchMode = false;
 		queries = new ArrayList<BatchQuery>();
+	}
+
+	public boolean isNamespaceAware() {
+		return namespaceAware;
+	}
+
+	public void setNamespaceAware( boolean v ) {
+		this.namespaceAware = v;
 	}
 
 	public void beginPermissionsMode( String apiKey ) {
@@ -548,32 +558,34 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	private static CharSequence delimit( Collection<?> iterable ) {
 		// could add a thread-safe version that uses StringBuffer as well
-		if ( iterable == null || iterable.isEmpty() )
+		if ( iterable == null || iterable.isEmpty() ) {
 			return null;
-
+		}
 		StringBuilder buffer = new StringBuilder();
 		boolean notFirst = false;
 		for ( Object item : iterable ) {
-			if ( notFirst )
+			if ( notFirst ) {
 				buffer.append( "," );
-			else
+			} else {
 				notFirst = true;
+			}
 			buffer.append( item.toString() );
 		}
 		return buffer;
 	}
 
 	protected static CharSequence delimit( Collection<Map.Entry<String,CharSequence>> entries, CharSequence delimiter, CharSequence equals, boolean doEncode ) {
-		if ( entries == null || entries.isEmpty() )
+		if ( entries == null || entries.isEmpty() ) {
 			return null;
-
+		}
 		StringBuilder buffer = new StringBuilder();
 		boolean notFirst = false;
 		for ( Map.Entry<String,CharSequence> entry : entries ) {
-			if ( notFirst )
+			if ( notFirst ) {
 				buffer.append( delimiter );
-			else
+			} else {
 				notFirst = true;
+			}
 			CharSequence value = entry.getValue();
 			buffer.append( entry.getKey() ).append( equals ).append( doEncode ? encode( value ) : value );
 		}
@@ -661,7 +673,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				}
 			}
 		}
-
 		return result;
 	}
 
@@ -673,7 +684,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			}
 			result.put( delimit( query.getParams().entrySet(), "&", "=", true ) );
 		}
-
 		return result.toString();
 	}
 
@@ -690,11 +700,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return a result containing the response to each individual query in the batch.
 	 */
 	public Document batch_run( String methods, boolean serial ) throws FacebookException, IOException {
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( new Pair<String,CharSequence>( "method_feed", methods ) );
-		if ( serial )
+		if ( serial ) {
 			params.add( new Pair<String,CharSequence>( "serial_only", "1" ) );
-
+		}
 		return callMethod( FacebookMethod.BATCH_RUN, params );
 	}
 
@@ -762,7 +772,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware( true );
+			factory.setNamespaceAware( namespaceAware );
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 
