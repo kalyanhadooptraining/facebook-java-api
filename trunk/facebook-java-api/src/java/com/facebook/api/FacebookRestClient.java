@@ -1822,7 +1822,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
 
 			String boundary = Long.toString( System.currentTimeMillis(), 16 );
-			URLConnection con = SERVER_URL.openConnection();
+			URLConnection con = _serverUrl.openConnection();
 			con.setDoInput( true );
 			con.setDoOutput( true );
 			con.setUseCaches( false );
@@ -4217,13 +4217,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			base = base.substring( base.indexOf( "://" ) + 3 );
 		}
 		try {
-			SERVER_URL = new URL( "http://" + base );
-			// HTTPS_SERVER_URL = new URL("https://" + base);
-			_serverUrl = SERVER_URL;
+			String url = "http://" + base;
+			_serverUrl = new URL( url );
+			setDefaultServerUrl( _serverUrl );
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( MalformedURLException ex ) {
+			throw new RuntimeException( ex );
 		}
+	}
+
+	public URL getDefaultServerUrl() {
+		return SERVER_URL;
+	}
+
+	public void setDefaultServerUrl( URL newUrl ) {
+		SERVER_URL = newUrl;
 	}
 
 	public void useBetaApiServer() {

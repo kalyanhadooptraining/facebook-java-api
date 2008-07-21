@@ -25,6 +25,7 @@ import com.facebook.api.schema.Listing;
  * transformed into Java <code>Object</code>'s.
  */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
 	static {
@@ -71,7 +72,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret ) {
-		this( SERVER_URL, apiKey, secret, null );
+		super( apiKey, secret );
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, null, connectionTimeout );
+		super( apiKey, secret, connectionTimeout );
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey ) {
-		this( SERVER_URL, apiKey, secret, sessionKey );
+		super( apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
+		super( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 
@@ -135,7 +136,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey );
+		super( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -156,7 +157,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 
@@ -255,7 +256,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( null != this._sessionKey ) {
 			return this._sessionKey;
 		}
-		JSONObject d = (JSONObject) this.callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
+		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		try {
 			this._sessionKey = (String) d.get( "session_key" );
 			Object uid = d.get( "uid" );
@@ -448,73 +449,38 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreference(java.lang.Integer)
-	 */
 	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreferences()
-	 */
 	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreference(java.lang.Integer, java.lang.String)
-	 */
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreferences(java.util.Map, boolean)
-	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
-	 */
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
-	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_search(com.facebook.api.MarketListingCategory, com.facebook.api.MarketListingSubcategory, java.lang.String)
-	 */
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
@@ -530,7 +496,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		this.callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
+		callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
 		return this.rawResponse;
 	}
 
@@ -560,7 +526,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			buffer.add( this.queries.remove( 0 ) );
 			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
 				// we can only actually batch up to 15 at once
-				JSONArray doc = (JSONArray) this.batch_run( this.encodeMethods( buffer ), serial );
+				JSONArray doc = (JSONArray) batch_run( encodeMethods( buffer ), serial );
 				for ( int count = 0; count < doc.length(); count++ ) {
 					try {
 						String response = (String) doc.get( count );
@@ -598,7 +564,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				}
 			}
 		}
-
 		return result;
 	}
+
 }

@@ -122,7 +122,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * 
 	 * @see #callMethod(IFacebookMethod,Collection)
 	 */
-	public static int NUM_AUTOAPPENDED_PARAMS = 6;
+	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
 
 	protected static boolean DEBUG = false;
 	protected Boolean _debug = null;
@@ -135,6 +135,30 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public static final String MARKETPLACE_STATUS_DEFAULT = "DEFAULT";
 	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
 	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
+
+	protected ExtensibleClient( String apiKey, String secret ) {
+		this( SERVER_URL, apiKey, secret, null );
+	}
+
+	protected ExtensibleClient( String apiKey, String secret, int timeout ) {
+		this( SERVER_URL, apiKey, secret, null, timeout );
+	}
+
+	public ExtensibleClient( String apiKey, String secret, String sessionKey ) {
+		this( SERVER_URL, apiKey, secret, sessionKey );
+	}
+
+	public ExtensibleClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
+	}
+
+	public ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
+		this( new URL( serverAddr ), apiKey, secret, sessionKey );
+	}
+
+	public ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
+		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+	}
 
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
 		_sessionKey = sessionKey;
@@ -152,9 +176,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		_timeout = timeout;
 	}
 
-	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
+	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout, int readTimeout ) {
 		this( serverUrl, apiKey, secret, sessionKey );
-		_timeout = connectionTimeout;
+		_timeout = timeout;
 		_readTimeout = readTimeout;
 	}
 
@@ -762,9 +786,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
-
-		InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, /* doEncode */
-		true ) : postRequest( method.methodName(), params, doHttps, /* doEncode */true );
+		boolean doEncode = true;
+		InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, doEncode ) : postRequest( method.methodName(), params, doHttps, doEncode );
 
 		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
 		StringBuilder buffer = new StringBuilder();
@@ -1007,7 +1030,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
 
 			String boundary = Long.toString( System.currentTimeMillis(), 16 );
-			URLConnection con = SERVER_URL.openConnection();
+			URLConnection con = _serverUrl.openConnection();
 			con.setDoInput( true );
 			con.setDoOutput( true );
 			con.setUseCaches( false );
@@ -3198,13 +3221,21 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			base = base.substring( base.indexOf( "://" ) + 3 );
 		}
 		try {
-			SERVER_URL = new URL( "http://" + base );
-			// HTTPS_SERVER_URL = new URL("https://" + base);
-			_serverUrl = SERVER_URL;
+			String url = "http://" + base;
+			_serverUrl = new URL( url );
+			setDefaultServerUrl( _serverUrl );
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( MalformedURLException ex ) {
+			throw new RuntimeException( ex );
 		}
+	}
+
+	public URL getDefaultServerUrl() {
+		return SERVER_URL;
+	}
+
+	public void setDefaultServerUrl( URL newUrl ) {
+		SERVER_URL = newUrl;
 	}
 
 	public void useBetaApiServer() {
