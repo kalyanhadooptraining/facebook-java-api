@@ -1,0 +1,27 @@
+On the road to getting our releases into the central repository, we
+have to setup our own repository that the central one can look at.  We
+also need to setup our own repository to host snapshots..
+
+So unless we find a better place, I just created a server on my hoste
+( dreamhost ).  You can how add this repository as a snapshot
+repository and get access to the latest code, without having to build
+it yourself.  Please let me know if you have any questions or
+feedback!
+
+add this repository to your project's pom:
+
+    <repository>
+      <id>mrepo-happyfern-snapshot</id>
+      <url>http://mrepo.happyfern.com/maven2-snapshot/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+then you have access to this dependency:
+
+    <dependency>
+      <groupId>com.facebook.api</groupId>
+      <artifactId>facebook-java-api</artifactId>
+      <version>1.8-SNAPSHOT</version>
+    </dependency> 
