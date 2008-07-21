@@ -34,6 +34,7 @@ package com.facebook.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
@@ -3039,8 +3040,13 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param newUrl
 	 *            the new URL to use, for example: "http://api.new.facebook.com/restserver.php"
+	 * @throws MalformedURLException
 	 */
 	public void setServerUrl( String newUrl );
+
+	public URL getDefaultServerUrl();
+
+	public void setDefaultServerUrl( URL url );
 
 	/**
 	 * Configure the client to use the beta Facebook API server, which is assumed to exist at 'http://api.new.facebook.com/restserver.php'.

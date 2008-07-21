@@ -116,143 +116,38 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param apiKey
-	 * @param secret
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String apiKey, String secret ) {
-		this( SERVER_URL, apiKey, secret, null );
+		super( apiKey, secret );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param apiKey
-	 * @param secret
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String apiKey, String secret, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, null, connectionTimeout );
+		super( apiKey, secret, connectionTimeout );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey ) {
-		this( SERVER_URL, apiKey, secret, sessionKey );
+		super( apiKey, secret, sessionKey );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
+		super( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param serverAddr
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey );
+		super( serverAddr, apiKey, secret, sessionKey );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param serverAddr
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param serverUrl
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
 		super( serverUrl, apiKey, secret, sessionKey );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param serverUrl
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
-	/**
-	 * Constructor. Don't use this, use FacebookRestClient instead.
-	 * 
-	 * @param serverUrl
-	 * @param apiKey
-	 * @param secret
-	 * @param sessionKey
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * @param readTimeout
-	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
-	 */
-	@Deprecated
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
 		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
@@ -405,75 +300,39 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreference(java.lang.Integer)
-	 */
 	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreferences()
-	 */
 	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreference(java.lang.Integer, java.lang.String)
-	 */
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreferences(java.util.Map, boolean)
-	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
-	 */
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		marketplace_getListings( listingIds, uids );
 		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) getResponsePOJO();
 		return resp.getListing();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
-	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		marketplace_getSubCategories( null );
 		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) getResponsePOJO();
 		return resp.getMarketplaceSubcategory();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_search(com.facebook.api.MarketListingCategory, com.facebook.api.MarketListingSubcategory, java.lang.String)
-	 */
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		marketplace_search( category.getName(), subcategory.getName(), searchTerm );

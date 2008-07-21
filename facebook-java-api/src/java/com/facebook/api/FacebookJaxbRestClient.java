@@ -108,7 +108,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret ) {
-		this( SERVER_URL, apiKey, secret, null );
+		super( apiKey, secret );
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, null, connectionTimeout );
+		super( apiKey, secret, connectionTimeout );
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the session-id to use
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, String sessionKey ) {
-		this( SERVER_URL, apiKey, secret, sessionKey );
+		super( apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
+		super( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 
@@ -172,7 +172,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey );
+		super( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	@Override
