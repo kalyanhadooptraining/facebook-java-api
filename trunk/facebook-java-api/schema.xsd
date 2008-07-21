@@ -47,6 +47,10 @@
   <xsd:restriction base="xsd:long" />
 </xsd:simpleType>
 
+<xsd:simpleType name="tbid">
+  <xsd:restriction base="xsd:long" />
+</xsd:simpleType>
+
 <xsd:simpleType name="old_id_list">
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
@@ -151,6 +155,10 @@
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
 
+<xsd:simpleType name="one_line_story_template">
+  <xsd:restriction base="xsd:string" />
+</xsd:simpleType>
+
 <xsd:complexType name="user_status">
   <xsd:sequence>
     <xsd:element name="message" type="xsd:string" />
@@ -205,6 +213,14 @@
     <xsd:element name="zip" type="xsd:string" minOccurs="0" />
     <xsd:element name="latitude" type="xsd:decimal" minOccurs="0" />
     <xsd:element name="longitude" type="xsd:decimal" minOccurs="0" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="connect_account_info">
+  <xsd:sequence>
+    <xsd:element name="email_hash" type="xsd:string" />
+    <xsd:element name="account_id" type="xsd:string" minOccurs="0" />
+    <xsd:element name="account_url" type="xsd:string" minOccurs="0" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -547,6 +563,14 @@
     </xsd:element>
     <xsd:element name="pic_square" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="has_added_app" type="xsd:boolean" minOccurs="0" nillable="true" />
+    <xsd:element name="email_hashes" minOccurs="0" nillable="true">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="email_hashes_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
   </xsd:all>
 </xsd:complexType>
 
@@ -856,6 +880,98 @@
   </xsd:all>
 </xsd:complexType>
 
+<xsd:complexType name="metrics">
+  <xsd:all>
+    <xsd:element name="end_time" type="time" minOccurs="0" />
+    <xsd:element name="active_users" type="xsd:int" minOccurs="0" />
+    <xsd:element name="api_calls" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_api_calls" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_page_views" type="xsd:int" minOccurs="0" />
+    <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
+    <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
+  </xsd:all>
+</xsd:complexType>
+
+<xsd:complexType name="short_story_template">
+  <xsd:sequence>
+    <xsd:element name="template_title" type="xsd:string" />
+    <xsd:element name="template_body" type="xsd:string" />
+    <xsd:element name="preferred_layout" type="xsd:short" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="full_story_template">
+  <xsd:sequence>
+    <xsd:element name="template_title" type="xsd:string" />
+    <xsd:element name="template_body" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="template_bundle">
+  <xsd:sequence>
+    <xsd:element name="one_line_story_templates">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="one_line_story_template" type="one_line_story_template" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="short_story_templates">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="short_story_template" type="short_story_template" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="full_story_template" type="full_story_template" />
+    <xsd:element name="time_created" type="time" />
+    <xsd:element name="template_bundle_id" type="tbid" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="info_item">
+  <xsd:sequence>
+    <xsd:element name="label" type="xsd:string" />
+    <xsd:element name="sublabel" type="xsd:string" />
+    <xsd:element name="description" type="xsd:string" />
+    <xsd:element name="link" type="xsd:string" />
+    <xsd:element name="image" type="xsd:string" />
+    <xsd:element name="meta" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="info_field">
+  <xsd:sequence>
+    <xsd:element name="field" type="xsd:string" />
+    <xsd:element name="items">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="info_item" type="info_item" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="user_info">
+  <xsd:sequence>
+    <xsd:element name="title" type="xsd:string" />
+    <xsd:element name="type" type="xsd:int" />
+    <xsd:element name="info_fields">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="info_field" type="info_field" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
 <xsd:element name="auth_createToken_response" type="auth_token" />
 
 <xsd:element name="auth_getSession_response" type="session_info" />
@@ -863,6 +979,28 @@
 <xsd:element name="auth_promoteSession_response" type="session_secret" />
 
 <xsd:element name="auth_expireSession_response" type="xsd:boolean" />
+
+<xsd:element name="auth_revokeAuthorization_response" type="xsd:boolean" />
+
+<xsd:element name="connect_getUnconnectedFriendsCount_response" type="xsd:int" />
+
+<xsd:element name="connect_registerUsers_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="connect_registerUsers_response_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="connect_unregisterUsers_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="connect_unregisterUsers_response_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
 
 <xsd:element name="events_get_response">
   <xsd:complexType>
@@ -1016,6 +1154,8 @@
 
 <xsd:element name="marketplace_removeListing_response" type="xsd:boolean" />
 
+<xsd:element name="liveMessage_send_response" type="xsd:boolean" />
+
 <xsd:element name="notifications_get_response" type="notifications" />
 
 <xsd:element name="notifications_send_response" type="xsd:string" />
@@ -1059,6 +1199,21 @@
 
 <xsd:element name="profile_getFBML_response" type="xsd:string" />
 
+<xsd:element name="profile_setInfo_response" type="xsd:boolean" />
+
+<xsd:element name="profile_getInfo_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="user_info" type="user_info" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="profile_setInfoOptions_response" type="xsd:boolean" />
+
+<xsd:element name="profile_getInfoOptions_response" type="xsd:boolean" />
+
 <xsd:element name="update_decodeIDs_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
@@ -1069,6 +1224,15 @@
 </xsd:element>
 
 <xsd:element name="users_getInfo_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="user" type="user" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="users_getStandardInfo_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="user" type="user" minOccurs="0" maxOccurs="unbounded" />
@@ -1152,6 +1316,12 @@
 <xsd:element name="data_deleteObject_response" type="xsd:boolean" />
 
 <xsd:element name="data_deleteObjects_response" type="xsd:boolean" />
+
+<xsd:element name="data_getObjects_response">
+  <xsd:complexType>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
 
 <xsd:element name="data_getObjectProperty_response" type="xsd:string" />
 
@@ -1246,6 +1416,36 @@
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
 </xsd:element>
+
+<xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
+
+<xsd:element name="feed_getRegisteredTemplateBundles_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="template_bundle" type="template_bundle" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="feed_getRegisteredTemplateBundleByID_response" type="template_bundle" />
+
+<xsd:element name="feed_deactivateTemplateBundleByID_response" type="xsd:boolean" />
+
+<xsd:element name="feed_publishUserAction_response" type="xsd:boolean" />
+
+<xsd:element name="admin_getMetrics_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="metrics" type="metrics" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="admin_setTargetingInfo_response" type="xsd:boolean" />
+
+<xsd:element name="admin_getTargetingInfo_response" type="xsd:string" />
 
 <xsd:element name="error_response" type="FacebookApiException" />
 
