@@ -2037,14 +2037,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException, IOException {
-		if ( null == notification || "".equals( notification ) ) {
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
-		}
-		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "to_ids", delimit( recipientIds ) ), newPair( "notification", notification ) );
-		} else {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ) );
-		}
+		this.notifications_send( recipientIds, notification.toString(), false );
 	}
 
 	private T notifications_sendEmail( CharSequence recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException, IOException {
@@ -2988,28 +2981,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException,
 			IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( newPair( "template_bundle_id", bundleId ) );
-		if ( targetIds != null && !targetIds.isEmpty() ) {
-			params.add( newPair( "target_ids", delimit( targetIds ) ) );
-		}
-		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
-			params.add( newPair( "body_general", bodyGeneral ) );
-		}
-		if ( templateData != null && !templateData.isEmpty() ) {
-			JSONObject json = new JSONObject();
-			for ( String key : templateData.keySet() ) {
-				try {
-					json.put( key, templateData.get( key ) );
-				}
-				catch ( Exception ignored ) {
-					ignored.printStackTrace();
-				}
-			}
-			params.add( newPair( "template_data", json.toString() ) );
-		}
-
-		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+		return this.feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral );
 	}
 
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException, IOException {
@@ -3271,5 +3243,100 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "period", ( period ) ) );
 		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
+	
+	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		params.add( new Pair<String, CharSequence>("template_bundle_id", Long.toString( bundleId )) );
+		return extractBoolean(this.callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ));
+	}
 
+	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException {
+		if ( null == notification || "".equals( notification ) ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
+		}
+		Pair<String, CharSequence> type = new Pair<String, CharSequence>("type", announcement ? "announcement" : "general");
+		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
+					"notification", notification ), type );
+		} else {
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ), type );
+		}
+		
+	}
+	
+	/**
+	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
+	 */
+	public Boolean feed_publishUserAction(Long bundleId, 
+									      Map<String,String> templateData,
+									      List<IFeedImage> images,
+									      List<Long> targetIds, 
+									      String bodyGeneral) 
+		throws FacebookException, IOException {
+		
+		// validate maximum of 4 images
+		if (images != null && images.size() > 4) {
+			throw new IllegalArgumentException("Maximum of 4 images allowed per feed item.");
+		}
+		
+ 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		params.add( new Pair<String,CharSequence>("template_bundle_id", Long.toString(bundleId)));
+		
+		if (targetIds != null && !targetIds.isEmpty()) {
+ 			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
+ 		}
+		
+ 		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
+ 			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
+ 		}
+		
+		JSONObject jsonTemplateData = new JSONObject();
+ 		if ( templateData != null && !templateData.isEmpty() ) {
+ 			for ( String key : templateData.keySet() ) {
+ 				try {
+					jsonTemplateData.put( key, templateData.get( key ) );
+ 				}
+				catch ( Exception exception ) {
+					throw new RuntimeException("Error constructing JSON object", exception);
+ 				}
+ 			}
+ 		}
+ 
+		/*
+		 * Associate images to "images" label in the form of: 
+		 * 
+		 * "images":[{"src":"http:\/\/www.facebook.com\/images\/image1.gif",
+		 * 		      "href":"http:\/\/www.facebook.com"},
+		 * 		     {"src":"http:\/\/www.facebook.com\/images\/image2.gif",
+		 * 			  "href":"http:\/\/www.facebook.com"}] 
+		 */
+		if ( images != null && !images.isEmpty() ) {
+			
+			try {
+				// create images array
+				JSONArray jsonArray = new JSONArray();
+				for ( int i = 0; i < images.size(); i++ ) {
+					IFeedImage image = images.get( i );
+					JSONObject jsonImage = new JSONObject();
+					jsonImage.put( "src", image.getImageUrlString() );
+					jsonImage.put( "href", image.getLinkUrl().toExternalForm() );
+					jsonArray.put( i, jsonImage );
+				}
+				
+				// associate to key label
+				jsonTemplateData.put("images", jsonArray);
+			}
+			catch ( Exception exception ) {
+				throw new RuntimeException("Error constructing JSON object", exception);
+			}
+		}
+
+		// associate to param
+		if (jsonTemplateData.length() > 0) {
+			params.add( new Pair<String,CharSequence>( "template_data", 
+													   jsonTemplateData.toString() ) );
+		}
+		
+ 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+ 	}
 }
