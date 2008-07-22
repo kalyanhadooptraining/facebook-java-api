@@ -5,7 +5,7 @@ You can use the following table to determine which SVN revision is associated wi
 
 
 ||*Release Version*||*SVN Revision*||
-||1.8-final (MavenSupport)||r238||
+||1.8-final||r238||
 ||1.8-SNAPSHOT (MavenSupport)||r230||
 ||1.8-beta||r188||
 ||1.8-alpha||r169||
