@@ -4179,7 +4179,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		addParamIfNotBlank( "profile_action", actionFbml, params );
 		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
 		addParamIfNotBlank( "profile_main", profileMain, params );
-		return extractBoolean( callMethod( FacebookMethod.PROFILE_SET_FBML_NOSESSION, params ) );
+		FacebookMethod method = this.isDesktop() ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
+		return extractBoolean( callMethod( method, params ) );
 	}
 
 	public void setServerUrl( String newUrl ) {
