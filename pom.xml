@@ -3,7 +3,7 @@
   <groupId>com.facebook.api</groupId>
   <artifactId>parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>1.8.0</version>
+  <version>1.8.1-SNAPSHOT</version>
   <name>Facebook Java Library - Parent Pom</name>
   <description>Facebook Java Library - Parent Pom</description>
   <url>http://code.google.com/p/facebook-java-api/</url>
@@ -19,9 +19,9 @@
     <url>http://code.google.com/p/facebook-java-api/issues/list</url>
   </issueManagement>
   <scm>
-    <url>http://code.google.com/p/facebook-java-api/source/browse/tags/release-1.8.0</url>
-    <connection>scm:svn:http://facebook-java-api.googlecode.com/svn/tags/release-1.8.0</connection>
-    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-1.8.0</developerConnection>
+    <url>http://code.google.com/p/facebook-java-api/source/browse/trunk</url>
+    <connection>scm:svn:http://facebook-java-api.googlecode.com/svn/trunk/</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/</developerConnection>
   </scm>
   <modules>
     <module>facebook-java-api</module>
