@@ -1,6 +1,6 @@
 Quick Start (project users):
 
-	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.8-beta.jar
+	1.  Download the latest project JAR file at http://facebook-java-api.googlecode.com/files/facebook-java-api-1.8-final.jar
 	
 	2.  Download the required JSON library at http://facebook-java-api.googlecode.com/files/json-1.0.jar
 	
@@ -70,7 +70,7 @@ Getting Started (project developers):
 	    
 	6.  To build the project, go back to the command line where you typed "mvn eclipse:eclipse" and 
 	    type "mvn clean install".  This will compile the java files and package them inside 
-	    of a JAR, which should appear as 'target/facebook-java-api-1.8-beta.jar'.
+	    of a JAR, which should appear as 'target/facebook-java-api-1.8-final.jar'.
 	    
 
 Using the JAR File:
@@ -109,6 +109,15 @@ Committing Changes:
 	
 Changelog:
 
+	From 1.8-beta to 1.8-final
+		- Fix numerous bugs from the project issue list (credit goes to fernman, thanks dude!).
+		- Refresh JAXB bindings with latest official schema.
+		- Fix bug with calling profile_setFBML from desktop-mode apps. 
+		- Add Feed.deactivateTemplateBundleByID API call. 
+ 		- Support 'general'/'announcement' flag to Notifications.send.
+ 		- Support images in Feed.publishUserAction calls.
+		
+	
 	From 1.8-alpha to 1.8-beta
 		- Update feed_registerTemplateBundle to latest specs (Facebook changed some params). 
  		- Add 'setServerUrl()' and 'useBetaApiServer()' utility methods to change API server URL/point client at beta server.
@@ -119,8 +128,8 @@ Changelog:
  		- New feed and profile methods are tested and should work.
 	
 	From 1.7.4 to 1.8-alpha
-		- Implement all new methods described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
-		- Implement all session-id changes described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes [NOT TESTED!].
+		- Implement all new methods described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes.
+		- Implement all session-id changes described at http://wiki.developers.facebook.com/index.php/New_Design_Platform_Changes.
 		- Add support for Permissions API [NOT TESTED!].
 		- Refresh all JAXB generated classes using latest Facebook schema document.
 		- Cache JAXBContext instead of creating a new one on each API call.
