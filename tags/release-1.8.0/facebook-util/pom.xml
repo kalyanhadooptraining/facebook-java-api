@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.facebook.api</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>1.8.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <groupId>com.facebook.api</groupId>
+  <artifactId>facebook-util</artifactId>
+  <packaging>jar</packaging>
+  <version>1.8.0</version>
+  <name>Facebook Java Utility</name>
+  <description>Facebook Java Utility</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.facebook.api</groupId>
+      <artifactId>facebook-java-api</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+    </dependency>
+  </dependencies>
+</project>
