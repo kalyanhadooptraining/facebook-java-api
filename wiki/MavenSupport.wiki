@@ -1,14 +1,38 @@
-On the road to getting our releases into the central repository, we
-have to setup our own repository that the central one can look at.  We
-also need to setup our own repository to host snapshots..
+= Maven Support =
 
-So unless we find a better place, I just created a server on my hoste
-( dreamhost ).  You can how add this repository as a snapshot
-repository and get access to the latest code, without having to build
-it yourself.  Please let me know if you have any questions or
-feedback!
+If you are maintaining your dependencies through Maven Repositories,
+this page tells you what repositories to point to.  Please let us know
+if you have any questions or feedback!
 
-add this repository to your project's pom:
+== Releases Repository ==
+
+We are working to get our releases into the Maven Central Repository,
+but for now please add the following repository and dependency into
+your pom.xml.  Please look at Dashboard if you are wondering what the
+latest version is.
+
+
+Add this repository to your project's pom:
+
+    <repository>
+      <id>mrepo-happyfern-snapshot</id>
+      <url>http://mrepo.happyfern.com/maven2/</url>
+    </repository>
+
+Then you have access to this dependency:
+
+    <dependency>
+      <groupId>com.facebook.api</groupId>
+      <artifactId>facebook-java-api</artifactId>
+      <version>1.8.0</version>
+    </dependency> 
+
+== Snapshots Repository ==
+
+The Maven Central Repository will not hold Snapshot releases, so we
+have to maintain our own repository for this purpose.
+
+Add this repository to your project's pom:
 
     <repository>
       <id>mrepo-happyfern-snapshot</id>
@@ -18,10 +42,10 @@ add this repository to your project's pom:
       </snapshots>
     </repository>
 
-then you have access to this dependency:
+Then you have access to this dependency:
 
     <dependency>
       <groupId>com.facebook.api</groupId>
       <artifactId>facebook-java-api</artifactId>
-      <version>1.8-SNAPSHOT</version>
+      <version>1.8.1-SNAPSHOT</version>
     </dependency> 

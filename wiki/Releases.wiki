@@ -5,8 +5,7 @@ You can use the following table to determine which SVN revision is associated wi
 
 
 ||*Release Version*||*SVN Revision*||
-||1.8-final||r238||
-||1.8-SNAPSHOT (MavenSupport)||r230||
+||1.8.0||([http://code.google.com/p/facebook-java-api/source/browse/tags/release-1.8.0 browse svn])||
 ||1.8-beta||r188||
 ||1.8-alpha||r169||
 ||1.7.4||r154||
