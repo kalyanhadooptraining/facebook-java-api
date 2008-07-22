@@ -3071,5 +3071,52 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 */
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException;
+	
+	/**
+	 * Sends a notification.
+	 * 
+	 * @param recipientIds the ids of the users to send the notification to.
+	 * @param notification the notification to send.
+	 * @param announcement set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
+	 * 
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void notifications_send(Collection<Long> recipientIds, String notification, boolean announcement) throws FacebookException, IOException;
+	
+	/**
+	 * Deactivates the specified template bundle.
+	 * 
+	 * @param bundleId the id of the bundle to deactivate.
+	 * 
+	 * @return true if the call succeeds, false otherwise.
+	 * 
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public boolean feed_deactivateTemplateBundleByID(Long bundleId) throws FacebookException, IOException;
+	
+	/**
+	 * Publishes a user action to the feed.
+	 * 
+	 * See: http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
+	 * 
+	 * @param bundleId
+	 *            the template bundle-id to use to render the feed.
+	 * @param templateData
+	 *            a map of name-value pairs to substitute into the template being rendered.
+	 * @param images the images to associate with this feed entry
+	 * @param targetIds
+	 *            the ids of individuals that are the target of this action.
+	 * @param bodyGeneral
+	 *            additional markup to include in the feed story.
+	 * 
+	 * @return true if the call succeeds false otherwise
+	 * 
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public Boolean feed_publishUserAction(Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral) 
+		throws FacebookException, IOException;
 
 }

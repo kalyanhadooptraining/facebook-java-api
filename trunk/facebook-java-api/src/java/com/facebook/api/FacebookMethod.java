@@ -115,6 +115,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FEED_GET_TEMPLATES("facebook.feed.getRegisteredTemplateBundles", 1),
 	FEED_GET_TEMPLATE_BY_ID("facebook.feed.getRegisteredTemplateBundleByID", 2),
 	FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction", 5),
+	FEED_DEACTIVATE_TEMPLATE_BUNDLE("facebook.feed.deactivateTemplateBundleByID", 2),
 	// Marketplace
 	MARKET_CREATE_LISTING("facebook.marketplace.createListing", 4),
 	MARKET_CREATE_LISTING_NOSESSION("facebook.marketplace.createListing", 4),
@@ -219,7 +220,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 						USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION,
 						PHOTOS_CREATE_ALBUM_NOSESSION, PHOTOS_UPLOAD_NOSESSION, USERS_HAS_PERMISSION_NOSESSION, USERS_IS_APP_ADDED_NOSESSION, PAGES_GET_INFO_NO_SESSION,
 						FEED_REGISTER_TEMPLATE, FEED_GET_TEMPLATES, FEED_GET_TEMPLATE_BY_ID, PROFILE_GET_INFO, PROFILE_GET_INFO_OPTIONS, PROFILE_SET_INFO,
-						PROFILE_SET_INFO_OPTIONS, ADMIN_GET_METRICS /* , USERS_GET_STANDARD_INFO */);
+						PROFILE_SET_INFO_OPTIONS, ADMIN_GET_METRICS /* , USERS_GET_STANDARD_INFO */, FEED_DEACTIVATE_TEMPLATE_BUNDLE);
 		listSessionRequired = EnumSet.complementOf( preAuthMethods() );
 		listTakesFile = EnumSet.of( PHOTOS_UPLOAD, PHOTOS_UPLOAD_NOSESSION );
 	}
