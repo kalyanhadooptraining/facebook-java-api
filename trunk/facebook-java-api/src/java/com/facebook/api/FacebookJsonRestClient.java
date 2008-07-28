@@ -235,6 +235,15 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return null;
 		}
 		try {
+			if (val instanceof JSONArray) {
+				try {
+					//sometimes facebook will wrap its primitive types in JSON markup
+					return (String)((JSONArray)val).get( 0 );
+				}
+				catch (Exception e) {
+					logException(e);
+				}
+			}
 			return (String) val;
 		}
 		catch ( ClassCastException cce ) {
@@ -372,6 +381,15 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return null;
 		}
 		if ( ! ( url instanceof String ) ) {
+			if (url instanceof JSONArray) {
+				try {
+					//sometimes facebook will wrap its primitive types in JSON markup
+					return new URL((String)((JSONArray)url).get( 0 ));
+				}
+				catch (Exception e) {
+					logException(e);
+				}
+			}
 			return null;
 		}
 		return ( null == url || "".equals( url ) ) ? null : new URL( (String) url );
@@ -388,6 +406,21 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0;
 		}
 		try {
+			if (val instanceof JSONArray) {
+				try {
+					//sometimes facebook will wrap its primitive types in JSON markup
+					val = ((JSONArray)val).get( 0 );
+					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+						val = 1;
+					}
+					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+						val = 0;
+					}
+				}
+				catch (Exception e) {
+					logException(e);
+				}
+			}
 			if ( val instanceof String ) {
 				// shouldn't happen, really
 				return Integer.parseInt( (String) val );
@@ -415,8 +448,20 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return false;
 		}
 		try {
+			if (val instanceof JSONArray) {
+				try {
+					//sometimes facebook will wrap its primitive types in JSON markup
+					val = ((JSONArray)val).get( 0 );
+				}
+				catch (Exception e) {
+					logException(e);
+				}
+			}
 			if ( val instanceof String ) {
 				return ( ( val != null ) && ( ( val.equals( "true" ) ) || ( val.equals( "1" ) ) ) );
+			}
+			if (val instanceof Boolean) {
+				return (Boolean)val;
 			}
 			return ( (Long) val == 1l );
 		}
@@ -437,6 +482,21 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0l;
 		}
 		try {
+			if (val instanceof JSONArray) {
+				try {
+					//sometimes facebook will wrap its primitive types in JSON markup
+					val = ((JSONArray)val).get( 0 );
+					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+						val = 1l;
+					}
+					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+						val = 0l;
+					}
+				}
+				catch (Exception e) {
+					logException(e);
+				}
+			}
 			if ( val instanceof String ) {
 				// shouldn't happen, really
 				return Long.parseLong( (String) val );
