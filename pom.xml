@@ -25,7 +25,6 @@
   </scm>
   <modules>
     <module>facebook-java-api</module>
-    <module>facebook-util</module>
   </modules>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
