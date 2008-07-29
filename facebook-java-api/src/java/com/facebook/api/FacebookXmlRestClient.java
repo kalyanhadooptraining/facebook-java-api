@@ -182,7 +182,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		this._sessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this._userId = Integer.parseInt( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
+		this._userId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this._expires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
 		if ( this._isDesktop ) {
 			this._sessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
@@ -198,7 +198,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			Document doc = builder.parse( data );
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
-
 			if ( isDebug() ) {
 				printDom( doc, method.methodName() + "| " );
 			}
