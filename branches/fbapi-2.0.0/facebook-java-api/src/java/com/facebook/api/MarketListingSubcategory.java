@@ -31,84 +31,84 @@ package com.facebook.api;
  * Enum for specifying sub-categories in marketplace listings/API calls.
  */
 public enum MarketListingSubcategory {
-    /**
-     * Subcategory for listings involving books
-     */
-    BOOKS("BOOKS"),
-    /**
-     * Subcategory for listings involving furniture
-     */
-    FURNITURE("FURNITURE"),
-    /**
-     * Subcategory for listings involving event tickets
-     */
-    TICKETS("TICKETS"),
-    /**
-     * Subcategory for listings involving electronics
-     */
-    ELECTRONICS("ELECTRONICS"),
-    /**
-     * Subcategory for listings involving cars
-     */
-    AUTOS("AUTOS"),
-    /**
-     * Subcategory for listings involving things not specified by any of the other subcategories
-     */
-    GENERAL("GENERAL"),
-    /**
-     * Subcategory for listings involving rentals
-     */
-    RENTALS("RENTALS"),
-    /**
-     * Subcategory for listings involving sublets
-     */
-    SUBLETS("SUBLETS"),
-    /**
-     * Subcategory for listings involving real-estate
-     */
-    REAL_ESTATE("REALESTATE"),
-    /**
-     * Subcategory for listings seeking books
-     */
-    BOOKS_WANTED("BOOKS_WANTED"),
-    /**
-     * Subcategory for listings seeking furniture
-     */
-    FURNITURE_WANTED("FURNITURE_WANTED"),
-    /**
-     * Subcategory for listings seeking electronics
-     */
-    ELECTRONICS_WANTED("ELECTRONICS_WANTED"),
-    /**
-     * Subcategory for listings seeking cars
-     */
-    AUTOS_WANTED("AUTOS_WANTED"),
-    /**
-     * Subcategory for listings seeking things not specified by any of the other subcategories
-     */
-    GENERAL_WANTED("GENERAL_WANTED"),
-    /**
-     * Subcategory for listings seeking sublets
-     */
-    SUBLETS_WANTED("SUBLETS_WANTED"),
-    /**
-     * Subcategory for listings seeking real-estate
-     */
-    REAL_ESTATE_WANTED("REALESTATE_WANTED");
-    
-    private String name;
-    
-    private MarketListingSubcategory(String name) {
-        this.name = name;
-    }
-    
-    /**
-     * Get the name by which Facebook refers to this category.  This can be used in API calls when talking to their servers.
-     * 
-     * @return the name Facebook has allocated to this category.
-     */
-    public String getName() {
-        return name;
-    }
-    
+	/**
+	 * Subcategory for listings involving books
+	 */
+	BOOKS("BOOKS"),
+	/**
+	 * Subcategory for listings involving furniture
+	 */
+	FURNITURE("FURNITURE"),
+	/**
+	 * Subcategory for listings involving event tickets
+	 */
+	TICKETS("TICKETS"),
+	/**
+	 * Subcategory for listings involving electronics
+	 */
+	ELECTRONICS("ELECTRONICS"),
+	/**
+	 * Subcategory for listings involving cars
+	 */
+	AUTOS("AUTOS"),
+	/**
+	 * Subcategory for listings involving things not specified by any of the other subcategories
+	 */
+	GENERAL("GENERAL"),
+	/**
+	 * Subcategory for listings involving rentals
+	 */
+	RENTALS("RENTALS"),
+	/**
+	 * Subcategory for listings involving sublets
+	 */
+	SUBLETS("SUBLETS"),
+	/**
+	 * Subcategory for listings involving real-estate
+	 */
+	REAL_ESTATE("REALESTATE"),
+	/**
+	 * Subcategory for listings seeking books
+	 */
+	BOOKS_WANTED("BOOKS_WANTED"),
+	/**
+	 * Subcategory for listings seeking furniture
+	 */
+	FURNITURE_WANTED("FURNITURE_WANTED"),
+	/**
+	 * Subcategory for listings seeking electronics
+	 */
+	ELECTRONICS_WANTED("ELECTRONICS_WANTED"),
+	/**
+	 * Subcategory for listings seeking cars
+	 */
+	AUTOS_WANTED("AUTOS_WANTED"),
+	/**
+	 * Subcategory for listings seeking things not specified by any of the other subcategories
+	 */
+	GENERAL_WANTED("GENERAL_WANTED"),
+	/**
+	 * Subcategory for listings seeking sublets
+	 */
+	SUBLETS_WANTED("SUBLETS_WANTED"),
+	/**
+	 * Subcategory for listings seeking real-estate
+	 */
+	REAL_ESTATE_WANTED("REALESTATE_WANTED");
+
+	private String name;
+
+	private MarketListingSubcategory( String name ) {
+		this.name = name;
+	}
+
+	/**
+	 * Get the name by which Facebook refers to this category. This can be used in API calls when talking to their servers.
+	 * 
+	 * @return the name Facebook has allocated to this category.
+	 */
+	public String getName() {
+		return name;
+	}
+
 }
