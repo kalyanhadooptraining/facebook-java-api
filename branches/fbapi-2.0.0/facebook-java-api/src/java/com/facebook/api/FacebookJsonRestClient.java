@@ -235,13 +235,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return null;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					return (String)((JSONArray)val).get( 0 );
+					// sometimes facebook will wrap its primitive types in JSON markup
+					return (String) ( (JSONArray) val ).get( 0 );
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					logException( e );
 				}
 			}
 			return (String) val;
@@ -380,19 +380,19 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( url == null ) {
 			return null;
 		}
-		if ( ! ( url instanceof String ) ) {
-			if (url instanceof JSONArray) {
-				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					return new URL((String)((JSONArray)url).get( 0 ));
-				}
-				catch (Exception e) {
-					logException(e);
-				}
-			}
-			return null;
+		if ( url instanceof String ) {
+			return ( "".equals( url ) ) ? null : new URL( (String) url );
 		}
-		return ( null == url || "".equals( url ) ) ? null : new URL( (String) url );
+		if ( url instanceof JSONArray ) {
+			try {
+				// sometimes facebook will wrap its primitive types in JSON markup
+				return new URL( (String) ( (JSONArray) url ).get( 0 ) );
+			}
+			catch ( Exception e ) {
+				logException( e );
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -406,19 +406,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
-					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
+					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 1;
-					}
-					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 0;
 					}
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					logException( e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -448,27 +447,30 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return false;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					logException( e );
 				}
 			}
 			if ( val instanceof String ) {
-				return ( ( val != null ) && ( ( val.equals( "true" ) ) || ( val.equals( "1" ) ) ) );
+				return ( val.equals( "true" ) || val.equals( "1" ) );
 			}
-			if (val instanceof Boolean) {
-				return (Boolean)val;
+			if ( val instanceof Boolean ) {
+				return (Boolean) val;
+			}
+			if ( val instanceof Number ) {
+				return ( (Number) val ).longValue() == 1l;
 			}
 			return ( (Long) val == 1l );
 		}
 		catch ( ClassCastException cce ) {
 			logException( cce );
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -482,19 +484,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0l;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
-					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
+					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 1l;
-					}
-					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 0l;
 					}
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					logException( e );
 				}
 			}
 			if ( val instanceof String ) {
