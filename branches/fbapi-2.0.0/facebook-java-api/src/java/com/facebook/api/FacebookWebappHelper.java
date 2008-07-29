@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * Utility class to handle authorization and authentication of requests. Objects of this class are meant to be created for every request. They are stateless and are not
  * supposed to be kept in the session.
  */
-public class Facebook {
+public class FacebookWebappHelper {
 
 	private HttpServletRequest request;
 
@@ -38,7 +38,7 @@ public class Facebook {
 
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
-	public Facebook( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
 		this.request = request;
 		this.response = response;
 		this.apiKey = apiKey;
