@@ -31,6 +31,7 @@
  */
 package com.facebook.api;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,10 +41,10 @@ import org.json.JSONObject;
 /**
  * This utility represents a set of application properties for use in the facebook.admin_setApplicatoinProperty API call.
  */
-public class ApplicationPropertySet {
+public class ApplicationPropertySet implements Serializable {
 
-	private Map<ApplicationProperty,Boolean> _attributesBool = null;
-	private Map<ApplicationProperty,CharSequence> _attributesString = null;
+	private Map<ApplicationProperty,Boolean> _attributesBool;
+	private Map<ApplicationProperty,CharSequence> _attributesString;
 
 	public ApplicationPropertySet() {
 		// empty
@@ -64,9 +65,9 @@ public class ApplicationPropertySet {
 			ApplicationProperty prop = entry.getKey();
 			String value = entry.getValue();
 			if ( prop.isBooleanProperty() ) {
-				this.setBoolProperty( prop, "1".equals( value ) );
+				setBoolProperty( prop, "1".equals( value ) );
 			} else if ( prop.isStringProperty() ) {
-				this.setStringProperty( prop, value );
+				setStringProperty( prop, value );
 			}
 		}
 	}
@@ -83,10 +84,10 @@ public class ApplicationPropertySet {
 		if ( null == prop || !prop.isBooleanProperty() ) {
 			throw new IllegalArgumentException( "Boolean property expected" );
 		}
-		if ( null == this._attributesBool ) {
-			this._attributesBool = new HashMap<ApplicationProperty,Boolean>();
+		if ( null == _attributesBool ) {
+			_attributesBool = new HashMap<ApplicationProperty,Boolean>();
 		}
-		this._attributesBool.put( prop, value );
+		_attributesBool.put( prop, value );
 	}
 
 	/**
@@ -101,7 +102,7 @@ public class ApplicationPropertySet {
 		if ( null == prop || !prop.isBooleanProperty() ) {
 			throw new IllegalArgumentException( "Boolean property expected" );
 		}
-		return ( null == this._attributesBool ) ? null : this._attributesBool.get( prop );
+		return ( null == _attributesBool ) ? null : _attributesBool.get( prop );
 	}
 
 	/**
@@ -116,10 +117,10 @@ public class ApplicationPropertySet {
 		if ( null == prop || !prop.isStringProperty() ) {
 			throw new IllegalArgumentException( "String property expected" );
 		}
-		if ( null == this._attributesString ) {
-			this._attributesString = new HashMap<ApplicationProperty,CharSequence>();
+		if ( null == _attributesString ) {
+			_attributesString = new HashMap<ApplicationProperty,CharSequence>();
 		}
-		this._attributesString.put( prop, value );
+		_attributesString.put( prop, value );
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class ApplicationPropertySet {
 		if ( null == prop || !prop.isStringProperty() ) {
 			throw new IllegalArgumentException( "String property expected" );
 		}
-		return ( null == this._attributesString ) ? null : this._attributesString.get( prop );
+		return ( null == _attributesString ) ? null : _attributesString.get( prop );
 	}
 
 	/**
@@ -145,9 +146,9 @@ public class ApplicationPropertySet {
 	 */
 	public void removeProperty( ApplicationProperty prop ) {
 		if ( prop.isBooleanProperty() ) {
-			this._attributesBool.remove( prop );
+			_attributesBool.remove( prop );
 		} else if ( prop.isStringProperty() ) {
-			this._attributesString.remove( prop );
+			_attributesString.remove( prop );
 		}
 	}
 
@@ -155,7 +156,7 @@ public class ApplicationPropertySet {
 	 * @return true if this set is empty false otherwise
 	 */
 	public boolean isEmpty() {
-		return ( null == this._attributesString || this._attributesString.isEmpty() ) && ( null == this._attributesBool || this._attributesBool.isEmpty() );
+		return ( null == _attributesString || _attributesString.isEmpty() ) && ( null == _attributesBool || _attributesBool.isEmpty() );
 	}
 
 	/**
@@ -165,8 +166,8 @@ public class ApplicationPropertySet {
 	 */
 	public JSONObject jsonify() {
 		JSONObject ret = new JSONObject();
-		if ( null != this._attributesString ) {
-			for ( Map.Entry<ApplicationProperty,CharSequence> entry : this._attributesString.entrySet() ) {
+		if ( null != _attributesString ) {
+			for ( Map.Entry<ApplicationProperty,CharSequence> entry : _attributesString.entrySet() ) {
 				try {
 					ret.put( entry.getKey().propertyName(), entry.getValue().toString() );
 				}
@@ -175,8 +176,8 @@ public class ApplicationPropertySet {
 				}
 			}
 		}
-		if ( null != this._attributesBool ) {
-			for ( Map.Entry<ApplicationProperty,Boolean> entry : this._attributesBool.entrySet() ) {
+		if ( null != _attributesBool ) {
+			for ( Map.Entry<ApplicationProperty,Boolean> entry : _attributesBool.entrySet() ) {
 				try {
 					ret.put( entry.getKey().propertyName(), entry.getValue() );
 				}
@@ -194,7 +195,7 @@ public class ApplicationPropertySet {
 	 * @return a JSON string
 	 */
 	public String toJsonString() {
-		return this.jsonify().toString();
+		return jsonify().toString();
 	}
 
 }

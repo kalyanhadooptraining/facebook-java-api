@@ -18,16 +18,22 @@
 package com.facebook.api;
 
 /**
- * This interface provides backwards compatibility between Pair<URL, URL> and IFeedImage instances 
- * used in feed.* API calls, so that code that was written using the former method is not forced to
- * be rewritten in order to conform to the latter. 
+ * This interface provides backwards compatibility between Pair<URL, URL> and IFeedImage instances used in feed.* API calls, so that code that was written using the
+ * former method is not forced to be rewritten in order to conform to the latter.
  * 
- * @param <N> The type of the first object in the pair.
- * @param <V> The type of the second object in the pair.
+ * @param <N>
+ *            The type of the first object in the pair.
+ * @param <V>
+ *            The type of the second object in the pair.
  */
-public interface IPair<N, V> {
-    public void setFirst(N first);
-    public N getFirst();
-    public void setSecond(V second);
-    public V getSecond();
+public interface IPair<N,V> {
+
+	public void setFirst( N first );
+
+	public N getFirst();
+
+	public void setSecond( V second );
+
+	public V getSecond();
+
 }

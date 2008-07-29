@@ -1,11 +1,13 @@
 package com.facebook.api;
 
+import java.io.Serializable;
+
 import org.json.JSONObject;
 
 /**
  * A simple data structure for storing a story-template used in the feed_registerTemplateBundle API call.
  */
-public class BundleStoryTemplate {
+public class BundleStoryTemplate implements Serializable {
 
 	private String body;
 	private String title;

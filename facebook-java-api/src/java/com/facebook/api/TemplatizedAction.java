@@ -40,6 +40,7 @@ import org.json.JSONObject;
  * ridiculously complex.
  */
 public class TemplatizedAction {
+
 	private String titleTemplate;
 	private String bodyTemplate;
 	private String bodyGeneral;
@@ -466,4 +467,5 @@ public class TemplatizedAction {
 	public void setPageActorId( Long pageActorId ) {
 		this.pageActorId = pageActorId;
 	}
+
 }
