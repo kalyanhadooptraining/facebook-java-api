@@ -3340,4 +3340,5 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		
  		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
  	}
+	
 }
