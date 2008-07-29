@@ -196,12 +196,6 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
-	@Override
-	public FriendsGetResponse friends_get() throws IOException, FacebookException {
-		return (FriendsGetResponse) super.friends_get();
-	}
-
-
 	/**
 	 * Constructor.
 	 * 
@@ -288,6 +282,31 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		return parse();
 	}
 
+	private FriendsGetResponse cacheFriendsList;
+
+	@Override
+	public FriendsGetResponse friends_get() throws IOException, FacebookException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = (FriendsGetResponse) super.friends_get();
+		}
+		return cacheFriendsList;
+	}
+
+	public FriendsGetResponse getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	public void setCacheFriendsList( List<Long> ids ) {
+		cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static FriendsGetResponse toFriendsGetResponse( List<Long> ids ) {
+		FriendsGetResponse out = new FriendsGetResponse();
+		out.setList( true );
+		out.getUid().addAll( ids );
+		return out;
+	}
+
 	/**
 	 * Call this function to retrieve the session information after your user has logged in.
 	 * 
@@ -295,18 +314,15 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		SessionInfo d = (SessionInfo) obj.getValue();
-		this._sessionKey = d.getSessionKey();
-		this._userId = d.getUid();
-		this._expires = (long) d.getExpires();
+		this.cacheSessionKey = d.getSessionKey();
+		this.cacheUserId = d.getUid();
+		this.cacheSessionExpires = (long) d.getExpires();
 		if ( this._isDesktop ) {
-			this._sessionSecret = d.getSecret();
+			this.cacheSessionSecret = d.getSecret();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	/**

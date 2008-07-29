@@ -51,6 +51,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.JSONArray;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -177,17 +178,14 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
-		this._sessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this._userId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-		this._expires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
+		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
 		if ( this._isDesktop ) {
-			this._sessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
+			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
@@ -417,4 +415,54 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 		return d.getFirstChild().getTextContent();
 	}
+
+	protected Document cacheFriendsList;
+
+	/**
+	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
+	 * 
+	 * @return the friends-list stored in the API client.
+	 */
+	public Document getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	/**
+	 * Set/override the list of friends stored in the client.
+	 * 
+	 * @param friendsList
+	 *            the new list to use.
+	 */
+	public void setCacheFriendsList( List<Long> ids ) {
+		this.cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static Document toFriendsGetResponse( List<Long> ids ) {
+		try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
+			root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );
+			root.setAttribute( "list", "true" );
+			for ( Long id : ids ) {
+				Element uid = doc.createElement( "uid" );
+				uid.appendChild( doc.createTextNode( Long.toString( id ) ) );
+				root.appendChild( uid );
+			}
+			doc.appendChild( root );
+			return doc;
+		}
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( ex );
+		}
+	}
+
+	@Override
+	public Document friends_get() throws FacebookException, IOException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = super.friends_get();
+		}
+		return cacheFriendsList;
+	}
+
 }

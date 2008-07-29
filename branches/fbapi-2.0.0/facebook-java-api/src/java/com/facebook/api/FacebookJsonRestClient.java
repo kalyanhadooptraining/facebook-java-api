@@ -262,24 +262,19 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		try {
-			this._sessionKey = d.getString( "session_key" );
-			Object uid = d.get( "uid" );
-			Object expires = d.get( "expires" );
-			this._userId = d.getLong( "uid" );
-			this._expires = d.getLong( "expires" );
+			this.cacheSessionKey = d.getString( "session_key" );
+			this.cacheUserId = d.getLong( "uid" );
+			this.cacheSessionExpires = d.getLong( "expires" );
 			if ( this.isDesktop() ) {
-				this._sessionSecret = d.getString( "secret" );
+				this.cacheSessionSecret = d.getString( "secret" );
 			}
 		}
 		catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	/**
@@ -298,14 +293,12 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 */
 	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
 		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String line;
 		while ( ( line = in.readLine() ) != null ) {
 			buffer.append( line );
 		}
-
-		String jsonResp = new String( buffer );
-
+		String jsonResp = buffer.toString();
 		Object json = null;
 		if ( this.rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
 			try {
@@ -341,20 +334,17 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
 			try {
-				Object errorCode = jsonObj.get( "error_code" );
-				if ( errorCode != null ) {
-					String message = (String) jsonObj.get( "error_msg" );
-					Integer code;
-					if ( errorCode instanceof Integer ) {
-						code = (Integer) errorCode;
-					} else {
-						code = ( (Long) errorCode ).intValue();
+				if ( jsonObj.has( "error_code" ) ) {
+					int code = jsonObj.getInt( "error_code" );
+					String message = null;
+					if ( jsonObj.has( "error_msg" ) ) {
+						message = jsonObj.getString( "error_msg" );
 					}
 					throw new FacebookException( code, message );
 				}
 			}
 			catch ( JSONException ignored ) {
-				// the call completed normally
+				// ignore
 			}
 		}
 		return json;
@@ -616,6 +606,43 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			}
 		}
 		return result;
+	}
+
+	protected JSONArray cacheFriendsList;
+
+	/**
+	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
+	 * 
+	 * @return the friends-list stored in the API client.
+	 */
+	public JSONArray getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	/**
+	 * Set/override the list of friends stored in the client.
+	 * 
+	 * @param friendsList
+	 *            the new list to use.
+	 */
+	public void setCacheFriendsList( List<Long> ids ) {
+		this.cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static JSONArray toFriendsGetResponse( List<Long> ids ) {
+		JSONArray out = new JSONArray();
+		for ( Long id : ids ) {
+			out.put( id );
+		}
+		return out;
+	}
+
+	@Override
+	public JSONArray friends_get() throws FacebookException, IOException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = (JSONArray) super.friends_get();
+		}
+		return cacheFriendsList;
 	}
 
 }

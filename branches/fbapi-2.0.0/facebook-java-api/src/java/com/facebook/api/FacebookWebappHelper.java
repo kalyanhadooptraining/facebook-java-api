@@ -16,17 +16,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.w3c.dom.Document;
+
 /**
  * Utility class to handle authorization and authentication of requests. Objects of this class are meant to be created for every request. They are stateless and are not
  * supposed to be kept in the session.
  */
-public class FacebookWebappHelper {
+public class FacebookWebappHelper<T> {
 
 	private HttpServletRequest request;
 
 	private HttpServletResponse response;
 
-	protected FacebookRestClient apiClient;
+	protected IFacebookRestClient<T> apiClient;
 
 	protected String apiKey;
 
@@ -38,51 +40,67 @@ public class FacebookWebappHelper {
 
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
+	/** @deprecated please use different constructor, or factory methods */
+	@Deprecated
 	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+		this( request, response, apiKey, secret, (IFacebookRestClient<T>) new FacebookXmlRestClient( apiKey, secret ) );
+	}
+
+	public static FacebookWebappHelper<Document> newInstanceXml( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+		return new FacebookWebappHelper<Document>( request, response, apiKey, secret, new FacebookXmlRestClient( apiKey, secret ) );
+	}
+
+	public static FacebookWebappHelper<Object> newInstanceJson( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+		return new FacebookWebappHelper<Object>( request, response, apiKey, secret, new FacebookJsonRestClient( apiKey, secret ) );
+	}
+
+	public static FacebookWebappHelper<Object> newInstanceJaxb( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+		return new FacebookWebappHelper<Object>( request, response, apiKey, secret, new FacebookJaxbRestClient( apiKey, secret ) );
+	}
+
+	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.request = request;
 		this.response = response;
 		this.apiKey = apiKey;
 		this.secret = secret;
-		this.apiClient = new FacebookRestClient( this.apiKey, this.secret );
+		this.apiClient = apiClient;
 		validateFbParams();
-		// caching of friends
-		String friends = fbParams.get( "friends" );
-		if ( friends != null && !friends.equals( "" ) ) {
-			List<Long> friendsList = new ArrayList<Long>();
-			for ( String friend : friends.split( "," ) ) {
-				friendsList.add( Long.parseLong( friend ) );
+		{
+			// caching of friends
+			String friends = fbParams.get( "friends" );
+			if ( friends != null && !friends.equals( "" ) ) {
+				List<Long> friendsList = new ArrayList<Long>();
+				for ( String friend : friends.split( "," ) ) {
+					friendsList.add( Long.parseLong( friend ) );
+				}
+				apiClient.setCacheFriendsList( friendsList );
 			}
-			apiClient._setFriendsList( friendsList );
 		}
-		// caching of the "added" value
-		String added = fbParams.get( "added" );
-		if ( added != null ) {
-			apiClient._setAppAdded( added.equals( "1" ) );
+		{
+			// caching of the "added" value
+			String added = fbParams.get( "added" );
+			if ( added != null ) {
+				apiClient.setCacheAppAdded( added.equals( "1" ) );
+			}
 		}
 	}
 
 	/**
 	 * Returns the internal FacebookRestClient object.
-	 * 
-	 * @return
 	 */
-	public FacebookRestClient getFacebookRestClient() {
+	public IFacebookRestClient<T> getFacebookRestClient() {
 		return apiClient;
 	}
 
 	/**
 	 * Synonym for {@link #getFacebookRestClient()}
-	 * 
-	 * @return
 	 */
-	public FacebookRestClient get_api_client() {
-		return getFacebookRestClient();
+	public IFacebookRestClient<T> get_api_client() {
+		return apiClient;
 	}
 
 	/**
 	 * Returns the secret key used to initialize this object.
-	 * 
-	 * @return
 	 */
 	public String getSecret() {
 		return secret;
@@ -90,8 +108,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Returns the api key used to initialize this object.
-	 * 
-	 * @return
 	 */
 	public String getApiKey() {
 		return apiKey;
@@ -141,7 +157,7 @@ public class FacebookWebappHelper {
 			else if ( request.getParameter( "auth_token" ) != null ) {
 				try {
 					doGetSession( request.getParameter( "auth_token" ) );
-					setUser( apiClient._userId, apiClient._sessionKey, apiClient._expires );
+					setUser( apiClient.getCacheUserId(), apiClient.getCacheSessionKey(), apiClient.getCacheSessionExpires() );
 				}
 				catch ( Exception e ) {
 					// if auth_token is stale (browser url doesn't change,
@@ -195,7 +211,6 @@ public class FacebookWebappHelper {
 			}
 		}
 		this.user = user_id;
-		this.apiClient._setSessionKey( session_key );
 	}
 
 	private void addCookie( String key, String value, int age ) {
@@ -261,8 +276,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Returns true if the application is in a frame or a canvas.
-	 * 
-	 * @return
 	 */
 	public boolean inFrame() {
 		return fbParams.containsKey( FacebookParam.IN_CANVAS.getSignatureName() ) || fbParams.containsKey( FacebookParam.IN_IFRAME.getSignatureName() );
@@ -270,8 +283,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Returns true if the application is in a canvas.
-	 * 
-	 * @return
 	 */
 	public boolean inFbCanvas() {
 		return fbParams.containsKey( FacebookParam.IN_CANVAS.getSignatureName() );
@@ -287,8 +298,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Synonym for {@link #getUser()}
-	 * 
-	 * @return
 	 */
 	public Long get_loggedin_user() {
 		return getUser();
@@ -296,8 +305,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Returns the user id of the logged in user associated with this object
-	 * 
-	 * @return
 	 */
 	public Long getUser() {
 		return this.user;
@@ -305,8 +312,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * Returns the url of the currently requested page
-	 * 
-	 * @return
 	 */
 	private String currentUrl() {
 		String url = request.getScheme() + "://" + request.getServerName();
@@ -326,8 +331,9 @@ public class FacebookWebappHelper {
 	 * @return true if the user hasn't logged in yet and a redirect was issued.
 	 */
 	public boolean requireLogin( String next ) {
-		if ( getUser() != null )
+		if ( isLogin() ) {
 			return false;
+		}
 		redirect( getLoginUrl( next, inFrame() ) );
 		return true;
 	}
@@ -340,8 +346,9 @@ public class FacebookWebappHelper {
 	 * @return true if the user hasn't added the application yet and a redirect was issued.
 	 */
 	public boolean requireAdd( String next ) {
-		if ( getUser() != null && isAdded() )
+		if ( getUser() != null && isAdded() ) {
 			return false;
+		}
 		redirect( getAddUrl( next ) );
 		return true;
 	}
@@ -366,7 +373,6 @@ public class FacebookWebappHelper {
 	 * 
 	 * @param next
 	 *            indicates the page to which facebook should redirect the user has logged in.
-	 * @return
 	 */
 	public String getLoginUrl( String next, boolean canvas ) {
 		String url = getFacebookUrl( null ) + "/login.php?v=1.0&api_key=" + apiKey;
@@ -385,7 +391,6 @@ public class FacebookWebappHelper {
 	 * 
 	 * @param next
 	 *            indicates the page to which facebook should redirect the user after the application is added.
-	 * @return
 	 */
 	public String getAddUrl( String next ) {
 		String url = getFacebookUrl( null ) + "/add.php?api_key=" + apiKey;
@@ -402,11 +407,11 @@ public class FacebookWebappHelper {
 	 * Returns a url to a facebook sub-domain
 	 * 
 	 * @param subDomain
-	 * @return
 	 */
 	public static String getFacebookUrl( String subDomain ) {
-		if ( subDomain == null || subDomain.equals( "" ) )
+		if ( subDomain == null || subDomain.equals( "" ) ) {
 			subDomain = "www";
+		}
 		return "http://" + subDomain + ".facebook.com";
 	}
 
@@ -441,7 +446,6 @@ public class FacebookWebappHelper {
 	 *            a map of the parameters. Typically these are the request parameters that start with "fb_sig"
 	 * @param expected_sig
 	 *            the expected signature
-	 * @return
 	 */
 	public boolean verifySignature( Map<String,String> params, String expected_sig ) {
 		return generateSig( params, secret ).equals( expected_sig );
@@ -449,8 +453,6 @@ public class FacebookWebappHelper {
 
 	/**
 	 * returns a String->String map of the request parameters. It doesn't matter if the request method is GET or POST.
-	 * 
-	 * @return
 	 */
 	private Map<String,String> _getRequestParams() {
 		Map<String,String> results = new HashMap<String,String>();
