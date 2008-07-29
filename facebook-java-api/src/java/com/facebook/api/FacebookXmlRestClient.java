@@ -63,7 +63,10 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
 /**
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of
  * {@link org.w3c.dom.Document}.
+ * 
+ * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
  */
+@Deprecated
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
 	protected boolean namespaceAware = true;
