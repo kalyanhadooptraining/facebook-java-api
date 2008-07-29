@@ -87,7 +87,10 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of Document.
  * 
  * Allocate an instance of this class to make Facebook API requests.
+ * 
+ * @deprecated this is provided for legacy support only. Please use FacebookXmlRestClient instead if you want to use the Facebook Platform XML API.
  */
+@Deprecated
 public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	/**
@@ -4227,15 +4230,15 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String, CharSequence>("template_bundle_id", Long.toString( bundleId )) );
-		return extractBoolean(this.callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ));
+		params.add( new Pair<String,CharSequence>( "template_bundle_id", Long.toString( bundleId ) ) );
+		return extractBoolean( this.callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ) );
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException {
 		if ( null == notification || "".equals( notification ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
 		}
-		Pair<String, CharSequence> type = new Pair<String, CharSequence>("type", announcement ? "announcement" : "general");
+		Pair<String,CharSequence> type = new Pair<String,CharSequence>( "type", announcement ? "announcement" : "general" );
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
 					"notification", notification ), type );
@@ -4243,55 +4246,49 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ), type );
 		}
 	}
-	
+
 	/**
 	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
 	 */
-	public Boolean feed_publishUserAction(Long bundleId, 
-									      Map<String,String> templateData,
-									      List<IFeedImage> images,
-									      List<Long> targetIds, 
-									      String bodyGeneral) 
-		throws FacebookException, IOException {
-		
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+			throws FacebookException, IOException {
+
 		// validate maximum of 4 images
-		if (images != null && images.size() > 4) {
-			throw new IllegalArgumentException("Maximum of 4 images allowed per feed item.");
+		if ( images != null && images.size() > 4 ) {
+			throw new IllegalArgumentException( "Maximum of 4 images allowed per feed item." );
 		}
-		
- 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String,CharSequence>("template_bundle_id", Long.toString(bundleId)));
-		
-		if (targetIds != null && !targetIds.isEmpty()) {
- 			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
- 		}
-		
- 		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
- 			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
- 		}
-		
+
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		params.add( new Pair<String,CharSequence>( "template_bundle_id", Long.toString( bundleId ) ) );
+
+		if ( targetIds != null && !targetIds.isEmpty() ) {
+			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
+		}
+
+		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
+			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
+		}
+
 		JSONObject jsonTemplateData = new JSONObject();
- 		if ( templateData != null && !templateData.isEmpty() ) {
- 			for ( String key : templateData.keySet() ) {
- 				try {
+		if ( templateData != null && !templateData.isEmpty() ) {
+			for ( String key : templateData.keySet() ) {
+				try {
 					jsonTemplateData.put( key, templateData.get( key ) );
- 				}
+				}
 				catch ( Exception exception ) {
-					throw new RuntimeException("Error constructing JSON object", exception);
- 				}
- 			}
- 		}
- 
+					throw new RuntimeException( "Error constructing JSON object", exception );
+				}
+			}
+		}
+
 		/*
-		 * Associate images to "images" label in the form of: 
+		 * Associate images to "images" label in the form of:
 		 * 
-		 * "images":[{"src":"http:\/\/www.facebook.com\/images\/image1.gif",
-		 * 		      "href":"http:\/\/www.facebook.com"},
-		 * 		     {"src":"http:\/\/www.facebook.com\/images\/image2.gif",
-		 * 			  "href":"http:\/\/www.facebook.com"}] 
+		 * "images":[{"src":"http:\/\/www.facebook.com\/images\/image1.gif", "href":"http:\/\/www.facebook.com"}, {"src":"http:\/\/www.facebook.com\/images\/image2.gif",
+		 * "href":"http:\/\/www.facebook.com"}]
 		 */
 		if ( images != null && !images.isEmpty() ) {
-			
+
 			try {
 				// create images array
 				JSONArray jsonArray = new JSONArray();
@@ -4302,21 +4299,20 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 					jsonImage.put( "href", image.getLinkUrl().toExternalForm() );
 					jsonArray.put( i, jsonImage );
 				}
-				
+
 				// associate to key label
-				jsonTemplateData.put("images", jsonArray);
+				jsonTemplateData.put( "images", jsonArray );
 			}
 			catch ( Exception exception ) {
-				throw new RuntimeException("Error constructing JSON object", exception);
+				throw new RuntimeException( "Error constructing JSON object", exception );
 			}
 		}
 
 		// associate to param
-		if (jsonTemplateData.length() > 0) {
-			params.add( new Pair<String,CharSequence>( "template_data", 
-													   jsonTemplateData.toString() ) );
+		if ( jsonTemplateData.length() > 0 ) {
+			params.add( new Pair<String,CharSequence>( "template_data", jsonTemplateData.toString() ) );
 		}
-		
- 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
- 	}
+
+		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+	}
 }
