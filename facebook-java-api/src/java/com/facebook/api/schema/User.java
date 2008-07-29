@@ -242,7 +242,7 @@ public class User {
 	 * 
 	 */
 	public void setAboutMe( JAXBElement<String> value ) {
-		this.aboutMe = ( (JAXBElement<String>) value );
+		this.aboutMe = value;
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class User {
 	 * 
 	 */
 	public void setActivities( JAXBElement<String> value ) {
-		this.activities = ( (JAXBElement<String>) value );
+		this.activities = value;
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class User {
 	 * 
 	 */
 	public void setBirthday( JAXBElement<String> value ) {
-		this.birthday = ( (JAXBElement<String>) value );
+		this.birthday = value;
 	}
 
 	/**
@@ -326,7 +326,7 @@ public class User {
 	 * 
 	 */
 	public void setBooks( JAXBElement<String> value ) {
-		this.books = ( (JAXBElement<String>) value );
+		this.books = value;
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class User {
 	 * 
 	 */
 	public void setCurrentLocation( JAXBElement<Location> value ) {
-		this.currentLocation = ( (JAXBElement<Location>) value );
+		this.currentLocation = value;
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class User {
 	 * 
 	 */
 	public void setEducationHistory( JAXBElement<User.EducationHistory> value ) {
-		this.educationHistory = ( (JAXBElement<User.EducationHistory>) value );
+		this.educationHistory = value;
 	}
 
 	/**
@@ -410,7 +410,7 @@ public class User {
 	 * 
 	 */
 	public void setHometownLocation( JAXBElement<Location> value ) {
-		this.hometownLocation = ( (JAXBElement<Location>) value );
+		this.hometownLocation = value;
 	}
 
 	/**
@@ -431,7 +431,7 @@ public class User {
 	 * 
 	 */
 	public void setHsInfo( JAXBElement<HsInfo> value ) {
-		this.hsInfo = ( (JAXBElement<HsInfo>) value );
+		this.hsInfo = value;
 	}
 
 	/**
@@ -452,7 +452,7 @@ public class User {
 	 * 
 	 */
 	public void setInterests( JAXBElement<String> value ) {
-		this.interests = ( (JAXBElement<String>) value );
+		this.interests = value;
 	}
 
 	/**
@@ -515,7 +515,7 @@ public class User {
 	 * 
 	 */
 	public void setMeetingFor( JAXBElement<User.MeetingFor> value ) {
-		this.meetingFor = ( (JAXBElement<User.MeetingFor>) value );
+		this.meetingFor = value;
 	}
 
 	/**
@@ -536,7 +536,7 @@ public class User {
 	 * 
 	 */
 	public void setMeetingSex( JAXBElement<User.MeetingSex> value ) {
-		this.meetingSex = ( (JAXBElement<User.MeetingSex>) value );
+		this.meetingSex = value;
 	}
 
 	/**
@@ -557,7 +557,7 @@ public class User {
 	 * 
 	 */
 	public void setMovies( JAXBElement<String> value ) {
-		this.movies = ( (JAXBElement<String>) value );
+		this.movies = value;
 	}
 
 	/**
@@ -578,7 +578,7 @@ public class User {
 	 * 
 	 */
 	public void setMusic( JAXBElement<String> value ) {
-		this.music = ( (JAXBElement<String>) value );
+		this.music = value;
 	}
 
 	/**
@@ -620,7 +620,7 @@ public class User {
 	 * 
 	 */
 	public void setNotesCount( JAXBElement<Integer> value ) {
-		this.notesCount = ( (JAXBElement<Integer>) value );
+		this.notesCount = value;
 	}
 
 	/**
@@ -641,7 +641,7 @@ public class User {
 	 * 
 	 */
 	public void setPic( JAXBElement<String> value ) {
-		this.pic = ( (JAXBElement<String>) value );
+		this.pic = value;
 	}
 
 	/**
@@ -662,7 +662,7 @@ public class User {
 	 * 
 	 */
 	public void setPicBig( JAXBElement<String> value ) {
-		this.picBig = ( (JAXBElement<String>) value );
+		this.picBig = value;
 	}
 
 	/**
@@ -683,7 +683,7 @@ public class User {
 	 * 
 	 */
 	public void setPicSmall( JAXBElement<String> value ) {
-		this.picSmall = ( (JAXBElement<String>) value );
+		this.picSmall = value;
 	}
 
 	/**
@@ -704,7 +704,7 @@ public class User {
 	 * 
 	 */
 	public void setPolitical( JAXBElement<String> value ) {
-		this.political = ( (JAXBElement<String>) value );
+		this.political = value;
 	}
 
 	/**
@@ -725,7 +725,7 @@ public class User {
 	 * 
 	 */
 	public void setProfileUpdateTime( JAXBElement<Integer> value ) {
-		this.profileUpdateTime = ( (JAXBElement<Integer>) value );
+		this.profileUpdateTime = value;
 	}
 
 	/**
@@ -746,7 +746,7 @@ public class User {
 	 * 
 	 */
 	public void setQuotes( JAXBElement<String> value ) {
-		this.quotes = ( (JAXBElement<String>) value );
+		this.quotes = value;
 	}
 
 	/**
@@ -767,7 +767,7 @@ public class User {
 	 * 
 	 */
 	public void setRelationshipStatus( JAXBElement<String> value ) {
-		this.relationshipStatus = ( (JAXBElement<String>) value );
+		this.relationshipStatus = value;
 	}
 
 	/**
@@ -788,7 +788,7 @@ public class User {
 	 * 
 	 */
 	public void setReligion( JAXBElement<String> value ) {
-		this.religion = ( (JAXBElement<String>) value );
+		this.religion = value;
 	}
 
 	/**
@@ -809,7 +809,7 @@ public class User {
 	 * 
 	 */
 	public void setSex( JAXBElement<String> value ) {
-		this.sex = ( (JAXBElement<String>) value );
+		this.sex = value;
 	}
 
 	/**
@@ -830,7 +830,7 @@ public class User {
 	 * 
 	 */
 	public void setSignificantOtherId( JAXBElement<Long> value ) {
-		this.significantOtherId = ( (JAXBElement<Long>) value );
+		this.significantOtherId = value;
 	}
 
 	/**
@@ -851,7 +851,7 @@ public class User {
 	 * 
 	 */
 	public void setStatus( JAXBElement<UserStatus> value ) {
-		this.status = ( (JAXBElement<UserStatus>) value );
+		this.status = value;
 	}
 
 	/**
@@ -872,7 +872,7 @@ public class User {
 	 * 
 	 */
 	public void setTimezone( JAXBElement<BigDecimal> value ) {
-		this.timezone = ( (JAXBElement<BigDecimal>) value );
+		this.timezone = value;
 	}
 
 	/**
@@ -893,7 +893,7 @@ public class User {
 	 * 
 	 */
 	public void setTv( JAXBElement<String> value ) {
-		this.tv = ( (JAXBElement<String>) value );
+		this.tv = value;
 	}
 
 	/**
@@ -935,7 +935,7 @@ public class User {
 	 * 
 	 */
 	public void setWallCount( JAXBElement<Integer> value ) {
-		this.wallCount = ( (JAXBElement<Integer>) value );
+		this.wallCount = value;
 	}
 
 	/**
@@ -956,7 +956,7 @@ public class User {
 	 * 
 	 */
 	public void setWorkHistory( JAXBElement<User.WorkHistory> value ) {
-		this.workHistory = ( (JAXBElement<User.WorkHistory>) value );
+		this.workHistory = value;
 	}
 
 	/**
@@ -977,7 +977,7 @@ public class User {
 	 * 
 	 */
 	public void setPicSquare( JAXBElement<String> value ) {
-		this.picSquare = ( (JAXBElement<String>) value );
+		this.picSquare = value;
 	}
 
 	/**
@@ -998,7 +998,7 @@ public class User {
 	 * 
 	 */
 	public void setHasAddedApp( JAXBElement<Boolean> value ) {
-		this.hasAddedApp = ( (JAXBElement<Boolean>) value );
+		this.hasAddedApp = value;
 	}
 
 	/**
@@ -1019,7 +1019,7 @@ public class User {
 	 * 
 	 */
 	public void setEmailHashes( JAXBElement<User.EmailHashes> value ) {
-		this.emailHashes = ( (JAXBElement<User.EmailHashes>) value );
+		this.emailHashes = value;
 	}
 
 
