@@ -52,12 +52,12 @@ public class FacebookWebappHelper {
 			for ( String friend : friends.split( "," ) ) {
 				friendsList.add( Long.parseLong( friend ) );
 			}
-			apiClient.friendsList = friendsList;
+			apiClient._setFriendsList( friendsList );
 		}
 		// caching of the "added" value
 		String added = fbParams.get( "added" );
 		if ( added != null ) {
-			apiClient.added = new Boolean( added.equals( "1" ) );
+			apiClient._setAppAdded( added.equals( "1" ) );
 		}
 	}
 
@@ -174,9 +174,7 @@ public class FacebookWebappHelper {
 	 * @param expires
 	 */
 	private void setUser( Long user_id, String session_key, Long expires ) {
-		// place the data in the session for future requests that may not have
-		// the
-		// facebook parameters
+		// place the data in the session for future requests that may not have the facebook parameters
 		if ( !inFbCanvas() ) {
 			Map<String,String> cookiesInfo = _getCookiesParams();
 			String cookieUser = cookiesInfo.get( this.apiKey + "_user" );
@@ -197,7 +195,7 @@ public class FacebookWebappHelper {
 			}
 		}
 		this.user = user_id;
-		this.apiClient._sessionKey = session_key;
+		this.apiClient._setSessionKey( session_key );
 	}
 
 	private void addCookie( String key, String value, int age ) {

@@ -195,13 +195,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	protected String permissionsApiKey = null;
 
 	protected List<Long> friendsList; // to save making the friends.get api call, this will get prepopulated on canvas pages
-	public Boolean added; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
+	protected Boolean added; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
 
 	/**
 	 * number of params that the client automatically appends to every API call
 	 */
-	public static int NUM_AUTOAPPENDED_PARAMS = 6;
+	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
 	protected static boolean DEBUG = false;
 	protected Boolean _debug = null;
 
@@ -1460,6 +1460,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
 		return added.booleanValue();
+	}
+	
+	public Boolean _getAppAdded() {
+		return added;
+	}
+	
+	public void _setAppAdded( Boolean value ) {
+		this.added = value;
 	}
 
 	/**
@@ -3925,10 +3933,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
-		if ( added == null ) {
-			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
-		}
-		return added.booleanValue();
+		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException {
