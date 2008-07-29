@@ -97,25 +97,26 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
-	protected final String _secret;
-	protected final String _apiKey;
 	protected URL _serverUrl;
-	protected String rawResponse;
-	protected Long _expires;
 	protected int _timeout;
 	protected int _readTimeout;
+
+	protected final String _apiKey;
+	protected final String _secret;
+	protected boolean _isDesktop;
+
+	protected String cacheSessionKey;
+	protected Long cacheUserId;
+	protected Long cacheSessionExpires;
+	/** filled in when session is established only used for desktop apps */
+	protected String cacheSessionSecret;
+
+	protected String rawResponse;
 	protected boolean batchMode;
 	protected List<BatchQuery> queries;
 
-	protected String _sessionKey;
-	protected boolean _isDesktop = false;
-	protected long _userId = -1;
 	protected String permissionsApiKey = null;
 
-	/**
-	 * filled in when session is established only used for desktop apps
-	 */
-	protected String _sessionSecret;
 
 	/**
 	 * The number of parameters required for every request.
@@ -161,14 +162,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		_sessionKey = sessionKey;
-		_apiKey = apiKey;
-		_secret = secret;
-		_serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
-		_timeout = -1;
-		_readTimeout = -1;
-		batchMode = false;
-		queries = new ArrayList<BatchQuery>();
+		this.cacheSessionKey = sessionKey;
+		this._apiKey = apiKey;
+		this._secret = secret;
+		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
+		this._timeout = -1;
+		this._readTimeout = -1;
+		this.batchMode = false;
+		this.queries = new ArrayList<BatchQuery>();
 	}
 
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
@@ -190,14 +191,20 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this.permissionsApiKey = null;
 	}
 
+	public JAXBContext getJaxbContext() {
+		return JAXB_CONTEXT;
+	}
+
+	public void setJaxbContext( JAXBContext context ) {
+		JAXB_CONTEXT = context;
+	}
+
 	/**
 	 * The response format in which results to FacebookMethod calls are returned
 	 * 
 	 * @return the format: either XML, JSON, or null (API default)
 	 */
-	public String getResponseFormat() {
-		return null;
-	}
+	public abstract String getResponseFormat();
 
 	/**
 	 * Gets the session-token used by Facebook to authenticate a desktop application. If your application does not run in desktop mode, than this field is not relevent to
@@ -206,15 +213,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return the desktop-app session token.
 	 */
 	public String getSessionSecret() {
-		return _sessionSecret;
-	}
-
-	public JAXBContext getJaxbContext() {
-		return JAXB_CONTEXT;
-	}
-
-	public void setJaxbContext( JAXBContext context ) {
-		JAXB_CONTEXT = context;
+		return cacheSessionSecret;
 	}
 
 	/**
@@ -225,7 +224,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 *            the new value to set. Incorrect values may cause your application to fail to run.
 	 */
 	public void setSessionSecret( String key ) {
-		_sessionSecret = key;
+		cacheSessionSecret = key;
 	}
 
 	public static void setDebugAll( boolean isDebug ) {
@@ -247,6 +246,48 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			buffer.append( item.toString() );
 		}
 		return buffer;
+	}
+
+	protected Boolean cacheAppAdded; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
+
+	public Boolean getCacheAppAdded() {
+		return cacheAppAdded;
+	}
+
+	public void setCacheAppAdded( Boolean cacheAppAdded ) {
+		this.cacheAppAdded = cacheAppAdded;
+	}
+
+	public Long getCacheSessionExpires() {
+		return cacheSessionExpires;
+	}
+
+	public void setCacheSessionExpires( Long cacheSessionExpires ) {
+		this.cacheSessionExpires = cacheSessionExpires;
+	}
+
+	public String getCacheSessionKey() {
+		return cacheSessionKey;
+	}
+
+	public void setCacheSessionKey( String cacheSessionKey ) {
+		this.cacheSessionKey = cacheSessionKey;
+	}
+
+	public String getCacheSessionSecret() {
+		return cacheSessionSecret;
+	}
+
+	public void setCacheSessionSecret( String cacheSessionSecret ) {
+		this.cacheSessionSecret = cacheSessionSecret;
+	}
+
+	public Long getCacheUserId() {
+		return cacheUserId;
+	}
+
+	public void setCacheUserId( Long cacheUserId ) {
+		this.cacheUserId = cacheUserId;
 	}
 
 	/**
@@ -579,7 +620,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	private String generateSignature( List<String> params, boolean requiresSession ) {
-		String secret = ( isDesktop() && requiresSession ) ? this._sessionSecret : this._secret;
+		String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
@@ -729,9 +770,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 *             with a description of any errors given to us by the server.
 	 */
 	protected T callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
-		this.rawResponse = null;
+		rawResponse = null;
 		Map<String,CharSequence> params = new HashMap<String,CharSequence>( 2 * method.numTotalParams() );
-		if ( this.permissionsApiKey != null ) {
+		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
 		params.put( "method", method.methodName() );
@@ -744,9 +785,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 
 		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
-		boolean includeSession = method.requiresSession() && _sessionKey != null;
+		boolean includeSession = method.requiresSession() && cacheSessionKey != null;
 		if ( includeSession ) {
-			params.put( "session_key", _sessionKey );
+			params.put( "session_key", cacheSessionKey );
 		}
 
 		CharSequence oldVal;
@@ -761,7 +802,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), includeSession );
 		params.put( "sig", signature );
 
-		if ( this.batchMode ) {
+		if ( batchMode ) {
 			// if we are running in batch mode, don't actually execute the query now, just add it to the list
 			boolean addToBatch = true;
 			if ( method.methodName().equals( FacebookMethod.USERS_GET_LOGGED_IN_USER.methodName() ) ) {
@@ -780,7 +821,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				}
 			}
 			if ( addToBatch ) {
-				this.queries.add( new BatchQuery( method, params ) );
+				queries.add( new BatchQuery( method, params ) );
 			}
 			return null;
 		}
@@ -818,7 +859,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			buffer.append( line );
 		}
 		String xmlResp = buffer.toString();
-		this.rawResponse = xmlResp;
+		rawResponse = xmlResp;
 		return parseCallResult( new ByteArrayInputStream( xmlResp.getBytes( "UTF-8" ) ), method );
 	}
 
@@ -894,30 +935,31 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return the Facebook user ID of the logged-in user
 	 */
 	public long users_getLoggedInUser() throws FacebookException, IOException {
-		if ( this._userId == -1 || this.batchMode ) {
-			T result = callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER );
-			this._userId = extractLong( result );
+		if ( cacheUserId == -1 || batchMode ) {
+			cacheUserId = extractLong( callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER ) );
 		}
-		return this._userId;
+		return cacheUserId;
 	}
 
 	/**
 	 * Call this function to get the user ID.
 	 * 
 	 * @return The ID of the current session's user, or -1 if none.
+	 * @deprecated please call auth_getSession(authToken), then you can call users_getLoggedInUser(), or getCacheUserId()
 	 */
+	@Deprecated
 	public long auth_getUserId( String authToken ) throws FacebookException, IOException {
 		/*
 		 * Get the session information if we don't have it; this will populate the user ID as well.
 		 */
-		if ( null == this._sessionKey ) {
+		if ( null == cacheSessionKey ) {
 			auth_getSession( authToken );
 		}
 		return users_getLoggedInUser();
 	}
 
 	public boolean isDesktop() {
-		return this._isDesktop;
+		return _isDesktop;
 	}
 
 	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText ) throws FacebookException, IOException {
@@ -941,7 +983,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return boolean indicating whether the user has installed the app
 	 */
 	public boolean users_isAppAdded() throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
+		if ( cacheAppAdded != null ) {
+			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
+		}
+		return cacheAppAdded;
 	}
 
 	/**
@@ -1200,7 +1245,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
 		assert ( photo.exists() && photo.canRead() );
-		this._uploadFile = photo;
+		_uploadFile = photo;
 		if ( null != albumId ) {
 			params.add( newPair( "aid", albumId ) );
 		}
@@ -1463,11 +1508,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 
 		HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
-		if ( this._timeout != -1 ) {
-			conn.setConnectTimeout( this._timeout );
+		if ( _timeout != -1 ) {
+			conn.setConnectTimeout( _timeout );
 		}
-		if ( this._readTimeout != -1 ) {
-			conn.setReadTimeout( this._readTimeout );
+		if ( _readTimeout != -1 ) {
+			conn.setReadTimeout( _readTimeout );
 		}
 		try {
 			conn.setRequestMethod( "POST" );
@@ -1693,11 +1738,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public String getRawResponse() {
-		return this.rawResponse;
+		return rawResponse;
 	}
 
 	public Object getResponsePOJO() {
-		if ( this.rawResponse == null ) {
+		if ( rawResponse == null ) {
 			return null;
 		}
 		if ( JAXB_CONTEXT == null ) {
@@ -1710,7 +1755,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		Object pojo = null;
 		try {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
+			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
 		}
 		catch ( JAXBException e ) {
 			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO" );
@@ -1823,7 +1868,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = ( null == this._sessionKey ) ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+		IFacebookMethod method = ( null == cacheSessionKey ) ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
 		return callMethod( method, newPair( "page_ids", delimit( pageIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
@@ -1845,7 +1890,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+		IFacebookMethod method = null == cacheSessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
 		return callMethod( method, newPair( "page_ids", delimit( pageIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
@@ -1857,14 +1902,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @param fields
 	 *            a set of PageProfileFields
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Pages.getInfo
 	 */
 	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException, IOException {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		if ( userId == null ) {
-			userId = this._userId;
+			userId = cacheUserId;
+		}
+		if ( userId == null ) {
+			return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "fields", delimit( fields ) ) );
 		}
 		return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "uid", userId.toString() ), newPair( "fields", delimit( fields ) ) );
 	}
@@ -1877,14 +1925,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @param fields
 	 *            a set of page profile fields
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Pages.getInfo
 	 */
 	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException, IOException {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		if ( userId == null ) {
-			userId = this._userId;
+			userId = cacheUserId;
+		}
+		if ( userId == null ) {
+			return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "fields", delimit( fields ) ) );
 		}
 		return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "uid", userId.toString() ), newPair( "fields", delimit( fields ) ) );
 	}
@@ -1952,9 +2003,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle"> Developers Wiki: Fbml.setRefHandle</a>
 	 */
 	public boolean fbml_setRefHandle( String handle, String fbmlMarkup ) throws FacebookException, IOException {
-		if ( this._isDesktop ) {
+		if ( _isDesktop ) {
 			// this method cannot be called from a desktop app
-			return false;
+			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'fbml_setReftHandle'" );
 		}
 		return extractBoolean( callMethod( FacebookMethod.FBML_SET_REF_HANDLE, newPair( "handle", handle ), newPair( "fbml", fbmlMarkup ) ) );
 
@@ -2037,7 +2088,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException, IOException {
-		this.notifications_send( recipientIds, notification.toString(), false );
+		notifications_send( recipientIds, notification.toString(), false );
 	}
 
 	private T notifications_sendEmail( CharSequence recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException, IOException {
@@ -2313,9 +2364,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException, IOException {
-		if ( this._isDesktop ) {
+		if ( _isDesktop ) {
 			// this method cannot be called from a desktop app
-			return false;
+			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
 		}
 
 		if ( ( properties == null ) || ( properties.isEmpty() ) ) {
@@ -2612,9 +2663,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return a boolean indicating whether the properties were successfully set
 	 */
 	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException, IOException {
-		if ( this._isDesktop ) {
+		if ( _isDesktop ) {
 			// this method cannot be called from a desktop app
-			return false;
+			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
 		}
 		if ( null == properties || properties.isEmpty() ) {
 			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
@@ -2642,8 +2693,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * processed as a batch query. All API calls made in the interim will return null as their result.
 	 */
 	public void beginBatch() {
-		this.batchMode = true;
-		this.queries = new ArrayList<BatchQuery>();
+		batchMode = true;
+		queries = new ArrayList<BatchQuery>();
 	}
 
 	protected String encodeMethods( List<BatchQuery> queries ) throws FacebookException {
@@ -2919,7 +2970,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
 		assert ( photo.exists() && photo.canRead() );
-		this._uploadFile = photo;
+		_uploadFile = photo;
 		if ( null != albumId ) {
 			params.add( newPair( "aid", albumId ) );
 		}
@@ -2981,7 +3032,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException,
 			IOException {
-		return this.feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral );
+		return feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral );
 	}
 
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException, IOException {
@@ -3184,7 +3235,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParamIfNotBlank( "profile_action", actionFbml, params );
 		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
 		addParamIfNotBlank( "profile_main", profileMain, params );
-		FacebookMethod method = this.isDesktop() ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
+		FacebookMethod method = isDesktop() ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
 		return extractBoolean( callMethod( method, params ) );
 	}
 
@@ -3244,75 +3295,69 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "period", ( period ) ) );
 		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
-	
+
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String, CharSequence>("template_bundle_id", Long.toString( bundleId )) );
-		return extractBoolean(this.callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ));
+		params.add( new Pair<String,CharSequence>( "template_bundle_id", Long.toString( bundleId ) ) );
+		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ) );
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException {
 		if ( null == notification || "".equals( notification ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
 		}
-		Pair<String, CharSequence> type = new Pair<String, CharSequence>("type", announcement ? "announcement" : "general");
+		Pair<String,CharSequence> type = new Pair<String,CharSequence>( "type", announcement ? "announcement" : "general" );
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
 					"notification", notification ), type );
 		} else {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ), type );
 		}
-		
+
 	}
-	
+
 	/**
 	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
 	 */
-	public Boolean feed_publishUserAction(Long bundleId, 
-									      Map<String,String> templateData,
-									      List<IFeedImage> images,
-									      List<Long> targetIds, 
-									      String bodyGeneral) 
-		throws FacebookException, IOException {
-		
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+			throws FacebookException, IOException {
+
 		// validate maximum of 4 images
-		if (images != null && images.size() > 4) {
-			throw new IllegalArgumentException("Maximum of 4 images allowed per feed item.");
+		if ( images != null && images.size() > 4 ) {
+			throw new IllegalArgumentException( "Maximum of 4 images allowed per feed item." );
 		}
-		
- 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String,CharSequence>("template_bundle_id", Long.toString(bundleId)));
-		
-		if (targetIds != null && !targetIds.isEmpty()) {
- 			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
- 		}
-		
- 		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
- 			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
- 		}
-		
+
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		params.add( new Pair<String,CharSequence>( "template_bundle_id", Long.toString( bundleId ) ) );
+
+		if ( targetIds != null && !targetIds.isEmpty() ) {
+			params.add( new Pair<String,CharSequence>( "target_ids", delimit( targetIds ) ) );
+		}
+
+		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
+			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
+		}
+
 		JSONObject jsonTemplateData = new JSONObject();
- 		if ( templateData != null && !templateData.isEmpty() ) {
- 			for ( String key : templateData.keySet() ) {
- 				try {
+		if ( templateData != null && !templateData.isEmpty() ) {
+			for ( String key : templateData.keySet() ) {
+				try {
 					jsonTemplateData.put( key, templateData.get( key ) );
- 				}
+				}
 				catch ( Exception exception ) {
-					throw new RuntimeException("Error constructing JSON object", exception);
- 				}
- 			}
- 		}
- 
+					throw new RuntimeException( "Error constructing JSON object", exception );
+				}
+			}
+		}
+
 		/*
-		 * Associate images to "images" label in the form of: 
+		 * Associate images to "images" label in the form of:
 		 * 
-		 * "images":[{"src":"http:\/\/www.facebook.com\/images\/image1.gif",
-		 * 		      "href":"http:\/\/www.facebook.com"},
-		 * 		     {"src":"http:\/\/www.facebook.com\/images\/image2.gif",
-		 * 			  "href":"http:\/\/www.facebook.com"}] 
+		 * "images":[{"src":"http:\/\/www.facebook.com\/images\/image1.gif", "href":"http:\/\/www.facebook.com"}, {"src":"http:\/\/www.facebook.com\/images\/image2.gif",
+		 * "href":"http:\/\/www.facebook.com"}]
 		 */
 		if ( images != null && !images.isEmpty() ) {
-			
+
 			try {
 				// create images array
 				JSONArray jsonArray = new JSONArray();
@@ -3323,22 +3368,21 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 					jsonImage.put( "href", image.getLinkUrl().toExternalForm() );
 					jsonArray.put( i, jsonImage );
 				}
-				
+
 				// associate to key label
-				jsonTemplateData.put("images", jsonArray);
+				jsonTemplateData.put( "images", jsonArray );
 			}
 			catch ( Exception exception ) {
-				throw new RuntimeException("Error constructing JSON object", exception);
+				throw new RuntimeException( "Error constructing JSON object", exception );
 			}
 		}
 
 		// associate to param
-		if (jsonTemplateData.length() > 0) {
-			params.add( new Pair<String,CharSequence>( "template_data", 
-													   jsonTemplateData.toString() ) );
+		if ( jsonTemplateData.length() > 0 ) {
+			params.add( new Pair<String,CharSequence>( "template_data", jsonTemplateData.toString() ) );
 		}
-		
- 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
- 	}
-	
+
+		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+	}
+
 }

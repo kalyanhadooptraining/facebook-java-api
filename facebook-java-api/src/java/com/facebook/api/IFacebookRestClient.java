@@ -91,6 +91,14 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void setIsDesktop( boolean isDesktop );
 
+	public T getCacheFriendsList();
+
+	public void setCacheFriendsList( List<Long> friendIds );
+
+	public Boolean getCacheAppAdded();
+
+	public void setCacheAppAdded( Boolean appAdded );
+
 	/**
 	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
 	 * 
@@ -498,7 +506,7 @@ public interface IFacebookRestClient<T> {
 	 * @param images
 	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
 	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser
 	 */
 	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
 			IOException;
@@ -514,7 +522,6 @@ public interface IFacebookRestClient<T> {
 	 *            UTC lower bound (optional)
 	 * @param endTime
 	 *            UTC upper bound (optional)
-	 * @return T of events
 	 */
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException;
 
@@ -532,8 +539,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param userId1
 	 * @param userId2
-	 * @return T
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException, IOException;
 
@@ -543,23 +549,21 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param userIds1
 	 * @param userIds2
-	 * @return T
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
 	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user.
 	 * 
-	 * @return array of friends
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
 	public T friends_get() throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friend lists of the currently logged in user.
 	 * 
-	 * @return T of friend lists
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers Wiki: Friends.getLists</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
 	 */
 	public T friends_getLists() throws FacebookException, IOException;
 
@@ -568,8 +572,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param friendListId
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
-	 * @return T of friends
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki: Friends.get</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
 	public T friends_get( Long friendListId ) throws FacebookException, IOException;
 
@@ -1197,7 +1200,16 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return The ID of the current session's user, or -1 if none.
 	 */
+	@Deprecated
 	public long auth_getUserId( String authToken ) throws FacebookException, IOException;
+
+	public String getCacheSessionKey();
+
+	public Long getCacheUserId();
+
+	public Long getCacheSessionExpires();
+
+	public String getCacheSessionSecret();
 
 	/**
 	 * Create a marketplace listing. The create_listing extended permission is required.
@@ -3071,31 +3083,35 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 */
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException;
-	
+
 	/**
 	 * Sends a notification.
 	 * 
-	 * @param recipientIds the ids of the users to send the notification to.
-	 * @param notification the notification to send.
-	 * @param announcement set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
+	 * @param recipientIds
+	 *            the ids of the users to send the notification to.
+	 * @param notification
+	 *            the notification to send.
+	 * @param announcement
+	 *            set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public void notifications_send(Collection<Long> recipientIds, String notification, boolean announcement) throws FacebookException, IOException;
-	
+	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException;
+
 	/**
 	 * Deactivates the specified template bundle.
 	 * 
-	 * @param bundleId the id of the bundle to deactivate.
+	 * @param bundleId
+	 *            the id of the bundle to deactivate.
 	 * 
 	 * @return true if the call succeeds, false otherwise.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public boolean feed_deactivateTemplateBundleByID(Long bundleId) throws FacebookException, IOException;
-	
+	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException;
+
 	/**
 	 * Publishes a user action to the feed.
 	 * 
@@ -3105,7 +3121,8 @@ public interface IFacebookRestClient<T> {
 	 *            the template bundle-id to use to render the feed.
 	 * @param templateData
 	 *            a map of name-value pairs to substitute into the template being rendered.
-	 * @param images the images to associate with this feed entry
+	 * @param images
+	 *            the images to associate with this feed entry
 	 * @param targetIds
 	 *            the ids of individuals that are the target of this action.
 	 * @param bodyGeneral
@@ -3116,7 +3133,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction(Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral) 
-		throws FacebookException, IOException;
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+			throws FacebookException, IOException;
 
 }
