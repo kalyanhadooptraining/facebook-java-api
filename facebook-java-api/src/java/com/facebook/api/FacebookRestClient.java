@@ -204,7 +204,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * number of params that the client automatically appends to every API call
 	 */
 	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
-	protected static boolean DEBUG = false;
 	protected Boolean _debug = null;
 
 	protected File _uploadFile = null;
@@ -550,7 +549,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            true to enable debugging false to disable debugging
 	 */
 	public static void setDebugAll( boolean isDebug ) {
-		FacebookRestClient.DEBUG = isDebug;
+		ExtensibleClient.DEBUG = isDebug;
 	}
 
 	/**
@@ -570,7 +569,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return true if debugging is enabled false otherwise
 	 */
 	public boolean isDebug() {
-		return ( null == _debug ) ? FacebookRestClient.DEBUG : _debug.booleanValue();
+		return ( null == _debug ) ? ExtensibleClient.DEBUG : _debug.booleanValue();
 	}
 
 	/**
