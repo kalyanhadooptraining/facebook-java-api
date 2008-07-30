@@ -60,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -781,7 +782,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	protected Document callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
 		this.rawResponse = null;
-		HashMap<String,CharSequence> params = new HashMap<String,CharSequence>( 2 * method.numTotalParams() );
+		Map<String,CharSequence> params = new TreeMap<String,CharSequence>();
 
 		if ( this.permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -2074,7 +2075,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			return null;
 		}
 
-		Map<Integer,String> results = new HashMap<Integer,String>();
+		Map<Integer,String> results = new TreeMap<Integer,String>();
 		NodeList ids = response.getElementsByTagName( "pref_id" );
 		NodeList values = response.getElementsByTagName( "value" );
 		for ( int count = 0; count < ids.getLength(); count++ ) {

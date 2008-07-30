@@ -54,15 +54,17 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static Map<String,CharSequence> extractFacebookParamsFromArray( Map<CharSequence,CharSequence[]> reqParams ) {
-		if ( null == reqParams )
+		if ( null == reqParams ) {
 			return null;
+		}
 		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
 		for ( Map.Entry<CharSequence,CharSequence[]> entry : reqParams.entrySet() ) {
 			String key = entry.getKey().toString();
 			if ( FacebookParam.isInNamespace( key ) ) {
 				CharSequence[] value = entry.getValue();
-				if ( value.length > 0 )
+				if ( value.length > 0 ) {
 					result.put( key, value[0] );
+				}
 			}
 		}
 		return result;
@@ -79,15 +81,17 @@ public final class FacebookSignatureUtil {
 	// Facebook likes to refer to everything as a CharSequence, even when referencing Objects defined by an external API that explicitly
 	// specifies the use of String, and *not* CharSequence.
 	public static Map<String,CharSequence> extractFacebookParamsFromStandardsCompliantArray( Map<String,String[]> reqParams ) {
-		if ( null == reqParams )
+		if ( null == reqParams ) {
 			return null;
+		}
 		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
 		for ( Map.Entry<String,String[]> entry : reqParams.entrySet() ) {
 			String key = entry.getKey();
 			if ( FacebookParam.isInNamespace( key ) ) {
 				String[] value = entry.getValue();
-				if ( value.length > 0 )
+				if ( value.length > 0 ) {
 					result.put( key, value[0] );
+				}
 			}
 		}
 		return result;
@@ -101,13 +105,15 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static Map<String,CharSequence> extractFacebookNamespaceParams( Map<CharSequence,CharSequence> reqParams ) {
-		if ( null == reqParams )
+		if ( null == reqParams ) {
 			return null;
+		}
 		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
 		for ( Map.Entry<CharSequence,CharSequence> entry : reqParams.entrySet() ) {
 			String key = entry.getKey().toString();
-			if ( FacebookParam.isInNamespace( key ) )
+			if ( FacebookParam.isInNamespace( key ) ) {
 				result.put( key, entry.getValue() );
+			}
 		}
 		return result;
 	}

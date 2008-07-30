@@ -32,9 +32,9 @@
 package com.facebook.api;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.json.JSONObject;
 
@@ -85,7 +85,7 @@ public class ApplicationPropertySet implements Serializable {
 			throw new IllegalArgumentException( "Boolean property expected" );
 		}
 		if ( null == _attributesBool ) {
-			_attributesBool = new HashMap<ApplicationProperty,Boolean>();
+			_attributesBool = new TreeMap<ApplicationProperty,Boolean>();
 		}
 		_attributesBool.put( prop, value );
 	}
@@ -118,7 +118,7 @@ public class ApplicationPropertySet implements Serializable {
 			throw new IllegalArgumentException( "String property expected" );
 		}
 		if ( null == _attributesString ) {
-			_attributesString = new HashMap<ApplicationProperty,CharSequence>();
+			_attributesString = new TreeMap<ApplicationProperty,CharSequence>();
 		}
 		_attributesString.put( prop, value );
 	}
