@@ -5,10 +5,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
@@ -196,7 +198,7 @@ public class FacebookWebappHelper<T> {
 			String cookieUser = cookiesInfo.get( this.apiKey + "_user" );
 			if ( cookieUser == null || !cookieUser.equals( user_id + "" ) ) {
 				// map of parameters, but without the api_key prefix
-				Map<String,String> cookies = new HashMap<String,String>();
+				Map<String,String> cookies = new TreeMap<String,String>();
 				cookies.put( "user", user_id + "" );
 				cookies.put( "session_key", session_key );
 				String sig = generateSig( cookies, this.secret );
@@ -235,18 +237,18 @@ public class FacebookWebappHelper<T> {
 		}
 		if ( timeout != null ) {
 			if ( !fb_params.containsKey( FacebookParam.TIME.getSignatureName() ) ) {
-				return new HashMap<String,String>();
+				return Collections.emptyMap();
 			}
 			String tmpTime = fb_params.get( FacebookParam.TIME.getSignatureName() );
 			if ( tmpTime.indexOf( '.' ) > 0 )
 				tmpTime = tmpTime.substring( 0, tmpTime.indexOf( '.' ) );
 			long time = Long.parseLong( tmpTime );
 			if ( System.currentTimeMillis() / 1000 - time > timeout ) {
-				return new HashMap<String,String>();
+				return Collections.emptyMap();
 			}
 		}
 		if ( !params.containsKey( namespace ) || !verifySignature( fb_params, params.get( namespace ) ) ) {
-			return new HashMap<String,String>();
+			return Collections.emptyMap();
 		}
 		return fb_params;
 	}

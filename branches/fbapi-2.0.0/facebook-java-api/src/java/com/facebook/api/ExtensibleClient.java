@@ -53,12 +53,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -771,7 +771,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected T callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
 		rawResponse = null;
-		Map<String,CharSequence> params = new HashMap<String,CharSequence>( 2 * method.numTotalParams() );
+		Map<String,CharSequence> params = new TreeMap<String,CharSequence>();
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
@@ -2475,7 +2475,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	static Map<ApplicationProperty,String> parseProperties( String json ) {
-		Map<ApplicationProperty,String> result = new HashMap<ApplicationProperty,String>();
+		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
 		if ( json == null ) {
 			return null;
 		}
@@ -2488,7 +2488,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		for ( String part : parts ) {
 			parseFragment( part, result );
 		}
-
 		return result;
 	}
 

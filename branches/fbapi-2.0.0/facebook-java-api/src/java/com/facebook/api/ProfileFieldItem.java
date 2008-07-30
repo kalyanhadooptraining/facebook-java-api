@@ -1,15 +1,14 @@
 package com.facebook.api;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A data structure for managing the profile field-item objects required by the profile.setInfo and profile.setInfoOptions API calls. Each field-item must specify a label
  * and a link URL, and may optionally include a description, a sublabel, and an image URL.
- * 
- * @author aroth
  */
 public class ProfileFieldItem {
+
 	private Map<String,String> properties;
 
 	/**
@@ -21,7 +20,7 @@ public class ProfileFieldItem {
 	 *            the link to apply to the label.
 	 */
 	public ProfileFieldItem( String label, String url ) {
-		properties = new HashMap<String,String>();
+		properties = new TreeMap<String,String>();
 		properties.put( "label", label );
 		properties.put( "link", url );
 	}
@@ -92,4 +91,5 @@ public class ProfileFieldItem {
 		}
 		return properties;
 	}
+
 }
