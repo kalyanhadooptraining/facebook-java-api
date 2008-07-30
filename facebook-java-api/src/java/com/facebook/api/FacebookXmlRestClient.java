@@ -277,20 +277,21 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	/**
 	 * Prints out the DOM tree.
 	 */
-	public static void printDom( Node n, String prefix ) {
+	public void printDom( Node n, String prefix ) {
+		if ( !isDebug() ) {
+			return;
+		}
 		String outString = prefix;
 		if ( n.getNodeType() == Node.TEXT_NODE ) {
 			outString += "'" + n.getTextContent().trim() + "'";
 		} else {
 			outString += n.getNodeName();
 		}
-		if ( DEBUG ) {
-			System.out.println( outString );
-		}
+		System.out.println( outString );
 		NodeList children = n.getChildNodes();
 		int length = children.getLength();
 		for ( int i = 0; i < length; i++ ) {
-			FacebookXmlRestClient.printDom( children.item( i ), prefix + "  " );
+			printDom( children.item( i ), prefix + "  " );
 		}
 	}
 
