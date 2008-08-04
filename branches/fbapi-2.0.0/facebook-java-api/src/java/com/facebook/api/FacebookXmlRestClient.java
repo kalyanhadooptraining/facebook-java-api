@@ -200,9 +200,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			Document doc = builder.parse( data );
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
-			if ( isDebug() ) {
-				printDom( doc, method.methodName() + "| " );
-			}
+			printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
@@ -282,7 +280,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * Prints out the DOM tree.
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( isDebug() && log.isDebugEnabled() ) {
+		if ( log.isDebugEnabled() ) {
 			StringBuilder sb = new StringBuilder( "\n" );
 			ExtensibleClient.printDom( n, prefix, sb );
 			log.debug( sb.toString() );
