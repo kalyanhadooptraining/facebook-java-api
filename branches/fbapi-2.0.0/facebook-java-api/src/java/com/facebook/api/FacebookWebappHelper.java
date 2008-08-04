@@ -18,6 +18,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -25,6 +27,8 @@ import org.w3c.dom.Document;
  * supposed to be kept in the session.
  */
 public class FacebookWebappHelper<T> {
+
+	protected static Log log = LogFactory.getLog( FacebookWebappHelper.class );
 
 	private HttpServletRequest request;
 
@@ -161,7 +165,7 @@ public class FacebookWebappHelper<T> {
 					doGetSession( request.getParameter( "auth_token" ) );
 					setUser( apiClient.getCacheUserId(), apiClient.getCacheSessionKey(), apiClient.getCacheSessionExpires() );
 				}
-				catch ( Exception e ) {
+				catch ( Exception ex ) {
 					// if auth_token is stale (browser url doesn't change,
 					// server is restarted), then auth_getSession throws
 					// an exception. This happens a lot during development. To
@@ -170,6 +174,7 @@ public class FacebookWebappHelper<T> {
 					// kick in, a new auth_token is created by redirecting the
 					// user.
 					// e.printStackTrace(System.err);
+					log.warn( "possible issue (might be ignorable): " + ex.getMessage(), ex );
 				}
 			}
 		}

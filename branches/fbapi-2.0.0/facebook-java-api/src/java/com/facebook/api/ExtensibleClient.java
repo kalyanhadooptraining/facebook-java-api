@@ -64,10 +64,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -76,6 +79,8 @@ import org.w3c.dom.NodeList;
  * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
 public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
+
+	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
 	public static URL SERVER_URL = null;
 	public static URL HTTPS_SERVER_URL = null;
@@ -86,14 +91,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			SERVER_URL = new URL( SERVER_ADDR );
 			HTTPS_SERVER_URL = new URL( HTTPS_SERVER_ADDR );
 		}
-		catch ( MalformedURLException e ) {
-			System.err.println( "MalformedURLException: " + e.getMessage() );
+		catch ( MalformedURLException ex ) {
+			log.error( "MalformedURLException: " + ex.getMessage(), ex );
 			System.exit( 1 );
 		}
-		catch ( JAXBException e ) {
+		catch ( JAXBException ex ) {
 			JAXB_CONTEXT = null;
-			System.err.println( "Could not get JAXB context:  " + e.getMessage() );
-			e.printStackTrace();
+			log.error( "MalformedURLException: " + ex.getMessage(), ex );
 		}
 	}
 
@@ -580,8 +584,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		try {
 			result = URLEncoder.encode( result, "UTF8" );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.printf( "Unsuccessful attempt to encode '%s' into UTF8", result );
+		catch ( UnsupportedEncodingException ex ) {
+			log.warn( "Unsuccessful attempt to encode '" + result + "' into UTF8", ex );
 		}
 		return result;
 	}
@@ -794,7 +798,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		for ( Pair<String,CharSequence> p : paramPairs ) {
 			oldVal = params.put( p.first, p.second );
 			if ( oldVal != null ) {
-				System.err.printf( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second );
+				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
 			}
 		}
 
@@ -1135,13 +1139,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * 
 	 * @param msg
 	 *            message
-	 * @param e
+	 * @param ex
 	 *            exception
 	 * @see Exception#getMessage
 	 */
-	protected void logException( CharSequence msg, Exception e ) {
-		System.err.println( msg + ":" + e.getMessage() );
-		e.printStackTrace();
+	protected void logException( CharSequence msg, Exception ex ) {
+		log.error( msg + ":" + ex.getMessage(), ex );
 	}
 
 	/**
@@ -1151,7 +1154,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected void log( CharSequence message ) {
 		if ( isDebug() ) {
-			System.out.println( message );
+			log.debug( message );
 		}
 	}
 
@@ -1757,17 +1760,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
 		}
-		catch ( JAXBException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO" );
-			e.printStackTrace();
+		catch ( JAXBException ex ) {
+			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( NullPointerException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( NullPointerException ex ) {
+			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( UnsupportedEncodingException ex ) {
+			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
 		return pojo;
 	}
@@ -2346,8 +2346,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( value == null ) {
 			value = "";
 		}
-
-		T doc;
 		List<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>();
 		args.add( newPair( "uid", userId ) );
 		args.add( newPair( "name", name ) );
@@ -2358,8 +2356,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( ( path != null ) && ( !"".equals( path ) ) ) {
 			args.add( newPair( "path", path ) );
 		}
-		doc = callMethod( FacebookMethod.DATA_SET_COOKIE, args );
-
+		T doc = callMethod( FacebookMethod.DATA_SET_COOKIE, args );
 		return extractBoolean( doc );
 	}
 
@@ -3382,6 +3379,30 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 
 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+	}
+
+	/**
+	 * Prints out the DOM tree.
+	 * 
+	 * @param n
+	 *            the parent node to start printing from
+	 * @param prefix
+	 *            string to append to output, should not be null
+	 */
+	public static void printDom( Node n, String prefix, StringBuilder sb ) {
+		String outString = prefix;
+		if ( n.getNodeType() == Node.TEXT_NODE ) {
+			outString += "'" + n.getTextContent().trim() + "'";
+		} else {
+			outString += n.getNodeName();
+		}
+		sb.append( outString );
+		sb.append( "\n" );
+		NodeList children = n.getChildNodes();
+		int length = children.getLength();
+		for ( int i = 0; i < length; i++ ) {
+			printDom( children.item( i ), prefix + "  ", sb );
+		}
 	}
 
 }

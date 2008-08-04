@@ -44,6 +44,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -61,6 +63,8 @@ import com.facebook.api.schema.SessionInfo;
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
  */
 public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
+
+	protected static Log log = LogFactory.getLog( FacebookJaxbRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
@@ -339,16 +343,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *             if <code>data</code> is not readable
 	 */
 	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
-		if ( isDebug() ) {
-			System.out.println( "Facebook response:  " + this.rawResponse );
-		}
+		log.debug( "Facebook response:  " + rawResponse );
 		Object res = getResponsePOJO();
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
 			int errorCode = error.getErrorCode();
 			String message = error.getErrorMsg();
 			throw new FacebookException( errorCode, message );
-
 		}
 		return res;
 	}
