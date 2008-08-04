@@ -245,13 +245,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					return (String) ( (JSONArray) val ).get( 0 );
 				}
 				catch ( Exception e ) {
-					logException( e );
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			return (String) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}
@@ -331,9 +331,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				json = this.rawResponse;
 			}
 		}
-		if ( isDebug() ) {
-			log( method.methodName() + ": " + ( null != json ? json.toString() : "null" ) );
-		}
+		log.debug( method.methodName() + ": " + json );
 
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
@@ -373,7 +371,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				return new URL( (String) ( (JSONArray) url ).get( 0 ) );
 			}
 			catch ( Exception e ) {
-				logException( e );
+				log.error( "Exception: " + e.getMessage(), e );
 			}
 		}
 		return null;
@@ -401,7 +399,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					}
 				}
 				catch ( Exception e ) {
-					logException( e );
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -415,7 +413,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Integer) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return 0;
 		}
 	}
@@ -437,7 +435,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					val = ( (JSONArray) val ).get( 0 );
 				}
 				catch ( Exception e ) {
-					logException( e );
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -452,7 +450,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return ( (Long) val == 1l );
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 		}
 		return false;
 	}
@@ -479,7 +477,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					}
 				}
 				catch ( Exception e ) {
-					logException( e );
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -489,7 +487,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Long) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}

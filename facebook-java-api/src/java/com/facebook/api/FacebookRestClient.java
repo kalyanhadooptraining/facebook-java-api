@@ -208,6 +208,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * number of params that the client automatically appends to every API call
 	 */
 	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	protected Boolean _debug = null;
 
 	protected File _uploadFile = null;
@@ -551,7 +553,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @param isDebug
 	 *            true to enable debugging false to disable debugging
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
+	@Deprecated
 	public static void setDebugAll( boolean isDebug ) {
 		ExtensibleClient.DEBUG = isDebug;
 	}
@@ -561,8 +565,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @param isDebug
 	 *            true to enable debugging false to disable debugging
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
-	// FIXME: do we really need both of these?
+	@Deprecated
 	public void setDebug( boolean isDebug ) {
 		_debug = isDebug;
 	}
@@ -571,7 +576,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * Check to see if debug mode is enabled.
 	 * 
 	 * @return true if debugging is enabled false otherwise
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
+	@Deprecated
 	public boolean isDebug() {
 		return ( null == _debug ) ? ExtensibleClient.DEBUG : _debug.booleanValue();
 	}
@@ -604,7 +611,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            string to append to output, should not be null
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( isDebug() && log.isDebugEnabled() ) {
+		if ( log.isDebugEnabled() ) {
 			StringBuilder sb = new StringBuilder( "\n" );
 			ExtensibleClient.printDom( n, prefix, sb );
 			log.debug( sb.toString() );
@@ -877,11 +884,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				// FIXME: additional printing done for debugging only
-				StringBuilder sb = new StringBuilder( "Facebook returns error code " + errorCode + "\n" );
-				for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
-					sb.append( "  - " + entry.getKey() + " -> " + entry.getValue() + "\n" );
+				if ( log.isWarnEnabled() ) {
+					StringBuilder sb = new StringBuilder( "Facebook returns error code " + errorCode + "\n" );
+					for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+						sb.append( "  - " + entry.getKey() + " -> " + entry.getValue() + "\n" );
+					}
+					log.warn( sb.toString() );
 				}
-				log.warn( sb.toString() );
 				throw new FacebookException( errorCode, message );
 			}
 			return doc;
@@ -945,16 +954,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		if ( isDebug() && log.isDebugEnabled() ) {
+		if ( log.isDebugEnabled() ) {
 			StringBuilder sb = new StringBuilder();
 			sb.append( method );
-			sb.append( "\n" );
 			sb.append( " POST: " );
-			sb.append( "\n" );
 			sb.append( serverUrl.toString() );
-			sb.append( "\n" );
-			sb.append( "/" );
-			sb.append( "\n" );
+			sb.append( "?" );
 			sb.append( buffer );
 			log.debug( sb.toString() );
 		}

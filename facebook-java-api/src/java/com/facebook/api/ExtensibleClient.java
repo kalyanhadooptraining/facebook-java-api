@@ -129,7 +129,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
 
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	protected static boolean DEBUG = false;
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	protected Boolean _debug = null;
 
 	protected File _uploadFile = null;
@@ -231,6 +235,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		cacheSessionSecret = key;
 	}
 
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	public static void setDebugAll( boolean isDebug ) {
 		DEBUG = isDebug;
 	}
@@ -1119,48 +1125,16 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			return is;
 		}
 		catch ( Exception e ) {
-			logException( e );
-			return null;
+			log.error( "Exception: " + e.getMessage(), e );
 		}
-	}
-
-	/**
-	 * Logs an exception with default message
-	 * 
-	 * @param e
-	 *            the exception
-	 */
-	protected final void logException( Exception e ) {
-		logException( "exception", e );
-	}
-
-	/**
-	 * Logs an exception with an introductory message in addition to the exception's getMessage().
-	 * 
-	 * @param msg
-	 *            message
-	 * @param ex
-	 *            exception
-	 * @see Exception#getMessage
-	 */
-	protected void logException( CharSequence msg, Exception ex ) {
-		log.error( msg + ":" + ex.getMessage(), ex );
-	}
-
-	/**
-	 * Logs a message. Override this for more detailed logging.
-	 * 
-	 * @param message
-	 */
-	protected void log( CharSequence message ) {
-		if ( isDebug() ) {
-			log.debug( message );
-		}
+		return null;
 	}
 
 	/**
 	 * @return whether debugging is activated
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
+	@Deprecated
 	public boolean isDebug() {
 		return ( null == _debug ) ? DEBUG : _debug.booleanValue();
 	}
@@ -1402,6 +1376,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
 	}
 
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	public void setDebug( boolean isDebug ) {
 		_debug = isDebug;
 	}
@@ -1504,10 +1480,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		if ( isDebug() ) {
-			StringBuilder debugMsg = new StringBuilder().append( method ).append( " POST: " ).append( serverUrl.toString() ).append( "?" );
-			debugMsg.append( buffer );
-			log( debugMsg );
+		if ( log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder( method );
+			sb.append( " POST: " );
+			sb.append( serverUrl.toString() );
+			sb.append( "?" );
+			sb.append( buffer );
+			log.debug( sb.toString() );
 		}
 
 		HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
@@ -1521,7 +1500,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			conn.setRequestMethod( "POST" );
 		}
 		catch ( ProtocolException ex ) {
-			logException( ex );
+			log.error( "Exception: " + ex.getMessage(), ex );
 		}
 		conn.setDoOutput( true );
 		conn.connect();
@@ -1761,13 +1740,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
 		}
 		catch ( JAXBException ex ) {
-			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
 		}
 		catch ( NullPointerException ex ) {
-			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
 		}
 		catch ( UnsupportedEncodingException ex ) {
-			logException( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
 		}
 		return pojo;
 	}
