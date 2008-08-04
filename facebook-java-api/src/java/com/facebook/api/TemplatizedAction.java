@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,8 @@ import org.json.JSONObject;
  * ridiculously complex.
  */
 public class TemplatizedAction {
+
+	protected static Log log = LogFactory.getLog( TemplatizedAction.class );
 
 	private String titleTemplate;
 	private String bodyTemplate;
@@ -155,11 +159,8 @@ public class TemplatizedAction {
 			}
 			addPicture( new URL( imageHref ), new URL( linkHref ) );
 		}
-		catch ( Exception e ) {
-			if ( ExtensibleClient.DEBUG ) {
-				System.out.println( "Could not add entry for picture!" );
-				e.printStackTrace();
-			}
+		catch ( Exception ex ) {
+			log.warn( "Could not add entry for picture!", ex );
 		}
 	}
 
@@ -179,11 +180,8 @@ public class TemplatizedAction {
 			}
 			addPicture( new URL( imageHref ), null );
 		}
-		catch ( Exception e ) {
-			if ( ExtensibleClient.DEBUG ) {
-				System.out.println( "Could not add entry for picture!" );
-				e.printStackTrace();
-			}
+		catch ( Exception ex ) {
+			log.warn( "Could not add entry for picture!", ex );
 		}
 	}
 
@@ -266,11 +264,8 @@ public class TemplatizedAction {
 		try {
 			map.put( key, value );
 		}
-		catch ( JSONException e ) {
-			if ( ExtensibleClient.DEBUG ) {
-				System.out.println( "JSONException for key=" + key + ", value=" + value + "!" );
-				e.printStackTrace();
-			}
+		catch ( JSONException ex ) {
+			log.warn( "JSONException for key=" + key + ", value=" + value + "!", ex );
 		}
 	}
 

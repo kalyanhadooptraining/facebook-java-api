@@ -40,10 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Utility for managing Facebook-specific parameters, specifically those related to session/login aspects.
  */
 public final class FacebookSignatureUtil {
+
+	protected static Log log = LogFactory.getLog( FacebookSignatureUtil.class );
 
 	/**
 	 * Out of the passed in <code>reqParams</code>, extracts the parameters that are in the FacebookParam namespace and returns them.
@@ -323,9 +328,9 @@ public final class FacebookSignatureUtil {
 			return result.toString();
 		}
 		catch ( java.security.NoSuchAlgorithmException ex ) {
-			System.err.println( "MD5 does not appear to be supported" + ex );
-			return "";
+			log.error( "MD5 does not appear to be supported" + ex, ex );
 		}
+		return "";
 	}
 
 }

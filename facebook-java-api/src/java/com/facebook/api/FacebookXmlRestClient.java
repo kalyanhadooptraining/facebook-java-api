@@ -49,6 +49,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,6 +68,8 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  * {@link org.w3c.dom.Document}.
  */
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
+
+	protected static Log log = LogFactory.getLog( FacebookXmlRestClient.class );
 
 	protected boolean namespaceAware = true;
 
@@ -278,20 +282,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * Prints out the DOM tree.
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( !isDebug() ) {
-			return;
-		}
-		String outString = prefix;
-		if ( n.getNodeType() == Node.TEXT_NODE ) {
-			outString += "'" + n.getTextContent().trim() + "'";
-		} else {
-			outString += n.getNodeName();
-		}
-		System.out.println( outString );
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			printDom( children.item( i ), prefix + "  " );
+		if ( isDebug() && log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder( "\n" );
+			ExtensibleClient.printDom( n, prefix, sb );
+			log.debug( sb.toString() );
 		}
 	}
 

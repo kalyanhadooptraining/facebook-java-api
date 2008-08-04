@@ -27,6 +27,8 @@
  */
 package com.facebook.api;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
 /**
@@ -35,6 +37,9 @@ import org.json.JSONObject;
  * For details visit http://wiki.developers.facebook.com/index.php/Marketplace_Listing_Attributes
  */
 public class MarketListing {
+
+	protected static Log log = LogFactory.getLog( MarketListing.class );
+
 	/**
 	 * Specifies a condition of 'any'
 	 */
@@ -105,11 +110,8 @@ public class MarketListing {
 		try {
 			attribs.put( name, value );
 		}
-		catch ( Exception e ) {
-			if ( ExtensibleClient.DEBUG ) {
-				System.out.println( "Exception when setting listing attribute!" );
-				e.printStackTrace();
-			}
+		catch ( Exception ex ) {
+			log.warn( "Exception when setting listing attribute!", ex );
 		}
 	}
 

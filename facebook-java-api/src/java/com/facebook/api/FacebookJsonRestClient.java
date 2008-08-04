@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +27,8 @@ import com.facebook.api.schema.Listing;
  * transformed into Java <code>Object</code>'s.
  */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+
+	protected static Log log = LogFactory.getLog( FacebookJsonRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;

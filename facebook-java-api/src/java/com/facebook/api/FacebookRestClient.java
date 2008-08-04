@@ -69,6 +69,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +95,8 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  */
 @Deprecated
 public class FacebookRestClient implements IFacebookRestClient<Document> {
+
+	protected static Log log = LogFactory.getLog( FacebookRestClient.class );
 
 	/**
 	 * API version to request when making calls to the server
@@ -129,14 +133,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			SERVER_URL = new URL( SERVER_ADDR );
 			HTTPS_SERVER_URL = new URL( HTTPS_SERVER_ADDR );
 		}
-		catch ( MalformedURLException e ) {
-			System.err.println( "MalformedURLException: " + e.getMessage() );
+		catch ( MalformedURLException ex ) {
+			log.error( "MalformedURLException: " + ex.getMessage(), ex );
 			System.exit( 1 );
 		}
-		catch ( JAXBException e ) {
+		catch ( JAXBException ex ) {
 			JAXB_CONTEXT = null;
-			System.err.println( "Could not get JAXB context:  " + e.getMessage() );
-			e.printStackTrace();
+			log.error( "Could not get JAXB context:  " + ex.getMessage(), ex );
 		}
 	}
 
@@ -601,20 +604,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            string to append to output, should not be null
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( !isDebug() ) {
-			return;
-		}
-		String outString = prefix;
-		if ( n.getNodeType() == Node.TEXT_NODE ) {
-			outString += "'" + n.getTextContent().trim() + "'";
-		} else {
-			outString += n.getNodeName();
-		}
-		System.out.println( outString );
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			printDom( children.item( i ), prefix + "  " );
+		if ( isDebug() && log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder( "\n" );
+			ExtensibleClient.printDom( n, prefix, sb );
+			log.debug( sb.toString() );
 		}
 	}
 
@@ -800,7 +793,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		for ( Pair<String,CharSequence> p : paramPairs ) {
 			oldVal = params.put( p.first, p.second );
 			if ( oldVal != null ) {
-				System.out.println( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
+				log.warn( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
 			}
 		}
 
@@ -884,9 +877,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				// FIXME: additional printing done for debugging only
-				System.out.println( "Facebook returns error code " + errorCode );
-				for ( Map.Entry<String,CharSequence> entry : params.entrySet() )
-					System.out.println( "  - " + entry.getKey() + " -> " + entry.getValue() );
+				StringBuilder sb = new StringBuilder( "Facebook returns error code " + errorCode + "\n" );
+				for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+					sb.append( "  - " + entry.getKey() + " -> " + entry.getValue() + "\n" );
+				}
+				log.warn( sb.toString() );
 				throw new FacebookException( errorCode, message );
 			}
 			return doc;
@@ -941,8 +936,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		try {
 			result = URLEncoder.encode( result, "UTF8" );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "Unsuccessful attempt to encode '" + result + "' into UTF8" );
+		catch ( UnsupportedEncodingException ex ) {
+			log.error( "Unsuccessful attempt to encode '" + result + "' into UTF8", ex );
 		}
 		return result;
 	}
@@ -950,12 +945,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		if ( isDebug() ) {
-			System.out.println( method );
-			System.out.println( " POST: " );
-			System.out.println( serverUrl.toString() );
-			System.out.println( "/" );
-			System.out.println( buffer );
+		if ( isDebug() && log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder();
+			sb.append( method );
+			sb.append( "\n" );
+			sb.append( " POST: " );
+			sb.append( "\n" );
+			sb.append( serverUrl.toString() );
+			sb.append( "\n" );
+			sb.append( "/" );
+			sb.append( "\n" );
+			sb.append( buffer );
+			log.debug( sb.toString() );
 		}
 
 		HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
@@ -969,8 +970,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			conn.setRequestMethod( "POST" );
 		}
 		catch ( ProtocolException ex ) {
-			System.err.println( "huh?" );
-			ex.printStackTrace();
+			log.error( "Exception: " + ex.getMessage(), ex );
 		}
 		conn.setDoOutput( true );
 		conn.connect();
@@ -1936,9 +1936,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			InputStream is = con.getInputStream();
 			return is;
 		}
-		catch ( Exception e ) {
-			System.err.println( "caught exception: " + e );
-			e.printStackTrace();
+		catch ( Exception ex ) {
+			log.error( "exception: " + ex, ex );
 			return null;
 		}
 	}
@@ -2011,17 +2010,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
 		}
-		catch ( JAXBException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO" );
-			e.printStackTrace();
+		catch ( JAXBException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( NullPointerException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( NullPointerException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( UnsupportedEncodingException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
 		return pojo;
 	}
