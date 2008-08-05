@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class enumerates the various metrics that are available through the admin.getDailyMetrics API call. Typically, you will pass a set containing the metrics you are
+ * This class enumerates the various metrics that are available through the admin.getMetrics API call. Typically, you will pass a set containing the metrics you are
  * interested in to the API call.
  * 
- * See http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics for details.
+ * See http://wiki.developers.facebook.com/index.php/Admin.getMetrics for details.
  * 
  * @author aroth
  */
@@ -15,6 +15,7 @@ public enum Metric {
 	/**
 	 * Daily active users for your app. For use with Admin.getDailyMetrics only.
 	 */
+	@Deprecated
 	DAILY_ACTIVE_USERS("daily_active_users"),
 	/**
 	 * Active users for your app. For use with Admin.getMetrics only.
@@ -64,6 +65,10 @@ public enum Metric {
 	 * Number of requests that timed out.
 	 */
 	REQUEST_TIMEOUT("canvas_page_views_http_code_0"),
+	/**
+	 * Number of requests, that returned http code 100.
+	 */
+	REQUEST_CONTINUE("canvas_page_views_http_code_100"),
 	/**
 	 * Number of requests that completed successfully.
 	 */

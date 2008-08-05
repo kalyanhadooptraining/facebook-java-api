@@ -2672,6 +2672,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException;
 
 	/**
@@ -2711,6 +2712,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException;
 
 	/**

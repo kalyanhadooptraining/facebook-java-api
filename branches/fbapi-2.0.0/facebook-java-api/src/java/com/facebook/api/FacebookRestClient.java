@@ -3740,10 +3740,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return admin_getAllocation( "requests_per_day" );
 	}
 
+	@Deprecated
 	public Document admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException {
 		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
 	}
 
+	@Deprecated
 	public Document admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		metrics.remove( Metric.ACTIVE_USERS );
