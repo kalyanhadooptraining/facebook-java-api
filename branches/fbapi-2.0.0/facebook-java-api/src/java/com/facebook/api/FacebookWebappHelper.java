@@ -352,6 +352,7 @@ public class FacebookWebappHelper<T> {
 	 *            the value for the 'next' request paramater that is appended to facebook's add screen.
 	 * @return true if the user hasn't added the application yet and a redirect was issued.
 	 */
+	@Deprecated
 	public boolean requireAdd( String next ) {
 		if ( getUser() != null && isAdded() ) {
 			return false;
