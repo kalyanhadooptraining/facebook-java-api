@@ -183,6 +183,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	ADMIN_GET_APP_PROPERTIES("facebook.admin.getAppProperties", 2),
 	ADMIN_SET_APP_PROPERTIES("facebook.admin.setAppProperties", 2),
 	ADMIN_GET_ALLOCATION("facebook.admin.getAllocation", 2),
+	@Deprecated
 	ADMIN_GET_DAILY_METRICS("facebook.admin.getDailyMetrics", 4),
 	ADMIN_GET_METRICS("facebook.admin.getMetrics", 5),
 

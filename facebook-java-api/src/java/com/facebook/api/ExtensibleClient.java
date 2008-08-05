@@ -2779,10 +2779,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return admin_getAllocation( "requests_per_day" );
 	}
 
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException {
 		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
 	}
 
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException {
 		int size = 2 + ( ( metrics != null ) ? metrics.size() : 0 );
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( size );
