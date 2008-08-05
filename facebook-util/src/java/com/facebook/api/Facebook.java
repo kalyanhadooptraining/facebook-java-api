@@ -38,7 +38,9 @@ public class Facebook {
 
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
-	public Facebook( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
+  private String sessionKey;
+
+  public Facebook( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
 		this.request = request;
 		this.response = response;
 		this.apiKey = apiKey;
@@ -197,7 +199,8 @@ public class Facebook {
 			}
 		}
 		this.user = user_id;
-		this.apiClient._sessionKey = session_key;
+    this.sessionKey = session_key;
+    this.apiClient._sessionKey = session_key;
 	}
 
 	private void addCookie( String key, String value, int age ) {
@@ -305,7 +308,15 @@ public class Facebook {
 		return this.user;
 	}
 
-	/**
+  /**
+   * Returns the session key of the logged in user.
+   * @return
+   */
+  public String getSessionKey() {
+    return this.sessionKey;
+  }
+
+  /**
 	 * Returns the url of the currently requested page
 	 * 
 	 * @return
@@ -340,6 +351,8 @@ public class Facebook {
 	 * @param next
 	 *            the value for the 'next' request paramater that is appended to facebook's add screen.
 	 * @return true if the user hasn't added the application yet and a redirect was issued.
+   * @deprecated Use requireLogin now instead of requireAdd. 
+   * @see <a href="http://forum.developers.facebook.com/viewtopic.php?id=15734">http://forum.developers.facebook.com/viewtopic.php?id=15734</a>
 	 */
 	public boolean requireAdd( String next ) {
 		if ( getUser() != null && isAdded() )
