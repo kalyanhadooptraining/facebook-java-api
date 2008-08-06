@@ -945,7 +945,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return the Facebook user ID of the logged-in user
 	 */
 	public long users_getLoggedInUser() throws FacebookException, IOException {
-		if ( cacheUserId == -1 || batchMode ) {
+		if ( cacheUserId == null || cacheUserId == -1 || batchMode ) {
 			cacheUserId = extractLong( callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER ) );
 		}
 		return cacheUserId;
