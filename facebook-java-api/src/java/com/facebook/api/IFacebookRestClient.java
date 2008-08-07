@@ -2633,7 +2633,8 @@ public interface IFacebookRestClient<T> {
 	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
 	 * 
 	 * @param allocationType
-	 *            the type of request to check the allocation for, currently the only valid values are "notifications_per_day" and "requests_per_day".
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
 	 * 
 	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
@@ -2641,11 +2642,24 @@ public interface IFacebookRestClient<T> {
 	public int admin_getAllocation( String allocationType ) throws FacebookException, IOException;
 
 	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException, IOException;
+
+	/**
 	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
 	 * 
 	 * @return the number of invites/requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
+	@Deprecated
 	public int admin_getRequestAllocation() throws FacebookException, IOException;
 
 	/**
@@ -2654,6 +2668,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the number of notifications that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
+	@Deprecated
 	public int admin_getNotificationAllocation() throws FacebookException, IOException;
 
 	/**

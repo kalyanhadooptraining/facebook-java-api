@@ -3732,10 +3732,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, new Pair<String,CharSequence>( "integration_point_name", allocationType ) ) );
 	}
 
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException, IOException {
+		return admin_getAllocation( allocationType.getName() );
+	}
+
+	@Deprecated
 	public int admin_getNotificationAllocation() throws FacebookException, IOException {
 		return admin_getAllocation( "notifications_per_day" );
 	}
 
+	@Deprecated
 	public int admin_getRequestAllocation() throws FacebookException, IOException {
 		return admin_getAllocation( "requests_per_day" );
 	}
