@@ -72,6 +72,10 @@ public class FacebookWebappHelper<T> {
 		this.apiClient = apiClient;
 		validateFbParams();
 		{
+		    // caching of session key / logged in user
+		    // FIXME: need to add this here!
+		}
+		{
 			// caching of friends
 			String friends = fbParams.get( "friends" );
 			if ( friends != null && !friends.equals( "" ) ) {
