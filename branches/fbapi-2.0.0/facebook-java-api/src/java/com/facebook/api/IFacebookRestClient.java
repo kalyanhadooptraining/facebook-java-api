@@ -3113,6 +3113,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Notifications.send
 	 */
 	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException;
 
