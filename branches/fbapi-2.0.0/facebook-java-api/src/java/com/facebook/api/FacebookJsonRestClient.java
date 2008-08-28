@@ -505,29 +505,27 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {

@@ -59,9 +59,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.facebook.api.schema.Listing;
-import com.facebook.api.schema.MarketplaceGetListingsResponse;
-import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
-import com.facebook.api.schema.MarketplaceSearchResponse;
 
 /**
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of
@@ -300,7 +297,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
@@ -309,22 +305,19 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	}
 
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
-		marketplace_getListings( listingIds, uids );
-		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) getResponsePOJO();
-		return resp.getListing();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
-		marketplace_getSubCategories( null );
-		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) getResponsePOJO();
-		return resp.getMarketplaceSubcategory();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
-		marketplace_search( category.getName(), subcategory.getName(), searchTerm );
-		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) getResponsePOJO();
-		return resp.getListing();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
