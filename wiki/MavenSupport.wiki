@@ -1,3 +1,5 @@
+how to get the latest 2.0.0-SNAPSHOT release.
+
 = Maven Support =
 
 If you are maintaining your dependencies through Maven Repositories,
