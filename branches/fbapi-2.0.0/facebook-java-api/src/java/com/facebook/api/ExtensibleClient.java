@@ -916,7 +916,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException {
-		useBetaApiServer();
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
@@ -924,7 +923,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException {
-		useBetaApiServer();
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
@@ -3250,10 +3248,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public void setDefaultServerUrl( URL newUrl ) {
 		SERVER_URL = newUrl;
-	}
-
-	public void useBetaApiServer() {
-		setServerUrl( "http://api.new.facebook.com/restserver.php" );
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException {
