@@ -39,6 +39,17 @@ public class Facebook {
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
   private String sessionKey;
+  private boolean inCanvas;
+  private boolean added;
+  private boolean uninstall;
+  private boolean installed;
+  private Long canvasUser;
+  private Long profileUpdateTime;
+  private boolean inProfileTab;
+  private Long profileUser;
+  private String profileSessionKey;
+  private Long pageId;
+  private boolean pageAdded;
 
   public Facebook( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
 		this.request = request;
@@ -57,13 +68,31 @@ public class Facebook {
 			apiClient.friendsList = friendsList;
 		}
 		// caching of the "added" value
-		String added = fbParams.get( "added" );
-		if ( added != null ) {
-			apiClient.added = new Boolean( added.equals( "1" ) );
-		}
-	}
+    added = toBoolean(fbParams.get("added"));
+		apiClient.added = added;
 
-	/**
+    inCanvas = toBoolean(fbParams.get("in_canvas"));
+    inProfileTab = toBoolean(fbParams.get("in_profile_tab"));
+    uninstall = toBoolean(fbParams.get("uninstall"));
+    installed = toBoolean(request.getParameter("installed"));
+    canvasUser = toLong(fbParams.get("canvas_user"));
+    profileUser = toLong(fbParams.get("profile_user"));
+    profileSessionKey = fbParams.get("profile_session_key");
+    profileUpdateTime = toLong(fbParams.get("profile_update_time"));
+    pageId = toLong(fbParams.get("page_id"));
+    pageAdded = toBoolean(fbParams.get("page_added"));
+  }
+
+  private Long toLong(String s) {
+    if(s == null) return null;
+    return new Long(s);
+  }
+
+  private boolean toBoolean(String s) {
+    return s != null && s.equals("1");
+  }
+
+  /**
 	 * Returns the internal FacebookRestClient object.
 	 * 
 	 * @return
@@ -333,9 +362,15 @@ public class Facebook {
 
 	/**
 	 * Forces the user to log in to this application. If the user hasn't logged in yet, this method issues a url redirect.
-	 * 
+	 *
+     * NOTE: You should return immediately if this returns true.
+     *
+     * Example usage:
+     * if(facebook.requireLogin("")) return;
+     *
 	 * @param next
 	 *            the value for the 'next' request paramater that is appended to facebook's login screen.
+     *            This should be an emptry string if you want it to go to your base canvas url.
 	 * @return true if the user hasn't logged in yet and a redirect was issued.
 	 */
 	public boolean requireLogin( String next ) {
@@ -487,4 +522,47 @@ public class Facebook {
 		return results;
 	}
 
+  public List<Long> getFriends(){
+    return apiClient.friendsList;
+  }
+
+  public Long getProfileUser() {
+    return profileUser;
+  }
+
+  public boolean isUninstall() {
+    return uninstall;
+  }
+
+  public Long getProfileUpdateTime() {
+    return profileUpdateTime;
+  }
+
+  public String getProfileSessionKey() {
+    return profileSessionKey;
+  }
+
+  public Long getPageId() {
+    return pageId;
+  }
+
+  public boolean isPageAdded() {
+    return pageAdded;
+  }
+
+  public boolean isInstalled() {
+    return installed;
+  }
+
+  public boolean isInProfileTab() {
+    return inProfileTab;
+  }
+
+  public boolean isInCanvas() {
+    return inCanvas;
+  }
+
+  public Long getCanvasUser() {
+    return canvasUser;
+  }
 }
