@@ -44,7 +44,6 @@ public enum FacebookParam implements CharSequence {
 	EXPIRES("expires"),
 	IN_CANVAS("in_canvas"),
 	IN_IFRAME("in_iframe"),
-	IN_PROFILE("profile"),
 	TIME("time"),
 	FRIENDS("friends"),
 	ADDED("added"),
@@ -55,7 +54,14 @@ public enum FacebookParam implements CharSequence {
 	MESSAGE("message"),
 	SMS_SID("sms_sid"),
 	SMS_NEW_USER("sms_new_user"),
-	POSITION_FIX("position_fix");
+	POSITION_FIX("position_fix"),
+	// other
+	UNINSTALL("uninstall"),
+	// new facebook
+	IN_NEW_FACEBOOK("in_new_facebook"),
+	IN_PROFILE_TAB("in_profile_tab"),
+	PROFILE_USER("profile_user"),
+	PROFILE_SESSION_KEY("profile_session_key");
 
 	private static final Map<String,FacebookParam> _lookupTable;
 	static {

@@ -28,7 +28,8 @@ public class FacebookWebRequest<T> {
 	private boolean appAdded;
 	private boolean inCanvas;
 	private boolean inIframe;
-	private boolean inProfile;
+	private boolean inNewFacebook;
+	private boolean inProfileTab;
 
 
 	public static FacebookWebRequest<Document> newInstanceXml( HttpServletRequest request, String apiKey, String secret ) {
@@ -51,12 +52,20 @@ public class FacebookWebRequest<T> {
 		this.fbParams = FacebookSignatureUtil.pulloutFbSigParams( request.getParameterMap() );
 		this.valid = FacebookSignatureUtil.verifySignature( fbParams, secret );
 		if ( valid ) {
+			inNewFacebook = getFbParamBoolean( FacebookParam.IN_NEW_FACEBOOK );
+			inProfileTab = getFbParamBoolean( FacebookParam.IN_PROFILE_TAB );
 			{
 				// caching of session key / logged in user
-				sessionKey = getFbParam( FacebookParam.SESSION_KEY );
-				userId = getFbParamLong( FacebookParam.USER );
+				// XXX: introduce concept of viewer/owner???
+				if ( !inProfileTab ) {
+					sessionKey = getFbParam( FacebookParam.SESSION_KEY );
+					userId = getFbParamLong( FacebookParam.USER );
+				} else {
+					sessionKey = getFbParam( FacebookParam.PROFILE_SESSION_KEY );
+					userId = getFbParamLong( FacebookParam.PROFILE_USER );
+				}
 				sessionExpires = getFbParamLong( FacebookParam.EXPIRES );
-				if ( sessionKey != null && userId != null && sessionExpires != null ) {
+				if ( sessionKey != null && userId != null ) {
 					apiClient.setCacheSession( sessionKey, userId, sessionExpires );
 				}
 			}
@@ -73,39 +82,18 @@ public class FacebookWebRequest<T> {
 			}
 			{
 				// caching of the "added" value
-				String addedS = getFbParam( FacebookParam.ADDED );
-				if ( addedS != null ) {
-					this.appAdded = true;
-					apiClient.setCacheAppAdded( addedS.equals( "1" ) );
-				}
+				appAdded = getFbParamBoolean( FacebookParam.ADDED );
+				apiClient.setCacheAppAdded( appAdded );
 			}
 			{
 				// other values from the request;
-				inCanvas = fbParamEquals( FacebookParam.IN_CANVAS, "1" );
-				inIframe = fbParamEquals( FacebookParam.IN_IFRAME, "1" ) || !inCanvas;
-				inProfile = fbParamEquals( FacebookParam.IN_PROFILE, "1" );
+				inCanvas = getFbParamBoolean( FacebookParam.IN_CANVAS );
+				inIframe = getFbParamBoolean( FacebookParam.IN_IFRAME ) || !inCanvas;
 			}
 		}
 	}
 
 	// ---- Parameter Helpers
-
-	public String getFbParam( String key ) {
-		return fbParams.get( key );
-	}
-
-	public Long getFbParamLong( String key ) {
-		String t = getFbParam( key );
-		if ( t != null ) {
-			return Long.parseLong( t );
-		}
-		return null;
-	}
-
-	public boolean fbParamEquals( String key, String val ) {
-		String param = getFbParam( key );
-		return key.equals( param );
-	}
 
 	public String getFbParam( FacebookParam key ) {
 		return fbParams.get( key.toString() );
@@ -117,6 +105,11 @@ public class FacebookWebRequest<T> {
 			return Long.parseLong( t );
 		}
 		return null;
+	}
+
+	public boolean getFbParamBoolean( FacebookParam key ) {
+		Long t = getFbParamLong( key );
+		return t != null && t > 0;
 	}
 
 	public boolean fbParamEquals( FacebookParam key, String val ) {
@@ -154,10 +147,6 @@ public class FacebookWebRequest<T> {
 		return inIframe;
 	}
 
-	public boolean isInProfile() {
-		return inProfile;
-	}
-
 	public Long getSessionExpires() {
 		return sessionExpires;
 	}
@@ -172,6 +161,14 @@ public class FacebookWebRequest<T> {
 
 	public boolean isValid() {
 		return valid;
+	}
+
+	public boolean isInNewFacebook() {
+		return inNewFacebook;
+	}
+
+	public boolean isInProfileTab() {
+		return inProfileTab;
 	}
 
 }
