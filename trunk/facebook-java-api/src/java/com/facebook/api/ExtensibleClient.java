@@ -1708,21 +1708,27 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			throw new RuntimeException( "You can only generate a response POJO when using XML formatted API responses!  JSON users go elsewhere!" );
 		}
 		Object pojo = null;
-		try {
-			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
+
+    byte[] rawBytes = null;
+    try {
+      rawBytes = this.rawResponse.getBytes("UTF-8");
+      Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
+			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( rawBytes ) );
 		}
 		catch ( JAXBException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO" );
-			e.printStackTrace();
+      System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" );
+      System.err.println(rawBytes);
+      e.printStackTrace();
 		}
 		catch ( NullPointerException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" );
+      System.err.println(rawBytes);
+      e.printStackTrace();
 		}
 		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" );
+      System.err.println(rawBytes);
+      e.printStackTrace();
 		}
 		return pojo;
 	}
