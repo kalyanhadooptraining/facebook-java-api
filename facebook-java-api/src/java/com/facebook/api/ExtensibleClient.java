@@ -84,20 +84,27 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public static URL SERVER_URL = null;
 	public static URL HTTPS_SERVER_URL = null;
-	protected static JAXBContext JAXB_CONTEXT;
 	static {
 		try {
-			JAXB_CONTEXT = JAXBContext.newInstance( "com.facebook.api.schema" );
 			SERVER_URL = new URL( SERVER_ADDR );
 			HTTPS_SERVER_URL = new URL( HTTPS_SERVER_ADDR );
 		}
 		catch ( MalformedURLException ex ) {
 			log.error( "MalformedURLException: " + ex.getMessage(), ex );
-			System.exit( 1 );
 		}
-		catch ( JAXBException ex ) {
-			JAXB_CONTEXT = null;
-			log.error( "MalformedURLException: " + ex.getMessage(), ex );
+	}
+
+	protected static JAXBContext JAXB_CONTEXT;
+
+	public static void initJaxbSupport() {
+		if ( JAXB_CONTEXT == null ) {
+			try {
+				JAXB_CONTEXT = JAXBContext.newInstance( "com.facebook.api.schema" );
+			}
+			catch ( JAXBException ex ) {
+				log.error( "MalformedURLException: " + ex.getMessage(), ex );
+				JAXB_CONTEXT = null;
+			}
 		}
 	}
 
@@ -153,31 +160,20 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this( SERVER_URL, apiKey, secret, null, timeout );
 	}
 
-	public ExtensibleClient( String apiKey, String secret, String sessionKey ) {
+	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
 		this( SERVER_URL, apiKey, secret, sessionKey );
 	}
 
-	public ExtensibleClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
-	public ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
+	protected ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
 		this( new URL( serverAddr ), apiKey, secret, sessionKey );
 	}
 
-	public ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
+	protected ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
 		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
-	}
-
-	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		this.cacheSessionKey = sessionKey;
-		this._apiKey = apiKey;
-		this._secret = secret;
-		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
-		this._timeout = -1;
-		this._readTimeout = -1;
-		this.batchMode = false;
-		this.queries = new ArrayList<BatchQuery>();
 	}
 
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
@@ -189,6 +185,20 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this( serverUrl, apiKey, secret, sessionKey );
 		_timeout = timeout;
 		_readTimeout = readTimeout;
+	}
+
+	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+		this.cacheSessionKey = sessionKey;
+		this._apiKey = apiKey;
+		this._secret = secret;
+		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
+		this._timeout = -1;
+		this._readTimeout = -1;
+		this.batchMode = false;
+		this.queries = new ArrayList<BatchQuery>();
+		if ( this instanceof FacebookJaxbRestClient ) {
+			initJaxbSupport();
+		}
 	}
 
 	public void beginPermissionsMode( String apiKey ) {
