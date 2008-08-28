@@ -642,13 +642,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return buffer;
 	}
 
-	protected static CharSequence delimit( Collection<Map.Entry<String,CharSequence>> entries, CharSequence delimiter, CharSequence equals, boolean doEncode ) {
+	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {
 		if ( entries == null || entries.isEmpty() ) {
 			return null;
 		}
 		StringBuilder buffer = new StringBuilder();
 		boolean notFirst = false;
-		for ( Map.Entry<String,CharSequence> entry : entries ) {
+		for ( Map.Entry<String,String> entry : entries ) {
 			if ( notFirst ) {
 				buffer.append( delimiter );
 			} else {
@@ -788,7 +788,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	protected Document callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
 		this.rawResponse = null;
-		Map<String,CharSequence> params = new TreeMap<String,CharSequence>();
+		Map<String,String> params = new TreeMap<String,String>();
 
 		if ( this.permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -804,7 +804,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, p.second );
+			oldVal = params.put( p.first, FacebookSignatureUtil.toString( p.second ) );
 			if ( oldVal != null ) {
 				log.warn( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
 			}
@@ -892,7 +892,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				// FIXME: additional printing done for debugging only
 				if ( log.isWarnEnabled() ) {
 					StringBuilder sb = new StringBuilder( "Facebook returns error code " + errorCode + "\n" );
-					for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+					for ( Map.Entry<String,String> entry : params.entrySet() ) {
 						sb.append( "  - " + entry.getKey() + " -> " + entry.getValue() + "\n" );
 					}
 					log.warn( sb.toString() );
@@ -957,7 +957,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return result;
 	}
 
-	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
+	private InputStream postRequest( CharSequence method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
 		if ( log.isDebugEnabled() ) {
@@ -1898,11 +1898,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload(File)
 	 */
-	protected InputStream postFileRequest( String methodName, Map<String,CharSequence> params ) throws IOException {
+	protected InputStream postFileRequest( String methodName, Map<String,String> params ) throws IOException {
 		return postFileRequest( methodName, params, /* doEncode */true );
 	}
 
-	public InputStream postFileRequest( String methodName, Map<String,CharSequence> params, boolean doEncode ) {
+	public InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode ) {
 		assert ( null != _uploadFile );
 		try {
 			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
@@ -1917,7 +1917,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 			DataOutputStream out = new DataOutputStream( con.getOutputStream() );
 
-			for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+			for ( Map.Entry<String,String> entry : params.entrySet() ) {
 				out.writeBytes( PREF + boundary + CRLF );
 				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
 				out.writeBytes( CRLF + CRLF );

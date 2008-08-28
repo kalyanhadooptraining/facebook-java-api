@@ -787,7 +787,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected T callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
 		rawResponse = null;
-		Map<String,CharSequence> params = new TreeMap<String,CharSequence>();
+		Map<String,String> params = new TreeMap<String,String>();
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
@@ -808,7 +808,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, p.second );
+			oldVal = params.put( p.first, FacebookSignatureUtil.toString( p.second ) );
 			if ( oldVal != null ) {
 				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
 			}
@@ -1069,7 +1069,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload(File)
 	 */
-	protected InputStream postFileRequest( String methodName, Map<String,CharSequence> params ) throws IOException {
+	protected InputStream postFileRequest( String methodName, Map<String,String> params ) throws IOException {
 		return postFileRequest( methodName, params, /* doEncode */true );
 	}
 
@@ -1085,7 +1085,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload
 	 */
-	protected InputStream postFileRequest( String methodName, Map<String,CharSequence> params, boolean doEncode ) throws IOException {
+	protected InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode ) throws IOException {
 		assert ( null != _uploadFile );
 		try {
 			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
@@ -1100,7 +1100,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 			DataOutputStream out = new DataOutputStream( con.getOutputStream() );
 
-			for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+			for ( Map.Entry<String,String> entry : params.entrySet() ) {
 				out.writeBytes( PREF + boundary + CRLF );
 				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
 				out.writeBytes( CRLF + CRLF );
@@ -1343,17 +1343,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	}
 
-	protected static CharSequence delimit( Collection<Map.Entry<String,CharSequence>> entries, CharSequence delimiter, CharSequence equals, boolean doEncode ) {
-		if ( entries == null || entries.isEmpty() )
+	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {
+		if ( entries == null || entries.isEmpty() ) {
 			return null;
-
+		}
 		StringBuilder buffer = new StringBuilder();
 		boolean notFirst = false;
-		for ( Map.Entry<String,CharSequence> entry : entries ) {
-			if ( notFirst )
+		for ( Map.Entry<String,String> entry : entries ) {
+			if ( notFirst ) {
 				buffer.append( delimiter );
-			else
+			} else {
 				notFirst = true;
+			}
 			CharSequence value = entry.getValue();
 			buffer.append( entry.getKey() ).append( equals ).append( doEncode ? encode( value ) : value );
 		}
@@ -1483,7 +1484,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.FRIENDS_GET );
 	}
 
-	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
+	private InputStream postRequest( CharSequence method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
 		if ( log.isDebugEnabled() ) {
