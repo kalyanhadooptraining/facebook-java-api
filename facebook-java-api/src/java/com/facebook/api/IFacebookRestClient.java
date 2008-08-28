@@ -57,7 +57,7 @@ public interface IFacebookRestClient<T> {
 
 	public static final String TARGET_API_VERSION = "1.0";
 	public static final String ERROR_TAG = "error_response";
-	public static final String FB_SERVER = "api.facebook.com/restserver.php";
+	public static final String FB_SERVER = "api.new.facebook.com/restserver.php";
 	public static final String SERVER_ADDR = "http://" + FB_SERVER;
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
@@ -3078,11 +3078,6 @@ public interface IFacebookRestClient<T> {
 	public URL getDefaultServerUrl();
 
 	public void setDefaultServerUrl( URL url );
-
-	/**
-	 * Configure the client to use the beta Facebook API server, which is assumed to exist at 'http://api.new.facebook.com/restserver.php'.
-	 */
-	public void useBetaApiServer();
 
 	/**
 	 * Sends a message using the LiveMessage API. Note that for the message to be recieved by the recipent, you must set up a FBJS handler function. See
