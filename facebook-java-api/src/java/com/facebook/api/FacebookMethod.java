@@ -158,9 +158,9 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 
 	// Data
 	DATA_SET_COOKIE("facebook.data.setCookie", 5),
+	DATA_GET_COOKIES("facebook.data.getCookies", 2),
 	DATA_SET_USER_PREFERENCE("facebook.data.setUserPreference", 3),
 	DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences", 3),
-	DATA_GET_COOKIES("facebook.data.getCookies", 2),
 	DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference", 2),
 	DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences", 1),
 

@@ -412,73 +412,36 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreference(java.lang.Integer)
-	 */
 	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreferences()
-	 */
 	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreference(java.lang.Integer, java.lang.String)
-	 */
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreferences(java.util.Map, boolean)
-	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
-	 */
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) marketplace_getListings( listingIds, uids );
 		return resp.getListing();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
-	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) marketplace_getSubCategories( null );
 		return resp.getMarketplaceSubcategory();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_search(com.facebook.api.MarketListingCategory, com.facebook.api.MarketListingSubcategory, java.lang.String)
-	 */
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) marketplace_search( category.getName(), subcategory.getName(), searchTerm );
