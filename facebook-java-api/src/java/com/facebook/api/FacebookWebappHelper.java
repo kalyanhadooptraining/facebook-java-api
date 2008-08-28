@@ -136,17 +136,12 @@ public class FacebookWebappHelper<T> {
 			// it explains a lot :)
 			//
 			// If we got any fb_params passed in at all, then either:
-			// - they included an fb_user / fb_session_key, which we should
-			// assume
-			// to be correct
-			// - they didn't include an fb_user / fb_session_key, which means
-			// the
+			// - they included an fb_user / fb_session_key, which we should assume to be correct
+			// - they didn't include an fb_user / fb_session_key, which means the
 			// user doesn't have a valid session and if we want to get one we'll
 			// need to use require_login(). (Calling set_user with null values
 			// for user/session_key will work properly.)
-			// - Note that we should *not* use our cookies in this scenario,
-			// since
-			// they may be referring to the wrong user.
+			// - Note that we should *not* use our cookies in this scenario, since they may be referring to the wrong user.
 			//
 
 			// parsing the user, session, and expiry info
@@ -239,8 +234,9 @@ public class FacebookWebappHelper<T> {
 	}
 
 	private Map<String,String> getValidFbParams( Map<String,String> params, Integer timeout, String namespace ) {
-		if ( namespace == null )
+		if ( namespace == null ) {
 			namespace = "fb_sig";
+		}
 		String prefix = namespace + "_";
 		int prefix_len = prefix.length();
 		Map<String,String> fb_params = new HashMap<String,String>();
