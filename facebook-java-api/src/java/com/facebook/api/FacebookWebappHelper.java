@@ -72,8 +72,13 @@ public class FacebookWebappHelper<T> {
 		this.apiClient = apiClient;
 		validateFbParams();
 		{
-		    // caching of session key / logged in user
-		    // FIXME: need to add this here!
+			// caching of session key / logged in user
+			String userS = fbParams.get( FacebookParam.USER.getSignatureName() );
+			String sessionKey = fbParams.get( FacebookParam.SESSION_KEY.getSignatureName() );
+			String expiresS = fbParams.get( FacebookParam.EXPIRES.getSignatureName() );
+			if ( userS != null && sessionKey != null && expiresS != null ) {
+				apiClient.setCacheSession( sessionKey, Long.parseLong( userS ), Long.parseLong( expiresS ) );
+			}
 		}
 		{
 			// caching of friends

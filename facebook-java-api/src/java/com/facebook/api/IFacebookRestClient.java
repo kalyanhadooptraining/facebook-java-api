@@ -99,6 +99,8 @@ public interface IFacebookRestClient<T> {
 
 	public void setCacheAppAdded( Boolean appAdded );
 
+	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires );
+
 	/**
 	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
 	 * 
