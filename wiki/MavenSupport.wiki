@@ -1,4 +1,4 @@
-how to get the latest 2.0.0-SNAPSHOT release.
+#summary how to get the latest 2.0.0-SNAPSHOT release.
 
 = Maven Support =
 
