@@ -57,8 +57,9 @@ public enum FacebookParam implements CharSequence {
 	SMS_NEW_USER("sms_new_user"),
 	POSITION_FIX("position_fix");
 
-	private static Map<String,FacebookParam> _lookupTable = new HashMap<String,FacebookParam>( FacebookParam.values().length );
+	private static final Map<String,FacebookParam> _lookupTable;
 	static {
+		_lookupTable = new HashMap<String,FacebookParam>();
 		for ( FacebookParam param : FacebookParam.values() ) {
 			_lookupTable.put( param.toString(), param );
 		}
@@ -72,7 +73,7 @@ public enum FacebookParam implements CharSequence {
 	 * @return the matching FacebookParam or null if there's no match
 	 */
 	public static FacebookParam get( String key ) {
-		return isInNamespace( key ) ? _lookupTable.get( key ) : null;
+		return _lookupTable.get( key );
 	}
 
 	/**
@@ -82,7 +83,7 @@ public enum FacebookParam implements CharSequence {
 	 * @return boolean
 	 */
 	public static boolean isInNamespace( String key ) {
-		return null != key && key.startsWith( FacebookParam.SIGNATURE.toString() );
+		return null != key && key.startsWith( "fb_sig" );
 	}
 
 	/**
@@ -94,7 +95,7 @@ public enum FacebookParam implements CharSequence {
 	 * @return true if the parameter is a signature parameter false otherwise
 	 */
 	public static boolean isSignature( String key ) {
-		return SIGNATURE.equals( get( key ) );
+		return null != key && key.equals( "fb_sig" );
 	}
 
 	private String _paramName;
@@ -147,4 +148,5 @@ public enum FacebookParam implements CharSequence {
 		}
 		return paramName;
 	}
+
 }
