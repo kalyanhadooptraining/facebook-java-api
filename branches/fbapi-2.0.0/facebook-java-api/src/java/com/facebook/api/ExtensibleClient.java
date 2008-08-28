@@ -268,6 +268,20 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this.cacheAppAdded = cacheAppAdded;
 	}
 
+	public String getCacheSessionSecret() {
+		return cacheSessionSecret;
+	}
+
+	public void setCacheSessionSecret( String cacheSessionSecret ) {
+		this.cacheSessionSecret = cacheSessionSecret;
+	}
+
+	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires ) {
+		setCacheSessionKey( cacheSessionKey );
+		setCacheUserId( cacheUserId );
+		setCacheSessionExpires( cacheSessionExpires );
+	}
+
 	public Long getCacheSessionExpires() {
 		return cacheSessionExpires;
 	}
@@ -282,14 +296,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public void setCacheSessionKey( String cacheSessionKey ) {
 		this.cacheSessionKey = cacheSessionKey;
-	}
-
-	public String getCacheSessionSecret() {
-		return cacheSessionSecret;
-	}
-
-	public void setCacheSessionSecret( String cacheSessionSecret ) {
-		this.cacheSessionSecret = cacheSessionSecret;
 	}
 
 	public Long getCacheUserId() {
