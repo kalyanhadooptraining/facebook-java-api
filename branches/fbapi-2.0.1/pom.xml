@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.facebook.api</groupId>
+  <groupId>com.google.code.facebookapi</groupId>
   <artifactId>parent-pom</artifactId>
   <packaging>pom</packaging>
   <version>2.0.1-SNAPSHOT</version>
@@ -27,8 +27,6 @@
     <module>facebook-java-api</module>
   </modules>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
     <plugins>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
