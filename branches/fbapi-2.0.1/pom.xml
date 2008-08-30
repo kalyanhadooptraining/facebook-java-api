@@ -24,6 +24,7 @@
     <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</developerConnection>
   </scm>
   <modules>
+    <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
   </modules>
   <build>

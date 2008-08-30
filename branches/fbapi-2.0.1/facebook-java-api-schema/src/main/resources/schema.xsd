@@ -28,7 +28,7 @@
 </xsd:simpleType>
 
 <xsd:simpleType name="uid">
-  <xsd:restriction base="xsd:int" />
+  <xsd:restriction base="xsd:long" />
 </xsd:simpleType>
 
 <xsd:simpleType name="flid">
