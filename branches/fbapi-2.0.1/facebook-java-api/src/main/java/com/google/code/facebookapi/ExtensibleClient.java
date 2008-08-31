@@ -412,12 +412,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		if ( null != images && !images.isEmpty() ) {
 			int image_count = 0;
-			for ( IPair image : images ) {
+			for ( IPair<? extends Object,URL> image : images ) {
 				++image_count;
 				assert null != image.getFirst() : "Image URL must be provided";
-				params.add( newPair( String.format( "image_%d", image_count ), image.getFirst().toString() ) );
-				if ( null != image.getSecond() )
-					params.add( newPair( String.format( "image_%d_link", image_count ), image.getSecond().toString() ) );
+				String name = "image_" + image_count;
+				params.add( newPair( name, image.getFirst().toString() ) );
+				if ( null != image.getSecond() ) {
+					params.add( newPair( name + "_link", image.getSecond().toString() ) );
+				}
 			}
 		}
 	}
