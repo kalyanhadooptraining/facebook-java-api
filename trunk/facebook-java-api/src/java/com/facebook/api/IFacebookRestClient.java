@@ -3082,7 +3082,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public void notifications_send(Collection<Long> recipientIds, String notification, boolean announcement) throws FacebookException, IOException;
+	public void notifications_send(Collection<Long> recipientIds, String notification, boolean isAppToUser) throws FacebookException, IOException;
 	
 	/**
 	 * Deactivates the specified template bundle.
