@@ -4231,11 +4231,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return extractBoolean(this.callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ));
 	}
 
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean announcement ) throws FacebookException, IOException {
+	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException, IOException {
 		if ( null == notification || "".equals( notification ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
 		}
-		Pair<String, CharSequence> type = new Pair<String, CharSequence>("type", announcement ? "announcement" : "general");
+		Pair<String, CharSequence> type = new Pair<String, CharSequence>("type", isAppToUser ? "app_to_user" : "user_to_user");
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
 					"notification", notification ), type );
