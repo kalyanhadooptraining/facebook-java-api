@@ -17,7 +17,7 @@ latest version is.
 Add this repository to your project's pom:
 
     <repository>
-      <id>mrepo-happyfern-snapshot</id>
+      <id>mrepo-happyfern</id>
       <url>http://mrepo.happyfern.com/maven2/</url>
     </repository>
 
