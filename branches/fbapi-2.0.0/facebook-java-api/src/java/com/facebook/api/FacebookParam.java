@@ -36,19 +36,34 @@ import java.util.Map;
 
 /**
  * List of URL parameters added by Facebook.
+ * 
+ * @see http://wiki.developers.facebook.com/index.php/Authorizing_Applications
  */
 public enum FacebookParam implements CharSequence {
+	//
 	SIGNATURE,
+	ADDED("added"),
+	API_KEY("api_key"),
+	FRIENDS("friends"),
+	LOCALE("locale"),
+	TIME("time"),
 	USER("user"),
+	CANVAS_USER("canvas_user"),
 	SESSION_KEY("session_key"),
 	EXPIRES("expires"),
-	IN_CANVAS("in_canvas"),
-	IN_IFRAME("in_iframe"),
-	TIME("time"),
-	FRIENDS("friends"),
-	ADDED("added"),
 	PROFILE_UPDATE_TIME("profile_update_time"),
-	API_KEY("api_key"),
+	EXT_PERMS("ext_perms"),
+	IN_CANVAS("in_canvas"),
+	IN_PROFILE_TAB("in_profile_tab"),
+	PROFILE_USER("profile_user"),
+	PROFILE_SESSION_KEY("profile_session_key"),
+	PAGE_ID("page_id"),
+	PAGE_ADDED("page_added"),
+	REQUEST_METHOD("request_method"),
+
+	IN_NEW_FACEBOOK("in_new_facebook"),
+
+	IN_IFRAME("in_iframe"),
 	// SMS sig params
 	SMS("sms"),
 	MESSAGE("message"),
@@ -56,12 +71,9 @@ public enum FacebookParam implements CharSequence {
 	SMS_NEW_USER("sms_new_user"),
 	POSITION_FIX("position_fix"),
 	// other
-	UNINSTALL("uninstall"),
-	// new facebook
-	IN_NEW_FACEBOOK("in_new_facebook"),
-	IN_PROFILE_TAB("in_profile_tab"),
-	PROFILE_USER("profile_user"),
-	PROFILE_SESSION_KEY("profile_session_key");
+	UNINSTALL("uninstall")
+	//
+	;
 
 	private static final Map<String,FacebookParam> _lookupTable;
 	static {
