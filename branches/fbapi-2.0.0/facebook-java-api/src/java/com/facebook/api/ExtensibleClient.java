@@ -1028,28 +1028,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, newPair( "ext_perm", permission ) ) );
 	}
 
-	/**
-	 * Sets the logged-in user's Facebook status. Requires the status_update extended permission.
-	 * 
-	 * @return whether the status was successfully set
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
-	 */
 	public boolean users_setStatus( String status ) throws FacebookException, IOException {
 		return users_setStatus( status, false, false );
 	}
 
-	/**
-	 * Clears the logged-in user's Facebook status. Requires the status_update extended permission.
-	 * 
-	 * @return whether the status was successfully cleared
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
-	 */
 	public boolean users_clearStatus() throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, newPair( "clear", "1" ) ) );
+		return users_setStatus( null, true );
 	}
 
 	/**
@@ -2145,17 +2129,15 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( newPair( "status", newStatus ) );
 		}
 		if ( clear ) {
-			users_clearStatus();
+			params.add( newPair( "clear", "true" ) );
 		}
 		if ( statusIncludesVerb ) {
 			params.add( newPair( "status_includes_verb", "true" ) );
 		}
-
 		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, params ) );
 	}
 
@@ -3003,7 +2985,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( newPair( "status", newStatus ) );
 		}
@@ -3013,8 +2994,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( statusIncludesVerb ) {
 			params.add( newPair( "status_includes_verb", "true" ) );
 		}
-		params.add( newPair( "uid", "true" ) );
-
+		params.add( newPair( "uid", userId ) );
 		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
 	}
 

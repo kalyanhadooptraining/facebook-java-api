@@ -66,6 +66,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param isDebug
 	 *            set to true to enable debug set to false to disable debug
+	 * @deprecated we are now using commons-logging
 	 */
 	public void setDebug( boolean isDebug );
 
@@ -73,6 +74,7 @@ public interface IFacebookRestClient<T> {
 	 * Check to see if debug mode is enabled.
 	 * 
 	 * @return true if debug is enabled false otherwise
+	 * @deprecated we are now using commons-logging
 	 */
 	public boolean isDebug();
 
@@ -680,7 +682,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully set
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String status ) throws FacebookException, IOException;
 
@@ -690,7 +692,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully set
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException;
 
@@ -709,6 +711,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException;
 
@@ -729,6 +732,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException, IOException;
 
@@ -750,6 +754,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException;
 
@@ -773,6 +778,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException;
 
@@ -782,7 +788,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully cleared
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_clearStatus() throws FacebookException, IOException;
 

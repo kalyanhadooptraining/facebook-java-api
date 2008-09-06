@@ -2968,7 +2968,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( statusIncludesVerb ) {
 			params.add( newPair( "status_includes_verb", "true" ) );
 		}
-		params.add( newPair( "uid", "true" ) );
+		params.add( newPair( "uid", userId.toString() ) );
 
 		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
 	}
