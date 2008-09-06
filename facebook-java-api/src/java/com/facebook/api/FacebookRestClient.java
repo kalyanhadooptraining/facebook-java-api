@@ -2334,22 +2334,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the user has the request permission
 	}
 
-	/**
-	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
-	 * error. You can use 'users_hasAppPermission' to check to see if the user has granted your app the abbility to update their status.
-	 * 
-	 * @param newStatus
-	 *            the new status message to set.
-	 * @param clear
-	 *            whether or not to clear the old status message.
-	 * 
-	 * @return true if the call succeeds false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException {
 		return users_setStatus( newStatus, clear, false );
 	}
@@ -2678,17 +2662,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "listing_id", listingId.toString() ) );
 		params.add( new Pair<String,CharSequence>( "status", status.getName() ) );
 		return marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING, params );
-
 	}
 
-	/**
-	 * Clears the logged-in user's Facebook status. Requires the status_update extended permission.
-	 * 
-	 * @return whether the status was successfully cleared
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
-	 */
 	public boolean users_clearStatus() throws FacebookException, IOException {
 		return users_setStatus( null, true );
 	}
@@ -3213,7 +3188,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( new Pair<String,CharSequence>( "status", newStatus ) );
 		}
@@ -3223,8 +3197,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( statusIncludesVerb ) {
 			params.add( new Pair<String,CharSequence>( "status_includes_verb", "true" ) );
 		}
-
-		return users_setStatus( FacebookMethod.USERS_SET_STATUS, params );
+		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, params ) );
 	}
 
 	/**
@@ -3982,7 +3955,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( new Pair<String,CharSequence>( "status", newStatus ) );
 		}
@@ -3992,9 +3964,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( statusIncludesVerb ) {
 			params.add( new Pair<String,CharSequence>( "status_includes_verb", "true" ) );
 		}
-		params.add( new Pair<String,CharSequence>( "uid", "true" ) );
-
-		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
+		params.add( new Pair<String,CharSequence>( "uid", userId.toString() ) );
+		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS_NOSESSION, params ) );
 	}
 
 	public Document feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException, IOException {
@@ -4178,14 +4149,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	private Document photos_upload( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
 		return callMethod( method, params );
-	}
-
-	private boolean users_setStatus( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		callMethod( method, params );
-		if ( this.rawResponse == null ) {
-			return false;
-		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the request was successful, any other response indicates error
 	}
 
 	public static boolean addParam( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
