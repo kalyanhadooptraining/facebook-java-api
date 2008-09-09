@@ -31,55 +31,55 @@ package com.facebook.api;
  * Enum for specifying categories in marketplace listings and API calls.
  */
 public enum MarketListingCategory {
-    /**
-     * Category to specify for a for-sale listing
-     */
-    FORSALE("FORSALE"),
-    /**
-     * Category to specify for a housing listing
-     */
-    HOUSING("HOUSING"),
-    /**
-     * Category to specify for a job posting
-     */
-    JOBS("JOBS"),
-    /**
-     * Category for any listing that doesn't fit in any of the other categories
-     */
-    OTHER("OTHER"),
-    /**
-     * Category for a listing advertising free goods/services
-     */
-    FREE("FREE"),
-    /**
-     * Category for a listing seeking items for sale
-     */
-    FORSALE_WANTED("FORSALE_WANTED"),
-    /**
-     * Category for a listing seeking housing
-     */
-    HOUSING_WANTED("HOUSING_WANTED"),
-    /**
-     * Category for a listing seeking employment
-     */
-    JOBS_WANTED("JOBS_WANTED"),
-    /**
-     * Category for a listing seeking anything that doesn't fit in any other category
-     */
-    OTHER_WANTED("OTHER_WANTED");
-    
-    private String name;
-    
-    private MarketListingCategory(String name) {
-        this.name = name;
-    }
-    
-    /**
-     * Get the name by which Facebook refers to this category.  This can be used in API calls when talking to their servers.
-     * 
-     * @return the name Facebook has allocated to this category.
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Category to specify for a for-sale listing
+	 */
+	FORSALE("FORSALE"),
+	/**
+	 * Category to specify for a housing listing
+	 */
+	HOUSING("HOUSING"),
+	/**
+	 * Category to specify for a job posting
+	 */
+	JOBS("JOBS"),
+	/**
+	 * Category for any listing that doesn't fit in any of the other categories
+	 */
+	OTHER("OTHER"),
+	/**
+	 * Category for a listing advertising free goods/services
+	 */
+	FREE("FREE"),
+	/**
+	 * Category for a listing seeking items for sale
+	 */
+	FORSALE_WANTED("FORSALE_WANTED"),
+	/**
+	 * Category for a listing seeking housing
+	 */
+	HOUSING_WANTED("HOUSING_WANTED"),
+	/**
+	 * Category for a listing seeking employment
+	 */
+	JOBS_WANTED("JOBS_WANTED"),
+	/**
+	 * Category for a listing seeking anything that doesn't fit in any other category
+	 */
+	OTHER_WANTED("OTHER_WANTED");
+
+	private String name;
+
+	private MarketListingCategory( String name ) {
+		this.name = name;
+	}
+
+	/**
+	 * Get the name by which Facebook refers to this category. This can be used in API calls when talking to their servers.
+	 * 
+	 * @return the name Facebook has allocated to this category.
+	 */
+	public String getName() {
+		return name;
+	}
 }

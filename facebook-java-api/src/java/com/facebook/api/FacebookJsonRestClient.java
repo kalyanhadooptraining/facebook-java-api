@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +27,8 @@ import com.facebook.api.schema.Listing;
  * transformed into Java <code>Object</code>'s.
  */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+
+	protected static Log log = LogFactory.getLog( FacebookJsonRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
@@ -235,19 +239,19 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return null;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					return (String)((JSONArray)val).get( 0 );
+					// sometimes facebook will wrap its primitive types in JSON markup
+					return (String) ( (JSONArray) val ).get( 0 );
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			return (String) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}
@@ -262,34 +266,19 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		try {
-			this._sessionKey = (String) d.get( "session_key" );
-			Object uid = d.get( "uid" );
-			Object expires = d.get( "expires" );
-			try {
-				this._userId = (Long) uid;
-			}
-			catch ( ClassCastException cce ) {
-				this._userId = Long.parseLong( (String) uid );
-			}
-			try {
-				this._expires = Long.parseLong( expires.toString() );
-			}
-			catch ( ClassCastException cce ) {
-				this._expires = Long.parseLong( (String) expires );
-			}
+			this.cacheSessionKey = d.getString( "session_key" );
+			this.cacheUserId = d.getLong( "uid" );
+			this.cacheSessionExpires = d.getLong( "expires" );
 			if ( this.isDesktop() ) {
-				this._sessionSecret = (String) d.get( "secret" );
+				this.cacheSessionSecret = d.getString( "secret" );
 			}
 		}
-		catch ( Exception ignored ) {
-			ignored.printStackTrace();
+		catch ( Exception ex ) {
+			ex.printStackTrace();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	/**
@@ -308,14 +297,12 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 */
 	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
 		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String line;
 		while ( ( line = in.readLine() ) != null ) {
 			buffer.append( line );
 		}
-
-		String jsonResp = new String( buffer );
-
+		String jsonResp = buffer.toString();
 		Object json = null;
 		if ( this.rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
 			try {
@@ -344,27 +331,22 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				json = this.rawResponse;
 			}
 		}
-		if ( isDebug() ) {
-			log( method.methodName() + ": " + ( null != json ? json.toString() : "null" ) );
-		}
+		log.debug( method.methodName() + ": " + json );
 
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
 			try {
-				Object errorCode = jsonObj.get( "error_code" );
-				if ( errorCode != null ) {
-					String message = (String) jsonObj.get( "error_msg" );
-					Integer code;
-					if ( errorCode instanceof Integer ) {
-						code = (Integer) errorCode;
-					} else {
-						code = ( (Long) errorCode ).intValue();
+				if ( jsonObj.has( "error_code" ) ) {
+					int code = jsonObj.getInt( "error_code" );
+					String message = null;
+					if ( jsonObj.has( "error_msg" ) ) {
+						message = jsonObj.getString( "error_msg" );
 					}
 					throw new FacebookException( code, message );
 				}
 			}
 			catch ( JSONException ignored ) {
-				// the call completed normally
+				// ignore
 			}
 		}
 		return json;
@@ -380,19 +362,19 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( url == null ) {
 			return null;
 		}
-		if ( ! ( url instanceof String ) ) {
-			if (url instanceof JSONArray) {
-				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					return new URL((String)((JSONArray)url).get( 0 ));
-				}
-				catch (Exception e) {
-					logException(e);
-				}
-			}
-			return null;
+		if ( url instanceof String ) {
+			return ( "".equals( url ) ) ? null : new URL( (String) url );
 		}
-		return ( null == url || "".equals( url ) ) ? null : new URL( (String) url );
+		if ( url instanceof JSONArray ) {
+			try {
+				// sometimes facebook will wrap its primitive types in JSON markup
+				return new URL( (String) ( (JSONArray) url ).get( 0 ) );
+			}
+			catch ( Exception e ) {
+				log.error( "Exception: " + e.getMessage(), e );
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -406,19 +388,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
-					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
+					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 1;
-					}
-					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 0;
 					}
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -432,7 +413,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Integer) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return 0;
 		}
 	}
@@ -448,27 +429,30 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return false;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
-				return ( ( val != null ) && ( ( val.equals( "true" ) ) || ( val.equals( "1" ) ) ) );
+				return ( val.equals( "true" ) || val.equals( "1" ) );
 			}
-			if (val instanceof Boolean) {
-				return (Boolean)val;
+			if ( val instanceof Boolean ) {
+				return (Boolean) val;
+			}
+			if ( val instanceof Number ) {
+				return ( (Number) val ).longValue() == 1l;
 			}
 			return ( (Long) val == 1l );
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
-			return false;
+			log.error( "Exception: " + cce.getMessage(), cce );
 		}
+		return false;
 	}
 
 	/**
@@ -482,19 +466,18 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return 0l;
 		}
 		try {
-			if (val instanceof JSONArray) {
+			if ( val instanceof JSONArray ) {
 				try {
-					//sometimes facebook will wrap its primitive types in JSON markup
-					val = ((JSONArray)val).get( 0 );
-					if ("true".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					// sometimes facebook will wrap its primitive types in JSON markup
+					val = ( (JSONArray) val ).get( 0 );
+					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 1l;
-					}
-					else if ("false".equals( val ) || (val instanceof Boolean && (Boolean)val)) {
+					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
 						val = 0l;
 					}
 				}
-				catch (Exception e) {
-					logException(e);
+				catch ( Exception e ) {
+					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -504,7 +487,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Long) val;
 		}
 		catch ( ClassCastException cce ) {
-			logException( cce );
+			log.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}
@@ -522,29 +505,27 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
@@ -625,6 +606,43 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			}
 		}
 		return result;
+	}
+
+	protected JSONArray cacheFriendsList;
+
+	/**
+	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
+	 * 
+	 * @return the friends-list stored in the API client.
+	 */
+	public JSONArray getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	/**
+	 * Set/override the list of friends stored in the client.
+	 * 
+	 * @param friendsList
+	 *            the new list to use.
+	 */
+	public void setCacheFriendsList( List<Long> ids ) {
+		this.cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static JSONArray toFriendsGetResponse( List<Long> ids ) {
+		JSONArray out = new JSONArray();
+		for ( Long id : ids ) {
+			out.put( id );
+		}
+		return out;
+	}
+
+	@Override
+	public JSONArray friends_get() throws FacebookException, IOException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = (JSONArray) super.friends_get();
+		}
+		return cacheFriendsList;
 	}
 
 }

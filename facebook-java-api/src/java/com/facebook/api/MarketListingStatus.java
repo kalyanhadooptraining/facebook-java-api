@@ -31,31 +31,31 @@ package com.facebook.api;
  * Simple enum for specifying whether or not a marketplace listing was successful or not.
  */
 public enum MarketListingStatus {
-    /**
-     * The listing was successful.
-     */
-    SUCCESS("SUCCESS"),
-    /**
-     * "Default" status (ask Facebook what this should mean, because they don't specify).
-     */
-    DEFAULT("DEFAULT"),
-    /**
-     * The listing was not successful.
-     */
-    NOT_SUCCESS("NOT_SUCCESS");
-    
-    private String name;
-    
-    private MarketListingStatus(String name) {
-        this.name = name;
-    }
-    
-    /**
-     * Get the name given by Facebook to this status code.
-     * 
-     * @return the name, as supplied by Facebook.
-     */
-    public String getName(){
-        return name;
-    }
+	/**
+	 * The listing was successful.
+	 */
+	SUCCESS("SUCCESS"),
+	/**
+	 * "Default" status (ask Facebook what this should mean, because they don't specify).
+	 */
+	DEFAULT("DEFAULT"),
+	/**
+	 * The listing was not successful.
+	 */
+	NOT_SUCCESS("NOT_SUCCESS");
+
+	private String name;
+
+	private MarketListingStatus( String name ) {
+		this.name = name;
+	}
+
+	/**
+	 * Get the name given by Facebook to this status code.
+	 * 
+	 * @return the name, as supplied by Facebook.
+	 */
+	public String getName() {
+		return name;
+	}
 }

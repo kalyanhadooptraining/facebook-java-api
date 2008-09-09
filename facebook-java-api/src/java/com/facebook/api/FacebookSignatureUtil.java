@@ -36,33 +36,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Utility for managing Facebook-specific parameters, specifically those related to session/login aspects.
  */
 public final class FacebookSignatureUtil {
 
-	/**
-	 * Out of the passed in <code>reqParams</code>, extracts the parameters that are in the FacebookParam namespace and returns them.
-	 * 
-	 * @param reqParams
-	 *            A map of request parameters to their values. Values are arrays of strings, as returned by ServletRequest.getParameterMap(). Only the first element in a
-	 *            given array is significant.
-	 * @return a boolean indicating whether the calculated signature matched the expected signature
-	 */
-	public static Map<String,CharSequence> extractFacebookParamsFromArray( Map<CharSequence,CharSequence[]> reqParams ) {
-		if ( null == reqParams )
-			return null;
-		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
-		for ( Map.Entry<CharSequence,CharSequence[]> entry : reqParams.entrySet() ) {
-			String key = entry.getKey().toString();
-			if ( FacebookParam.isInNamespace( key ) ) {
-				CharSequence[] value = entry.getValue();
-				if ( value.length > 0 )
-					result.put( key, value[0] );
+	protected static Log log = LogFactory.getLog( FacebookSignatureUtil.class );
+
+	public static Map<String,String> pulloutFbSigParams( Map<String,String[]> reqParams ) {
+		Map<String,String> result = new TreeMap<String,String>();
+		for ( Map.Entry<String,String[]> entry : reqParams.entrySet() ) {
+			String key = entry.getKey();
+			String[] values = entry.getValue();
+			if ( values.length > 0 && FacebookParam.isInNamespace( key ) ) {
+				result.put( key, values[0] );
 			}
 		}
 		return result;
@@ -76,18 +70,50 @@ public final class FacebookSignatureUtil {
 	 *            given array is significant.
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
+	public static Map<String,String> extractFacebookParamsFromArray( Map<CharSequence,CharSequence[]> reqParams ) {
+		if ( null == reqParams ) {
+			return null;
+		}
+		Map<String,String> result = new TreeMap<String,String>();
+		for ( Map.Entry<CharSequence,CharSequence[]> entry : reqParams.entrySet() ) {
+			String key = entry.getKey().toString();
+			CharSequence[] values = entry.getValue();
+			if ( values.length > 0 && FacebookParam.isInNamespace( key ) ) {
+				result.put( key, toString( values[0] ) );
+			}
+		}
+		return result;
+	}
+
+	public static String toString( CharSequence cs ) {
+		if ( cs != null ) {
+			return cs.toString();
+		}
+		return null;
+	}
+
+	/**
+	 * Out of the passed in <code>reqParams</code>, extracts the parameters that are in the FacebookParam namespace and returns them.
+	 * 
+	 * @param reqParams
+	 *            A map of request parameters to their values. Values are arrays of strings, as returned by ServletRequest.getParameterMap(). Only the first element in a
+	 *            given array is significant.
+	 * @return a boolean indicating whether the calculated signature matched the expected signature
+	 */
 	// Facebook likes to refer to everything as a CharSequence, even when referencing Objects defined by an external API that explicitly
 	// specifies the use of String, and *not* CharSequence.
-	public static Map<String,CharSequence> extractFacebookParamsFromStandardsCompliantArray( Map<String,String[]> reqParams ) {
-		if ( null == reqParams )
+	public static Map<String,String> extractFacebookParamsFromStandardsCompliantArray( Map<String,String[]> reqParams ) {
+		if ( null == reqParams ) {
 			return null;
-		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
+		}
+		Map<String,String> result = new TreeMap<String,String>();
 		for ( Map.Entry<String,String[]> entry : reqParams.entrySet() ) {
 			String key = entry.getKey();
 			if ( FacebookParam.isInNamespace( key ) ) {
 				String[] value = entry.getValue();
-				if ( value.length > 0 )
+				if ( value.length > 0 ) {
 					result.put( key, value[0] );
+				}
 			}
 		}
 		return result;
@@ -101,13 +127,15 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static Map<String,CharSequence> extractFacebookNamespaceParams( Map<CharSequence,CharSequence> reqParams ) {
-		if ( null == reqParams )
+		if ( null == reqParams ) {
 			return null;
-		Map<String,CharSequence> result = new HashMap<String,CharSequence>( reqParams.size() );
+		}
+		Map<String,CharSequence> result = new TreeMap<String,CharSequence>();
 		for ( Map.Entry<CharSequence,CharSequence> entry : reqParams.entrySet() ) {
 			String key = entry.getKey().toString();
-			if ( FacebookParam.isInNamespace( key ) )
+			if ( FacebookParam.isInNamespace( key ) ) {
 				result.put( key, entry.getValue() );
+			}
 		}
 		return result;
 	}
@@ -142,7 +170,7 @@ public final class FacebookSignatureUtil {
 	 * @param secret
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
-	public static boolean verifySignature( EnumMap<FacebookParam,CharSequence> params, String secret ) {
+	public static boolean verifySignature( EnumMap<FacebookParam,String> params, String secret ) {
 		if ( null == params || params.isEmpty() )
 			return false;
 		CharSequence sigParam = params.remove( FacebookParam.SIGNATURE );
@@ -160,7 +188,7 @@ public final class FacebookSignatureUtil {
 	 *            the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
-	public static boolean verifySignature( EnumMap<FacebookParam,CharSequence> params, String secret, String expected ) {
+	public static boolean verifySignature( EnumMap<FacebookParam,String> params, String secret, String expected ) {
 		assert ! ( null == secret || "".equals( secret ) );
 		if ( null == params || params.isEmpty() )
 			return false;
@@ -182,9 +210,10 @@ public final class FacebookSignatureUtil {
 	 *            the developers 'secret' API key
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
-	public static boolean verifySignature( Map<String,CharSequence> params, String secret ) {
-		if ( null == params || params.isEmpty() )
+	public static boolean verifySignature( Map<String,String> params, String secret ) {
+		if ( null == params || params.isEmpty() ) {
 			return false;
+		}
 		CharSequence sigParam = params.remove( FacebookParam.SIGNATURE.toString() );
 		return ( null == sigParam ) ? false : verifySignature( params, secret, sigParam.toString() );
 	}
@@ -203,7 +232,7 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static boolean autoVerifySignature( Map<String,String[]> requestParams, String secret, String expected ) {
-		Map<String,CharSequence> convertedMap = extractFacebookParamsFromStandardsCompliantArray( requestParams );
+		Map<String,String> convertedMap = extractFacebookParamsFromStandardsCompliantArray( requestParams );
 		return verifySignature( convertedMap, secret, expected );
 	}
 
@@ -236,7 +265,7 @@ public final class FacebookSignatureUtil {
 	 *            the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
-	public static boolean verifySignature( Map<String,CharSequence> params, String secret, String expected ) {
+	public static boolean verifySignature( Map<String,String> params, String secret, String expected ) {
 		assert ! ( null == secret || "".equals( secret ) );
 		if ( null == params || params.isEmpty() )
 			return false;
@@ -248,10 +277,10 @@ public final class FacebookSignatureUtil {
 		return verifySignature( sigParams, secret, expected );
 	}
 
-
 	private static boolean verifySignature( List<String> sigParams, String secret, String expected ) {
-		if ( null == expected || "".equals( expected ) )
+		if ( null == expected || "".equals( expected ) ) {
 			return false;
+		}
 		String signature = generateSignature( sigParams, secret );
 		return expected.equals( signature );
 	}
@@ -263,10 +292,11 @@ public final class FacebookSignatureUtil {
 	 *            a collection of Map.Entry's, such as can be obtained using myMap.entrySet()
 	 * @return a List suitable for being passed to generateSignature
 	 */
-	public static List<String> convert( Collection<Map.Entry<String,CharSequence>> entries ) {
+	public static List<String> convert( Collection<Map.Entry<String,String>> entries ) {
 		List<String> result = new ArrayList<String>( entries.size() );
-		for ( Map.Entry<String,CharSequence> entry : entries )
+		for ( Map.Entry<String,? extends CharSequence> entry : entries ) {
 			result.add( FacebookParam.stripSignaturePrefix( entry.getKey() ) + "=" + entry.getValue() );
+		}
 		return result;
 	}
 
@@ -277,10 +307,11 @@ public final class FacebookSignatureUtil {
 	 *            a collection of Map.Entry's, such as can be obtained using myMap.entrySet()
 	 * @return a List suitable for being passed to generateSignature
 	 */
-	public static List<String> convertFacebookParams( Collection<Map.Entry<FacebookParam,CharSequence>> entries ) {
+	public static List<String> convertFacebookParams( Collection<Map.Entry<FacebookParam,String>> entries ) {
 		List<String> result = new ArrayList<String>( entries.size() );
-		for ( Map.Entry<FacebookParam,CharSequence> entry : entries )
+		for ( Map.Entry<FacebookParam,String> entry : entries ) {
 			result.add( entry.getKey().getSignatureName() + "=" + entry.getValue() );
+		}
 		return result;
 	}
 
@@ -317,9 +348,9 @@ public final class FacebookSignatureUtil {
 			return result.toString();
 		}
 		catch ( java.security.NoSuchAlgorithmException ex ) {
-			System.err.println( "MD5 does not appear to be supported" + ex );
-			return "";
+			log.error( "MD5 does not appear to be supported" + ex, ex );
 		}
+		return "";
 	}
 
 }

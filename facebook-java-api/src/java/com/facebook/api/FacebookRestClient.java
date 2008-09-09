@@ -60,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -68,15 +69,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.facebook.api.schema.FriendsGetResponse;
 import com.facebook.api.schema.Listing;
 import com.facebook.api.schema.MarketplaceGetCategoriesResponse;
 import com.facebook.api.schema.MarketplaceGetListingsResponse;
@@ -87,8 +90,13 @@ import com.facebook.api.schema.MarketplaceSearchResponse;
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of Document.
  * 
  * Allocate an instance of this class to make Facebook API requests.
+ * 
+ * @deprecated this is provided for legacy support only. Please use FacebookXmlRestClient instead if you want to use the Facebook Platform XML API.
  */
+@Deprecated
 public class FacebookRestClient implements IFacebookRestClient<Document> {
+
+	protected static Log log = LogFactory.getLog( FacebookRestClient.class );
 
 	/**
 	 * API version to request when making calls to the server
@@ -125,14 +133,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			SERVER_URL = new URL( SERVER_ADDR );
 			HTTPS_SERVER_URL = new URL( HTTPS_SERVER_ADDR );
 		}
-		catch ( MalformedURLException e ) {
-			System.err.println( "MalformedURLException: " + e.getMessage() );
+		catch ( MalformedURLException ex ) {
+			log.error( "MalformedURLException: " + ex.getMessage(), ex );
 			System.exit( 1 );
 		}
-		catch ( JAXBException e ) {
+		catch ( JAXBException ex ) {
 			JAXB_CONTEXT = null;
-			System.err.println( "Could not get JAXB context:  " + e.getMessage() );
-			e.printStackTrace();
+			log.error( "Could not get JAXB context:  " + ex.getMessage(), ex );
 		}
 	}
 
@@ -176,30 +183,33 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	protected final String _secret;
 	protected final String _apiKey;
 	protected URL _serverUrl;
-	protected String rawResponse;
 	protected boolean namespaceAware = true;
-
-	protected String _sessionKey; // filled in when session is established
-	protected Long _expires; // also filled in when session is established
-	protected boolean _isDesktop = false;
-	protected String _sessionSecret; // only used for desktop apps
-	protected long _userId;
 	protected int _timeout;
 	protected int _readTimeout;
+
+	protected boolean _isDesktop = false;
+
+	protected String cacheSessionKey; // filled in when session is established
+	protected Long cacheUserId;
+	protected Long cacheSessionExpires; // also filled in when session is established
+	protected String cacheSessionSecret; // only used for desktop apps
+
+	protected String rawResponse;
 	protected boolean batchMode;
 	protected List<BatchQuery> queries;
 
 	protected String permissionsApiKey = null;
 
-	protected List<Long> friendsList; // to save making the friends.get api call, this will get prepopulated on canvas pages
-	public Boolean added; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
+	protected Document cacheFriendsList; // to save making the friends.get api call, this will get prepopulated on canvas pages
+	protected Boolean cacheAppAdded; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
 
 	/**
 	 * number of params that the client automatically appends to every API call
 	 */
-	public static int NUM_AUTOAPPENDED_PARAMS = 6;
-	protected static boolean DEBUG = false;
+	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
+	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
+	@Deprecated
 	protected Boolean _debug = null;
 
 	protected File _uploadFile = null;
@@ -320,13 +330,12 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            the session-id to use
 	 */
 	public FacebookRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		_sessionKey = sessionKey;
+		cacheSessionKey = sessionKey;
 		_apiKey = apiKey;
 		_secret = secret;
 		_serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
 		_timeout = -1;
 		_readTimeout = -1;
-		_userId = -1;
 		batchMode = false;
 		queries = new ArrayList<BatchQuery>();
 	}
@@ -360,8 +369,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @return the session-key stored in the API client.
 	 */
+	@Deprecated
 	public String _getSessionKey() {
-		return _sessionKey;
+		return cacheSessionKey;
 	}
 
 	/**
@@ -370,8 +380,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @param key
 	 *            the new key to use.
 	 */
+	@Deprecated
 	public void _setSessionKey( String key ) {
-		_sessionKey = key;
+		cacheSessionKey = key;
 	}
 
 	/**
@@ -379,8 +390,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @return the expiration value stored in the API client.
 	 */
+	@Deprecated
 	public Long _getExpires() {
-		return _expires;
+		return cacheSessionExpires;
 	}
 
 	/**
@@ -389,8 +401,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @param _expires
 	 *            the new timestamp to use.
 	 */
+	@Deprecated
 	public void _setExpires( Long _expires ) {
-		this._expires = _expires;
+		this.cacheSessionExpires = _expires;
 	}
 
 	/**
@@ -398,8 +411,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @return the user-id stored in the API client.
 	 */
-	public long _getUserId() {
-		return _userId;
+	@Deprecated
+	public Long _getUserId() {
+		return cacheUserId;
 	}
 
 	/**
@@ -408,8 +422,47 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @param id
 	 *            the new user-id to use.
 	 */
-	public void _setUserId( long id ) {
-		_userId = id;
+	@Deprecated
+	public void _setUserId( Long id ) {
+		cacheUserId = id;
+	}
+
+	public String getCacheSessionSecret() {
+		return cacheSessionSecret;
+	}
+
+	public void setCacheSessionSecret( String cacheSessionSecret ) {
+		this.cacheSessionSecret = cacheSessionSecret;
+	}
+
+	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires ) {
+		setCacheSessionKey( cacheSessionKey );
+		setCacheUserId( cacheUserId );
+		setCacheSessionExpires( cacheSessionExpires );
+	}
+
+	public Long getCacheSessionExpires() {
+		return cacheSessionExpires;
+	}
+
+	public void setCacheSessionExpires( Long cacheSessionExpires ) {
+		this.cacheSessionExpires = cacheSessionExpires;
+	}
+
+	public String getCacheSessionKey() {
+		return cacheSessionKey;
+	}
+
+	public void setCacheSessionKey( String cacheSessionKey ) {
+		this.cacheSessionKey = cacheSessionKey;
+	}
+
+	public Long getCacheUserId() {
+		return cacheUserId;
+	}
+
+	public void setCacheUserId( Long cacheUserId ) {
+		this.cacheUserId = cacheUserId;
 	}
 
 	/**
@@ -417,8 +470,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @return the friends-list stored in the API client.
 	 */
-	public List<Long> _getFriendsList() {
-		return friendsList;
+	public Document getCacheFriendsList() {
+		return cacheFriendsList;
 	}
 
 	/**
@@ -427,8 +480,28 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @param friendsList
 	 *            the new list to use.
 	 */
-	public void _setFriendsList( List<Long> friendsList ) {
-		this.friendsList = friendsList;
+	public void setCacheFriendsList( List<Long> ids ) {
+		this.cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static Document toFriendsGetResponse( List<Long> ids ) {
+		try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
+			root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );
+			root.setAttribute( "list", "true" );
+			for ( Long id : ids ) {
+				Element uid = doc.createElement( "uid" );
+				uid.appendChild( doc.createTextNode( Long.toString( id ) ) );
+				root.appendChild( uid );
+			}
+			doc.appendChild( root );
+			return doc;
+		}
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( ex );
+		}
 	}
 
 	/**
@@ -486,9 +559,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @param isDebug
 	 *            true to enable debugging false to disable debugging
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
+	@Deprecated
 	public static void setDebugAll( boolean isDebug ) {
-		FacebookRestClient.DEBUG = isDebug;
+		ExtensibleClient.DEBUG = isDebug;
 	}
 
 	/**
@@ -496,8 +571,9 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * 
 	 * @param isDebug
 	 *            true to enable debugging false to disable debugging
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
-	// FIXME: do we really need both of these?
+	@Deprecated
 	public void setDebug( boolean isDebug ) {
 		_debug = isDebug;
 	}
@@ -506,9 +582,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * Check to see if debug mode is enabled.
 	 * 
 	 * @return true if debugging is enabled false otherwise
+	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
 	 */
+	@Deprecated
 	public boolean isDebug() {
-		return ( null == _debug ) ? FacebookRestClient.DEBUG : _debug.booleanValue();
+		return ( null == _debug ) ? ExtensibleClient.DEBUG : _debug.booleanValue();
 	}
 
 	/**
@@ -539,20 +617,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 *            string to append to output, should not be null
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( !isDebug() ) {
-			return;
-		}
-		String outString = prefix;
-		if ( n.getNodeType() == Node.TEXT_NODE ) {
-			outString += "'" + n.getTextContent().trim() + "'";
-		} else {
-			outString += n.getNodeName();
-		}
-		System.out.println( outString );
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			printDom( children.item( i ), prefix + "  " );
+		if ( log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder( "\n" );
+			ExtensibleClient.printDom( n, prefix, sb );
+			log.debug( sb.toString() );
 		}
 	}
 
@@ -574,13 +642,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return buffer;
 	}
 
-	protected static CharSequence delimit( Collection<Map.Entry<String,CharSequence>> entries, CharSequence delimiter, CharSequence equals, boolean doEncode ) {
+	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {
 		if ( entries == null || entries.isEmpty() ) {
 			return null;
 		}
 		StringBuilder buffer = new StringBuilder();
 		boolean notFirst = false;
-		for ( Map.Entry<String,CharSequence> entry : entries ) {
+		for ( Map.Entry<String,String> entry : entries ) {
 			if ( notFirst ) {
 				buffer.append( delimiter );
 			} else {
@@ -720,7 +788,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	protected Document callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
 		this.rawResponse = null;
-		HashMap<String,CharSequence> params = new HashMap<String,CharSequence>( 2 * method.numTotalParams() );
+		Map<String,String> params = new TreeMap<String,String>();
 
 		if ( this.permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -730,15 +798,15 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.put( "v", TARGET_API_VERSION );
 
 		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
-		boolean includeSession = method.requiresSession() && _sessionKey != null;
+		boolean includeSession = method.requiresSession() && cacheSessionKey != null;
 		if ( includeSession ) {
-			params.put( "session_key", _sessionKey );
+			params.put( "session_key", cacheSessionKey );
 		}
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, p.second );
+			oldVal = params.put( p.first, FacebookSignatureUtil.toString( p.second ) );
 			if ( oldVal != null ) {
-				System.out.println( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
+				log.warn( "For parameter " + p.first + ", overwrote old value " + oldVal + " with new value " + p.second + "." );
 			}
 		}
 
@@ -822,9 +890,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				// FIXME: additional printing done for debugging only
-				System.out.println( "Facebook returns error code " + errorCode );
-				for ( Map.Entry<String,CharSequence> entry : params.entrySet() )
-					System.out.println( "  - " + entry.getKey() + " -> " + entry.getValue() );
+				if ( log.isWarnEnabled() ) {
+					StringBuilder sb = new StringBuilder( "Facebook returns error code " + errorCode + "\n" );
+					for ( Map.Entry<String,String> entry : params.entrySet() ) {
+						sb.append( "  - " + entry.getKey() + " -> " + entry.getValue() + "\n" );
+					}
+					log.warn( sb.toString() );
+				}
 				throw new FacebookException( errorCode, message );
 			}
 			return doc;
@@ -870,7 +942,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	private String generateSignature( List<String> params, boolean requiresSession ) {
-		String secret = ( isDesktop() && requiresSession ) ? this._sessionSecret : this._secret;
+		String secret = ( isDesktop() && requiresSession ) ? this.cacheSessionSecret : this._secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
@@ -879,21 +951,23 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		try {
 			result = URLEncoder.encode( result, "UTF8" );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "Unsuccessful attempt to encode '" + result + "' into UTF8" );
+		catch ( UnsupportedEncodingException ex ) {
+			log.error( "Unsuccessful attempt to encode '" + result + "' into UTF8", ex );
 		}
 		return result;
 	}
 
-	private InputStream postRequest( CharSequence method, Map<String,CharSequence> params, boolean doHttps, boolean doEncode ) throws IOException {
+	private InputStream postRequest( CharSequence method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
 		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		if ( isDebug() ) {
-			System.out.println( method );
-			System.out.println( " POST: " );
-			System.out.println( serverUrl.toString() );
-			System.out.println( "/" );
-			System.out.println( buffer );
+		if ( log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder();
+			sb.append( method );
+			sb.append( " POST: " );
+			sb.append( serverUrl.toString() );
+			sb.append( "?" );
+			sb.append( buffer );
+			log.debug( sb.toString() );
 		}
 
 		HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
@@ -907,8 +981,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			conn.setRequestMethod( "POST" );
 		}
 		catch ( ProtocolException ex ) {
-			System.err.println( "huh?" );
-			ex.printStackTrace();
+			log.error( "Exception: " + ex.getMessage(), ex );
 		}
 		conn.setDoOutput( true );
 		conn.connect();
@@ -1362,7 +1435,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return array of friends
 	 */
 	public Document friends_get() throws FacebookException, IOException {
-		return callMethod( FacebookMethod.FRIENDS_GET );
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = callMethod( FacebookMethod.FRIENDS_GET );
+		}
+		return cacheFriendsList;
 	}
 
 	/**
@@ -1370,22 +1446,24 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * parameter, and it is cached in this instance. This method first checks the cached list, and then calls {@link FacebookRestClient#friends_get()} only if necessary.
 	 * 
 	 * @return A list of friends uids.
+	 * @throws IOException
+	 * @throws FacebookException
 	 */
 	// In the php client this method is the normal friends_get() method, which
 	// returns a list. However, in the current state of this Java client it is
 	// not possible because friends_get has to return a Document, not a List.
-	public List<Long> friends_getAsList() {
-		if ( friendsList == null ) {
-			try {
-				friends_get();
-			}
-			catch ( Exception e ) {
-				throw new RuntimeException( e );
-			}
-			FriendsGetResponse response = (FriendsGetResponse) getResponsePOJO();
-			friendsList = response.getUid();
+	@Deprecated
+	public List<Long> friends_getAsList() throws FacebookException, IOException {
+		return toFriendsList( friends_get() );
+	}
+
+	public static List<Long> toFriendsList( Document doc ) {
+		NodeList uids = doc.getElementsByTagName( "uid" );
+		List<Long> out = new ArrayList<Long>( uids.getLength() );
+		for ( int i = 0; i < uids.getLength(); i++ ) {
+			out.add( Long.parseLong( uids.item( i ).getFirstChild().getTextContent().trim() ) );
 		}
-		return friendsList;
+		return out;
 	}
 
 	/**
@@ -1435,14 +1513,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return the Facebook user ID of the logged-in user
 	 */
 	public long users_getLoggedInUser() throws FacebookException, IOException {
-		if ( this._userId == -1 || this.batchMode ) {
+		if ( this.cacheUserId == null || this.batchMode ) {
 			Document d = callMethod( FacebookMethod.USERS_GET_LOGGED_IN_USER );
 			if ( d == null ) {
 				return 0l;
 			}
-			this._userId = Long.parseLong( d.getFirstChild().getTextContent() );
+			this.cacheUserId = Long.parseLong( d.getFirstChild().getTextContent() );
 		}
-		return this._userId;
+		return this.cacheUserId;
 	}
 
 	/**
@@ -1453,10 +1531,18 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	public boolean users_isAppAdded() throws FacebookException, IOException {
 		// a null value for added means that facebook didn't send an
 		// fb_added param
-		if ( added == null ) {
-			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
+		if ( cacheAppAdded == null ) {
+			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
-		return added.booleanValue();
+		return cacheAppAdded.booleanValue();
+	}
+
+	public Boolean getCacheAppAdded() {
+		return cacheAppAdded;
+	}
+
+	public void setCacheAppAdded( Boolean value ) {
+		this.cacheAppAdded = value;
 	}
 
 	/**
@@ -1812,11 +1898,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload(File)
 	 */
-	protected InputStream postFileRequest( String methodName, Map<String,CharSequence> params ) throws IOException {
+	protected InputStream postFileRequest( String methodName, Map<String,String> params ) throws IOException {
 		return postFileRequest( methodName, params, /* doEncode */true );
 	}
 
-	public InputStream postFileRequest( String methodName, Map<String,CharSequence> params, boolean doEncode ) {
+	public InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode ) {
 		assert ( null != _uploadFile );
 		try {
 			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
@@ -1831,7 +1917,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 			DataOutputStream out = new DataOutputStream( con.getOutputStream() );
 
-			for ( Map.Entry<String,CharSequence> entry : params.entrySet() ) {
+			for ( Map.Entry<String,String> entry : params.entrySet() ) {
 				out.writeBytes( PREF + boundary + CRLF );
 				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
 				out.writeBytes( CRLF + CRLF );
@@ -1861,9 +1947,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			InputStream is = con.getInputStream();
 			return is;
 		}
-		catch ( Exception e ) {
-			System.err.println( "caught exception: " + e );
-			e.printStackTrace();
+		catch ( Exception ex ) {
+			log.error( "exception: " + ex, ex );
 			return null;
 		}
 	}
@@ -1892,13 +1977,13 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( d == null ) {
 			return null;
 		}
-		this._sessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this._userId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-		this._expires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
+		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
 		if ( this._isDesktop ) {
-			this._sessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
+			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	/**
@@ -1936,17 +2021,14 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
 		}
-		catch ( JAXBException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO" );
-			e.printStackTrace();
+		catch ( JAXBException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( NullPointerException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( NullPointerException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
-		catch ( UnsupportedEncodingException e ) {
-			System.err.println( "getResponsePOJO() - Could not unmarshall XML stream into POJO." );
-			e.printStackTrace();
+		catch ( UnsupportedEncodingException ex ) {
+			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO", ex );
 		}
 		return pojo;
 	}
@@ -2000,7 +2082,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			return null;
 		}
 
-		Map<Integer,String> results = new HashMap<Integer,String>();
+		Map<Integer,String> results = new TreeMap<Integer,String>();
 		NodeList ids = response.getElementsByTagName( "pref_id" );
 		NodeList values = response.getElementsByTagName( "value" );
 		for ( int count = 0; count < ids.getLength(); count++ ) {
@@ -2252,22 +2334,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the user has the request permission
 	}
 
-	/**
-	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
-	 * error. You can use 'users_hasAppPermission' to check to see if the user has granted your app the abbility to update their status.
-	 * 
-	 * @param newStatus
-	 *            the new status message to set.
-	 * @param clear
-	 *            whether or not to clear the old status message.
-	 * 
-	 * @return true if the call succeeds false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException {
 		return users_setStatus( newStatus, clear, false );
 	}
@@ -2596,17 +2662,8 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		params.add( new Pair<String,CharSequence>( "listing_id", listingId.toString() ) );
 		params.add( new Pair<String,CharSequence>( "status", status.getName() ) );
 		return marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING, params );
-
 	}
 
-	/**
-	 * Clears the logged-in user's Facebook status. Requires the status_update extended permission.
-	 * 
-	 * @return whether the status was successfully cleared
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
-	 */
 	public boolean users_clearStatus() throws FacebookException, IOException {
 		return users_setStatus( null, true );
 	}
@@ -2683,14 +2740,11 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return marketplace_createListing( null, showOnProfile, attrs.getAttribs() );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#auth_getUserId(java.lang.String)
-	 */
+	@Deprecated
 	public long auth_getUserId( String authToken ) throws FacebookException, IOException {
-		if ( null == this._sessionKey )
+		if ( null == this.cacheSessionKey ) {
 			auth_getSession( authToken );
+		}
 		return users_getLoggedInUser();
 	}
 
@@ -2703,21 +2757,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return feed_publishActionOfUser( title, body, images, null );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence)
-	 */
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException, IOException {
 		return feed_publishTemplatizedAction( actorId, titleTemplate == null ? null : titleTemplate.toString(), null, null, null, null, null, null );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#feed_publishTemplatizedAction(java.lang.Long, java.lang.CharSequence, java.util.Map, java.lang.CharSequence,
-	 *      java.util.Map, java.lang.CharSequence, java.util.Collection, java.util.Collection)
-	 */
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException, IOException {
@@ -2770,11 +2813,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return callMethod( FacebookMethod.MARKETPLACE_GET_LISTINGS, params );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories(java.lang.CharSequence)
-	 */
 	public Document marketplace_getSubCategories( CharSequence category ) throws FacebookException, IOException {
 		if ( category != null ) {
 			return callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES, new Pair<String,CharSequence>( "category", category ) );
@@ -2782,11 +2820,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return callMethod( FacebookMethod.MARKET_GET_SUBCATEGORIES );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_removeListing(java.lang.Long)
-	 */
 	public boolean marketplace_removeListing( Long listingId ) throws FacebookException, IOException {
 		return marketplace_removeListing( listingId, MarketListingStatus.DEFAULT );
 	}
@@ -2961,7 +2994,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+		IFacebookMethod method = null == this.cacheSessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
 		return callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
 	}
 
@@ -2983,7 +3016,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = null == this._sessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
+		IFacebookMethod method = null == this.cacheSessionKey ? FacebookMethod.PAGES_GET_INFO_NO_SESSION : FacebookMethod.PAGES_GET_INFO;
 		return callMethod( method, new Pair<String,CharSequence>( "page_ids", delimit( pageIds ) ), new Pair<String,CharSequence>( "fields", delimit( fields ) ) );
 	}
 
@@ -3002,7 +3035,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		if ( userId == null ) {
-			userId = this._userId;
+			userId = this.cacheUserId;
 		}
 		return callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
@@ -3023,7 +3056,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		if ( userId == null ) {
-			userId = this._userId;
+			userId = this.cacheUserId;
 		}
 		return callMethod( FacebookMethod.PAGES_GET_INFO, new Pair<String,CharSequence>( "uid", userId.toString() ), new Pair<String,CharSequence>( "fields",
 				delimit( fields ) ) );
@@ -3155,7 +3188,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( new Pair<String,CharSequence>( "status", newStatus ) );
 		}
@@ -3165,8 +3197,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		if ( statusIncludesVerb ) {
 			params.add( new Pair<String,CharSequence>( "status_includes_verb", "true" ) );
 		}
-
-		return users_setStatus( FacebookMethod.USERS_SET_STATUS, params );
+		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, params ) );
 	}
 
 	/**
@@ -3482,7 +3513,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		}
 
 		Document doc;
-		ArrayList<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>();
+		List<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>();
 		args.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
 		args.add( new Pair<String,CharSequence>( "name", name ) );
 		args.add( new Pair<String,CharSequence>( "value", value ) );
@@ -3559,14 +3590,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return profile_setFBML( profileId, fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
 	}
 
-	/**
-	 * Retrieves the friends of the currently logged in user that are members of the friends list with ID <code>friendListId</code>.
-	 * 
-	 * @param friendListId
-	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
-	 * @return T of friends
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki: Friends.get</a>
-	 */
 	public Document friends_get( Long friendListId ) throws FacebookException, IOException {
 		FacebookMethod method = FacebookMethod.FRIENDS_GET;
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( method.numParams() );
@@ -3579,12 +3602,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return callMethod( method, params );
 	}
 
-	/**
-	 * Retrieves the friend lists of the currently logged in user.
-	 * 
-	 * @return T of friend lists
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers Wiki: Friends.getLists</a>
-	 */
 	public Document friends_getLists() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_GET_LISTS );
 	}
@@ -3694,18 +3711,26 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, new Pair<String,CharSequence>( "integration_point_name", allocationType ) ) );
 	}
 
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException, IOException {
+		return admin_getAllocation( allocationType.getName() );
+	}
+
+	@Deprecated
 	public int admin_getNotificationAllocation() throws FacebookException, IOException {
 		return admin_getAllocation( "notifications_per_day" );
 	}
 
+	@Deprecated
 	public int admin_getRequestAllocation() throws FacebookException, IOException {
 		return admin_getAllocation( "requests_per_day" );
 	}
 
+	@Deprecated
 	public Document admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException {
 		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
 	}
 
+	@Deprecated
 	public Document admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		metrics.remove( Metric.ACTIVE_USERS );
@@ -3917,10 +3942,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
-		if ( added == null ) {
-			added = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
-		}
-		return added.booleanValue();
+		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException {
@@ -3933,7 +3955,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( newStatus != null ) {
 			params.add( new Pair<String,CharSequence>( "status", newStatus ) );
 		}
@@ -3944,8 +3965,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "status_includes_verb", "true" ) );
 		}
 		params.add( new Pair<String,CharSequence>( "uid", userId.toString() ) );
-
-		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
+		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS_NOSESSION, params ) );
 	}
 
 	public Document feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException, IOException {
@@ -4129,14 +4149,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	private Document photos_upload( IFacebookMethod method, ArrayList<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
 		return callMethod( method, params );
-	}
-
-	private boolean users_setStatus( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		callMethod( method, params );
-		if ( this.rawResponse == null ) {
-			return false;
-		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the request was successful, any other response indicates error
 	}
 
 	public static boolean addParam( String name, Long value, Collection<Pair<String,CharSequence>> params ) {

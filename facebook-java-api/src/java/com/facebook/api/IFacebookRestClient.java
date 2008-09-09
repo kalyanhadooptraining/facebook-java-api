@@ -57,7 +57,7 @@ public interface IFacebookRestClient<T> {
 
 	public static final String TARGET_API_VERSION = "1.0";
 	public static final String ERROR_TAG = "error_response";
-	public static final String FB_SERVER = "api.facebook.com/restserver.php";
+	public static final String FB_SERVER = "api.new.facebook.com/restserver.php";
 	public static final String SERVER_ADDR = "http://" + FB_SERVER;
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
@@ -66,6 +66,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param isDebug
 	 *            set to true to enable debug set to false to disable debug
+	 * @deprecated we are now using commons-logging
 	 */
 	public void setDebug( boolean isDebug );
 
@@ -73,6 +74,7 @@ public interface IFacebookRestClient<T> {
 	 * Check to see if debug mode is enabled.
 	 * 
 	 * @return true if debug is enabled false otherwise
+	 * @deprecated we are now using commons-logging
 	 */
 	public boolean isDebug();
 
@@ -90,6 +92,16 @@ public interface IFacebookRestClient<T> {
 	 *            set to true to enable desktop mode set to false to disable desktop mode
 	 */
 	public void setIsDesktop( boolean isDesktop );
+
+	public T getCacheFriendsList();
+
+	public void setCacheFriendsList( List<Long> friendIds );
+
+	public Boolean getCacheAppAdded();
+
+	public void setCacheAppAdded( Boolean appAdded );
+
+	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires );
 
 	/**
 	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
@@ -498,7 +510,7 @@ public interface IFacebookRestClient<T> {
 	 * @param images
 	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
 	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser
 	 */
 	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
 			IOException;
@@ -514,7 +526,6 @@ public interface IFacebookRestClient<T> {
 	 *            UTC lower bound (optional)
 	 * @param endTime
 	 *            UTC upper bound (optional)
-	 * @return T of events
 	 */
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException;
 
@@ -532,8 +543,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param userId1
 	 * @param userId2
-	 * @return T
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException, IOException;
 
@@ -543,23 +553,21 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param userIds1
 	 * @param userIds2
-	 * @return T
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
 	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user.
 	 * 
-	 * @return array of friends
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
 	public T friends_get() throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friend lists of the currently logged in user.
 	 * 
-	 * @return T of friend lists
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers Wiki: Friends.getLists</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
 	 */
 	public T friends_getLists() throws FacebookException, IOException;
 
@@ -568,8 +576,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param friendListId
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
-	 * @return T of friends
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki: Friends.get</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
 	public T friends_get( Long friendListId ) throws FacebookException, IOException;
 
@@ -675,7 +682,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully set
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String status ) throws FacebookException, IOException;
 
@@ -685,7 +692,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully set
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException;
 
@@ -704,6 +711,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException;
 
@@ -724,6 +732,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException, IOException;
 
@@ -745,6 +754,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException;
 
@@ -768,6 +778,7 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 * @throws IOException
 	 *             if a communication/network error happens.
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException;
 
@@ -777,7 +788,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the status was successfully cleared
 	 * @see #users_hasAppPermission
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.setStatus"> Developers Wiki: Users.setStatus</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
 	public boolean users_clearStatus() throws FacebookException, IOException;
 
@@ -1197,7 +1208,16 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return The ID of the current session's user, or -1 if none.
 	 */
+	@Deprecated
 	public long auth_getUserId( String authToken ) throws FacebookException, IOException;
+
+	public String getCacheSessionKey();
+
+	public Long getCacheUserId();
+
+	public Long getCacheSessionExpires();
+
+	public String getCacheSessionSecret();
 
 	/**
 	 * Create a marketplace listing. The create_listing extended permission is required.
@@ -2621,7 +2641,8 @@ public interface IFacebookRestClient<T> {
 	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
 	 * 
 	 * @param allocationType
-	 *            the type of request to check the allocation for, currently the only valid values are "notifications_per_day" and "requests_per_day".
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
 	 * 
 	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
@@ -2629,11 +2650,24 @@ public interface IFacebookRestClient<T> {
 	public int admin_getAllocation( String allocationType ) throws FacebookException, IOException;
 
 	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException, IOException;
+
+	/**
 	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
 	 * 
 	 * @return the number of invites/requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
+	@Deprecated
 	public int admin_getRequestAllocation() throws FacebookException, IOException;
 
 	/**
@@ -2642,6 +2676,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the number of notifications that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
+	@Deprecated
 	public int admin_getNotificationAllocation() throws FacebookException, IOException;
 
 	/**
@@ -2660,6 +2695,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException;
 
 	/**
@@ -2699,6 +2735,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
+	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException;
 
 	/**
@@ -3049,11 +3086,6 @@ public interface IFacebookRestClient<T> {
 	public void setDefaultServerUrl( URL url );
 
 	/**
-	 * Configure the client to use the beta Facebook API server, which is assumed to exist at 'http://api.new.facebook.com/restserver.php'.
-	 */
-	public void useBetaApiServer();
-
-	/**
 	 * Sends a message using the LiveMessage API. Note that for the message to be recieved by the recipent, you must set up a FBJS handler function. See
 	 * http://wiki.developers.facebook.com/index.php/LiveMessage for details.
 	 * 
@@ -3071,31 +3103,36 @@ public interface IFacebookRestClient<T> {
 	 * @throws IOException
 	 */
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException;
-	
+
 	/**
 	 * Sends a notification.
 	 * 
-	 * @param recipientIds the ids of the users to send the notification to.
-	 * @param notification the notification to send.
-	 * @param announcement set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
+	 * @param recipientIds
+	 *            the ids of the users to send the notification to.
+	 * @param notification
+	 *            the notification to send.
+	 * @param announcement
+	 *            set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see http://wiki.developers.facebook.com/index.php/Notifications.send
 	 */
-	public void notifications_send(Collection<Long> recipientIds, String notification, boolean isAppToUser) throws FacebookException, IOException;
-	
+	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException, IOException;
+
 	/**
 	 * Deactivates the specified template bundle.
 	 * 
-	 * @param bundleId the id of the bundle to deactivate.
+	 * @param bundleId
+	 *            the id of the bundle to deactivate.
 	 * 
 	 * @return true if the call succeeds, false otherwise.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public boolean feed_deactivateTemplateBundleByID(Long bundleId) throws FacebookException, IOException;
-	
+	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException;
+
 	/**
 	 * Publishes a user action to the feed.
 	 * 
@@ -3105,7 +3142,8 @@ public interface IFacebookRestClient<T> {
 	 *            the template bundle-id to use to render the feed.
 	 * @param templateData
 	 *            a map of name-value pairs to substitute into the template being rendered.
-	 * @param images the images to associate with this feed entry
+	 * @param images
+	 *            the images to associate with this feed entry
 	 * @param targetIds
 	 *            the ids of individuals that are the target of this action.
 	 * @param bodyGeneral
@@ -3116,7 +3154,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction(Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral) 
-		throws FacebookException, IOException;
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+			throws FacebookException, IOException;
 
 }

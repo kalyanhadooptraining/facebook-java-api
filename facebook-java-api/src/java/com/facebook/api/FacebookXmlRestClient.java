@@ -49,25 +49,24 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.facebook.api.schema.Listing;
-import com.facebook.api.schema.MarketplaceGetListingsResponse;
-import com.facebook.api.schema.MarketplaceGetSubCategoriesResponse;
-import com.facebook.api.schema.MarketplaceSearchResponse;
 
 /**
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of
  * {@link org.w3c.dom.Document}.
- * 
- * @deprecated this is provided for legacy support only. Please use FacebookRestClient instead if you want to use the Facebook Platform XML API.
  */
-@Deprecated
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
+
+	protected static Log log = LogFactory.getLog( FacebookXmlRestClient.class );
 
 	protected boolean namespaceAware = true;
 
@@ -180,17 +179,14 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
-		this._sessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this._userId = Integer.parseInt( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-		this._expires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
+		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
 		if ( this._isDesktop ) {
-			this._sessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
+			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
@@ -201,10 +197,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			Document doc = builder.parse( data );
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
-
-			if ( isDebug() ) {
-				printDom( doc, method.methodName() + "| " );
-			}
+			printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
@@ -283,20 +276,11 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	/**
 	 * Prints out the DOM tree.
 	 */
-	public static void printDom( Node n, String prefix ) {
-		String outString = prefix;
-		if ( n.getNodeType() == Node.TEXT_NODE ) {
-			outString += "'" + n.getTextContent().trim() + "'";
-		} else {
-			outString += n.getNodeName();
-		}
-		if ( DEBUG ) {
-			System.out.println( outString );
-		}
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			FacebookXmlRestClient.printDom( children.item( i ), prefix + "  " );
+	public void printDom( Node n, String prefix ) {
+		if ( log.isDebugEnabled() ) {
+			StringBuilder sb = new StringBuilder( "\n" );
+			ExtensibleClient.printDom( n, prefix, sb );
+			log.debug( sb.toString() );
 		}
 	}
 
@@ -313,7 +297,6 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
@@ -322,22 +305,19 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	}
 
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
-		marketplace_getListings( listingIds, uids );
-		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) getResponsePOJO();
-		return resp.getListing();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
-		marketplace_getSubCategories( null );
-		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) getResponsePOJO();
-		return resp.getMarketplaceSubcategory();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
-		marketplace_search( category.getName(), subcategory.getName(), searchTerm );
-		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) getResponsePOJO();
-		return resp.getListing();
+		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
+				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
@@ -421,4 +401,54 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 		return d.getFirstChild().getTextContent();
 	}
+
+	protected Document cacheFriendsList;
+
+	/**
+	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
+	 * 
+	 * @return the friends-list stored in the API client.
+	 */
+	public Document getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	/**
+	 * Set/override the list of friends stored in the client.
+	 * 
+	 * @param friendsList
+	 *            the new list to use.
+	 */
+	public void setCacheFriendsList( List<Long> ids ) {
+		this.cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static Document toFriendsGetResponse( List<Long> ids ) {
+		try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
+			root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );
+			root.setAttribute( "list", "true" );
+			for ( Long id : ids ) {
+				Element uid = doc.createElement( "uid" );
+				uid.appendChild( doc.createTextNode( Long.toString( id ) ) );
+				root.appendChild( uid );
+			}
+			doc.appendChild( root );
+			return doc;
+		}
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( ex );
+		}
+	}
+
+	@Override
+	public Document friends_get() throws FacebookException, IOException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = super.friends_get();
+		}
+		return cacheFriendsList;
+	}
+
 }

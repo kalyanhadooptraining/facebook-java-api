@@ -44,6 +44,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -61,6 +63,8 @@ import com.facebook.api.schema.SessionInfo;
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
  */
 public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
+
+	protected static Log log = LogFactory.getLog( FacebookJaxbRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
@@ -196,12 +200,6 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
-	@Override
-	public FriendsGetResponse friends_get() throws IOException, FacebookException {
-		return (FriendsGetResponse) super.friends_get();
-	}
-
-
 	/**
 	 * Constructor.
 	 * 
@@ -288,6 +286,31 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		return parse();
 	}
 
+	private FriendsGetResponse cacheFriendsList;
+
+	@Override
+	public FriendsGetResponse friends_get() throws IOException, FacebookException {
+		if ( cacheFriendsList == null ) {
+			cacheFriendsList = (FriendsGetResponse) super.friends_get();
+		}
+		return cacheFriendsList;
+	}
+
+	public FriendsGetResponse getCacheFriendsList() {
+		return cacheFriendsList;
+	}
+
+	public void setCacheFriendsList( List<Long> ids ) {
+		cacheFriendsList = toFriendsGetResponse( ids );
+	}
+
+	public static FriendsGetResponse toFriendsGetResponse( List<Long> ids ) {
+		FriendsGetResponse out = new FriendsGetResponse();
+		out.setList( true );
+		out.getUid().addAll( ids );
+		return out;
+	}
+
 	/**
 	 * Call this function to retrieve the session information after your user has logged in.
 	 * 
@@ -295,18 +318,15 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		if ( null != this._sessionKey ) {
-			return this._sessionKey;
-		}
 		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
 		SessionInfo d = (SessionInfo) obj.getValue();
-		this._sessionKey = d.getSessionKey();
-		this._userId = d.getUid();
-		this._expires = (long) d.getExpires();
+		this.cacheSessionKey = d.getSessionKey();
+		this.cacheUserId = d.getUid();
+		this.cacheSessionExpires = (long) d.getExpires();
 		if ( this._isDesktop ) {
-			this._sessionSecret = d.getSecret();
+			this.cacheSessionSecret = d.getSecret();
 		}
-		return this._sessionKey;
+		return this.cacheSessionKey;
 	}
 
 	/**
@@ -323,16 +343,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *             if <code>data</code> is not readable
 	 */
 	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
-		if ( isDebug() ) {
-			System.out.println( "Facebook response:  " + this.rawResponse );
-		}
+		log.debug( "Facebook response:  " + rawResponse );
 		Object res = getResponsePOJO();
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
 			int errorCode = error.getErrorCode();
 			String message = error.getErrorMsg();
 			throw new FacebookException( errorCode, message );
-
 		}
 		return res;
 	}
@@ -395,73 +412,36 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreference(java.lang.Integer)
-	 */
 	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_getUserPreferences()
-	 */
 	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreference(java.lang.Integer, java.lang.String)
-	 */
 	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#data_setUserPreferences(java.util.Map, boolean)
-	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getListings(java.util.List, java.util.List)
-	 */
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
 		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) marketplace_getListings( listingIds, uids );
 		return resp.getListing();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_getSubCategories()
-	 */
 	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
 		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) marketplace_getSubCategories( null );
 		return resp.getMarketplaceSubcategory();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.facebook.api.IFacebookRestClient#marketplace_search(com.facebook.api.MarketListingCategory, com.facebook.api.MarketListingSubcategory, java.lang.String)
-	 */
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
 			IOException {
 		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) marketplace_search( category.getName(), subcategory.getName(), searchTerm );
