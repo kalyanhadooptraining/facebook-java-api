@@ -1,9 +1,7 @@
 <projectDescription>
-  <name>facebook-java-api</name>
+  <name>facebook-java-api-schema</name>
   <comment>Facebook Java Library</comment>
-  <projects>
-    <project>facebook-java-api-schema</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

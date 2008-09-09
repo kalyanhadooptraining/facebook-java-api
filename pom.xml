@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.facebook.api</groupId>
+  <groupId>com.google.code.facebookapi</groupId>
   <artifactId>parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>1.8.2-SNAPSHOT</version>
+  <version>2.0.1</version>
   <name>Facebook Java Library - Parent Pom</name>
   <description>Facebook Java Library - Parent Pom</description>
   <url>http://code.google.com/p/facebook-java-api/</url>
@@ -19,17 +19,15 @@
     <url>http://code.google.com/p/facebook-java-api/issues/list</url>
   </issueManagement>
   <scm>
-    <url>http://code.google.com/p/facebook-java-api/source/browse/trunk</url>
-    <connection>scm:svn:http://facebook-java-api.googlecode.com/svn/trunk/</connection>
-    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/</developerConnection>
+    <url>https://facebook-java-api.googlecode.com/svn/tags/release-2.0.1</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-2.0.1</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-2.0.1</developerConnection>
   </scm>
   <modules>
+    <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
-    <module>facebook-util</module>
   </modules>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
     <plugins>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
