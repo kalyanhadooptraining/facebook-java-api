@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.facebook.api</groupId>
+  <artifactId>parent-pom</artifactId>
+  <packaging>pom</packaging>
+  <version>2.0.0</version>
+  <name>Facebook Java Library - Parent Pom</name>
+  <description>Facebook Java Library - Parent Pom</description>
+  <url>http://code.google.com/p/facebook-java-api/</url>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <issueManagement>
+    <system>code.google.com</system>
+    <url>http://code.google.com/p/facebook-java-api/issues/list</url>
+  </issueManagement>
+  <scm>
+    <url>https://facebook-java-api.googlecode.com/svn/tags/release-2.0.0</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-2.0.0</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-2.0.0</developerConnection>
+  </scm>
+  <modules>
+    <module>facebook-java-api</module>
+  </modules>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <!-- <testSourceDirectory>src/test</testSourceDirectory> -->
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-source-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+	<configuration>
+	  <tagBase>https://facebook-java-api.googlecode.com/svn/tags/</tagBase>
+	</configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-eclipse-plugin</artifactId>
+	<configuration>
+	  <downloadSources>true</downloadSources>
+	  <downloadJavadocs>true</downloadJavadocs>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <downloadUrl>http://mrepo.happyfern.com/maven2/</downloadUrl>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>mrepo-happyfern</id>
+      <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
+      <!--
+	  "com.facebook.api","mrepo@wrangler.dreamhost.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
+	-->
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>mrepo-happyfern-snapshot</id>
+      <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
+    </snapshotRepository>
+    <!--
+	<site>
+	  <id>mrepo-happyfern-sites-facebookjavaapi</id>
+	  <name>Mojo Website</name>
+	  <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
+	</site>
+	-->
+  </distributionManagement>
+</project>
