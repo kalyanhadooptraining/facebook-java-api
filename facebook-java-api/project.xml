@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:noNamespaceSchemaLocation="file:///c:/bin/maven/maven-project.xsd" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<pomVersion>3</pomVersion>
+	<id>facebook-java-api</id>
+	<name>Facebook Java Library</name>
+	<groupId>com.facebook.api</groupId>
+	<currentVersion>1.8-beta</currentVersion>
+	<organization>
+		<name>BigTribe Corporation</name>
+		<logo>http://www.bigtribe.com/img/logo.gif</logo>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+	<package>com.facebook.api</package>
+	<description>Facebook Java Library</description>
+	<shortDescription>Facebook Java Library</shortDescription>
+	<url>http://code.google.com/p/facebook-java-api/</url>
+	<issueTrackingUrl>http://code.google.com/p/facebook-java-api/issues/list</issueTrackingUrl>
+    <siteAddress>ginsu.bigtribe.com</siteAddress>  
+    <siteDirectory>/maven/docs/${pom.groupId}/${pom.artifactId}</siteDirectory>
+    <distributionDirectory>/maven/distributions/${pom.groupId}/${pom.artifactId}</distributionDirectory>
+	<repository>
+		<connection>
+            scm:http://facebook-java-api.googlecode.com/svn/trunk/
+        </connection>
+	</repository>
+	<mailingLists>
+	</mailingLists>
+	<developers>
+		<developer>
+			<name>Adam Roth</name>
+			<id>aroth</id>
+			<email>aroth@bigtribe.com</email>
+			<organization>BigTribe Corporation</organization>
+			<roles>
+				<role>staff</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Andy Fyfe</name>
+			<id>afyfe</id>
+			<email>afyfe@bigtribe.com</email>
+			<organization>BigTribe Corporation</organization>
+			<roles>
+				<role>staff</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Jun Racca</name>
+			<id>jracca</id>
+			<email>jracca@bigtribe.com</email>
+			<organization>BigTribe Corporation</organization>
+			<roles>
+				<role>staff</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Andres Vergara</name>
+			<id>avergara</id>
+			<email>avergara@bigtribe.com</email>
+			<organization>BigTribe Corporation</organization>
+			<roles>
+				<role>staff</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>BigTribe Privacy Policy</name>
+			<url>http://www.bigtribe.com/agreement/privacy</url>
+			<distribution>manual</distribution>
+		</license>
+	</licenses>
+	<dependencies>
+		<dependency>
+			<groupId>json</groupId>
+			<artifactId>json</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- THIS SECTION FOR JAVA 5 ONLY, NOT REQUIRED WITH JAVA 6-->
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1</version>
+		</dependency>	
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jsr173-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sun</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+		</dependency>
+        <!-- END OF JAVA 5 SECTION -->
+	</dependencies>
+	<build>
+		<nagEmailAddress>aroth@bigtribe.com</nagEmailAddress>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+		<!-- Unit test cases -->
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+				<include>**/*TestSuite.java</include>
+			</includes>
+			<excludes>
+			</excludes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/test</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                    </includes>
+                </resource>
+            </resources>
+		</unitTest>
+		<!-- J A R  R E S O U R C E S -->
+		<!-- Resources that are packaged up inside the JAR file -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>
