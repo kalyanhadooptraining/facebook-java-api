@@ -1,24 +1,9 @@
-#summary This page contains information about which SVN revisions correspond to which official release version.
+#summary Information about available releases
 
-===== Release Versions =====
-You can use the following table to determine which SVN revision is associated with a given release.
+=== Maven Support ===
 
+I am encouraging people to use the maven repository, through Maven, Ivy or any other compatible build tool.  [MavenSupport]
 
-||*Release Version*||*SVN Revision*||
-||1.8.0||([http://code.google.com/p/facebook-java-api/source/browse/tags/release-1.8.0 browse svn])||
-||1.8-beta||r188||
-||1.8-alpha||r169||
-||1.7.4||r154||
-||1.7.3||r145||
-||1.7.2||???||
-||1.7.1||r132||
-||1.7||r126||
-||1.6.2||r115||
-||1.6.1||r107||
-||1.6||r100||
-||1.5.2||r88||
-||1.5.1||r82||
-||1.5||r80||
-||1.4||r55||
-||1.3||r37||
-||1.2||Initial version||
+=== Releases ===
+
+We currently have 4 releases available under our Downloads page: [http://code.google.com/p/facebook-java-api/downloads/list] Download
