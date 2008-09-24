@@ -6,4 +6,8 @@ I am encouraging people to use the maven repository, through Maven, Ivy or any o
 
 === Releases ===
 
-We currently have 4 releases available under our Downloads page: [http://code.google.com/p/facebook-java-api/downloads/list] Download
+We currently have 3 releases available under our Downloads page ([http://code.google.com/p/facebook-java-api/downloads/list BB]).  I'll explain here the differences.
+
+1.8.1
+2.0.0
+2.0.1
