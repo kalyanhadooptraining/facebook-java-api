@@ -2,12 +2,16 @@
 
 === Maven Support ===
 
-I am encouraging people to use the maven repository, through Maven, Ivy or any other compatible build tool.  [MavenSupport]
+I am encouraging people to use the maven repository, through Maven, Ivy or any other compatible build tool.  This will allow you to get easy access to development builds, final releases, and transitive dependencies easily.  [MavenSupport]
 
 === Releases ===
 
-We currently have 3 releases available under our Downloads page ([http://code.google.com/p/facebook-java-api/downloads/list BB]).  I'll explain here the differences.
+We currently have 3 releases available under our [http://code.google.com/p/facebook-java-api/downloads/list Downloads] page.  I'll explain the differences here:
 
-1.8.1
-2.0.0
-2.0.1
+
+  * 2.0.1
+    *
+  * 2.0.0
+    *
+  * 1.8.1
+    *
