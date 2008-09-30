@@ -266,7 +266,7 @@ public class FacebookWebappHelper<T> {
 		return fb_params;
 	}
 
-	private void redirect( String url ) {
+	public void redirect( String url ) {
 		try {
 			// fbml redirect
 			if ( inFbCanvas() ) {
