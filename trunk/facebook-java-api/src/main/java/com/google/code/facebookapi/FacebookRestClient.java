@@ -1368,11 +1368,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return this.cacheUserId;
 	}
 
-	/**
-	 * Retrieves an indicator of whether the logged-in user has installed the application associated with the _apiKey.
-	 * 
-	 * @return boolean indicating whether the user has installed the app
-	 */
+	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException, IOException {
 		// a null value for added means that facebook didn't send an
 		// fb_added param
@@ -2857,14 +2853,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				delimit( fields ) ) );
 	}
 
-	/**
-	 * Checks whether a page has added the application
-	 * 
-	 * @param pageId
-	 *            the ID of the page
-	 * @return true if the page has added the application
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded"> Developers Wiki: Pages.isAppAdded</a>
-	 */
 	public boolean pages_isAppAdded( Long pageId ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_APP_ADDED, new Pair<String,CharSequence>( "page_id", pageId.toString() ) ) );
 	}
@@ -3735,8 +3723,21 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
+	@Deprecated
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) ) );
+		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, newPair( "uid", userId ) ) );
+	}
+
+	public boolean users_isAppUser() throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
+	}
+
+	public boolean users_isAppUser( Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER_NOSESSION, newPair( "uid", userId ) ) );
+		} else {
+			return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
+		}
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException {

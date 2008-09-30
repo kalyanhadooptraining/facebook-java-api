@@ -62,8 +62,12 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	USERS_GET_INFO("facebook.users.getInfo", 2),
 	USERS_GET_STANDARD_INFO("facebook.users.getStandardInfo", 2),
 	USERS_GET_LOGGED_IN_USER("facebook.users.getLoggedInUser"),
+	@Deprecated
 	USERS_IS_APP_ADDED("facebook.users.isAppAdded"),
+	@Deprecated
 	USERS_IS_APP_ADDED_NOSESSION("facebook.users.isAppAdded", 1),
+	USERS_IS_APP_USER("facebook.users.isAppAdded"),
+	USERS_IS_APP_USER_NOSESSION("facebook.users.isAppAdded", 1),
 	USERS_HAS_APP_PERMISSION("facebook.users.hasAppPermission", 2),
 	USERS_HAS_APP_PERMISSION_NOSESSION("facebook.users.hasAppPermission", 2),
 	USERS_SET_STATUS("facebook.users.setStatus", 4),
