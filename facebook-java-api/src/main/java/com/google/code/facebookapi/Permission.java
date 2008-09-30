@@ -1,32 +1,4 @@
-/*
- * Copyright 2007, BigTribe Corporation. All rights reserved.
- *
- * This software is an unpublished work subject to a confidentiality agreement
- * and protected by copyright and trade secret law.  Unauthorized copying,
- * redistribution or other use of this work is prohibited.  All copies must
- * retain this copyright notice.  Any use or exploitation of this work without
- * authorization could subject the perpetrator to criminal and civil liability.
- * 
- * Redistribution and use in source and binary forms, with or without        
- * modification, are permitted provided that the following conditions        
- * are met:                                                                  
- *                                                                           
- * 1. Redistributions of source code must retain the above copyright         
- *    notice, this list of conditions and the following disclaimer.          
- * 2. Redistributions in binary form must reproduce the above copyright      
- *    notice, this list of conditions and the following disclaimer in the    
- *    documentation and/or other materials provided with the distribution.   
- *
- * The information in this software is subject to change without notice
- * and should not be construed as a commitment by BigTribe Corporation.
- *
- * The above copyright notice does not indicate actual or intended publication
- * of this source code.
- *
- * $Id: bigtribetemplates.xml 5524 2006-04-06 09:40:52 -0700 (Thu, 06 Apr 2006) greening $
- */
 package com.google.code.facebookapi;
-
 
 /**
  * Enum for managing the different permission-types used by Facebook. These are opt-in permissions that the user must explicitly grant, and can only be requested one at a
@@ -35,24 +7,46 @@ package com.google.code.facebookapi;
  * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
  * 
  * You can query to see if the user has granted your application a given permission using the 'users.hasAppPermission' API call.
+ * 
+ * @see <a
+ *      href="http://wiki.developers.facebook.com/index.php/Extended_application_permission">http://wiki.developers.facebook.com/index.php/Extended_application_permission</a>
+ * @see <a href=""></a>
+ * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">http://wiki.developers.facebook.com/index.php/Users.hasAppPermission</a>
  */
 public enum Permission {
 	/**
-	 * Permission to send SMS messages to a user
+	 * This permission allows an application to send email to its user. This permission can be obtained only through the fb:prompt-permission tag or the promptpermission
+	 * attribute. When the user accepts, you can send him an email via Notifications.sendEmail or directly to the proxied_email FQL field.
 	 */
-	SMS_SEND("sms"),
+	EMAIL("email"),
 	/**
-	 * Permission to update a user's status message
+	 * This permission grants an application access to user data when the user is offline or doesn't have an active session. This permission can be obtained only through
+	 * the fb:prompt-permission tag or the promptpermission attribute.
 	 */
+	OFFLINE_ACCESS("offline_access"),
+	/** This extended permission grants access to the users.setStatus method. */
 	STATUS_UPDATE("status_update"),
 	/**
-	 * Permission to create marketplac elistings for the user
+	 * This permission relaxes requirements on the photos.upload and photos.addTag methods. If the user grants this permission, photos uploaded by the application will
+	 * bypass the pending state and the user will not have to manually approve the photos each time.
 	 */
-	MARKETPLACE_CREATE("create_listing"),
+	PHOTO_UPLOAD("photo_upload"),
 	/**
-	 * Enahnced photo-uploading permissions
+	 * This permission allows an app to create and modify listings for a user via the marketplace.removeListing and marketplace.createListing methods. The user will not
+	 * need to approve each listing individually.
 	 */
-	PHOTO_UPLOAD("photo_upload");
+	CREATE_LISTING("create_listing"),
+	/** This permission allows an app to create and modify events for a user via the events.create, events.edit and events.cancel methods. */
+	CREATE_EVENT("create_event"),
+	/** This permission allows an app to RSVP to an event on behalf of a user via the events.rsvp method. */
+	RSVP_EVENT("rsvp_event"),
+	/** This permissions allows a mobile application to send messages to the user and respond to messages from the user via text message. */
+	SMS_SEND("sms"),
+	/**
+	 * @deprecated {@link #CREATE_LISTING}
+	 */
+	@Deprecated
+	MARKETPLACE_CREATE("create_listing");
 
 	/**
 	 * The unchanging part of the URL to use when authorizing permissions.
@@ -91,4 +85,5 @@ public enum Permission {
 	private static String authorizationUrl( String apiKey, CharSequence permission ) {
 		return String.format( "%s?api_key=%s&v=1.0&ext_perm=%s", PERM_AUTHORIZE_ADDR, apiKey, permission );
 	}
+
 }

@@ -2303,30 +2303,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return response;
 	}
 
-	/**
-	 * Check to see if the user has granted the app a specific external permission. In order to be granted a permission, an application must direct the user to a URL of
-	 * the form:
-	 * 
-	 * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
-	 * 
-	 * @param perm
-	 *            the permission to check for
-	 * 
-	 * @return true if the user has granted the application the specified permission false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
-	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException {
-		callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ) );
-		if ( this.rawResponse == null ) {
-			return false;
-		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the user has the request permission
-	}
-
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException {
 		return users_setStatus( newStatus, clear, false );
 	}
@@ -2851,16 +2827,16 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return callMethod( FacebookMethod.MARKET_SEARCH, params );
 	}
 
-	/**
-	 * @deprecated provided for legacy support only. Use users_hasAppPermission(Permission) instead.
-	 */
-	@Deprecated
-	public boolean users_hasAppPermission( CharSequence permission ) throws FacebookException, IOException {
-		callMethod( FacebookMethod.USERS_HAS_PERMISSION, new Pair<String,CharSequence>( "ext_perm", permission ) );
-		if ( this.rawResponse == null ) {
-			return false;
+	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException {
+		return users_hasAppPermission( perm, null );
+	}
+
+	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", userId ) ) );
+		} else {
+			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, newPair( "ext_perm", perm.getName() ) ) );
 		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the user has the request permission
 	}
 
 	public boolean users_setStatus( String status ) throws FacebookException, IOException {
@@ -3931,15 +3907,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			params.add( new Pair<String,CharSequence>( "caption", caption ) );
 		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
-	}
-
-	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
-		callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ), new Pair<String,CharSequence>( "uid",
-				Long.toString( userId ) ) );
-		if ( this.rawResponse == null ) {
-			return false;
-		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' is sent back to indicate that the user has the request permission
 	}
 
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {

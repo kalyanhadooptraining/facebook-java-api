@@ -978,19 +978,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return cacheAppAdded;
 	}
 
-	/**
-	 * Retrieves whether the logged-in user has granted the specified permission to this application.
-	 * 
-	 * @param permission
-	 *            an extended permission (e.g. FacebookExtendedPerm.MARKETPLACE, "photo_upload")
-	 * @return boolean indicating whether the user has the permission
-	 * @see FacebookExtendedPerm
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission"> Developers Wiki: Users.hasAppPermission</a>
-	 */
-	public boolean users_hasAppPermission( CharSequence permission ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, newPair( "ext_perm", permission ) ) );
-	}
-
 	public boolean users_setStatus( String status ) throws FacebookException, IOException {
 		return users_setStatus( status, false, false );
 	}
@@ -1744,8 +1731,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException {
-		return users_hasAppPermission( perm.getName() );
+		return users_hasAppPermission( perm, null );
 	}
+
+	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", userId ) ) );
+		} else {
+			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, newPair( "ext_perm", perm.getName() ) ) );
+		}
+	}
+
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException, IOException {
 		T result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
@@ -2799,10 +2795,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		params.add( newPair( "uid", userId ) );
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
-	}
-
-	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", Long.toString( userId ) ) ) );
 	}
 
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
