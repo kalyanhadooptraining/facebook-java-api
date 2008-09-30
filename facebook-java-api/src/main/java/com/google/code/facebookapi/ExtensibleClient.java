@@ -843,16 +843,24 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( d );
 	}
 
-	/**
-	 * Retrieves an indicator of whether the logged-in user has installed the application associated with the _apiKey.
-	 * 
-	 * @return boolean indicating whether the user has installed the app
-	 */
+	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException, IOException {
 		if ( cacheAppAdded != null ) {
 			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
 		return cacheAppAdded;
+	}
+
+	public boolean users_isAppUser() throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
+	}
+
+	public boolean users_isAppUser( Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER_NOSESSION, newPair( "uid", userId ) ) );
+		} else {
+			return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
+		}
 	}
 
 	public boolean users_setStatus( String status ) throws FacebookException, IOException {
@@ -2674,6 +2682,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
+	@Deprecated
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, newPair( "uid", userId ) ) );
 	}

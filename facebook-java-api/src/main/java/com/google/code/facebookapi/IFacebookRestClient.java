@@ -589,8 +589,10 @@ public interface IFacebookRestClient<T> {
 	 * Retrieves an indicator of whether the logged-in user has added the application associated with the _apiKey.
 	 * 
 	 * @return boolean indicating whether the user has added the app
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded"> Developers Wiki: Users.isAppAdded</a>
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">Users.isAppAdded</a>
+	 * @deprecated
 	 */
+	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException, IOException;
 
 	/**
@@ -599,9 +601,29 @@ public interface IFacebookRestClient<T> {
 	 * @param userId
 	 *            the if of the user to check for.
 	 * @return boolean indicating whether the user has added the app
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded"> Developers Wiki: Users.isAppAdded</a>
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">Users.isAppAdded</a>
+	 * @deprecated
 	 */
+	@Deprecated
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException;
+
+	/**
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppUser">Users.isAppUser</a>
+	 * @see #users_isAppUser(Long)
+	 */
+	public boolean users_isAppUser() throws FacebookException, IOException;
+
+	/**
+	 * Returns whether the user (either the session user or user specified by uid) has authorized the calling application.
+	 * 
+	 * @param userId
+	 *            The user ID of the user who may have authorized the application. If this parameter is not specified, then it defaults to the session user. Note: This
+	 *            parameter applies only to Web applications and is required by them only if the session_key is not specified. Facebook ignores this parameter if it is
+	 *            passed by a desktop application.
+	 * 
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppUser">Users.isAppUser</a>
+	 */
+	public boolean users_isAppUser( Long userId ) throws FacebookException, IOException;
 
 	/**
 	 * Sets the logged-in user's Facebook status. Requires the status_update extended permission.
