@@ -1021,10 +1021,6 @@
 
 <xsd:element name="fbml_uploadNativeStrings_response" type="xsd:boolean" />
 
-<xsd:element name="feed_publishStoryToUser_response" type="xsd:boolean" />
-
-<xsd:element name="feed_publishActionOfUser_response" type="xsd:boolean" />
-
 <xsd:element name="friends_areFriends_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
