@@ -2954,12 +2954,28 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return feed_registerTemplateBundle( templates, null, null );
 	}
 
-	public T profile_getFBML( Long userId ) throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "uid", userId ) );
-	}
-
 	public T profile_getFBML() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.PROFILE_GET_FBML );
+	}
+
+	public T profile_getFBML( Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML );
+		}
+	}
+
+	public T profile_getFBML( int type ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "type", type ) );
+	}
+
+	public T profile_getFBML( int type, Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "type", type ), newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "type", type ) );
+		}
 	}
 
 	public T profile_getInfo( Long userId ) throws FacebookException, IOException {
@@ -3090,14 +3106,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			return true;
 		}
 		return false;
-	}
-
-	private static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
-		return new Pair<String,CharSequence>( name, value );
-	}
-
-	private static Pair<String,CharSequence> newPair( String name, Long value ) {
-		return new Pair<String,CharSequence>( name, Long.toString( value ) );
 	}
 
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException {
@@ -3276,6 +3284,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		for ( int i = 0; i < length; i++ ) {
 			printDom( children.item( i ), prefix + "  ", sb );
 		}
+	}
+
+	private static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
+		return new Pair<String,CharSequence>( name, value );
+	}
+
+	private static Pair<String,CharSequence> newPair( String name, Long value ) {
+		return new Pair<String,CharSequence>( name, Long.toString( value ) );
+	}
+
+	private static Pair<String,CharSequence> newPair( String name, Integer value ) {
+		return new Pair<String,CharSequence>( name, Integer.toString( value ) );
 	}
 
 }
