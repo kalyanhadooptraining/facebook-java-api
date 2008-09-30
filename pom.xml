@@ -79,7 +79,7 @@
       <id>mrepo-happyfern</id>
       <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
       <!--
-	  "com.facebook.api","mrepo@wrangler.dreamhost.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
+	  "com.google.code.facebookapi","mrepo@wrangler.dreamhost.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
 	-->
     </repository>
     <snapshotRepository>
