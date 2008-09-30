@@ -693,20 +693,6 @@ public interface IFacebookRestClient<T> {
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException;
 
 	/**
-	 * Retrieves whether the logged-in user has granted the specified permission to this application.
-	 * 
-	 * @param permission
-	 *            an extended permission (e.g. FacebookExtendedPerm.MARKETPLACE, "photo_upload")
-	 * @return boolean indicating whether the user has the permission
-	 * @see FacebookExtendedPerm
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission"> Developers Wiki: Users.hasAppPermission</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the alternate version.
-	 */
-	@Deprecated
-	public boolean users_hasAppPermission( CharSequence permission ) throws FacebookException, IOException;
-
-	/**
 	 * Sets the logged-in user's Facebook status. Requires the status_update extended permission.
 	 * 
 	 * @return whether the status was successfully set
@@ -1611,40 +1597,25 @@ public interface IFacebookRestClient<T> {
 	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
 
 	/**
-	 * Check to see if the user has granted the app a specific external permission. In order to be granted a permission, an application must direct the user to a URL of
-	 * the form:
-	 * 
-	 * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
-	 * 
-	 * @param perm
-	 *            the permission to check for
-	 * 
-	 * @return true if the user has granted the application the specified permission false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
+	 * @see #users_hasAppPermission(Permission,Long)
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException;
 
 	/**
-	 * Check to see if the user has granted the app a specific external permission. In order to be granted a permission, an application must direct the user to a URL of
-	 * the form:
-	 * 
-	 * http://www.facebook.com/authorize.php?api_key=[YOUR_API_KEY]&v=1.0&ext_perm=[PERMISSION NAME]
+	 * Checks whether the user has opted in to an extended application permission.
 	 * 
 	 * @param perm
-	 *            the permission to check for
+	 *            String identifier for the extended permission that is being checked for. Must be one of email, offline_access, status_update, photo_upload,
+	 *            create_listing, create_event, rsvp_event, sms.
 	 * @param userId
-	 *            the id of the user to check for
+	 *            The user ID of the user whose permissions you are checking. If this parameter is not specified, then it defaults to the session user. Note: This
+	 *            parameter applies only to Web applications and is required by them only if the session_key is not specified. Facebook ignores this parameter if it is
+	 *            passed by a desktop application.
 	 * 
 	 * @return true if the user has granted the application the specified permission false otherwise
 	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException;
 
