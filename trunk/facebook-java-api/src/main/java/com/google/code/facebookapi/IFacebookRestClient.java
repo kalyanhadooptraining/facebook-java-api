@@ -264,24 +264,48 @@ public interface IFacebookRestClient<T> {
 			IOException;
 
 	/**
-	 * Gets the FBML for a user's profile, including the content for both the profile box and the profile actions.
+	 * Gets the FBML for the current user's profile box.
 	 * 
-	 * @param userId -
-	 *            the user whose profile FBML to set
 	 * @return a T containing FBML markup
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
+	 * 
+	 * @see #profile_getFBML(int, Long)
+	 */
+	public T profile_getFBML() throws FacebookException, IOException;
+
+	/**
+	 * Gets the FBML for the user's profile box.
+	 * 
+	 * @param userId
+	 *            The user whose profile FBML is to be fetched, or the page ID in case of a Page. If not specified, defaults to the session user.
+	 * @return a T containing FBML markup
+	 * 
+	 * @see #profile_getFBML(int, Long)
 	 */
 	public T profile_getFBML( Long userId ) throws FacebookException, IOException;
 
 	/**
-	 * Gets the FBML for the current user's profile, including the content for both the profile box and the profile actions.
+	 * Gets the FBML for the current user's profile boxes.
 	 * 
-	 * @param userId -
-	 *            the user whose profile FBML to get
+	 * @param type
+	 *            The type of profile box to retrieve. Specify 1 for the original style (wide and narrow column boxes), 2 for profile_main box. (Default value is 1.)
 	 * @return a T containing FBML markup
+	 * 
+	 * @see #profile_getFBML(int, Long)
+	 */
+	public T profile_getFBML( int type ) throws FacebookException, IOException;
+
+	/**
+	 * Gets the FBML for the user's profile boxes.
+	 * 
+	 * @param type
+	 *            The type of profile box to retrieve. Specify 1 for the original style (wide and narrow column boxes), 2 for profile_main box. (Default value is 1.)
+	 * @param userId
+	 *            The user whose profile FBML is to be fetched, or the page ID in case of a Page. If not specified, defaults to the session user.
+	 * @return a T containing FBML markup
+	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
-	public T profile_getFBML() throws FacebookException, IOException;
+	public T profile_getFBML( int type, Long userId ) throws FacebookException, IOException;
 
 	/**
 	 * Recaches the referenced url.

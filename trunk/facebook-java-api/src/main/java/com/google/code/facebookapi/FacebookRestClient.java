@@ -1009,16 +1009,28 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	}
 
-	/**
-	 * Gets the FBML for a user's profile, including the content for both the profile box and the profile actions.
-	 * 
-	 * @param userId -
-	 *            the user whose profile FBML to set
-	 * @return a Document containing FBML markup
-	 */
-	public Document profile_getFBML( Long userId ) throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
+	public Document profile_getFBML() throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PROFILE_GET_FBML );
+	}
 
+	public Document profile_getFBML( Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML );
+		}
+	}
+
+	public Document profile_getFBML( int type ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "type", type ) );
+	}
+
+	public Document profile_getFBML( int type, Long userId ) throws FacebookException, IOException {
+		if ( userId != null ) {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "type", type ), newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "type", type ) );
+		}
 	}
 
 	/**
@@ -3928,10 +3940,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
-	public Document profile_getFBML() throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PROFILE_GET_FBML );
-	}
-
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
 		callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, new Pair<String,CharSequence>( "ext_perm", perm.getName() ), new Pair<String,CharSequence>( "uid",
 				Long.toString( userId ) ) );
@@ -4319,4 +4327,17 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
 	}
+
+	private static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
+		return new Pair<String,CharSequence>( name, value );
+	}
+
+	private static Pair<String,CharSequence> newPair( String name, Long value ) {
+		return new Pair<String,CharSequence>( name, Long.toString( value ) );
+	}
+
+	private static Pair<String,CharSequence> newPair( String name, Integer value ) {
+		return new Pair<String,CharSequence>( name, Integer.toString( value ) );
+	}
+
 }
