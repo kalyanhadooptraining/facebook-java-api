@@ -3992,10 +3992,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		SERVER_URL = newUrl;
 	}
 
-	public void useBetaApiServer() {
-		setServerUrl( "http://api.new.facebook.com/restserver.php" );
-	}
-
 	protected Long extractLong( Document doc ) {
 		if ( doc == null ) {
 			return 0l;

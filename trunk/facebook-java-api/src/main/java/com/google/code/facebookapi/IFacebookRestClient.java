@@ -57,7 +57,7 @@ public interface IFacebookRestClient<T> {
 
 	public static final String TARGET_API_VERSION = "1.0";
 	public static final String ERROR_TAG = "error_response";
-	public static final String FB_SERVER = "api.new.facebook.com/restserver.php";
+	public static final String FB_SERVER = "api.facebook.com/restserver.php";
 	public static final String SERVER_ADDR = "http://" + FB_SERVER;
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
@@ -2988,7 +2988,7 @@ public interface IFacebookRestClient<T> {
 	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
 	 * 
 	 * @param newUrl
-	 *            the new URL to use, for example: "http://api.new.facebook.com/restserver.php"
+	 *            the new URL to use, for example: "http://api.facebook.com/restserver.php"
 	 * @throws MalformedURLException
 	 */
 	public void setServerUrl( String newUrl );
