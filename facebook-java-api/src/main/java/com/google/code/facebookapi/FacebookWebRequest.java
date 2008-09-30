@@ -60,12 +60,16 @@ public class FacebookWebRequest<T> {
 				if ( !inProfileTab ) {
 					sessionKey = getFbParam( FacebookParam.SESSION_KEY );
 					userId = getFbParamLong( FacebookParam.USER );
+					Long canvas_user = getFbParamLong( FacebookParam.CANVAS_USER );
+					if ( canvas_user != null ) {
+						userId = canvas_user;
+					}
 				} else {
 					sessionKey = getFbParam( FacebookParam.PROFILE_SESSION_KEY );
 					userId = getFbParamLong( FacebookParam.PROFILE_USER );
 				}
 				sessionExpires = getFbParamLong( FacebookParam.EXPIRES );
-				if ( sessionKey != null && userId != null ) {
+				if ( sessionKey != null || userId != null ) {
 					apiClient.setCacheSession( sessionKey, userId, sessionExpires );
 				}
 			}
