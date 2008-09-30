@@ -62,23 +62,6 @@ public interface IFacebookRestClient<T> {
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
 	/**
-	 * Toggle debug mode.
-	 * 
-	 * @param isDebug
-	 *            set to true to enable debug set to false to disable debug
-	 * @deprecated we are now using commons-logging
-	 */
-	public void setDebug( boolean isDebug );
-
-	/**
-	 * Check to see if debug mode is enabled.
-	 * 
-	 * @return true if debug is enabled false otherwise
-	 * @deprecated we are now using commons-logging
-	 */
-	public boolean isDebug();
-
-	/**
 	 * Check to see if the client is running in desktop-app mode
 	 * 
 	 * @return true if the app is running in desktop mode. false otherwise
@@ -107,30 +90,32 @@ public interface IFacebookRestClient<T> {
 	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
 	 * 
 	 * @param userId
-	 *            the user whose profile FBML to set
-	 * @param fbmlMarkup
-	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
+	 *            The user ID for the user whose profile you are updating, or the page ID in case of a Page. If this parameter is not specified, then it defaults to the
+	 *            session user. Note: This parameter applies only to Web applications and is required by them only if the session_key is not specified. Facebook returns
+	 *            an error if this parameter is passed by a desktop application.
+	 * @param profileFbml
+	 *            The FBML intended for the application profile box that appears on the Boxes tab on the user's profile.
+	 * @param actionFbml
+	 *            The FBML intended for the user's profile actions. A profile action is the link under the user's profile picture that allows a user to take an action
+	 *            with your application. Note: This attribute is being deprecated when the new profile design launches in July 2008, as there are no third party profile
+	 *            action links on the new profile.
+	 * @param mobileFbml
+	 *            The FBML intended for mobile devices.
+	 * @param profileMain
+	 *            The FBML intended for the narrow profile box on the Wall and Info tabs of the user's profile. Note: This attribute applies only to the new profile
+	 *            design that launched July 2008.
+	 * 
 	 * @return a boolean indicating whether the FBML was successfully set
-	 * @deprecated Use {@link FacebookRestClient#profile_setFBML(CharSequence,CharSequence,Long)} instead.
-	 * @see #profile_setFBML(CharSequence,CharSequence,Long)
+	 * 
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML">http://wiki.developers.facebook.com/index.php/Profile.setFBML</a>
 	 */
-	@Deprecated
-	public boolean profile_setFBML( CharSequence fbmlMarkup, Long userId ) throws FacebookException, IOException;
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException;
 
 	/**
-	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
-	 * 
-	 * @param userId
-	 *            the user whose profile FBML to set.
-	 * @param profileFbml -
-	 *            FBML markup for the user's profile page.
-	 * @param actionFbml -
-	 *            FBML markup for the user's profile-actions section.
-	 * @param mobileFbml -
-	 *            FBML markup for mobile visitors to the user's profile page.
-	 * 
-	 * @return a boolean indicating whether the FBML was successfully set
+	 * @see #profile_setFBML(Long, String, String, String, String)
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException;
 
 	/**
@@ -138,9 +123,10 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @param fbmlMarkup
 	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
-	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFbml</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
 
 	/**
@@ -150,7 +136,9 @@ public interface IFacebookRestClient<T> {
 	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
 
 	/**
@@ -160,7 +148,9 @@ public interface IFacebookRestClient<T> {
 	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
 
 	/**
@@ -172,7 +162,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFbml</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
 
 	/**
@@ -184,7 +176,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
 
 	/**
@@ -196,7 +190,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
 
 	/**
@@ -209,7 +205,9 @@ public interface IFacebookRestClient<T> {
 	 *            the FBML for the profile actions
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException;
 
 	/**
@@ -224,7 +222,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException, IOException;
 
 	/**
@@ -241,7 +241,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException, IOException;
 
@@ -259,7 +261,9 @@ public interface IFacebookRestClient<T> {
 	 *            a page or user ID (null for the logged-in user)
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML"> Developers wiki: Profile.setFBML</a>
+	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException,
 			IOException;
 

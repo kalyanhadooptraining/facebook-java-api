@@ -990,25 +990,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return conn.getInputStream();
 	}
 
-	/**
-	 * Sets the FBML for a user's profile, including the content for both the profile box and the profile actions.
-	 * 
-	 * @param userId -
-	 *            the user whose profile FBML to set
-	 * @param fbmlMarkup -
-	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
-	 * @return a boolean indicating whether the FBML was successfully set
-	 * 
-	 * @deprecated Facebook will remove support for this version of the API call on 1/17/2008, please use the alternate version instead.
-	 */
-	@Deprecated
-	public boolean profile_setFBML( CharSequence fbmlMarkup, Long userId ) throws FacebookException, IOException {
-
-		return extractBoolean( callMethod( FacebookMethod.PROFILE_SET_FBML, new Pair<String,CharSequence>( "uid", Long.toString( userId ) ),
-				new Pair<String,CharSequence>( "markup", fbmlMarkup ) ) );
-
-	}
-
 	public Document profile_getFBML() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.PROFILE_GET_FBML );
 	}
@@ -3557,50 +3538,62 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException {
-		return profile_setFBML( users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
-				: profileActionFbmlMarkup.toString(), null );
+		return profile_setFBML( null, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), null, null );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
-				: profileActionFbmlMarkup.toString(), null );
+		return profile_setFBML( profileId, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), null, null );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException,
 			IOException {
-		return profile_setFBML( users_getLoggedInUser(), profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
-				: profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString() );
+		return profile_setFBML( null, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), toString( mobileFbmlMarkup ), null );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException, IOException {
-		return profile_setFBML( profileId, profileFbmlMarkup == null ? null : profileFbmlMarkup.toString(), profileActionFbmlMarkup == null ? null
-				: profileActionFbmlMarkup.toString(), mobileFbmlMarkup == null ? null : mobileFbmlMarkup.toString() );
+		return profile_setFBML( profileId, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), toString( mobileFbmlMarkup ), null );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return profile_setFBML( users_getLoggedInUser(), null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
+		return profile_setFBML( null, null, null, toString( fbmlMarkup ), null );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return profile_setFBML( profileId, null, null, fbmlMarkup == null ? null : fbmlMarkup.toString() );
+		return profile_setFBML( profileId, null, null, toString( fbmlMarkup ), null );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return profile_setFBML( users_getLoggedInUser(), null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
+		return profile_setFBML( null, null, toString( fbmlMarkup ), null, null );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return profile_setFBML( profileId, null, fbmlMarkup == null ? null : fbmlMarkup.toString(), null );
+		return profile_setFBML( profileId, null, toString( fbmlMarkup ), null, null );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException {
-		return profile_setFBML( users_getLoggedInUser(), fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
+		return profile_setFBML( null, toString( fbmlMarkup ), null, null, null );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException {
-		return profile_setFBML( profileId, fbmlMarkup == null ? null : fbmlMarkup.toString(), null, null );
+		return profile_setFBML( profileId, toString( fbmlMarkup ), null, null, null );
 	}
+
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException {
+		return profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, null );
+	}
+
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
+		addParamIfNotBlank( "uid", userId, params );
+		addParamIfNotBlank( "profile", profileFbml, params );
+		addParamIfNotBlank( "profile_action", actionFbml, params );
+		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
+		addParamIfNotBlank( "profile_main", profileMain, params );
+		FacebookMethod method = ( isDesktop() || userId == null ) ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
+		return extractBoolean( callMethod( method, params ) );
+	}
+
 
 	public Document friends_get( Long friendListId ) throws FacebookException, IOException {
 		FacebookMethod method = FacebookMethod.FRIENDS_GET;
@@ -4183,21 +4176,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 		return false;
 	}
 
-	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException {
-		return profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, null );
-	}
-
-	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String,CharSequence>( "uid", Long.toString( userId ) ) );
-		addParamIfNotBlank( "profile", profileFbml, params );
-		addParamIfNotBlank( "profile_action", actionFbml, params );
-		addParamIfNotBlank( "mobile_fbml", mobileFbml, params );
-		addParamIfNotBlank( "profile_main", profileMain, params );
-		FacebookMethod method = this.isDesktop() ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
-		return extractBoolean( callMethod( method, params ) );
-	}
-
 	public void setServerUrl( String newUrl ) {
 		String base = newUrl;
 		if ( base.startsWith( "http" ) ) {
@@ -4338,6 +4316,10 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	private static Pair<String,CharSequence> newPair( String name, Integer value ) {
 		return new Pair<String,CharSequence>( name, Integer.toString( value ) );
+	}
+
+	public static String toString( CharSequence cs ) {
+		return cs == null ? null : cs.toString();
 	}
 
 }
