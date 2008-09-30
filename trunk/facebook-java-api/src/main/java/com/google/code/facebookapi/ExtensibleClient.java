@@ -336,34 +336,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	/**
-	 * Helper function: assembles the parameters used by feed_publishActionOfUser and feed_publishStoryToUser
-	 * 
-	 * @param feedMethod
-	 *            feed_publishStoryToUser / feed_publishActionOfUser
-	 * @param title
-	 *            title of the story
-	 * @param body
-	 *            body of the story
-	 * @param images
-	 *            optional images to be included in he story
-	 * @param priority
-	 * @return whether the call to <code>feedMethod</code> was successful
-	 */
-	protected boolean feedHandler( IFacebookMethod feedMethod, CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images,
-			Integer priority ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( feedMethod.numParams() );
-		params.add( newPair( "title", title ) );
-		if ( null != body ) {
-			params.add( newPair( "body", body ) );
-		}
-		if ( null != priority ) {
-			params.add( newPair( "priority", priority.toString() ) );
-		}
-		handleFeedImages( params, images );
-		return extractBoolean( callMethod( feedMethod, params ) );
-	}
-
-	/**
 	 * Adds image parameters
 	 * 
 	 * @param params
@@ -388,107 +360,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	/**
-	 * Publish the notification of an action taken by a user to newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story (up to 60 characters, excluding tags)
-	 * @param body
-	 *            (optional) the body of the feed story (up to 200 characters, excluding tags)
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishActionOfUser"> Developers Wiki: Feed.publishActionOfUser</a>
-	 */
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
-			IOException {
-		return feedHandler( FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, null );
-	}
-
-	/**
-	 * Publish the notification of an action taken by a user to newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story (up to 60 characters, excluding tags)
-	 * @param body
-	 *            (optional) the body of the feed story (up to 200 characters, excluding tags)
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishActionOfUser"> Developers Wiki: Feed.publishActionOfUser</a>
-	 */
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body ) throws FacebookException, IOException {
-		return feed_publishActionOfUser( title, body, null );
-	}
-
-	/**
 	 * Call this function to retrieve the session information after your user has logged in.
 	 * 
 	 * @param authToken
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public abstract String auth_getSession( String authToken ) throws FacebookException, IOException;
-
-	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, null );
-	}
-
-	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
-			IOException {
-		return feed_publishStoryToUser( title, body, images, null );
-	}
-
-	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param priority
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Integer priority ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, priority );
-	}
-
-	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @param priority
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images, Integer priority )
-			throws FacebookException, IOException {
-		return feedHandler( FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority );
-	}
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating News Feed stories to the friends of that user. Stories are identified

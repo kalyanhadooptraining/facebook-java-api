@@ -103,8 +103,6 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc", 1),
 	FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle", 2),
 	// Feed
-	FEED_PUBLISH_ACTION_OF_USER("facebook.feed.publishActionOfUser", 11), // deprecated
-	FEED_PUBLISH_STORY_TO_USER("facebook.feed.publishStoryToUser", 11),
 	FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction", 15),
 	FEED_REGISTER_TEMPLATE("facebook.feed.registerTemplateBundle", 4),
 	FEED_GET_TEMPLATES("facebook.feed.getRegisteredTemplateBundles", 1),

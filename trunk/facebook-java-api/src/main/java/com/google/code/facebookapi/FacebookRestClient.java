@@ -1157,154 +1157,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 				.getBodyGeneral(), action.getPictures(), action.getTargetIds(), action.getPageActorId() );
 	}
 
-	/**
-	 * Publish the notification of an action taken by a user to newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @param priority
-	 * @return a document object containing the server response
-	 * 
-	 * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
-	 */
-	@Deprecated
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images, Integer priority )
-			throws FacebookException, IOException {
-		return feedHandlerBoolean( FacebookMethod.FEED_PUBLISH_ACTION_OF_USER, title, body, images, priority );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-	 * 
-	 * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
-	 */
-	@Deprecated
-	public boolean feed_publishActionOfUser( String title, String body ) throws FacebookException, IOException {
-		return feed_publishActionOfUser( title, body, null, null );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-	 * 
-	 * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
-	 */
-	@Deprecated
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body ) throws FacebookException, IOException {
-		return feed_publishActionOfUser( title, body, null, null );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishActionOfUser(CharSequence,CharSequence,Collection,Integer)
-	 * 
-	 * @deprecated Facebook will be removing this API call (it is to be replaced with feed_publishTemplatizedAction)
-	 */
-	@Deprecated
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body, Integer priority ) throws FacebookException, IOException {
-		return feed_publishActionOfUser( title, body, null, priority );
-	}
-
-	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @param priority
-	 * @return a Document object containing the server response
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images, Integer priority )
-			throws FacebookException, IOException {
-		return feedHandlerBoolean( FacebookMethod.FEED_PUBLISH_STORY_TO_USER, title, body, images, priority );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
-	 */
-	public boolean feed_publishStoryToUser( String title, String body ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, null );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
-	 */
-	public boolean feed_publishStoryToUser( String title, String body, Integer priority ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, priority );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, null );
-	}
-
-	/**
-	 * @see FacebookRestClient#feed_publishStoryToUser(CharSequence,CharSequence,Collection,Integer)
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Integer priority ) throws FacebookException, IOException {
-		return feed_publishStoryToUser( title, body, null, priority );
-	}
-
-	protected Document feedHandler( FacebookMethod feedMethod, CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images,
-			Integer priority ) throws FacebookException, IOException {
-		assert ( images == null || images.size() <= 4 );
-
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( feedMethod.numParams() );
-
-		params.add( new Pair<String,CharSequence>( "title", title ) );
-		if ( null != body )
-			params.add( new Pair<String,CharSequence>( "body", body ) );
-		if ( null != priority )
-			params.add( new Pair<String,CharSequence>( "priority", priority.toString() ) );
-		if ( null != images && !images.isEmpty() ) {
-			int image_count = 0;
-			for ( IPair image : images ) {
-				++image_count;
-				assert ( image.getFirst() != null );
-				params.add( new Pair<String,CharSequence>( String.format( "image_%d", image_count ), image.getFirst().toString() ) );
-				if ( image.getSecond() != null )
-					params.add( new Pair<String,CharSequence>( String.format( "image_%d_link", image_count ), image.getSecond().toString() ) );
-			}
-		}
-		return callMethod( feedMethod, params );
-	}
-
-	protected boolean feedHandlerBoolean( FacebookMethod feedMethod, CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images,
-			Integer priority ) throws FacebookException, IOException {
-		assert ( images == null || images.size() <= 4 );
-
-		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( feedMethod.numParams() );
-
-		params.add( new Pair<String,CharSequence>( "title", title ) );
-		if ( null != body )
-			params.add( new Pair<String,CharSequence>( "body", body ) );
-		if ( null != priority )
-			params.add( new Pair<String,CharSequence>( "priority", priority.toString() ) );
-		if ( null != images && !images.isEmpty() ) {
-			int image_count = 0;
-			for ( IPair image : images ) {
-				++image_count;
-				assert ( image.getFirst() != null );
-				params.add( new Pair<String,CharSequence>( String.format( "image_%d", image_count ), image.getFirst().toString() ) );
-				if ( image.getSecond() != null )
-					params.add( new Pair<String,CharSequence>( String.format( "image_%d_link", image_count ), image.getSecond().toString() ) );
-			}
-		}
-		callMethod( feedMethod, params );
-		if ( this.rawResponse == null ) {
-			return false;
-		}
-		return this.rawResponse.contains( ">1<" ); // a code of '1' indicates success
-	}
-
-
 	protected boolean templatizedFeedHandler( Long actorId, FacebookMethod method, String titleTemplate, String titleData, String bodyTemplate, String bodyData,
 			String bodyGeneral, Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds, Long pageId ) throws FacebookException, IOException {
 		assert ( pictures == null || pictures.size() <= 4 );
@@ -2675,23 +2527,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	}
 
 	/**
-	 * Publish a story to the logged-in user's newsfeed.
-	 * 
-	 * @param title
-	 *            the title of the feed story
-	 * @param body
-	 *            the body of the feed story
-	 * @param images
-	 *            (optional) up to four pairs of image URLs and (possibly null) link URLs
-	 * @return whether the story was successfully published; false in case of permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishStoryToUser"> Developers Wiki: Feed.publishStoryToUser</a>
-	 */
-	public boolean feed_publishStoryToUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
-			IOException {
-		return feed_publishStoryToUser( title, body, images, null );
-	}
-
-	/**
 	 * Create a marketplace listing
 	 * 
 	 * @param showOnProfile
@@ -2715,15 +2550,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 			auth_getSession( authToken );
 		}
 		return users_getLoggedInUser();
-	}
-
-	/**
-	 * @deprecated use feed_publishTemplatizedAction instead.
-	 */
-	@Deprecated
-	public boolean feed_publishActionOfUser( CharSequence title, CharSequence body, Collection<? extends IPair<? extends Object,URL>> images ) throws FacebookException,
-			IOException {
-		return feed_publishActionOfUser( title, body, images, null );
 	}
 
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException, IOException {
