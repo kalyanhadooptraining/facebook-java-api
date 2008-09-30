@@ -316,29 +316,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this.cacheUserId = cacheUserId;
 	}
 
-	/**
-	 * Retrieves whether two users are friends.
-	 * 
-	 * @param userId1
-	 * @param userId2
-	 * @return T
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
-	 */
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, newPair( "uids1", userId1 ), newPair( "uids2", userId2 ) );
 	}
 
-	/**
-	 * Retrieves whether pairs of users are friends. Returns whether the first user in <code>userIds1</code> is friends with the first user in <code>userIds2</code>,
-	 * the second user in <code>userIds1</code> is friends with the second user in <code>userIds2</code>, etc.
-	 * 
-	 * @param userIds1
-	 * @param userIds2
-	 * @return T
-	 * @throws IllegalArgumentException
-	 *             if one of the collections is null, or empty, or if the collection sizes differ.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.areFriends"> Developers Wiki: Friends.areFriends</a>
-	 */
 	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException, IOException {
 		if ( userIds1 == null || userIds2 == null || userIds1.isEmpty() || userIds2.isEmpty() ) {
 			throw new IllegalArgumentException( "Collections passed to friends_areFriends should not be null or empty" );
@@ -350,24 +331,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, newPair( "uids1", delimit( userIds1 ) ), newPair( "uids2", delimit( userIds2 ) ) );
 	}
 
-	/**
-	 * Gets the FBML for a user's profile, including the content for both the profile box and the profile actions.
-	 * 
-	 * @param userId -
-	 *            the user whose profile FBML to set
-	 * @return a T containing FBML markup
-	 */
-	public T profile_getFBML( Long userId ) throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PROFILE_GET_FBML, newPair( "uid", userId ) );
-	}
-
-	/**
-	 * Recaches the referenced url.
-	 * 
-	 * @param url
-	 *            string representing the URL to refresh
-	 * @return boolean indicating whether the refresh succeeded
-	 */
 	public boolean fbml_refreshRefUrl( String url ) throws FacebookException, IOException {
 		return fbml_refreshRefUrl( new URL( url ) );
 	}
@@ -2652,10 +2615,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return new ApplicationPropertySet( propJson );
 	}
 
-	/**
-	 * Starts a batch of queries. Any API calls made after invoking 'beginBatch' will be deferred until the next time you call 'executeBatch', at which time they will be
-	 * processed as a batch query. All API calls made in the interim will return null as their result.
-	 */
 	public void beginBatch() {
 		batchMode = true;
 		queries = new ArrayList<BatchQuery>();
@@ -2672,18 +2631,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return result.toString();
 	}
 
-	/**
-	 * Executes a batch of queries. It is your responsibility to encode the method feed correctly. It is not recommended that you call this method directly. Instead use
-	 * 'beginBatch' and 'executeBatch', which will take care of the hard parts for you.
-	 * 
-	 * @param methods
-	 *            A JSON encoded array of strings. Each element in the array should contain the full parameters for a method, including method name, sig, etc. Currently,
-	 *            there is a maximum limit of 15 elements in the array.
-	 * @param serial
-	 *            An optional parameter to indicate whether the methods in the method_feed must be executed in order. The default value is false.
-	 * 
-	 * @return a result containing the response to each individual query in the batch.
-	 */
 	public T batch_run( String methods, boolean serial ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "method_feed", methods ) );
@@ -2693,18 +2640,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.BATCH_RUN, params );
 	}
 
-	/**
-	 * Gets the public information about the specified application. Only one of the 3 parameters needs to be specified.
-	 * 
-	 * @param applicationId
-	 *            the id of the application to get the info for.
-	 * @param applicationKey
-	 *            the public API key of the application to get the info for.
-	 * @param applicationCanvas
-	 *            the canvas-page name of the application to get the info for.
-	 * 
-	 * @return the public information for the specified application
-	 */
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		if ( ( applicationId != null ) && ( applicationId > 0 ) ) {
@@ -2720,38 +2655,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.APPLICATION_GET_PUBLIC_INFO, params );
 	}
 
-	/**
-	 * Gets the public information about the specified application, by application id.
-	 * 
-	 * @param applicationId
-	 *            the id of the application to get the info for.
-	 * 
-	 * @return the public information for the specified application
-	 */
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException, IOException {
 		return application_getPublicInfo( applicationId, null, null );
 	}
 
-	/**
-	 * Gets the public information about the specified application, by API key.
-	 * 
-	 * @param applicationKey
-	 *            the public API key of the application to get the info for.
-	 * 
-	 * @return the public information for the specified application
-	 */
 	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException, IOException {
 		return application_getPublicInfo( null, applicationKey, null );
 	}
 
-	/**
-	 * Gets the public information about the specified application, by canvas-page name.
-	 * 
-	 * @param applicationCanvas
-	 *            the canvas-page name of the application to get the info for.
-	 * 
-	 * @return the public information for the specified application
-	 */
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException, IOException {
 		return application_getPublicInfo( null, null, applicationCanvas );
 	}
@@ -2953,10 +2864,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
-	public T profile_getFBML() throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PROFILE_GET_FBML );
-	}
-
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.USERS_HAS_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", Long.toString( userId ) ) ) );
 	}
@@ -3047,6 +2954,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return feed_registerTemplateBundle( templates, null, null );
 	}
 
+	public T profile_getFBML( Long userId ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, newPair( "uid", userId ) );
+	}
+
+	public T profile_getFBML() throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PROFILE_GET_FBML );
+	}
+
 	public T profile_getInfo( Long userId ) throws FacebookException, IOException {
 		return callMethod( FacebookMethod.PROFILE_GET_INFO, newPair( "uid", userId ) );
 	}
@@ -3109,15 +3024,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
 	}
 
-	/**
-	 * Adds several tags to a photo.
-	 * 
-	 * @param photoId
-	 *            The photo id of the photo to be tagged.
-	 * @param tags
-	 *            A list of PhotoTags.
-	 * @return a list of booleans indicating whether the tag was successfully added.
-	 */
 	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException, IOException {
 		assert ( photoId > 0 );
 		assert ( null != tags && !tags.isEmpty() );
@@ -3282,9 +3188,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	}
 
-	/**
-	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
-	 */
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
 			throws FacebookException, IOException {
 

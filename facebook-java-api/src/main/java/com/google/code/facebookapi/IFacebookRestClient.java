@@ -51,7 +51,7 @@ import com.google.code.facebookapi.schema.Listing;
 
 /**
  * Generic interface for a FacebookRestClient, parameterized by output format. For continually updated documentation, please refer to the <a
- * href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
+ * href="http://wiki.developers.facebook.com/index.php/API">Developer Wiki</a>.
  */
 public interface IFacebookRestClient<T> {
 
@@ -269,6 +269,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userId -
 	 *            the user whose profile FBML to set
 	 * @return a T containing FBML markup
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
 	public T profile_getFBML( Long userId ) throws FacebookException, IOException;
 
@@ -278,6 +279,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userId -
 	 *            the user whose profile FBML to get
 	 * @return a T containing FBML markup
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
 	public T profile_getFBML() throws FacebookException, IOException;
 
