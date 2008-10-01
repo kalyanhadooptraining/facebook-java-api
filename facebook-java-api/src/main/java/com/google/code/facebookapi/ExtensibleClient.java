@@ -354,17 +354,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	public abstract String auth_getSession( String authToken ) throws FacebookException, IOException;
 
-	/**
-	 * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating News Feed stories to the friends of that user. Stories are identified
-	 * as being combinable if they have matching templates and substituted values.
-	 * 
-	 * @param actorId
-	 *            the user into whose mini-feed the story is being published.
-	 * @param titleTemplate
-	 *            markup (up to 60 chars, tags excluded) for the feed story's title section. Must include the token <code>{actor}</code>.
-	 * @return whether the action story was successfully published; false in case of a permission error
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
-	 */
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException, IOException {
 		return feed_publishTemplatizedAction( actorId, titleTemplate, null, null, null, null, null, null );
 	}
@@ -414,14 +403,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return feed_publishTemplatizedAction( (long) ( actorId.intValue() ), titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
-
-	/**
-	 * Retrieves the membership list of a group
-	 * 
-	 * @param groupId
-	 *            the group id
-	 * @return a T containing four membership lists of 'members', 'admins', 'officers', and 'not_replied'
-	 */
 	public T groups_getMembers( Number groupId ) throws FacebookException, IOException {
 		assert ( null != groupId );
 		return callMethod( FacebookMethod.GROUPS_GET_MEMBERS, newPair( "gid", groupId.toString() ) );
@@ -441,34 +422,15 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return result;
 	}
 
-	/**
-	 * Retrieves the membership list of an event
-	 * 
-	 * @param eventId
-	 *            event id
-	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
-	 */
 	public T events_getMembers( Number eventId ) throws FacebookException, IOException {
 		assert ( null != eventId );
 		return callMethod( FacebookMethod.EVENTS_GET_MEMBERS, newPair( "eid", eventId.toString() ) );
 	}
 
-	/**
-	 * Retrieves the friends of the currently logged in user, who are also users of the calling application.
-	 * 
-	 * @return array of friends
-	 */
 	public T friends_getAppUsers() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
 	}
 
-	/**
-	 * Retrieves the results of a Facebook Query Language query
-	 * 
-	 * @param query :
-	 *            the FQL query statement
-	 * @return varies depending on the FQL query
-	 */
 	public T fql_query( CharSequence query ) throws FacebookException, IOException {
 		assert ( null != query );
 		return callMethod( FacebookMethod.FQL_QUERY, newPair( "query", query ) );
@@ -479,88 +441,22 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
-	/**
-	 * Call the specified method, with the given parameters, and return a DOM tree with the results.
-	 * 
-	 * @param method
-	 *            the fieldName of the method
-	 * @param paramPairs
-	 *            a list of arguments to the method
-	 * @throws Exception
-	 *             with a description of any errors given to us by the server.
-	 */
-	protected T callMethod( IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException, IOException {
-		return callMethod( method, Arrays.asList( paramPairs ) );
-	}
-
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param photoIds
-	 *            retrieve from this list of photos (optional)
-	 * @return an T of photo objects.
-	 * @see #photos_get(Long, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
 	public T photos_get( Collection<Long> photoIds ) throws FacebookException, IOException {
 		return photos_get( null /* subjId */, null /* albumId */, photoIds );
 	}
 
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param subjId
-	 *            retrieve from photos associated with this user (optional).
-	 * @param albumId
-	 *            retrieve from photos from this album (optional)
-	 * @return an T of photo objects.
-	 * @see #photos_get(Long, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
 	public T photos_get( Long subjId, Long albumId ) throws FacebookException, IOException {
 		return photos_get( subjId, albumId, null /* photoIds */);
 	}
 
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param subjId
-	 *            retrieve from photos associated with this user (optional).
-	 * @param photoIds
-	 *            retrieve from this list of photos (optional)
-	 * @return an T of photo objects.
-	 * @see #photos_get(Long, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
 	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException, IOException {
 		return photos_get( subjId, null /* albumId */, photoIds );
 	}
 
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param subjId
-	 *            retrieve from photos associated with this user (optional).
-	 * @return an T of photo objects.
-	 * @see #photos_get(Long, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
 	public T photos_get( Long subjId ) throws FacebookException, IOException {
 		return photos_get( subjId, null /* albumId */, null /* photoIds */);
 	}
 
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param subjId
-	 *            retrieve from photos associated with this user (optional).
-	 * @param albumId
-	 *            retrieve from photos from this album (optional)
-	 * @param photoIds
-	 *            retrieve from this list of photos (optional)
-	 * @return an T of photo objects.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
 	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_GET.numParams() );
 
@@ -584,26 +480,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
-	/**
-	 * Retrieves the tags for the given set of photos.
-	 * 
-	 * @param photoIds
-	 *            The list of photos from which to extract photo tags.
-	 * @return the created album
-	 */
 	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException, IOException {
 		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, newPair( "pids", delimit( photoIds ) ) );
 	}
 
-	/**
-	 * Retrieves the groups associated with a user
-	 * 
-	 * @param userId
-	 *            Optional: User associated with groups. A null parameter will default to the session user.
-	 * @param groupIds
-	 *            Optional: group ids to query. A null parameter will get all groups for the user.
-	 * @return array of groups
-	 */
 	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException, IOException {
 		boolean hasGroups = ( null != groupIds && !groupIds.isEmpty() );
 		if ( null != userId ) {
@@ -612,6 +492,20 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		} else {
 			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, newPair( "gids", delimit( groupIds ) ) ) : callMethod( FacebookMethod.GROUPS_GET );
 		}
+	}
+
+	/**
+	 * Call the specified method, with the given parameters, and return a DOM tree with the results.
+	 * 
+	 * @param method
+	 *            the fieldName of the method
+	 * @param paramPairs
+	 *            a list of arguments to the method
+	 * @throws Exception
+	 *             with a description of any errors given to us by the server.
+	 */
+	protected T callMethod( IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException, IOException {
+		return callMethod( method, Arrays.asList( paramPairs ) );
 	}
 
 	/**
@@ -733,23 +627,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected abstract T parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException;
 
-	/**
-	 * Recaches the referenced url.
-	 * 
-	 * @param url
-	 *            the URL to refresh
-	 * @return boolean indicating whether the refresh succeeded
-	 */
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.FBML_REFRESH_REF_URL, newPair( "url", url.toString() ) ) );
 	}
 
-	/**
-	 * Retrieves the outstanding notifications for the session user.
-	 * 
-	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
-	 *         list of 'event_invites'
-	 */
 	public T notifications_get() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.NOTIFICATIONS_GET );
 	}
@@ -858,35 +739,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return users_setStatus( null, true );
 	}
 
-	/**
-	 * Adds a tag to a photo.
-	 * 
-	 * @param photoId
-	 *            The photo id of the photo to be tagged.
-	 * @param xPct
-	 *            The horizontal position of the tag, as a percentage from 0 to 100, from the left of the photo.
-	 * @param yPct
-	 *            The list of photos from which to extract photo tags.
-	 * @param tagText
-	 *            The text of the tag.
-	 * @return whether the tag was successfully added.
-	 */
 	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException, IOException {
 		return photos_addTag( photoId, xPct, yPct, null, tagText );
-	}
-
-	/**
-	 * Helper function for posting a request that includes raw file data, eg {@link #photos_upload(File)}.
-	 * 
-	 * @param methodName
-	 *            the name of the method
-	 * @param params
-	 *            request parameters (not including the file)
-	 * @return an InputStream with the request response
-	 * @see #photos_upload(File)
-	 */
-	protected InputStream postFileRequest( String methodName, Map<String,String> params ) throws IOException {
-		return postFileRequest( methodName, params, /* doEncode */true );
 	}
 
 	/**
@@ -952,86 +806,28 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return null;
 	}
 
-	/**
-	 * @deprecated
-	 */
 	@Deprecated
 	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException, IOException {
 		notifications_send( recipientIds, notification );
 		return null;
 	}
 
-	/**
-	 * Extracts a URL from a result that consists of a URL only.
-	 * 
-	 * @param result
-	 * @return the URL
-	 */
-	protected abstract URL extractURL( T result ) throws IOException;
-
-	/**
-	 * Recaches the image with the specified imageUrl.
-	 * 
-	 * @param imageUrl
-	 *            String representing the image URL to refresh
-	 * @return boolean indicating whether the refresh succeeded
-	 */
 	public boolean fbml_refreshImgSrc( String imageUrl ) throws FacebookException, IOException {
 		return fbml_refreshImgSrc( new URL( imageUrl ) );
 	}
 
-	/**
-	 * Uploads a photo to Facebook.
-	 * 
-	 * @param photo
-	 *            an image file
-	 * @return a T with the standard Facebook photo information
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
-	 */
 	public T photos_upload( File photo ) throws FacebookException, IOException {
 		return photos_upload( photo, null /* caption */, null /* albumId */);
 	}
 
-	/**
-	 * Uploads a photo to Facebook.
-	 * 
-	 * @param photo
-	 *            an image file
-	 * @param caption
-	 *            a description of the image contents
-	 * @return a T with the standard Facebook photo information
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
-	 */
 	public T photos_upload( File photo, String caption ) throws FacebookException, IOException {
 		return photos_upload( photo, caption, null /* albumId */);
 	}
 
-	/**
-	 * Uploads a photo to Facebook.
-	 * 
-	 * @param photo
-	 *            an image file
-	 * @param albumId
-	 *            the album into which the photo should be uploaded
-	 * @return a T with the standard Facebook photo information
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
-	 */
 	public T photos_upload( File photo, Long albumId ) throws FacebookException, IOException {
 		return photos_upload( photo, null /* caption */, albumId );
 	}
 
-	/**
-	 * Uploads a photo to Facebook.
-	 * 
-	 * @param photo
-	 *            an image file
-	 * @param caption
-	 *            a description of the image contents
-	 * @param albumId
-	 *            the album into which the photo should be uploaded
-	 * @return a T with the standard Facebook photo information
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
-	 */
 	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException, IOException {
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_UPLOAD.numParams() );
 		assert ( photo.exists() && photo.canRead() );
@@ -1045,43 +841,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_UPLOAD, params );
 	}
 
-	/**
-	 * Creates an album.
-	 * 
-	 * @param albumName
-	 *            The list of photos from which to extract photo tags.
-	 * @return the created album
-	 */
 	public T photos_createAlbum( String albumName ) throws FacebookException, IOException {
 		return photos_createAlbum( albumName, null /* description */, null /* location */);
 	}
 
-	/**
-	 * Adds a tag to a photo.
-	 * 
-	 * @param photoId
-	 *            The photo id of the photo to be tagged.
-	 * @param xPct
-	 *            The horizontal position of the tag, as a percentage from 0 to 100, from the left of the photo.
-	 * @param yPct
-	 *            The vertical position of the tag, as a percentage from 0 to 100, from the top of the photo.
-	 * @param taggedUserId
-	 *            The list of photos from which to extract photo tags.
-	 * @return whether the tag was successfully added.
-	 */
 	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException, IOException {
 		return photos_addTag( photoId, xPct, yPct, taggedUserId, null );
 	}
 
-	/**
-	 * Adds several tags to a photo.
-	 * 
-	 * @param photoId
-	 *            The photo id of the photo to be tagged.
-	 * @param tags
-	 *            A list of PhotoTags.
-	 * @return a list of booleans indicating whether the tag was successfully added.
-	 */
 	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException, IOException {
 		assert ( photoId > 0 );
 		assert ( null != tags && !tags.isEmpty() );
@@ -1098,19 +865,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this._isDesktop = isDesktop;
 	}
 
-	/**
-	 * Returns all visible events according to the filters specified. This may be used to find all events of a user, or to query specific eids.
-	 * 
-	 * @param eventIds
-	 *            filter by these event ID's (optional)
-	 * @param userId
-	 *            filter by this user only (optional)
-	 * @param startTime
-	 *            UTC lower bound (optional)
-	 * @param endTime
-	 *            UTC upper bound (optional)
-	 * @return T of events
-	 */
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.EVENTS_GET.numParams() );
 		boolean hasUserId = null != userId && 0 != userId;
@@ -1150,17 +904,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return buffer;
 	}
 
-	/**
-	 * Creates an album.
-	 * 
-	 * @param name
-	 *            The album name.
-	 * @param location
-	 *            The album location (optional).
-	 * @param description
-	 *            The album description (optional).
-	 * @return an array of photo objects.
-	 */
 	public T photos_createAlbum( String name, String description, String location ) throws FacebookException, IOException {
 		assert ( null != name && !"".equals( name ) );
 		ArrayList<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.PHOTOS_CREATE_ALBUM.numParams() );
@@ -1172,69 +915,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
 	}
 
-	/**
-	 * Extracts a Boolean from a result that consists of a Boolean only.
-	 * 
-	 * @param result
-	 * @return the Boolean
-	 */
-	protected boolean extractBoolean( T result ) {
-		if ( result == null ) {
-			return false;
-		}
-		return 1 == extractInt( result );
-	}
-
-	/**
-	 * Extracts an Long from a result that consists of an Long only.
-	 * 
-	 * @param result
-	 * @return the Long
-	 */
-	protected abstract int extractInt( T result );
-
-	/**
-	 * Extracts an Long from a result that consists of a Long only.
-	 * 
-	 * @param result
-	 * @return the Long
-	 */
-	protected abstract Long extractLong( T result );
-
-	/**
-	 * Retrieves album metadata for a list of album IDs.
-	 * 
-	 * @param albumIds
-	 *            the ids of albums whose metadata is to be retrieved
-	 * @return album objects
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
-	 */
 	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException, IOException {
 		return photos_getAlbums( null /* userId */, albumIds );
 	}
 
-	/**
-	 * Retrieves album metadata for albums owned by a user.
-	 * 
-	 * @param userId
-	 *            (optional) the id of the albums' owner (optional)
-	 * @return album objects
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
-	 */
 	public T photos_getAlbums( Long userId ) throws FacebookException, IOException {
 		return photos_getAlbums( userId, null /* albumIds */);
 	}
 
-	/**
-	 * Retrieves album metadata. Pass a user id and/or a list of album ids to specify the albums to be retrieved (at least one must be provided)
-	 * 
-	 * @param userId
-	 *            (optional) the id of the albums' owner (optional)
-	 * @param albumIds
-	 *            (optional) the ids of albums whose metadata is to be retrieved
-	 * @return album objects
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
-	 */
 	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException, IOException {
 		boolean hasUserId = null != userId && userId != 0;
 		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
@@ -1247,22 +935,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
-	/**
-	 * Recaches the image with the specified imageUrl.
-	 * 
-	 * @param imageUrl
-	 *            the image URL to refresh
-	 * @return boolean indicating whether the refresh succeeded
-	 */
 	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.FBML_REFRESH_IMG_SRC, newPair( "url", imageUrl.toString() ) ) );
 	}
 
-	/**
-	 * Retrieves the friends of the currently logged in user.
-	 * 
-	 * @return array of friends
-	 */
 	public T friends_get() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_GET );
 	}
@@ -1299,23 +975,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return conn.getInputStream();
 	}
 
-	/**
-	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
-	 * 
-	 * @return an authentication token
-	 */
 	public String auth_createToken() throws FacebookException, IOException {
 		T d = callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
 		return extractString( d );
 	}
-
-	/**
-	 * Extracts a String from a T consisting entirely of a String.
-	 * 
-	 * @param result
-	 * @return the String
-	 */
-	protected abstract String extractString( T result );
 
 	/**
 	 * Create a marketplace listing
@@ -2340,15 +2003,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( method, params ) );
 	}
 
-
-	/**
-	 * Retrieves the friends of the currently logged in user that are members of the friends list with ID <code>friendListId</code>.
-	 * 
-	 * @param friendListId
-	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
-	 * @return T of friends
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.get"> Developers Wiki: Friends.get</a>
-	 */
 	public T friends_get( Long friendListId ) throws FacebookException, IOException {
 		FacebookMethod method = FacebookMethod.FRIENDS_GET;
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( method.numParams() );
@@ -2361,12 +2015,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( method, params );
 	}
 
-	/**
-	 * Retrieves the friend lists of the currently logged in user.
-	 * 
-	 * @return T of friend lists
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Friends.getLists"> Developers Wiki: Friends.getLists</a>
-	 */
 	public T friends_getLists() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_GET_LISTS );
 	}
@@ -2731,9 +2379,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractLong( callMethod( FacebookMethod.FEED_REGISTER_TEMPLATE, params ) );
 	}
 
-	/**
-	 * @deprecated
-	 */
 	@Deprecated
 	public Long feed_registerTemplateBundle( String template, String shortTemplate, String longTemplate ) throws FacebookException, IOException {
 		List<String> templates = new ArrayList<String>();
@@ -3111,5 +2756,50 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public static String toString( CharSequence cs ) {
 		return cs == null ? null : cs.toString();
 	}
+
+	/**
+	 * Extracts a Boolean from a result that consists of a Boolean only.
+	 * 
+	 * @param result
+	 * @return the Boolean
+	 */
+	protected boolean extractBoolean( T result ) {
+		if ( result == null ) {
+			return false;
+		}
+		return 1 == extractInt( result );
+	}
+
+	/**
+	 * Extracts an Long from a result that consists of an Long only.
+	 * 
+	 * @param result
+	 * @return the Long
+	 */
+	protected abstract int extractInt( T result );
+
+	/**
+	 * Extracts an Long from a result that consists of a Long only.
+	 * 
+	 * @param result
+	 * @return the Long
+	 */
+	protected abstract Long extractLong( T result );
+
+	/**
+	 * Extracts a URL from a result that consists of a URL only.
+	 * 
+	 * @param result
+	 * @return the URL
+	 */
+	protected abstract URL extractURL( T result ) throws IOException;
+
+	/**
+	 * Extracts a String from a T consisting entirely of a String.
+	 * 
+	 * @param result
+	 * @return the String
+	 */
+	protected abstract String extractString( T result );
 
 }
