@@ -136,13 +136,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
 
-	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
-	@Deprecated
-	protected static boolean DEBUG = false;
-	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
-	@Deprecated
-	protected Boolean _debug = null;
-
 	protected File _uploadFile = null;
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
@@ -243,12 +236,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	public void setSessionSecret( String key ) {
 		cacheSessionSecret = key;
-	}
-
-	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
-	@Deprecated
-	public static void setDebugAll( boolean isDebug ) {
-		DEBUG = isDebug;
 	}
 
 	private static CharSequence delimit( Iterable iterable ) {
@@ -966,15 +953,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	/**
-	 * @return whether debugging is activated
-	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
-	 */
-	@Deprecated
-	public boolean isDebug() {
-		return ( null == _debug ) ? DEBUG : _debug.booleanValue();
-	}
-
-	/**
 	 * @deprecated
 	 */
 	@Deprecated
@@ -1192,12 +1170,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( null != location )
 			params.add( newPair( "location", location ) );
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
-	}
-
-	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
-	@Deprecated
-	public void setDebug( boolean isDebug ) {
-		_debug = isDebug;
 	}
 
 	/**
@@ -2583,7 +2555,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		params.add( newPair( "listing_attrs", attributes ) );
 		params.add( newPair( "uid", listingId ) );
-		return marketplace_createListing( FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params );
+		return extractLong( callMethod( FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params ) );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException, IOException {
@@ -2609,7 +2581,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "listing_id", listingId ) );
 		params.add( newPair( "status", status.getName() ) );
 		params.add( newPair( "uid", userId ) );
-		return marketplace_removeListing( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params );
+		return extractBoolean( callMethod( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params ) );
 	}
 
 	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException, IOException {
@@ -2627,7 +2599,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "y", yPct.toString() ) );
 		params.add( newPair( "pid", photoId ) );
 		params.add( newPair( "owner_uid", userId ) );
-		return photos_addTag( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params );
+		return extractBoolean( callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params ) );
 	}
 
 	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
@@ -2653,7 +2625,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "location", location ) );
 		}
 		params.add( newPair( "uid", userId ) );
-		return photos_createAlbum( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
+		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
 	}
 
 	public T photos_upload( Long userId, File photo ) throws FacebookException, IOException {
@@ -2679,7 +2651,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "caption", caption ) );
 		}
 		params.add( newPair( "uid", userId ) );
-		return photos_upload( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
+		return callMethod( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
 	}
 
 	@Deprecated
@@ -2707,7 +2679,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "status_includes_verb", "true" ) );
 		}
 		params.add( newPair( "uid", userId ) );
-		return users_setStatus( FacebookMethod.USERS_SET_STATUS_NOSESSION, params );
+		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS_NOSESSION, params ) );
 	}
 
 	public T feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException, IOException {
@@ -2872,35 +2844,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, newPair( "pid", photoId.toString() ), newPair( "tags", tagStr ), newPair( "uid", Long
 				.toString( userId ) ) );
 	}
-
-	private Long marketplace_createListing( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return extractLong( callMethod( method, params ) );
-	}
-
-	private boolean marketplace_removeListing( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( method, params ) );
-	}
-
-	private boolean photos_addTag( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		T d = callMethod( method, params );
-		return extractBoolean( d );
-	}
-
-	private T photos_createAlbum( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return callMethod( method, params );
-	}
-
-	private T photos_upload( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return callMethod( method, params );
-	}
-
-	private boolean users_setStatus( IFacebookMethod method, Collection<Pair<String,CharSequence>> params ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( method, params ) );
-	}
-
-
-
-
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException {
 		return profile_setFBML( null, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), null, null );

@@ -208,9 +208,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 * number of params that the client automatically appends to every API call
 	 */
 	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
-	/** @deprecated DEBUG flags will be removed, logging controlled via commons-logging now */
-	@Deprecated
-	protected Boolean _debug = null;
 
 	protected File _uploadFile = null;
 	protected static final String CRLF = "\r\n";
@@ -552,41 +549,6 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	 */
 	public String getResponseFormat() {
 		return "xml";
-	}
-
-	/**
-	 * Set global debugging on.
-	 * 
-	 * @param isDebug
-	 *            true to enable debugging false to disable debugging
-	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
-	 */
-	@Deprecated
-	public static void setDebugAll( boolean isDebug ) {
-		ExtensibleClient.DEBUG = isDebug;
-	}
-
-	/**
-	 * Set debugging on for this instance only.
-	 * 
-	 * @param isDebug
-	 *            true to enable debugging false to disable debugging
-	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
-	 */
-	@Deprecated
-	public void setDebug( boolean isDebug ) {
-		_debug = isDebug;
-	}
-
-	/**
-	 * Check to see if debug mode is enabled.
-	 * 
-	 * @return true if debugging is enabled false otherwise
-	 * @deprecated DEBUG flags will be removed, logging controlled via commons-logging now
-	 */
-	@Deprecated
-	public boolean isDebug() {
-		return ( null == _debug ) ? ExtensibleClient.DEBUG : _debug.booleanValue();
 	}
 
 	/**
