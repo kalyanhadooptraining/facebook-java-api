@@ -109,7 +109,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	/**
 	 * Facebook API server, part 1
 	 */
-	public static final String FB_SERVER = "api.facebook.com/restserver.php";
+	public static final String FB_SERVER = "api.new.facebook.com/restserver.php";
 	/**
 	 * Facebook API server, part 2a
 	 */
