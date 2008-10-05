@@ -1,5 +1,12 @@
 #summary This page contains example code of how to use the newer features of the client.
 
+
+=== PROBABLY DEPRECATED ===
+
+Heads up.  Most of these examples were created against the 1.8.0 version of the library.  But the current latest version is 2.0.x.  So there is no guarantee that these examples will work perfectly.
+
+
+
 === Sample Code ===
 
 
