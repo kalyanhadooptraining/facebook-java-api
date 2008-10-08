@@ -3082,13 +3082,15 @@ public interface IFacebookRestClient<T> {
 	 *            the ids of individuals that are the target of this action.
 	 * @param bodyGeneral
 	 *            additional markup to include in the feed story.
+     * @param storySize
+	 *            story size to use.  valid values are 1, 2 or 4. 
 	 * 
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral, int storySize )
 			throws FacebookException, IOException;
 
 }

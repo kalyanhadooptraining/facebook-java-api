@@ -3739,7 +3739,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException,
 			IOException {
-		return this.feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral );
+		return this.feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral, 0 );
 	}
 
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException, IOException {
@@ -3992,7 +3992,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 	/**
 	 * @see http://wiki.developers.facebook.com/index.php/Feed.publishUserAction
 	 */
-	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral )
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral, int storySize )
 			throws FacebookException, IOException {
 
 		// validate maximum of 4 images
