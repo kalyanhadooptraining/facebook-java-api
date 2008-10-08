@@ -797,7 +797,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			out.flush();
 			out.close();
 
-			InputStream is = con.getInputStream();
+            if (bufin != null) {
+                bufin.close();
+            }
+
+            InputStream is = con.getInputStream();
 			return is;
 		}
 		catch ( Exception e ) {
