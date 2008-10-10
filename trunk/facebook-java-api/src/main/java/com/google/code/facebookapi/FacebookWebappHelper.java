@@ -398,7 +398,7 @@ public class FacebookWebappHelper<T> {
 		catch ( UnsupportedEncodingException e ) {
 			throw new RuntimeException( e );
 		}
-		url += canvas ? "&canvas" : "";
+		url += canvas ? "&canvas=true" : "";
 		return url;
 	}
 
