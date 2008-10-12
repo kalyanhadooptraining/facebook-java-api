@@ -78,21 +78,21 @@
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>mrepo-happyfern</id>
-      <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
+      <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
       <!--
-	  "com.facebook.api","mrepo@wrangler.dreamhost.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
+	  "com.facebook.api","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
 	-->
     </repository>
     <snapshotRepository>
       <uniqueVersion>true</uniqueVersion>
       <id>mrepo-happyfern-snapshot</id>
-      <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
+      <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
     </snapshotRepository>
     <!--
 	<site>
 	  <id>mrepo-happyfern-sites-facebookjavaapi</id>
 	  <name>Mojo Website</name>
-	  <url>sftp://wrangler.dreamhost.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
+	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
 	</site>
 	-->
   </distributionManagement>
