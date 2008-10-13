@@ -796,13 +796,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 			out.flush();
 			out.close();
+			bufin.close();
 
-            if (bufin != null) {
-                bufin.close();
-            }
-
-            InputStream is = con.getInputStream();
-			return is;
+			return con.getInputStream();
 		}
 		catch ( Exception e ) {
 			log.error( "Exception: " + e.getMessage(), e );
@@ -2631,8 +2627,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	}
 
-	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral, int storySize  )
-			throws FacebookException, IOException {
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
+			int storySize ) throws FacebookException, IOException {
 
 		// validate maximum of 4 images
 		if ( images != null && images.size() > 4 ) {
@@ -2650,11 +2646,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( new Pair<String,CharSequence>( "body_general", bodyGeneral ) );
 		}
 
-        if ( storySize == 1 || storySize == 2 || storySize == 4) {
-            params.add( new Pair<String,CharSequence>( "story_size", Integer.toString(storySize) ) );
-        }
+		if ( storySize == 1 || storySize == 2 || storySize == 4 ) {
+			params.add( new Pair<String,CharSequence>( "story_size", Integer.toString( storySize ) ) );
+		}
 
-        JSONObject jsonTemplateData = new JSONObject();
+		JSONObject jsonTemplateData = new JSONObject();
 		if ( templateData != null && !templateData.isEmpty() ) {
 			for ( String key : templateData.keySet() ) {
 				try {
