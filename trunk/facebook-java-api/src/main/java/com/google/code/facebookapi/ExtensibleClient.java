@@ -995,6 +995,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @see MarketplaceListing
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
 	 */
+	@Deprecated
 	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException {
 		T result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
 				"listing_attrs", attrs.jsonify().toString() ) );
@@ -1014,6 +1015,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @see MarketplaceListing
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
 	 */
+	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException {
 		T result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId
 				.toString() ), newPair( "listing_attrs", attrs.jsonify().toString() ) );
@@ -1042,6 +1044,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return boolean indicating whether the listing was removed
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
 	 */
+	@Deprecated
 	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException, IOException {
 		assert MARKETPLACE_STATUS_DEFAULT.equals( status ) || MARKETPLACE_STATUS_SUCCESS.equals( status ) || MARKETPLACE_STATUS_NOT_SUCCESS.equals( status ) : "Invalid status: "
 				+ status;
@@ -1055,6 +1058,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return a T listing the marketplace categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
 	 */
+	@Deprecated
 	public List<String> marketplace_getCategories() throws FacebookException, IOException {
 		T temp = callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
 		if ( temp == null ) {
@@ -1128,6 +1132,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return a T of marketplace listings
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
 	 */
+	@Deprecated
 	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( FacebookMethod.MARKETPLACE_SEARCH.numParams() );
 		boolean hasCategory = addParamIfNotBlank( "category", category, params );
