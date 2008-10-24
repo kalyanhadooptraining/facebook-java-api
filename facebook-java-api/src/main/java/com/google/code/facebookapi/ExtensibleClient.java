@@ -2579,7 +2579,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		params.add( newPair( "uid", recipient ) );
+		params.add( newPair( "recipient", recipient ) );
 		params.add( newPair( "event_name", eventName ) );
 		params.add( newPair( "message", message.toString() ) );
 		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, params ) );
