@@ -3964,7 +3964,7 @@ public class FacebookRestClient implements IFacebookRestClient<Document> {
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( new Pair<String,CharSequence>( "uid", Long.toString( recipient ) ) );
+		params.add( new Pair<String,CharSequence>( "recipient", Long.toString( recipient ) ) );
 		params.add( new Pair<String,CharSequence>( "event_name", eventName ) );
 		params.add( new Pair<String,CharSequence>( "message", message.toString() ) );
 		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, params ) );
