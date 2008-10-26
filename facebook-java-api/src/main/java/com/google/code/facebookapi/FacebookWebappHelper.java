@@ -303,6 +303,7 @@ public class FacebookWebappHelper<T> {
 		return fbParams.containsKey( FacebookParam.IN_CANVAS.getSignatureName() );
 	}
 
+	@Deprecated
 	public boolean isAdded() {
 		return "1".equals( fbParams.get( FacebookParam.ADDED.getSignatureName() ) );
 	}
