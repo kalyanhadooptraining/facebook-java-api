@@ -413,6 +413,7 @@
     <xsd:element name="link" type="xsd:string" />
     <xsd:element name="caption" type="xsd:string" />
     <xsd:element name="created" type="time" />
+    <xsd:element name="story_fbid" type="id" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -859,25 +860,9 @@
     <xsd:element name="company_name" type="xsd:string" />
     <xsd:element name="description" type="xsd:string" />
     <xsd:element name="daily_active_users" type="xsd:int" />
-    <xsd:element name="daily_active_percentage" type="xsd:int" />
+    <xsd:element name="weekly_active_users" type="xsd:int" />
+    <xsd:element name="monthly_active_users" type="xsd:int" />
   </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="daily_metrics">
-  <xsd:all>
-    <xsd:element name="date" type="time" minOccurs="0" />
-    <xsd:element name="daily_active_users" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_adds" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_removes" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_blocks" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_unblocks" type="xsd:int" minOccurs="0" />
-    <xsd:element name="api_calls" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_api_calls" type="xsd:int" minOccurs="0" />
-    <xsd:element name="canvas_page_views" type="xsd:int" minOccurs="0" />
-    <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
-    <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
-    <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
-  </xsd:all>
 </xsd:complexType>
 
 <xsd:complexType name="metrics">
@@ -897,7 +882,6 @@
   <xsd:sequence>
     <xsd:element name="template_title" type="xsd:string" />
     <xsd:element name="template_body" type="xsd:string" />
-    <xsd:element name="preferred_layout" type="xsd:short" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -905,6 +889,13 @@
   <xsd:sequence>
     <xsd:element name="template_title" type="xsd:string" />
     <xsd:element name="template_body" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="action_link">
+  <xsd:sequence>
+    <xsd:element name="text" type="xsd:string" />
+    <xsd:element name="href" type="xsd:string" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -927,6 +918,14 @@
       </xsd:complexType>
     </xsd:element>
     <xsd:element name="full_story_template" type="full_story_template" />
+    <xsd:element name="action_links">
+      <xsd:complexType>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="action_link" type="action_link" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="list" type="xsd:boolean" />
+      </xsd:complexType>
+    </xsd:element>
     <xsd:element name="time_created" type="time" />
     <xsd:element name="template_bundle_id" type="tbid" />
   </xsd:sequence>
@@ -1013,6 +1012,14 @@
 
 <xsd:element name="events_getMembers_response" type="event_members" />
 
+<xsd:element name="events_rsvp_response" type="xsd:boolean" />
+
+<xsd:element name="events_create_response" type="eid" />
+
+<xsd:element name="events_edit_response" type="xsd:boolean" />
+
+<xsd:element name="events_cancel_response" type="xsd:boolean" />
+
 <xsd:element name="fbml_setRefHandle_response" type="xsd:boolean" />
 
 <xsd:element name="fbml_refreshRefUrl_response" type="xsd:boolean" />
@@ -1020,6 +1027,10 @@
 <xsd:element name="fbml_refreshImgSrc_response" type="xsd:boolean" />
 
 <xsd:element name="fbml_uploadNativeStrings_response" type="xsd:boolean" />
+
+<xsd:element name="feed_publishStoryToUser_response" type="xsd:boolean" />
+
+<xsd:element name="feed_publishActionOfUser_response" type="xsd:boolean" />
 
 <xsd:element name="friends_areFriends_response">
   <xsd:complexType>
@@ -1109,6 +1120,21 @@
 <xsd:element name="permissions_grantApiAccess_response" type="xsd:boolean" />
 
 <xsd:element name="permissions_revokeApiAccess_response" type="xsd:boolean" />
+
+<xsd:element name="fbpayments_setProperties_response" type="xsd:boolean" />
+
+<xsd:element name="fbpayments_getOrderDetails_response" type="xsd:string" />
+
+<xsd:element name="fbpayments_updateOrder_response" type="xsd:boolean" />
+
+<xsd:element name="fbpayments_getOrders_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="fbpayments_getOrders_response_elt" type="xsd:long" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
 
 <xsd:element name="marketplace_getCategories_response">
   <xsd:complexType>
@@ -1237,6 +1263,8 @@
   </xsd:complexType>
 </xsd:element>
 
+<xsd:element name="users_isAppUser_response" type="xsd:boolean" />
+
 <xsd:element name="users_isAppAdded_response" type="xsd:boolean" />
 
 <xsd:element name="users_hasAppPermission_response" type="xsd:boolean" />
@@ -1313,11 +1341,25 @@
 
 <xsd:element name="data_deleteObjects_response" type="xsd:boolean" />
 
+<xsd:element name="data_getObject_response" type="container" />
+
 <xsd:element name="data_getObjects_response">
   <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="data_getObjects_response_elt" type="container" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
 </xsd:element>
+
+<xsd:complexType name="container">
+  <xsd:sequence>
+    <xsd:element name="name" type="xsd:string" />
+    <xsd:element name="assoc_type" type="xsd:int" />
+    <xsd:element name="assoc_info1" type="assoc_object_type" />
+    <xsd:element name="assoc_info2" type="assoc_object_type" />
+  </xsd:sequence>
+</xsd:complexType>
 
 <xsd:element name="data_getObjectProperty_response" type="xsd:string" />
 
@@ -1404,15 +1446,6 @@
   </xsd:complexType>
 </xsd:element>
 
-<xsd:element name="admin_getDailyMetrics_response">
-  <xsd:complexType>
-    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="daily_metrics" type="daily_metrics" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="list" type="xsd:boolean" />
-  </xsd:complexType>
-</xsd:element>
-
 <xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
 
 <xsd:element name="feed_getRegisteredTemplateBundles_response">
@@ -1439,9 +1472,9 @@
   </xsd:complexType>
 </xsd:element>
 
-<xsd:element name="admin_setTargetingInfo_response" type="xsd:boolean" />
+<xsd:element name="admin_setRestrictionInfo_response" type="xsd:boolean" />
 
-<xsd:element name="admin_getTargetingInfo_response" type="xsd:string" />
+<xsd:element name="admin_getRestrictionInfo_response" type="xsd:string" />
 
 <xsd:element name="error_response" type="FacebookApiException" />
 
