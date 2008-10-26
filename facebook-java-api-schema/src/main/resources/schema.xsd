@@ -1346,7 +1346,7 @@
 <xsd:element name="data_getObjects_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="data_getObjects_response_elt" type="container" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="container" type="container" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
@@ -1462,6 +1462,8 @@
 <xsd:element name="feed_deactivateTemplateBundleByID_response" type="xsd:boolean" />
 
 <xsd:element name="feed_publishUserAction_response" type="xsd:boolean" />
+
+<xsd:element name="feed_publishTemplatizedAction_response" type="xsd:boolean" />
 
 <xsd:element name="admin_getMetrics_response">
   <xsd:complexType>
