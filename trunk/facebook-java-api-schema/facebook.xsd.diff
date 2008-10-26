@@ -1,0 +1,27 @@
+--- facebook.xsd	2008-10-19 18:06:01.000000000 -0700
++++ src/main/resources/schema.xsd	2008-10-26 15:35:28.000000000 -0700
+@@ -28,7 +28,7 @@
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="uid">
+-  <xsd:restriction base="xsd:int" />
++  <xsd:restriction base="xsd:long" />
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="flid">
+@@ -1352,6 +1352,15 @@
+   </xsd:complexType>
+ </xsd:element>
+ 
++<xsd:complexType name="container">
++  <xsd:sequence>
++    <xsd:element name="name" type="xsd:string" />
++    <xsd:element name="assoc_type" type="xsd:int" />
++    <xsd:element name="assoc_info1" type="assoc_object_type" />
++    <xsd:element name="assoc_info2" type="assoc_object_type" />
++  </xsd:sequence>
++</xsd:complexType>
++
+ <xsd:element name="data_getObjectProperty_response" type="xsd:string" />
+ 
+ <xsd:element name="data_setObjectProperty_response" type="xsd:boolean" />
