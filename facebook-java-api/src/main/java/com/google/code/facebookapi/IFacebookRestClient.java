@@ -80,9 +80,16 @@ public interface IFacebookRestClient<T> {
 
 	public void setCacheFriendsList( List<Long> friendIds );
 
+	@Deprecated
 	public Boolean getCacheAppAdded();
 
+	@Deprecated
 	public void setCacheAppAdded( Boolean appAdded );
+
+	@Deprecated
+	public Boolean getCacheAppUser();
+
+	public void setCacheAppUser( Boolean appUser );
 
 	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires );
 

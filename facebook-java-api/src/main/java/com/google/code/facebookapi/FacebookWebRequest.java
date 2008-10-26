@@ -25,7 +25,9 @@ public class FacebookWebRequest<T> {
 	private Long userId;
 	private Long sessionExpires;
 
+	@Deprecated
 	private boolean appAdded;
+	private boolean appUser;
 	private boolean inCanvas;
 	private boolean inIframe;
 	private boolean inNewFacebook;
@@ -90,6 +92,11 @@ public class FacebookWebRequest<T> {
 				apiClient.setCacheAppAdded( appAdded );
 			}
 			{
+				// caching of the "added" value
+				appUser = getFbParamBoolean( FacebookParam.ADDED );
+				apiClient.setCacheAppUser( appUser );
+			}
+			{
 				// other values from the request;
 				inCanvas = getFbParamBoolean( FacebookParam.IN_CANVAS );
 				inIframe = getFbParamBoolean( FacebookParam.IN_IFRAME ) || !inCanvas;
@@ -135,8 +142,13 @@ public class FacebookWebRequest<T> {
 		return apiKey;
 	}
 
+	@Deprecated
 	public boolean isAppAdded() {
 		return appAdded;
+	}
+
+	public boolean isAppUser() {
+		return appUser;
 	}
 
 	public Map<String,String> getFbParams() {
