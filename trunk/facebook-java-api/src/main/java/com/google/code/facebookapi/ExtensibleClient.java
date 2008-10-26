@@ -2606,7 +2606,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		if ( metrics != null ) {
-			metrics.remove( Metric.DAILY_ACTIVE_USERS );
 			if ( !metrics.isEmpty() ) {
 				JSONArray metricsJson = new JSONArray();
 				for ( Metric metric : metrics ) {
