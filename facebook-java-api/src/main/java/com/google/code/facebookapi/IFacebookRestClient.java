@@ -513,11 +513,11 @@ public interface IFacebookRestClient<T> {
 	public T friends_get() throws FacebookException, IOException;
 
 	/**
-	 * Retrieves the friend lists of the currently logged in user.
+	 * Retrieves the friends uid.
 	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
-	public T friends_getLists() throws FacebookException, IOException;
+	public T friends_get( Long uid ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user that are members of the friends list with ID <code>friendListId</code>.
@@ -526,7 +526,14 @@ public interface IFacebookRestClient<T> {
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
-	public T friends_get( Long friendListId ) throws FacebookException, IOException;
+	public T friends_getList( Long friendListId ) throws FacebookException, IOException;
+
+	/**
+	 * Retrieves the friend lists of the currently logged in user.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
+	 */
+	public T friends_getLists() throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user, who are also users of the calling application.
@@ -3089,15 +3096,15 @@ public interface IFacebookRestClient<T> {
 	 *            the ids of individuals that are the target of this action.
 	 * @param bodyGeneral
 	 *            additional markup to include in the feed story.
-     * @param storySize
-	 *            story size to use.  valid values are 1, 2 or 4. 
+	 * @param storySize
+	 *            story size to use. valid values are 1, 2 or 4.
 	 * 
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral, int storySize )
-			throws FacebookException, IOException;
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
+			int storySize ) throws FacebookException, IOException;
 
 }

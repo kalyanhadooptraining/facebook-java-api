@@ -46,21 +46,9 @@ public interface IFacebookMethod {
 	public String methodName();
 
 	/**
-	 * Number of method-specific parameters (i.e. excluding universally required parameters such as api_key and sig)
-	 * 
-	 * @return the number of parameters expected
+	 * @return whether the method requires that no sessionKey is added to call
 	 */
-	public int numParams();
-
-	/**
-	 * @return whether the method requires an active session to be established
-	 */
-	public boolean requiresSession();
-
-	/**
-	 * @return the total number of parameters this method accepts, including required parameters
-	 */
-	public int numTotalParams();
+	public boolean requiresNoSession();
 
 	/**
 	 * @return whether the method expects a file to be posted
