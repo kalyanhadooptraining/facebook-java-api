@@ -266,7 +266,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
+		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
 		try {
 			this.cacheSessionKey = d.getString( "session_key" );
 			this.cacheUserId = d.getLong( "uid" );
@@ -537,7 +537,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
+		callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
 		return this.rawResponse;
 	}
 

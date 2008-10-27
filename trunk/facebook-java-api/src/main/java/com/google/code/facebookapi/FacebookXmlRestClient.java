@@ -179,7 +179,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException, IOException {
-		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, new Pair<String,CharSequence>( "auth_token", authToken.toString() ) );
+		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
@@ -329,7 +329,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		Document d = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, new Pair<String,CharSequence>( "properties", props.toString() ) );
+		Document d = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
 		return extractString( d );
 	}
 
