@@ -2613,14 +2613,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		if ( metrics != null ) {
-			if ( !metrics.isEmpty() ) {
-				JSONArray metricsJson = new JSONArray();
-				for ( Metric metric : metrics ) {
-					metricsJson.put( metric.getName() );
-				}
-				params.add( newPair( "metrics", metricsJson ) );
+		if ( metrics != null && !metrics.isEmpty() ) {
+			JSONArray metricsJson = new JSONArray();
+			for ( Metric metric : metrics ) {
+				metricsJson.put( metric.getName() );
 			}
+			params.add( newPair( "metrics", metricsJson ) );
 		}
 		params.add( newPair( "start_time", ( start / 1000 ) ) );
 		params.add( newPair( "end_time", ( end / 1000 ) ) );
