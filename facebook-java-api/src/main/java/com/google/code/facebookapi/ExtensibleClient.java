@@ -465,15 +465,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-
 		boolean hasUserId = null != subjId && 0 != subjId;
 		boolean hasAlbumId = null != albumId && 0 != albumId;
 		boolean hasPhotoIds = null != photoIds && !photoIds.isEmpty();
 		if ( !hasUserId && !hasAlbumId && !hasPhotoIds ) {
 			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
 		}
-
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
 		if ( hasUserId ) {
 			params.add( newPair( "subj_id", subjId ) );
 		}
@@ -483,7 +481,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( hasPhotoIds ) {
 			params.add( newPair( "pids", delimit( photoIds ) ) );
 		}
-
 		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
@@ -885,20 +882,16 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		boolean hasUserId = null != userId && 0 != userId;
-		boolean hasEventIds = null != eventIds && !eventIds.isEmpty();
-		boolean hasStart = null != startTime && 0 != startTime;
-		boolean hasEnd = null != endTime && 0 != endTime;
-		if ( hasUserId ) {
+		if ( null != userId && 0 != userId ) {
 			params.add( newPair( "uid", userId ) );
 		}
-		if ( hasEventIds ) {
+		if ( null != eventIds && !eventIds.isEmpty() ) {
 			params.add( newPair( "eids", delimit( eventIds ) ) );
 		}
-		if ( hasStart ) {
+		if ( null != startTime && 0 != startTime ) {
 			params.add( newPair( "start_time", startTime ) );
 		}
-		if ( hasEnd ) {
+		if ( null != endTime && 0 != endTime ) {
 			params.add( newPair( "end_time", endTime ) );
 		}
 		return callMethod( FacebookMethod.EVENTS_GET, params );
@@ -1763,12 +1756,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T data_getCookies( Long userId, CharSequence name ) throws FacebookException, IOException {
-		ArrayList<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>();
-		args.add( newPair( "uid", userId ) );
-		if ( ( name != null ) && ( !"".equals( name ) ) ) {
-			args.add( newPair( "name", name ) );
+		if ( name == null ) {
+			return callMethod( FacebookMethod.DATA_GET_COOKIES, newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.DATA_GET_COOKIES, newPair( "uid", userId ), newPair( "name", name ) );
 		}
-		return callMethod( FacebookMethod.DATA_GET_COOKIES, args );
 	}
 
 	public boolean data_setCookie( String name, String value ) throws FacebookException, IOException {
@@ -2034,14 +2026,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T friends_getList( Long friendListId ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 1 );
-		if ( null != friendListId ) {
-			if ( 0L >= friendListId ) {
-				throw new IllegalArgumentException( "given invalid friendListId " + friendListId );
-			}
-			params.add( newPair( "flid", friendListId ) );
+		if ( null != friendListId && 0L <= friendListId ) {
+			throw new IllegalArgumentException( "given invalid friendListId " + friendListId );
 		}
-		return callMethod( FacebookMethod.FRIENDS_GET, params );
+		return callMethod( FacebookMethod.FRIENDS_GET, newPair( "flid", friendListId ) );
 	}
 
 	public T friends_getLists() throws FacebookException, IOException {
@@ -2099,27 +2087,26 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T batch_run( String methods, boolean serial ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( newPair( "method_feed", methods ) );
-		if ( serial ) {
-			params.add( newPair( "serial_only", "1" ) );
+		if ( !serial ) {
+			return callMethod( FacebookMethod.BATCH_RUN, newPair( "method_feed", methods ) );
+		} else {
+			return callMethod( FacebookMethod.BATCH_RUN, newPair( "method_feed", methods ), newPair( "serial_only", "1" ) );
 		}
-		return callMethod( FacebookMethod.BATCH_RUN, params );
 	}
 
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		Pair<String,CharSequence> pair = null;
 		if ( ( applicationId != null ) && ( applicationId > 0 ) ) {
-			params.add( newPair( "application_id", applicationId ) );
+			pair = newPair( "application_id", applicationId );
 		} else if ( ( applicationKey != null ) && ( !"".equals( applicationKey ) ) ) {
-			params.add( newPair( "application_api_key", applicationKey ) );
+			pair = newPair( "application_api_key", applicationKey );
 		} else if ( ( applicationCanvas != null ) && ( !"".equals( applicationCanvas ) ) ) {
-			params.add( newPair( "application_canvas_name", applicationCanvas ) );
+			pair = newPair( "application_canvas_name", applicationCanvas );
 		} else {
 			// we need at least one of them to be valid
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least on of {applicationId, applicationKey, applicationCanvas}" );
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You must specify at least/most one of {applicationId, applicationKey, applicationCanvas}" );
 		}
-		return callMethod( FacebookMethod.APPLICATION_GET_PUBLIC_INFO, params );
+		return callMethod( FacebookMethod.APPLICATION_GET_PUBLIC_INFO, pair );
 	}
 
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException, IOException {
@@ -2254,11 +2241,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( listingId == null ) {
 			return false;
 		}
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		params.add( newPair( "listing_id", listingId ) );
-		params.add( newPair( "status", status.getName() ) );
-		params.add( newPair( "uid", userId ) );
-		return extractBoolean( callMethod( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, params ) );
+		return extractBoolean( callMethod( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, newPair( "listing_id", listingId ), newPair( "status", status.getName() ),
+				newPair( "uid", userId ) ) );
 	}
 
 	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException, IOException {
@@ -2482,8 +2466,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
-		addParam( "field", field.getFieldName(), params );
 		JSONArray json = new JSONArray();
 		for ( ProfileFieldItem item : field.getItems() ) {
 			JSONObject itemJSON = new JSONObject();
@@ -2497,6 +2479,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			json.put( itemJSON );
 		}
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
+		addParam( "field", field.getFieldName(), params );
 		addParam( "options", json.toString(), params );
 		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
 	}
@@ -2601,11 +2585,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		params.add( newPair( "recipient", recipient ) );
-		params.add( newPair( "event_name", eventName ) );
-		params.add( newPair( "message", message ) );
-		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, params ) );
+		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, newPair( "recipient", recipient ), newPair( "event_name", eventName ), newPair( "message",
+				message ) ) );
 	}
 
 	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException, IOException {
@@ -2628,9 +2609,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException {
-		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( newPair( "template_bundle_id", bundleId ) );
-		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, params ) );
+		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, newPair( "template_bundle_id", bundleId ) ) );
 	}
 
 	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException, IOException {
