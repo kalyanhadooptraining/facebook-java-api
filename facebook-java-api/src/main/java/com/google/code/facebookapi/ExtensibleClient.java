@@ -2638,12 +2638,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( null == notification || "".equals( notification ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
 		}
-		Pair<String,CharSequence> type = new Pair<String,CharSequence>( "type", isAppToUser ? "app_to_user" : "user_to_user" );
+		Pair<String,CharSequence> type = newPair( "type", isAppToUser ? "app_to_user" : "user_to_user" );
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "to_ids", delimit( recipientIds ) ), new Pair<String,CharSequence>(
-					"notification", notification ), type );
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "to_ids", delimit( recipientIds ) ), newPair( "notification", notification ), type );
 		} else {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, new Pair<String,CharSequence>( "notification", notification ), type );
+			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ), type );
 		}
 
 	}
@@ -2726,7 +2725,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @param prefix
 	 *            string to append to output, should not be null
 	 */
-	public static void printDom( Node n, String prefix, StringBuilder sb ) {
+	protected static void printDom( Node n, String prefix, StringBuilder sb ) {
 		String outString = prefix;
 		if ( n.getNodeType() == Node.TEXT_NODE ) {
 			outString += "'" + n.getTextContent().trim() + "'";
@@ -2742,40 +2741,40 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
-	private static Pair<String,CharSequence> newPair( String name, Object value ) {
+	protected static Pair<String,CharSequence> newPair( String name, Object value ) {
 		return new Pair<String,CharSequence>( name, String.valueOf( value ) );
 	}
 
-	private static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
+	protected static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
 		return new Pair<String,CharSequence>( name, value );
 	}
 
-	private static Pair<String,CharSequence> newPair( String name, Long value ) {
+	protected static Pair<String,CharSequence> newPair( String name, Long value ) {
 		return new Pair<String,CharSequence>( name, Long.toString( value ) );
 	}
 
-	private static Pair<String,CharSequence> newPair( String name, Integer value ) {
+	protected static Pair<String,CharSequence> newPair( String name, Integer value ) {
 		return new Pair<String,CharSequence>( name, Integer.toString( value ) );
 	}
 
-	public static boolean addParam( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
+	protected static boolean addParam( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
 		params.add( newPair( name, value ) );
 		return true;
 	}
 
-	public static boolean addParamIfNotBlank( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
+	protected static boolean addParamIfNotBlank( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
 		if ( value != null ) {
 			return addParam( name, value, params );
 		}
 		return false;
 	}
 
-	public static boolean addParam( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
+	protected static boolean addParam( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
 		params.add( newPair( name, value ) );
 		return true;
 	}
 
-	public static boolean addParamIfNotBlank( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
+	protected static boolean addParamIfNotBlank( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
 		if ( ( value != null ) && ( !"".equals( value ) ) ) {
 			params.add( newPair( name, value ) );
 			return true;
@@ -2783,7 +2782,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return false;
 	}
 
-	public static String toString( CharSequence cs ) {
+	protected static String toString( CharSequence cs ) {
 		return cs == null ? null : cs.toString();
 	}
 
