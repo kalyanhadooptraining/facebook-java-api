@@ -129,13 +129,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	protected String permissionsApiKey = null;
 
 
-	/**
-	 * The number of parameters required for every request.
-	 * 
-	 * @see #callMethod(IFacebookMethod,Collection)
-	 */
-	public static final int NUM_AUTOAPPENDED_PARAMS = 6;
-
 	protected File _uploadFile = null;
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
@@ -774,9 +767,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 */
 	protected InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode ) throws IOException {
 		assert ( null != _uploadFile );
+		BufferedInputStream fileStream = new BufferedInputStream( new FileInputStream( _uploadFile ) );
 		try {
-			BufferedInputStream bufin = new BufferedInputStream( new FileInputStream( _uploadFile ) );
+			String fileName = _uploadFile.getName();
+			return postFileRequest( methodName, params, doEncode, fileName, fileStream );
+		}
+		finally {
+			fileStream.close();
+		}
+	}
 
+	protected InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode, String fileName, InputStream fileStream ) throws IOException {
+		try {
 			String boundary = Long.toString( System.currentTimeMillis(), 16 );
 			URLConnection con = _serverUrl.openConnection();
 			con.setDoInput( true );
@@ -796,7 +798,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 
 			out.writeBytes( PREF + boundary + CRLF );
-			out.writeBytes( "Content-disposition: form-data; filename=\"" + _uploadFile.getName() + "\"" + CRLF );
+			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
 			out.writeBytes( "Content-Type: image/jpeg" + CRLF );
 			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
 
@@ -805,7 +807,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			byte b[] = new byte[UPLOAD_BUFFER_SIZE];
 			int byteCounter = 0;
 			int i;
-			while ( -1 != ( i = bufin.read( b ) ) ) {
+			while ( -1 != ( i = fileStream.read( b ) ) ) {
 				byteCounter += i;
 				out.write( b, 0, i );
 			}
@@ -813,7 +815,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 			out.flush();
 			out.close();
-			bufin.close();
 
 			return con.getInputStream();
 		}
