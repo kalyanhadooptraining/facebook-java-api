@@ -190,7 +190,6 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	PERM_GRANT_API_ACCESS("facebook.permissions.grantApiAccess"),
 	PERM_CHECK_AVAILABLE_API_ACCESS("facebook.permissions.checkAvailableApiAccess"),
 	PERM_REVOKE_API_ACCESS("facebook.permissions.revokeApiAccess"),
-	// facebook.permissions.checkGrantedApiAccess
 	PERM_CHECK_GRANTED_API_ACCESS("facebook.permissions.checkGrantedApiAccess"),
 
 	// Application
