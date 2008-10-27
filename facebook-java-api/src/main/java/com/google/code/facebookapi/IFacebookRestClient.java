@@ -380,6 +380,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
 	 * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed Preview Console </a>
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException, IOException;
 
 	/**
@@ -459,6 +460,7 @@ public interface IFacebookRestClient<T> {
 	 * @return whether the action story was successfully published; false in case of a permission error
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException, IOException;
@@ -1613,6 +1615,7 @@ public interface IFacebookRestClient<T> {
 	 *             if any number of bad things happen
 	 * @throws IOException
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException, IOException;
 
