@@ -1,5 +1,5 @@
 --- facebook.xsd	2008-10-19 18:06:01.000000000 -0700
-+++ src/main/resources/schema.xsd	2008-10-26 15:48:04.000000000 -0700
++++ src/main/resources/schema.xsd	2008-10-30 08:17:55.000000000 -0700
 @@ -28,7 +28,7 @@
  </xsd:simpleType>
  
@@ -9,7 +9,37 @@
  </xsd:simpleType>
  
  <xsd:simpleType name="flid">
-@@ -1346,12 +1346,21 @@
+@@ -875,6 +875,29 @@
+     <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
+     <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
+     <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_adds" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_removes" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_blocks" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_unblocks" type="xsd:int" minOccurs="0" />
++
++    <xsd:element name="canvas_page_views_http_code_0" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_100" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_200" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_200ND" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_301" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_302" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_303" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_400" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_401" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_403" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_404" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_405" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_413" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_422" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_500" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_502" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_503" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_505" type="xsd:int" minOccurs="0" />
+   </xsd:all>
+ </xsd:complexType>
+ 
+@@ -1346,12 +1369,21 @@
  <xsd:element name="data_getObjects_response">
    <xsd:complexType>
      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
@@ -32,7 +62,7 @@
  <xsd:element name="data_getObjectProperty_response" type="xsd:string" />
  
  <xsd:element name="data_setObjectProperty_response" type="xsd:boolean" />
-@@ -1454,6 +1463,8 @@
+@@ -1454,6 +1486,8 @@
  
  <xsd:element name="feed_publishUserAction_response" type="xsd:boolean" />
  
