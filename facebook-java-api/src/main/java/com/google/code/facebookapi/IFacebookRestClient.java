@@ -1450,79 +1450,6 @@ public interface IFacebookRestClient<T> {
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException;
 
 	/**
-	 * Check to see if the application is permitted to send SMS messages to the current application user.
-	 * 
-	 * @return true if the application is presently able to send SMS messages to the current user false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
-	public boolean sms_canSend() throws FacebookException, IOException;
-
-	/**
-	 * Check to see if the application is permitted to send SMS messages to the specified user.
-	 * 
-	 * @param userId
-	 *            the UID of the user to check permissions for
-	 * 
-	 * @return true if the application is presently able to send SMS messages to the specified user false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
-	public boolean sms_canSend( Long userId ) throws FacebookException, IOException;
-
-	/**
-	 * Send an SMS message to the current application user.
-	 * 
-	 * @param message
-	 *            the message to send.
-	 * @param smsSessionId
-	 *            the SMS session id to use, note that that is distinct from the user's facebook session id. It is used to allow applications to keep track of individual
-	 *            SMS conversations/threads for a single user. Specify null if you do not want/need to use a session for the current message.
-	 * @param makeNewSession
-	 *            set to true to request that Facebook allocate a new SMS session id for this message. The allocated id will be returned as the result of this API call.
-	 *            You should only set this to true if you are passing a null 'smsSessionId' value. Otherwise you already have a SMS session id, and do not need a new one.
-	 * 
-	 * @return an integer specifying the value of the session id alocated by Facebook, if one was requested. If a new session id was not requested, this method will
-	 *         return null.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
-	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
-
-	/**
-	 * Send an SMS message to the specified user.
-	 * 
-	 * @param userId
-	 *            the id of the user to send the message to.
-	 * @param message
-	 *            the message to send.
-	 * @param smsSessionId
-	 *            the SMS session id to use, note that that is distinct from the user's facebook session id. It is used to allow applications to keep track of individual
-	 *            SMS conversations/threads for a single user. Specify null if you do not want/need to use a session for the current message.
-	 * @param makeNewSession
-	 *            set to true to request that Facebook allocate a new SMS session id for this message. The allocated id will be returned as the result of this API call.
-	 *            You should only set this to true if you are passing a null 'smsSessionId' value. Otherwise you already have a SMS session id, and do not need a new one.
-	 * 
-	 * @return an integer specifying the value of the session id alocated by Facebook, if one was requested. If a new session id was not requested, this method will
-	 *         return null.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
-	 */
-	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
-
-	/**
 	 * @see #users_hasAppPermission(Permission,Long)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
@@ -1867,40 +1794,6 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
 	 */
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException, IOException;
-
-	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required
-	 * for success. The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when the user replies.
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @param message
-	 *            the message to be sent via SMS
-	 * @return a mobile session ID (can be used in {@link #sms_sendResponse})
-	 * @throws FacebookException
-	 *             in case of error, e.g. SMS is not enabled
-	 * @throws IOException
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
-	 */
-	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException;
-
-	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code>. The SMS extended permission is required for success.
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @param message
-	 *            the message to be sent via SMS
-	 * @throws FacebookException
-	 *             in case of error
-	 * @throws IOException
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
-	 */
-	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
@@ -3221,5 +3114,115 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Events.rsvp
 	 */
 	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException, IOException;
+
+
+	// ========== MOBILE ==========
+	
+	/**
+	 * Check to see if the application is permitted to send SMS messages to the current application user.
+	 * 
+	 * @return true if the application is presently able to send SMS messages to the current user false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 * @throws IOException
+	 *             if a communication/network error happens.
+	 */
+	public boolean sms_canSend() throws FacebookException, IOException;
+
+	/**
+	 * Check to see if the application is permitted to send SMS messages to the specified user.
+	 * 
+	 * @param userId
+	 *            the UID of the user to check permissions for
+	 * 
+	 * @return true if the application is presently able to send SMS messages to the specified user false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 * @throws IOException
+	 *             if a communication/network error happens.
+	 */
+	public boolean sms_canSend( Long userId ) throws FacebookException, IOException;
+
+	/**
+	 * Send an SMS message to the current application user.
+	 * 
+	 * @param message
+	 *            the message to send.
+	 * @param smsSessionId
+	 *            the SMS session id to use, note that that is distinct from the user's facebook session id. It is used to allow applications to keep track of individual
+	 *            SMS conversations/threads for a single user. Specify null if you do not want/need to use a session for the current message.
+	 * @param makeNewSession
+	 *            set to true to request that Facebook allocate a new SMS session id for this message. The allocated id will be returned as the result of this API call.
+	 *            You should only set this to true if you are passing a null 'smsSessionId' value. Otherwise you already have a SMS session id, and do not need a new one.
+	 * 
+	 * @return an integer specifying the value of the session id alocated by Facebook, if one was requested. If a new session id was not requested, this method will
+	 *         return null.
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 * @throws IOException
+	 *             if a communication/network error happens.
+	 */
+	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
+
+	/**
+	 * Send an SMS message to the specified user.
+	 * 
+	 * @param userId
+	 *            the id of the user to send the message to.
+	 * @param message
+	 *            the message to send.
+	 * @param smsSessionId
+	 *            the SMS session id to use, note that that is distinct from the user's facebook session id. It is used to allow applications to keep track of individual
+	 *            SMS conversations/threads for a single user. Specify null if you do not want/need to use a session for the current message.
+	 * @param makeNewSession
+	 *            set to true to request that Facebook allocate a new SMS session id for this message. The allocated id will be returned as the result of this API call.
+	 *            You should only set this to true if you are passing a null 'smsSessionId' value. Otherwise you already have a SMS session id, and do not need a new one.
+	 * 
+	 * @return an integer specifying the value of the session id alocated by Facebook, if one was requested. If a new session id was not requested, this method will
+	 *         return null.
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 * @throws IOException
+	 *             if a communication/network error happens.
+	 */
+	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
+
+	/**
+	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required
+	 * for success. The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when the user replies.
+	 * 
+	 * @param userId
+	 *            a user ID
+	 * @param message
+	 *            the message to be sent via SMS
+	 * @return a mobile session ID (can be used in {@link #sms_sendResponse})
+	 * @throws FacebookException
+	 *             in case of error, e.g. SMS is not enabled
+	 * @throws IOException
+	 * @see FacebookExtendedPerm#SMS
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
+	 */
+	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException;
+
+	/**
+	 * Sends a message via SMS to the user identified by <code>userId</code>. The SMS extended permission is required for success.
+	 * 
+	 * @param userId
+	 *            a user ID
+	 * @param message
+	 *            the message to be sent via SMS
+	 * @throws FacebookException
+	 *             in case of error
+	 * @throws IOException
+	 * @see FacebookExtendedPerm#SMS
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
+	 */
+	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException;
 
 }
