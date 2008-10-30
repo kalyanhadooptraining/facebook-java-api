@@ -466,29 +466,6 @@ public interface IFacebookRestClient<T> {
 			throws FacebookException, IOException;
 
 	/**
-	 * Returns all visible events according to the filters specified. This may be used to find all events of a user, or to query specific eids.
-	 * 
-	 * @param eventIds
-	 *            filter by these event ID's (optional)
-	 * @param userId
-	 *            filter by this user only (optional)
-	 * @param startTime
-	 *            UTC lower bound (optional)
-	 * @param endTime
-	 *            UTC upper bound (optional)
-	 */
-	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException;
-
-	/**
-	 * Retrieves the membership list of an event
-	 * 
-	 * @param eventId
-	 *            event id
-	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
-	 */
-	public T events_getMembers( Number eventId ) throws FacebookException, IOException;
-
-	/**
 	 * Retrieves whether two users are friends.
 	 * 
 	 * @param userId1
@@ -3109,5 +3086,140 @@ public interface IFacebookRestClient<T> {
 	 */
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException, IOException;
+
+
+	// ========== EVENTS ==========
+
+	/**
+	 * Returns all visible events according to the filters specified.
+	 * 
+	 * @param userId
+	 *            Filter by events associated with a user with this uid.
+	 * @param eventIds
+	 *            Filter by this list of event IDs. This is a comma-separated list of event IDs.
+	 * @param startTime
+	 *            Filter with this UTC as lower bound. A missing or zero parameter indicates no lower bound.
+	 * @param endTime
+	 *            Filter with this UTC as upper bound. A missing or zero parameter indicates no upper bound.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.get
+	 */
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException;
+
+	/**
+	 * Returns all visible events according to the filters specified.
+	 * 
+	 * @param userId
+	 *            Filter by events associated with a user with this uid.
+	 * @param eventIds
+	 *            Filter by this list of event IDs. This is a comma-separated list of event IDs.
+	 * @param startTime
+	 *            Filter with this UTC as lower bound. A missing or zero parameter indicates no lower bound.
+	 * @param endTime
+	 *            Filter with this UTC as upper bound. A missing or zero parameter indicates no upper bound.
+	 * @param rsvp_status
+	 *            Filter by this RSVP status. The RSVP status should be one of the following strings: attending, unsure, declined, not_replied
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.get
+	 */
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException, IOException;
+
+	/**
+	 * Retrieves the membership list of an event
+	 * 
+	 * @param eventId
+	 *            The event ID.
+	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
+	 * @see http://wiki.developers.facebook.com/index.php/Events.getMembers
+	 */
+	public T events_getMembers( Long eventId ) throws FacebookException, IOException;
+
+	/**
+	 * Creates an event on behalf of the user if the application has an active session key for that user; otherwise it creates an event on behalf of the application.
+	 * 
+	 * @param event_info
+	 *            The event information. You must pass the following parameters:
+	 *            <ul>
+	 *            <li>name</li>
+	 *            <li>category</li>
+	 *            <li>subcategory</li>
+	 *            <li>host</li>
+	 *            <li>location</li>
+	 *            <li>city</li>
+	 *            <li>start_time (seconds since epoch)</li>
+	 *            <li>end_time (seconds since epoch)</li>
+	 *            </ul>
+	 *            Optionally, you can pass the following parameters in the event_info array:
+	 *            <ul>
+	 *            <li>street</li>
+	 *            <li>phone</li>
+	 *            <li>email</li>
+	 *            <li>page_id</li>
+	 *            <li>description</li>
+	 *            <li>privacy_type</li>
+	 *            <li>tagline</li>
+	 *            </ul>
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.create
+	 */
+	public Long events_create( Map<String,String> event_info ) throws FacebookException, IOException;
+
+	/**
+	 * Edits the details of an existing event. The application must be an admin of the event. An application is the admin of an event if the application created the event
+	 * on behalf of a user (with that user's active session) or if it is the creator of the event itself (that is, the event was created without an active user session).
+	 * 
+	 * @param eid
+	 *            The event ID.
+	 * @param event_infoThe
+	 *            event information. The "name" cannot be edited. The following parameters in the event_info array are required and can only be edited, not deleted:
+	 *            <ul>
+	 *            <li>category</li>
+	 *            <li>subcategory</li>
+	 *            <li>host</li>
+	 *            <li>location</li>
+	 *            <li>start_time (seconds since epoch)</li>
+	 *            <li>end_time (seconds since epoch)</li>
+	 *            <li>street</li>
+	 *            <li>phone</li>
+	 *            <li>email</li>
+	 *            <li>host_id</li>
+	 *            <li>description</li>
+	 *            <li>privacy_type</li>
+	 *            <li>tagline</li>
+	 *            </ul>
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.edit
+	 */
+	public boolean events_edit( Long eid, Map<String,String> event_info ) throws FacebookException, IOException;
+
+	/**
+	 * Cancels an event. The application must be an admin of the event. An application is the admin of an event if the application created the event on behalf of a user
+	 * (with that user's active session) or if it is the creator of the event itself (that is, the event was created without an active user session).
+	 * 
+	 * @param eid
+	 *            The event ID.
+	 * @param cancel_message
+	 *            The message sent explaining why the event was canceled. You can pass an empty string if you don't want to provide an explanation.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.cancel
+	 */
+	public boolean events_cancel( Long eid, String cancel_message ) throws FacebookException, IOException;
+
+	/**
+	 * Sets a user's RSVP status for an event. An application can set a user's RSVP status only if the following are all true:
+	 * <ul>
+	 * <li>The application is an admin for the event.</li>
+	 * <li>The application has an active session for the user.</li>
+	 * <li>The active user has granted the application the rsvp_event extended permission.</li>
+	 * </ul>
+	 * 
+	 * @param eid
+	 *            The event ID.
+	 * @param rsvp_status
+	 *            The user's RSVP status. Specify attending, unsure, or declined.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Events.rsvp
+	 */
+	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException, IOException;
 
 }
