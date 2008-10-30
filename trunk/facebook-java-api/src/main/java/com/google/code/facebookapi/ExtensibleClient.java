@@ -1455,81 +1455,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	}
 
-	public boolean sms_canSend() throws FacebookException, IOException {
-		return sms_canSend( users_getLoggedInUser() );
-	}
-
-	/**
-	 * Determines whether this application can send SMS to the user identified by <code>userId</code>
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @return true if sms can be sent to the user
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 */
-	public boolean sms_canSend( Long userId ) throws FacebookException, IOException {
-		return extractBoolean( callMethod( FacebookMethod.SMS_CAN_SEND, newPair( "uid", userId ) ) );
-	}
-
-	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code> in response to a user query associated with <code>mobileSessionId</code>.
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @param response
-	 *            the message to be sent via SMS
-	 * @param mobileSessionId
-	 *            the mobile session
-	 * @throws FacebookException
-	 *             in case of error
-	 * @throws IOException
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
-	 */
-	public void sms_sendResponse( Integer userId, CharSequence response, Integer mobileSessionId ) throws FacebookException, IOException {
-		callMethod( FacebookMethod.SMS_SEND_MESSAGE, newPair( "uid", userId ), newPair( "message", response ), newPair( "session_id", mobileSessionId ) );
-	}
-
-	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code>. The SMS extended permission is required for success.
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @param message
-	 *            the message to be sent via SMS
-	 * @throws FacebookException
-	 *             in case of error
-	 * @throws IOException
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
-	 */
-	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException {
-		callMethod( FacebookMethod.SMS_SEND_MESSAGE, newPair( "uid", userId ), newPair( "message", message ), newPair( "req_session", "0" ) );
-	}
-
-	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required
-	 * for success. The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when the user replies.
-	 * 
-	 * @param userId
-	 *            a user ID
-	 * @param message
-	 *            the message to be sent via SMS
-	 * @return a mobile session ID (can be used in {@link #sms_sendResponse})
-	 * @throws FacebookException
-	 *             in case of error, e.g. SMS is not enabled
-	 * @throws IOException
-	 * @see FacebookExtendedPerm#SMS
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
-	 */
-	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException {
-		return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, newPair( "uid", userId ), newPair( "message", message ), newPair( "req_session", "1" ) ) );
-	}
-
 	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException, IOException {
 		notifications_send( recipientIds, notification.toString(), false );
 	}
@@ -1701,24 +1626,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	@Deprecated
 	public String notifications_sendEmailPlain( Collection<Long> recipientIds, CharSequence subject, CharSequence text ) throws FacebookException, IOException {
 		return notifications_sendEmailStr( recipientIds, subject, /* fbml */null, text );
-	}
-
-	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException {
-		if ( ( smsSessionId == null ) || ( smsSessionId <= 0 ) ) {
-			return sms_sendMessageWithSession( users_getLoggedInUser(), message );
-		} else {
-			sms_sendResponse( (int) users_getLoggedInUser(), message, smsSessionId );
-			return smsSessionId;
-		}
-	}
-
-	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException {
-		if ( ( smsSessionId == null ) || ( smsSessionId <= 0 ) ) {
-			return sms_sendMessageWithSession( userId, message );
-		} else {
-			sms_sendResponse( userId.intValue(), message, smsSessionId );
-			return smsSessionId;
-		}
 	}
 
 	public T data_getCookies() throws FacebookException, IOException {
@@ -2700,6 +2607,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return new Pair<String,CharSequence>( name, String.valueOf( value ) );
 	}
 
+	protected static Pair<String,CharSequence> newPair( String name, boolean value ) {
+		return newPair( name, value ? "1" : "0" );
+	}
+
 	protected static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
 		return new Pair<String,CharSequence>( name, value );
 	}
@@ -2839,5 +2750,37 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.EVENTS_GET_RSVP, newPair( "eid", eid ), newPair( "rsvp_status", rsvp_status ) ) );
 	}
+
+
+	// ========== MOBILE ==========
+
+	public boolean sms_canSend() throws FacebookException, IOException {
+		return sms_canSend( users_getLoggedInUser() );
+	}
+
+	public boolean sms_canSend( Long userId ) throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.SMS_CAN_SEND, newPair( "uid", userId ) ) );
+	}
+
+	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException {
+		return sms_send( users_getLoggedInUser(), message, smsSessionId, makeNewSession );
+	}
+
+	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException {
+		if ( smsSessionId != null && smsSessionId != 0 ) {
+			return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, newPair( "uid", userId ), newPair( "message", message ),
+					newPair( "session_id", smsSessionId ), newPair( "req_session", makeNewSession ) ) );
+		}
+		return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, newPair( "uid", userId ), newPair( "message", message ), newPair( "req_session", makeNewSession ) ) );
+	}
+
+	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException {
+		sms_send( userId, message.toString(), null, false );
+	}
+
+	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException {
+		return sms_send( userId, message.toString(), null, true );
+	}
+
 
 }

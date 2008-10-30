@@ -49,7 +49,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	AUTH_PROMOTE_SESSION("facebook.auth.promoteSession"),
 	// FQL Query
 	FQL_QUERY("facebook.fql.query"),
-	
+
 	// Events
 	EVENTS_GET("facebook.events.get"),
 	EVENTS_GET_MEMBERS("facebook.events.getMembers"),
@@ -57,7 +57,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	EVENTS_GET_EDIT("facebook.events.edit"),
 	EVENTS_GET_CANCEL("facebook.events.cancel"),
 	EVENTS_GET_RSVP("facebook.events.rsvp"),
-	
+
 	// Friends
 	FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
 	@Deprecated
@@ -213,7 +213,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	static {
 		listSessionNone = EnumSet.of( USERS_IS_APP_ADDED_NOSESSION, USERS_IS_APP_USER_NOSESSION, PROFILE_SET_FBML_NOSESSION, PROFILE_GET_FBML_NOSESSION,
 				USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION,
-				PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION, PAGES_GET_INFO_NOSESSION );
+				PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION, PAGES_GET_INFO_NOSESSION, SMS_SEND, SMS_SEND_MESSAGE );
 		listTakesFile = EnumSet.of( PHOTOS_UPLOAD, PHOTOS_UPLOAD_NOSESSION );
 	}
 
