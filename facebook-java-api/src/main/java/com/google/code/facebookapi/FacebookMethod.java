@@ -49,9 +49,15 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	AUTH_PROMOTE_SESSION("facebook.auth.promoteSession"),
 	// FQL Query
 	FQL_QUERY("facebook.fql.query"),
+	
 	// Events
 	EVENTS_GET("facebook.events.get"),
 	EVENTS_GET_MEMBERS("facebook.events.getMembers"),
+	EVENTS_GET_CREATE("facebook.events.create"),
+	EVENTS_GET_EDIT("facebook.events.edit"),
+	EVENTS_GET_CANCEL("facebook.events.cancel"),
+	EVENTS_GET_RSVP("facebook.events.rsvp"),
+	
 	// Friends
 	FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
 	@Deprecated

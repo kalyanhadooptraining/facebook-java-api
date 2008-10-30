@@ -429,11 +429,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return result;
 	}
 
-	public T events_getMembers( Number eventId ) throws FacebookException, IOException {
-		assert ( null != eventId );
-		return callMethod( FacebookMethod.EVENTS_GET_MEMBERS, newPair( "eid", eventId ) );
-	}
-
 	public T friends_getAppUsers() throws FacebookException, IOException {
 		return callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
 	}
@@ -878,23 +873,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public void setIsDesktop( boolean isDesktop ) {
 		this._isDesktop = isDesktop;
-	}
-
-	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		if ( null != userId && 0 != userId ) {
-			params.add( newPair( "uid", userId ) );
-		}
-		if ( null != eventIds && !eventIds.isEmpty() ) {
-			params.add( newPair( "eids", delimit( eventIds ) ) );
-		}
-		if ( null != startTime && 0 != startTime ) {
-			params.add( newPair( "start_time", startTime ) );
-		}
-		if ( null != endTime && 0 != endTime ) {
-			params.add( newPair( "end_time", endTime ) );
-		}
-		return callMethod( FacebookMethod.EVENTS_GET, params );
 	}
 
 	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {
@@ -2600,11 +2578,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			for ( Metric metric : metrics ) {
 				metricsJson.put( metric.getName() );
 			}
-			params.add( newPair( "metrics", metricsJson ) );
+			addParam( "metrics", metricsJson, params );
 		}
-		params.add( newPair( "start_time", ( start / 1000 ) ) );
-		params.add( newPair( "end_time", ( end / 1000 ) ) );
-		params.add( newPair( "period", ( period ) ) );
+		addParam( "start_time", start / 1000, params );
+		addParam( "end_time", end / 1000, params );
+		addParam( "period", period, params );
 		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
 
@@ -2622,7 +2600,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		} else {
 			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ), type );
 		}
-
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
@@ -2747,6 +2724,25 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return false;
 	}
 
+	protected static boolean addParamIfNotBlankZero( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null && value.longValue() != 0 ) {
+			return addParam( name, value, params );
+		}
+		return false;
+	}
+
+	protected static boolean addParamDelimitIfNotEmpty( String name, Collection value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null && !value.isEmpty() ) {
+			return addParam( name, delimit( value ), params );
+		}
+		return false;
+	}
+
+	protected static boolean addParam( String name, Object value, Collection<Pair<String,CharSequence>> params ) {
+		params.add( newPair( name, value ) );
+		return true;
+	}
+
 	protected static boolean addParam( String name, CharSequence value, Collection<Pair<String,CharSequence>> params ) {
 		params.add( newPair( name, value ) );
 		return true;
@@ -2808,5 +2804,40 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return the String
 	 */
 	protected abstract String extractString( T result );
+
+	// ========== EVENTS ==========
+
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException {
+		return events_get( userId, eventIds, startTime, endTime, null );
+	}
+
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException, IOException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
+		addParamIfNotBlankZero( "uid", userId, params );
+		addParamDelimitIfNotEmpty( "eids", eventIds, params );
+		addParamIfNotBlankZero( "start_time", startTime, params );
+		addParamIfNotBlankZero( "end_time", endTime, params );
+		return callMethod( FacebookMethod.EVENTS_GET, params );
+	}
+
+	public T events_getMembers( Long eventId ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.EVENTS_GET_MEMBERS, newPair( "eid", eventId ) );
+	}
+
+	public Long events_create( Map<String,String> event_info ) throws FacebookException, IOException {
+		return extractLong( callMethod( FacebookMethod.EVENTS_GET_CREATE, newPair( "event_info", new JSONObject( event_info ) ) ) );
+	}
+
+	public boolean events_edit( Long eid, Map<String,String> event_info ) throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.EVENTS_GET_EDIT, newPair( "eid", eid ), newPair( "event_info", new JSONObject( event_info ) ) ) );
+	}
+
+	public boolean events_cancel( Long eid, String cancel_message ) throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.EVENTS_GET_CANCEL, newPair( "eid", eid ), newPair( "cancel_message", cancel_message ) ) );
+	}
+
+	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException, IOException {
+		return extractBoolean( callMethod( FacebookMethod.EVENTS_GET_RSVP, newPair( "eid", eid ), newPair( "rsvp_status", rsvp_status ) ) );
+	}
 
 }
