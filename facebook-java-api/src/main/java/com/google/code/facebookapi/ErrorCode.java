@@ -157,6 +157,31 @@ public class ErrorCode {
      * Specified photo URL for feed is invalid
      */
     public static final Integer FEED_PHOTO_LINK_INVALID = 348;
+    /** 
+     * Session key specified has passed its expiration time  
+     */
+    public static final int SESSION_TIMED_OUT = 450;
+    /** 
+     * Session key specified cannot be used to call this method 
+     */
+    public static final int SESSION_METHOD_NOT_ALLOWED = 451;
+    /** 
+     * Session key invalid. This could be because the session key has an 
+     * incorrect format, or because the user has revoked this session  
+     */
+    public static final int SESSION_INVALID = 452;
+    /** 
+     * A session key is required for calling this method 
+     */
+    public static final int SESSION_REQUIRED = 453;
+    /** 
+     * A session key must be specified when request is signed with a session secret 
+     */
+    public static final int SESSION_REQUIRED_FOR_SECRET = 454;
+    /** 
+     * A session secret is not permitted to be used with this type of session key
+     */
+    public static final int SESSION_CANNOT_USE_SESSION_SECRET = 455;
     /**
      * An unknown error occured when processing FQL
      */
