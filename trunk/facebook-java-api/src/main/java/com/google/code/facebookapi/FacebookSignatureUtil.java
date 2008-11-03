@@ -35,6 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,35 @@ import org.apache.commons.logging.LogFactory;
  * Utility for managing Facebook-specific parameters, specifically those related to session/login aspects.
  */
 public final class FacebookSignatureUtil {
+	/**
+	 * Compares two key=value style keys, only performing the comparison up to the first "=".
+	 */
+	private static final Comparator<String> KEY_COMPARATOR = new Comparator<String>() {
+		public int compare( String s1, String s2 ) {
+			int minLength = Math.min(s1.length(), s2.length());
+			for (int i = 0; i < minLength; i++) {
+				char c1 = s1.charAt( i );
+				char c2 = s2.charAt( i );
+				if (c1 == '=') {
+					if (c2 == '=') {
+						return 0;
+					} 
+					
+					return -1;
+				}
+				
+				if (c2 == '=') {
+					return 1;
+				}
+					
+				if (c1 != c2) {
+				    return c1 - c2;
+				}
+			}
+
+			return s1.length() - s2.length();
+		}
+	};
 
 	protected static Log log = LogFactory.getLog( FacebookSignatureUtil.class );
 
@@ -325,7 +355,7 @@ public final class FacebookSignatureUtil {
 	 */
 	public static String generateSignature( List<String> params, String secret ) {
 		StringBuffer buffer = new StringBuffer();
-		Collections.sort( params );
+		Collections.sort( params, KEY_COMPARATOR );
 		for ( String param : params ) {
 			buffer.append( param );
 		}
