@@ -1683,18 +1683,53 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		if ( value == null ) {
 			value = "";
 		}
-		List<Pair<String,CharSequence>> args = new ArrayList<Pair<String,CharSequence>>();
-		args.add( newPair( "uid", userId ) );
-		args.add( newPair( "name", name ) );
-		args.add( newPair( "value", value ) );
-		if ( ( expires != null ) && ( expires > 0 ) ) {
-			args.add( newPair( "expires", expires ) );
-		}
-		if ( ( path != null ) && ( !"".equals( path ) ) ) {
-			args.add( newPair( "path", path ) );
-		}
-		T doc = callMethod( FacebookMethod.DATA_SET_COOKIE, args );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
+		addParam( "uid", userId, params );
+		addParam( "name", name, params );
+		addParam( "value", value, params );
+		addParamIfNotBlankZero( "expires", expires, params );
+		addParamIfNotBlank( "path", path, params );
+		T doc = callMethod( FacebookMethod.DATA_SET_COOKIE, params );
 		return extractBoolean( doc );
+	}
+
+	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException, IOException {
+		return extractLong( callMethod( FacebookMethod.DATA_CREATE_OBJECT, newPair( "obj_type", objectType ), newPair( "properties", toJson( properties ) ) ) );
+	}
+
+	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException, IOException {
+		callMethod( FacebookMethod.DATA_UPDATE_OBJECT, newPair( "obj_id", String.valueOf( objectId ) ), newPair( "properties", toJson( properties ) ), newPairTF(
+				"replace", replace ) );
+	}
+
+	public void data_deleteObject( long objectId ) throws FacebookException, IOException {
+		callMethod( FacebookMethod.DATA_DELETE_OBJECT, newPair( "obj_id", objectId ) );
+	}
+
+	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException, IOException {
+		callMethod( FacebookMethod.DATA_DELETE_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) );
+	}
+
+	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException, IOException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
+		addParam( "name", associationName, params );
+		addParam( "obj_id1", object1Id, params );
+		addParam( "obj_id2", object2Id, params );
+		addParamIfNotBlank( "data", data, params );
+		addParamIfNotBlank( "assoc_time", associationTime.getTime() / 1000, params );
+		callMethod( FacebookMethod.DATA_SET_ASSOCIATION, params );
+	}
+
+	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException, IOException {
+		callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATION, newPair( "name", associationName ), newPair( "obj_id1", object1Id ), newPair( "obj_id2", object2Id ) );
+	}
+
+	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException, IOException {
+		callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATED_OBJECTS, newPair( "name", associationName ), newPair( "obj_id", objectId ) );
+	}
+
+	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException, IOException {
+		return extractLong( callMethod( FacebookMethod.DATA_GET_ASSOCIATED_OBJECT_COUNT, newPair( "name", associationName ), newPair( "obj_id", objectId ) ) );
 	}
 
 	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException, IOException {
@@ -2256,12 +2291,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
-		throws FacebookException, IOException {
+			throws FacebookException, IOException {
 		return feed_registerTemplateBundle( templates, shortTemplates, longTemplate, null );
 	}
-	
-	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate, List<BundleActionLink> actionLinks)
-			throws FacebookException, IOException {
+
+	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
+			List<BundleActionLink> actionLinks ) throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		JSONArray templateArray = new JSONArray();
 		for ( String template : templates ) {
@@ -2286,7 +2321,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			params.add( newPair( "action_links", actionLinkArray ) );
 		}
-		
+
 		return extractLong( callMethod( FacebookMethod.FEED_REGISTER_TEMPLATE, params ) );
 	}
 
@@ -2620,8 +2655,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return new Pair<String,CharSequence>( name, String.valueOf( value ) );
 	}
 
+	@Deprecated
 	protected static Pair<String,CharSequence> newPair( String name, boolean value ) {
+		return newPair10( name, value );
+	}
+
+	protected static Pair<String,CharSequence> newPair10( String name, boolean value ) {
 		return newPair( name, value ? "1" : "0" );
+	}
+
+	protected static Pair<String,CharSequence> newPairTF( String name, boolean value ) {
+		return newPair( name, value ? "true" : "false" );
 	}
 
 	protected static Pair<String,CharSequence> newPair( String name, CharSequence value ) {
@@ -2682,6 +2726,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	protected static String toString( CharSequence cs ) {
 		return cs == null ? null : cs.toString();
+	}
+
+	protected static JSONObject toJson( Map<String,String> map ) {
+		return new JSONObject( map );
 	}
 
 	/**

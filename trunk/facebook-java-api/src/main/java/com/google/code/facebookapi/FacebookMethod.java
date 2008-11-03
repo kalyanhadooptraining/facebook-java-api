@@ -169,6 +169,15 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference"),
 	DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences"),
 
+	DATA_CREATE_OBJECT("facebook.data.createObject"),
+	DATA_UPDATE_OBJECT("facebook.data.updateObject"),
+	DATA_DELETE_OBJECT("facebook.data.deleteObject"),
+	DATA_DELETE_OBJECTS("facebook.data.deleteObjects"),
+	DATA_SET_ASSOCIATION("facebook.data.setAssociation"),
+	DATA_REMOVE_ASSOCIATION("facebook.data.removeAssociation"),
+	DATA_REMOVE_ASSOCIATED_OBJECTS("facebook.data.removeAssociatedObjects"),
+	DATA_GET_ASSOCIATED_OBJECT_COUNT("facebook.data.getAssociatedObjectCount"),
+
 	// SMS - Mobile
 	SMS_CAN_SEND("facebook.sms.canSend"),
 	/**

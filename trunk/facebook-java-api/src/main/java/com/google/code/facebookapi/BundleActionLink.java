@@ -5,20 +5,21 @@ import java.io.Serializable;
 import org.json.JSONObject;
 
 /**
- * A simple data structure for storing a story-template action link, used in the 
- * feed_registerTemplateBundle API call.
+ * A simple data structure for storing a story-template action link, used in the feed_registerTemplateBundle API call.
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Action_Links}
  */
 public class BundleActionLink implements Serializable {
+
 	private String text;
 	private String href;
 
 	/**
-	 * Constructor. If you use this version, you must make sure you set both the 'text' and 'href' 
-	 * fields before trying to submit your template, otherwise it will not serialize correctly.
+	 * Constructor. If you use this version, you must make sure you set both the 'text' and 'href' fields before trying to submit your template, otherwise it will not
+	 * serialize correctly.
 	 */
 	public BundleActionLink() {
+		// empty
 	}
 
 	/**
@@ -42,8 +43,8 @@ public class BundleActionLink implements Serializable {
 		if ( ( text == null ) || ( href == null ) || ( "".equals( text ) ) || ( "".equals( href ) ) ) {
 			return result;
 		}
-		
-		
+
+
 		try {
 			result.put( "text", text );
 			result.put( "href", href );
@@ -88,4 +89,5 @@ public class BundleActionLink implements Serializable {
 	public final void setHref( String href ) {
 		this.href = href;
 	}
+
 }
