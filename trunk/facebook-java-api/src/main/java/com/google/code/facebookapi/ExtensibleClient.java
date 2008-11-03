@@ -2256,6 +2256,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
+		throws FacebookException, IOException {
+		return feed_registerTemplateBundle( templates, shortTemplates, longTemplate, null );
+	}
+	
+	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate, List<BundleActionLink> actionLinks)
 			throws FacebookException, IOException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		JSONArray templateArray = new JSONArray();
@@ -2274,6 +2279,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "full_story_template", longTemplate.toJsonString() ) );
 		}
 
+		if ( actionLinks != null && !actionLinks.isEmpty() ) {
+			JSONArray actionLinkArray = new JSONArray();
+			for ( BundleActionLink actionLink : actionLinks ) {
+				actionLinkArray.put( actionLink.toJson() );
+			}
+			params.add( newPair( "action_links", actionLinkArray ) );
+		}
+		
 		return extractLong( callMethod( FacebookMethod.FEED_REGISTER_TEMPLATE, params ) );
 	}
 

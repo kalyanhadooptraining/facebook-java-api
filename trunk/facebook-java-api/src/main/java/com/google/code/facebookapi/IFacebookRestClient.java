@@ -2756,6 +2756,25 @@ public interface IFacebookRestClient<T> {
 	 *            the short template to store.
 	 * @param longTemplate
 	 *            the long template to store.
+	 * @param actionLinks
+	 *            the action links to store			
+	 * 
+	 * @return the id which Facebook assigns to your template
+	 */
+	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate, List<BundleActionLink> actionLinks)
+			throws FacebookException, IOException;
+
+	/**
+	 * Registers a feed template.
+	 * 
+	 * See: http://wiki.developers.facebook.com/index.php/Feed.registerTemplateBundle
+	 * 
+	 * @param template
+	 *            the template to store.
+	 * @param shortTemplate
+	 *            the short template to store.
+	 * @param longTemplate
+	 *            the long template to store.
 	 * 
 	 * @return the id which Facebook assigns to your template
 	 */
