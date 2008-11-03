@@ -2344,6 +2344,116 @@ public interface IFacebookRestClient<T> {
 	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires, CharSequence path ) throws FacebookException, IOException;
 
 	/**
+	 * Create object in Data Store
+	 * 
+	 * @param objectType
+	 *            Specifies which type of new object to create.
+	 * @param properties
+	 *            Optional - Name-value pairs of properties this new object has
+	 * @throws FacebookException
+	 * @throws IOException
+	 * @return 64-bit integer: Numeric identifier (fbid) of newly created object.
+	 */
+	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException, IOException;
+
+	/**
+	 * Update properties of an existing object in Data Store
+	 * 
+	 * @param objectId
+	 *            Numeric identifier (fbid) of the object to modify.
+	 * @param properties
+	 *            Name-value pairs of new properties.
+	 * @param replace
+	 *            True if replace all existing properties; false to merge into existing ones.
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException, IOException;
+
+	/**
+	 * Delete object in Data Store
+	 * 
+	 * @param objectId
+	 *            Numeric identifier (fbid) of the object to delete.
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_deleteObject( long objectId ) throws FacebookException, IOException;
+
+	/**
+	 * Delete multiple objects in Data Store
+	 * 
+	 * WARNING: This method seems to fail when it comes across the first object that it can't find. It may be more reliable to iterate through your list of objects to
+	 * delete and call deleteObject individually (although, of course, less efficient).
+	 * 
+	 * @param objectIds
+	 *            A list of 64-bit integers that are numeric identifiers (fbids) of objects to delete.
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException, IOException;
+
+	/**
+	 * Create an association between two objects
+	 * 
+	 * @param associationName
+	 *            Name of the association to set.
+	 * @param object1Id
+	 *            Object identifier 1.
+	 * @param object2Id
+	 *            Object identifier 2.
+	 * @param data
+	 *            Optional (can be null) - An arbitrary data (max. 255 characters) to store with this association.
+	 * @param associationTime
+	 *            Optional (can be null) - Default to association creation time. A timestamp to store with this association. This timestamp is represented as number of
+	 *            seconds since the Unix Epoch (January 1 1970 00:00:00 GMT). )
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException, IOException;
+
+	/**
+	 * Removes an association between two object identifiers. Note that, the order of these two identifiers matters, unless this is a symmetric two-way association.
+	 * 
+	 * @param associationName
+	 *            Name of the association.
+	 * @param object1Id
+	 *            Object identifier 1.
+	 * @param object2Id
+	 *            Object identifier 2.
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException, IOException;
+
+	/**
+	 * The name of this function may be misleading, but it actually removes associations between any other objects and a specified object. Those other associated objects
+	 * will NOT be removed or deleted. Only the associations will be broken and deleted.
+	 * 
+	 * @param associationName
+	 *            Name of the association.
+	 * @param objectId
+	 *            Object identifier.
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException, IOException;
+
+	/**
+	 * Returns count of object ids that are associated with specified object. This function takes constant time to return the count, regardless how many objects are
+	 * associated.
+	 * 
+	 * @param associationName
+	 *            Name of the association.
+	 * @param objectId
+	 *            Object identifier.
+	 * @throws FacebookException
+	 * @throws IOException
+	 * @return int64 object count
+	 */
+	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException, IOException;
+
+	/**
 	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
 	 * not required to use this method.
 	 * 
@@ -2757,12 +2867,12 @@ public interface IFacebookRestClient<T> {
 	 * @param longTemplate
 	 *            the long template to store.
 	 * @param actionLinks
-	 *            the action links to store			
+	 *            the action links to store
 	 * 
 	 * @return the id which Facebook assigns to your template
 	 */
-	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate, List<BundleActionLink> actionLinks)
-			throws FacebookException, IOException;
+	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
+			List<BundleActionLink> actionLinks ) throws FacebookException, IOException;
 
 	/**
 	 * Registers a feed template.
@@ -3136,7 +3246,7 @@ public interface IFacebookRestClient<T> {
 
 
 	// ========== MOBILE ==========
-	
+
 	/**
 	 * Check to see if the application is permitted to send SMS messages to the current application user.
 	 * 
