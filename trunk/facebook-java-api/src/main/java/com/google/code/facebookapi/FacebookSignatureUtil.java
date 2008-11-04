@@ -274,13 +274,18 @@ public final class FacebookSignatureUtil {
 	 *            A map of request parameters to their values, as returned by ServletRequest.getParameterMap(), for example.
 	 * @param secret
 	 *            the developers 'secret' API key
-	 * @param expected
-	 *            the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
 	 * 
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static boolean autoVerifySignature( Map<String,String[]> requestParams, String secret ) {
-		String expected = requestParams.get( "fb_sig" )[0];
+		String[] expectedParms = requestParams.get( "fb_sig" );
+		
+		// Make sure we aren't missing the signature 
+		if (expectedParms == null || (expectedParms.length == 0)) {
+			return false;
+		}
+		
+		String expected = expectedParms[0];
 		return autoVerifySignature( requestParams, secret, expected );
 	}
 
