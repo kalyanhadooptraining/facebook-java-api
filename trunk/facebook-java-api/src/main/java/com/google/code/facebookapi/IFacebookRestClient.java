@@ -2353,6 +2353,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 * @return 64-bit integer: Numeric identifier (fbid) of newly created object.
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObject"> Developers Wiki: Data.createObject</a>
 	 */
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException, IOException;
 
@@ -2367,6 +2368,7 @@ public interface IFacebookRestClient<T> {
 	 *            True if replace all existing properties; false to merge into existing ones.
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.updateObject"> Developers Wiki: Data.updateObject</a>
 	 */
 	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException, IOException;
 
@@ -2377,6 +2379,8 @@ public interface IFacebookRestClient<T> {
 	 *            Numeric identifier (fbid) of the object to delete.
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see #data_deleteObjects
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObject"> Developers Wiki: Data.deleteObject</a>
 	 */
 	public void data_deleteObject( long objectId ) throws FacebookException, IOException;
 
@@ -2390,6 +2394,8 @@ public interface IFacebookRestClient<T> {
 	 *            A list of 64-bit integers that are numeric identifiers (fbids) of objects to delete.
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see #data_deleteObject
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObjects"> Developers Wiki: Data.deleteObjects</a>
 	 */
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException, IOException;
 
@@ -2409,6 +2415,7 @@ public interface IFacebookRestClient<T> {
 	 *            seconds since the Unix Epoch (January 1 1970 00:00:00 GMT). )
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.setAssociation"> Developers Wiki: Data.setAssociation</a>
 	 */
 	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException, IOException;
 
@@ -2423,6 +2430,7 @@ public interface IFacebookRestClient<T> {
 	 *            Object identifier 2.
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.removeAssociation"> Developers Wiki: Data.removeAssociation</a>
 	 */
 	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException, IOException;
 
@@ -2436,6 +2444,7 @@ public interface IFacebookRestClient<T> {
 	 *            Object identifier.
 	 * @throws FacebookException
 	 * @throws IOException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.removeAssociatedObjects"> Developers Wiki: Data.removeAssociatedObjects</a>
 	 */
 	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException, IOException;
 
@@ -2450,6 +2459,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 * @return int64 object count
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getAssociatedObjectCount"> Developers Wiki: Data.getAssociatedObjectCount</a>
 	 */
 	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException, IOException;
 
