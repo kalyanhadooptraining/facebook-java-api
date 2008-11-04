@@ -7,10 +7,17 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.junit.Test;
+
 import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
 import com.google.code.facebookapi.schema.Metrics;
 
 public class MetricsTest {
+
+	@Test
+	public void testNOOP() {
+		// empty
+	}
 
 	public static void main( String[] args ) throws FacebookException, IOException {
 		String key = args[0];
@@ -26,7 +33,7 @@ public class MetricsTest {
 
 		Set<Metric> metrics = EnumSet.allOf( Metric.class );
 		fb.admin_getMetrics( metrics, d, d, Metric.PERIOD_DAY );
-		
+
 		AdminGetMetricsResponse result = (AdminGetMetricsResponse) fb.getResponsePOJO();
 		Metrics r = result.getMetrics().get( 0 );
 
