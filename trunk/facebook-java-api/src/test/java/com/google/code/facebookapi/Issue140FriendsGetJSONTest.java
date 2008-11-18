@@ -22,7 +22,6 @@ public class Issue140FriendsGetJSONTest {
 		assertNull( result );
 
 		List<? extends Object> results = client.executeBatch( false );
-
 		for ( Object r : results ) {
 			System.out.println( "Result: " + r );
 			assertNotNull( r );

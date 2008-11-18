@@ -445,6 +445,9 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
 	@Override
 	public Document friends_get() throws FacebookException, IOException {
+		if ( batchMode ) {
+			return super.friends_get();
+		}
 		if ( cacheFriendsList == null ) {
 			cacheFriendsList = super.friends_get();
 		}

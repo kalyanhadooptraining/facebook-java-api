@@ -290,6 +290,9 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 
 	@Override
 	public FriendsGetResponse friends_get() throws IOException, FacebookException {
+		if ( batchMode ) {
+			return (FriendsGetResponse) super.friends_get();
+		}
 		if ( cacheFriendsList == null ) {
 			cacheFriendsList = (FriendsGetResponse) super.friends_get();
 		}
