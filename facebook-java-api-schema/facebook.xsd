@@ -201,6 +201,7 @@
     <xsd:element name="uid" type="uid" />
     <xsd:element name="expires" type="xsd:int" />
     <xsd:element name="secret" type="xsd:string" minOccurs="0" />
+    <xsd:element name="base_domain" type="xsd:string" minOccurs="0" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -633,6 +634,11 @@
   </xsd:sequence>
 </xsd:complexType>
 
+<xsd:complexType name="container">
+  <xsd:sequence>
+  </xsd:sequence>
+</xsd:complexType>
+
 <xsd:complexType name="listing">
   <xsd:sequence>
     <xsd:element name="listing_id" type="lid" />
@@ -928,6 +934,18 @@
     </xsd:element>
     <xsd:element name="time_created" type="time" />
     <xsd:element name="template_bundle_id" type="tbid" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="feed_story">
+  <xsd:sequence>
+    <xsd:element name="story_title" type="xsd:string" />
+    <xsd:element name="story_body" type="xsd:string" minOccurs="0" />
+    <xsd:element name="images" type="xsd:string" minOccurs="0" />
+    <xsd:element name="flash" type="xsd:string" minOccurs="0" />
+    <xsd:element name="mp3" type="xsd:string" minOccurs="0" />
+    <xsd:element name="video" type="xsd:string" minOccurs="0" />
+    <xsd:element name="time_published" type="time" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -1453,6 +1471,15 @@
 <xsd:element name="feed_deactivateTemplateBundleByID_response" type="xsd:boolean" />
 
 <xsd:element name="feed_publishUserAction_response" type="xsd:boolean" />
+
+<xsd:element name="feed_getAppFriendStories_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="feed_story" type="feed_story" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
 
 <xsd:element name="admin_getMetrics_response">
   <xsd:complexType>
