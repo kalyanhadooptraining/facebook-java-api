@@ -1,5 +1,5 @@
---- facebook.xsd	2008-10-19 18:06:01.000000000 -0700
-+++ src/main/resources/schema.xsd	2008-11-17 20:16:14.000000000 -0800
+--- facebook.xsd	2008-11-17 20:22:49.000000000 -0800
++++ src/main/resources/schema.xsd	2008-11-17 20:24:05.000000000 -0800
 @@ -28,7 +28,7 @@
  </xsd:simpleType>
  
@@ -9,7 +9,25 @@
  </xsd:simpleType>
  
  <xsd:simpleType name="flid">
-@@ -875,6 +875,29 @@
+@@ -639,6 +639,17 @@
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<!--
++<xsd:complexType name="container">
++  <xsd:sequence>
++    <xsd:element name="name" type="xsd:string" />
++    <xsd:element name="assoc_type" type="xsd:int" />
++    <xsd:element name="assoc_info1" type="assoc_object_type" />
++    <xsd:element name="assoc_info2" type="assoc_object_type" />
++  </xsd:sequence>
++</xsd:complexType>
++-->
++
+ <xsd:complexType name="listing">
+   <xsd:sequence>
+     <xsd:element name="listing_id" type="lid" />
+@@ -881,6 +892,29 @@
      <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
      <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
      <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
@@ -39,7 +57,7 @@
    </xsd:all>
  </xsd:complexType>
  
-@@ -1346,12 +1369,21 @@
+@@ -1364,7 +1398,7 @@
  <xsd:element name="data_getObjects_response">
    <xsd:complexType>
      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
@@ -48,21 +66,7 @@
      </xsd:sequence>
      <xsd:attribute name="list" type="xsd:boolean" />
    </xsd:complexType>
- </xsd:element>
- 
-+<xsd:complexType name="container">
-+  <xsd:sequence>
-+    <xsd:element name="name" type="xsd:string" />
-+    <xsd:element name="assoc_type" type="xsd:int" />
-+    <xsd:element name="assoc_info1" type="assoc_object_type" />
-+    <xsd:element name="assoc_info2" type="assoc_object_type" />
-+  </xsd:sequence>
-+</xsd:complexType>
-+
- <xsd:element name="data_getObjectProperty_response" type="xsd:string" />
- 
- <xsd:element name="data_setObjectProperty_response" type="xsd:boolean" />
-@@ -1430,11 +1462,29 @@
+@@ -1448,11 +1482,29 @@
  
  <xsd:element name="application_getPublicInfo_response">
    <xsd:complexType>
@@ -93,9 +97,9 @@
  </xsd:element>
  
  <xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
-@@ -1454,6 +1504,8 @@
- 
- <xsd:element name="feed_publishUserAction_response" type="xsd:boolean" />
+@@ -1481,6 +1533,8 @@
+   </xsd:complexType>
+ </xsd:element>
  
 +<xsd:element name="feed_publishTemplatizedAction_response" type="xsd:boolean" />
 +
