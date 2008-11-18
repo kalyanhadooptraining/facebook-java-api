@@ -12,15 +12,15 @@ import com.Ostermiller.util.Browser;
 
 public class FacebookSessionTestUtils {
 
-	private static String API_KEY = System.getProperty( "API_KEY" );
+	private static String APIKEY = System.getProperty( "APIKEY" );
 	private static String SECRET = System.getProperty( "SECRET" );
 
 	public static String getValidSessionID() throws IOException, FacebookException {
-		IFacebookRestClient<Document> client = new FacebookXmlRestClient( API_KEY, SECRET );
+		IFacebookRestClient<Document> client = new FacebookXmlRestClient( APIKEY, SECRET );
 		String token = client.auth_createToken();
 
 		try {
-			URI hitURL = new URI( "http://api.new.facebook.com/login.php?api_key=" + API_KEY + "&v=1.0&auth_token=" + token );
+			URI hitURL = new URI( "http://api.new.facebook.com/login.php?api_key=" + APIKEY + "&v=1.0&auth_token=" + token );
 			// With Java 6, we could use the Desktop API to open the browser
 			// Desktop.getDesktop().browse( hitURL );
 			// For Java 5, we're using a 3rd party utility.
@@ -72,7 +72,7 @@ public class FacebookSessionTestUtils {
 	private static <T extends IFacebookRestClient> T getIFacebookRestClient( Class<T> clientReturnType, String sessionID ) {
 		try {
 			Constructor<T> clientConstructor = clientReturnType.getConstructor( String.class, String.class, String.class );
-			return clientConstructor.newInstance( API_KEY, SECRET, sessionID );
+			return clientConstructor.newInstance( APIKEY, SECRET, sessionID );
 		}
 		catch ( Exception ex ) {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );

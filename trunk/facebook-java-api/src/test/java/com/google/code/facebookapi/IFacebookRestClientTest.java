@@ -30,11 +30,6 @@ import org.w3c.dom.NodeList;
 public class IFacebookRestClientTest {
 
 	@Test
-	public void testNOOP() {
-		// empty
-	}
-
-	@Test
 	public void test_dataStore() throws Exception {
 		IFacebookRestClient<Document> client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 
