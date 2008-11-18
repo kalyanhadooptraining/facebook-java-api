@@ -41,6 +41,12 @@
       <version>4.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.ostermiller</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.07.00</version>
+      <scope>test</scope>
+    </dependency>    
   </dependencies>
   <build>
     <plugins>

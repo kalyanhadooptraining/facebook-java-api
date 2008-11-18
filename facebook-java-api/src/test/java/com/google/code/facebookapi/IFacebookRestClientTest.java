@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -35,56 +34,9 @@ public class IFacebookRestClientTest {
 		// empty
 	}
 
-	private String API_KEY = System.getProperty( "API_KEY" );
-	private String SECRET = System.getProperty( "SECRET" );
-
-	private String getValidSessionID() throws Exception {
-		IFacebookRestClient<Document> client = new FacebookXmlRestClient( API_KEY, SECRET );
-		String token = client.auth_createToken();
-
-		if ( true ) {
-			throw new UnsupportedOperationException( "Feature currently turned off, we have to support java5." );
-		} else {
-			// below was code originally submitted, but required Java 6, so I'm disabling for now.
-			/*
-			 * URI hitURL = new URI( "http://api.new.facebook.com/login.php?api_key=" + API_KEY + "&v=1.0&auth_token=" + token ); // Uses Java 6 API to register the token
-			 * using your browser. Desktop.getDesktop().browse( hitURL ); Thread.sleep( 2000 ); // Give the token registration a 2 second headstart
-			 */
-		}
-
-		String sessionID = client.auth_getSession( token );
-		return sessionID;
-	}
-
-	// @Test
+	@Test
 	public void test_dataStore() throws Exception {
-		final String SESSION_PREFERENCE = "/com/google/code/facebookapi/test/sessionID";
-
-		IFacebookRestClient<Document> client = null;
-
-		String sessionID = Preferences.userRoot().get( SESSION_PREFERENCE, null );
-		if ( sessionID != null ) {
-			try {
-				client = new FacebookXmlRestClient( API_KEY, SECRET, sessionID );
-				// Test out the session ID
-				Map<String,String> testTeam = new HashMap<String,String>();
-				testTeam.put( "name", "Test Name" );
-				testTeam.put( "stadium", "Test Stadium" );
-				long testTeamID = client.data_createObject( "footballteam", testTeam );
-				client.data_deleteObject( testTeamID );
-			}
-			catch ( FacebookException ex ) {
-				Preferences.userRoot().remove( SESSION_PREFERENCE );
-				client = null;
-				System.out.println( "Session ID is out of date; generate a new one" );
-			}
-		}
-
-		if ( client == null ) {
-			sessionID = getValidSessionID();
-			Preferences.userRoot().put( SESSION_PREFERENCE, sessionID );
-			client = new FacebookXmlRestClient( API_KEY, SECRET, sessionID );
-		}
+		IFacebookRestClient<Document> client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 
 		long andrewHewitt = 42908996689L;
 		long davidBoden = 536286910L;
