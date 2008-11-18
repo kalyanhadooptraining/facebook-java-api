@@ -3,18 +3,18 @@ package com.google.code.facebookapi;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -544,8 +544,123 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 		boolean doEncode = true;
-		InputStream data = method.takesFile() ? postFileRequest( method.methodName(), params, doEncode ) : postRequest( method.methodName(), params, doHttps, doEncode );
+		rawResponse = method.takesFile() ? postFileRequest( method, params, doEncode ) : postRequest( method, params, doHttps, doEncode );
+		return parseCallResult( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ), method );
+	}
 
+	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
+		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
+		CharSequence paramString = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
+		if ( log.isDebugEnabled() ) {
+			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
+		}
+
+		HttpURLConnection conn = null;
+		OutputStream out = null;
+		InputStream in = null;
+		try {
+			conn = (HttpURLConnection) serverUrl.openConnection();
+			if ( _timeout != -1 ) {
+				conn.setConnectTimeout( _timeout );
+			}
+			if ( _readTimeout != -1 ) {
+				conn.setReadTimeout( _readTimeout );
+			}
+			conn.setRequestMethod( "POST" );
+			conn.setDoOutput( true );
+			conn.connect();
+			out = conn.getOutputStream();
+			out.write( paramString.toString().getBytes() );
+			in = conn.getInputStream();
+			return getResponse( method, in );
+		}
+		finally {
+			close( in );
+			close( out );
+			disconnect( conn );
+		}
+	}
+
+	/**
+	 * Helper function for posting a request that includes raw file data, eg {@link #photos_upload}.
+	 * 
+	 * @param methodName
+	 *            the name of the method
+	 * @param params
+	 *            request parameters (not including the file)
+	 * @param doEncode
+	 *            whether to UTF8-encode the parameters
+	 * @return an InputStream with the request response
+	 * @see #photos_upload
+	 */
+	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, boolean doEncode ) throws IOException {
+		assert ( null != _uploadFile );
+		BufferedInputStream fileStream = new BufferedInputStream( new FileInputStream( _uploadFile ) );
+		try {
+			return postFileRequest( method, params, doEncode, _uploadFile.getName(), fileStream );
+		}
+		finally {
+			close( fileStream );
+		}
+	}
+
+	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, boolean doEncode, String fileName, InputStream fileStream ) throws IOException {
+		HttpURLConnection con = null;
+		OutputStream urlOut = null;
+		InputStream in = null;
+		try {
+			String boundary = Long.toString( System.currentTimeMillis(), 16 );
+			con = (HttpURLConnection) _serverUrl.openConnection();
+			if ( _timeout != -1 ) {
+				con.setConnectTimeout( _timeout );
+			}
+			if ( _readTimeout != -1 ) {
+				con.setReadTimeout( _readTimeout );
+			}
+			con.setDoInput( true );
+			con.setDoOutput( true );
+			con.setUseCaches( false );
+			con.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + boundary );
+			con.setRequestProperty( "MIME-version", "1.0" );
+
+			urlOut = con.getOutputStream();
+			DataOutputStream out = new DataOutputStream( urlOut );
+
+			for ( Map.Entry<String,String> entry : params.entrySet() ) {
+				out.writeBytes( PREF + boundary + CRLF );
+				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
+				out.writeBytes( CRLF + CRLF );
+				out.writeBytes( doEncode ? encode( entry.getValue() ) : entry.getValue().toString() );
+				out.writeBytes( CRLF );
+			}
+
+			out.writeBytes( PREF + boundary + CRLF );
+			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
+			out.writeBytes( "Content-Type: image/jpeg" + CRLF );
+			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
+
+			// Write the file
+			out.writeBytes( CRLF );
+			byte b[] = new byte[UPLOAD_BUFFER_SIZE];
+			int byteCounter = 0;
+			int i;
+			while ( -1 != ( i = fileStream.read( b ) ) ) {
+				byteCounter += i;
+				out.write( b, 0, i );
+			}
+			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
+			out.flush();
+			in = con.getInputStream();
+			return getResponse( method, in );
+		}
+		finally {
+			close( urlOut );
+			close( in );
+			disconnect( con );
+		}
+	}
+
+	private String getResponse( IFacebookMethod method, InputStream data ) throws UnsupportedEncodingException, IOException {
 		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
 		StringBuilder buffer = new StringBuilder();
 		String line;
@@ -574,9 +689,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			buffer.append( line );
 		}
-		String xmlResp = buffer.toString();
-		rawResponse = xmlResp;
-		return parseCallResult( new ByteArrayInputStream( xmlResp.getBytes( "UTF-8" ) ), method );
+		return buffer.toString();
 	}
 
 	/**
@@ -713,77 +826,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_addTag( photoId, xPct, yPct, null, tagText );
 	}
 
-	/**
-	 * Helper function for posting a request that includes raw file data, eg {@link #photos_upload}.
-	 * 
-	 * @param methodName
-	 *            the name of the method
-	 * @param params
-	 *            request parameters (not including the file)
-	 * @param doEncode
-	 *            whether to UTF8-encode the parameters
-	 * @return an InputStream with the request response
-	 * @see #photos_upload
-	 */
-	protected InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode ) throws IOException {
-		assert ( null != _uploadFile );
-		BufferedInputStream fileStream = new BufferedInputStream( new FileInputStream( _uploadFile ) );
-		try {
-			String fileName = _uploadFile.getName();
-			return postFileRequest( methodName, params, doEncode, fileName, fileStream );
-		}
-		finally {
-			fileStream.close();
-		}
-	}
-
-	protected InputStream postFileRequest( String methodName, Map<String,String> params, boolean doEncode, String fileName, InputStream fileStream ) throws IOException {
-		try {
-			String boundary = Long.toString( System.currentTimeMillis(), 16 );
-			URLConnection con = _serverUrl.openConnection();
-			con.setDoInput( true );
-			con.setDoOutput( true );
-			con.setUseCaches( false );
-			con.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + boundary );
-			con.setRequestProperty( "MIME-version", "1.0" );
-
-			DataOutputStream out = new DataOutputStream( con.getOutputStream() );
-
-			for ( Map.Entry<String,String> entry : params.entrySet() ) {
-				out.writeBytes( PREF + boundary + CRLF );
-				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
-				out.writeBytes( CRLF + CRLF );
-				out.writeBytes( doEncode ? encode( entry.getValue() ) : entry.getValue().toString() );
-				out.writeBytes( CRLF );
-			}
-
-			out.writeBytes( PREF + boundary + CRLF );
-			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
-			out.writeBytes( "Content-Type: image/jpeg" + CRLF );
-			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
-
-			// Write the file
-			out.writeBytes( CRLF );
-			byte b[] = new byte[UPLOAD_BUFFER_SIZE];
-			int byteCounter = 0;
-			int i;
-			while ( -1 != ( i = fileStream.read( b ) ) ) {
-				byteCounter += i;
-				out.write( b, 0, i );
-			}
-			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
-
-			out.flush();
-			out.close();
-
-			return con.getInputStream();
-		}
-		catch ( Exception e ) {
-			log.error( "Exception: " + e.getMessage(), e );
-		}
-		return null;
-	}
-
 	@Deprecated
 	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException, IOException {
 		notifications_send( recipientIds, notification );
@@ -908,38 +950,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		} else {
 			return callMethod( FacebookMethod.FRIENDS_GET );
 		}
-	}
-
-	private InputStream postRequest( CharSequence method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
-		CharSequence buffer = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
-		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		if ( log.isDebugEnabled() ) {
-			StringBuilder sb = new StringBuilder( method );
-			sb.append( " POST: " );
-			sb.append( serverUrl.toString() );
-			sb.append( "?" );
-			sb.append( buffer );
-			log.debug( sb.toString() );
-		}
-
-		HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
-		if ( _timeout != -1 ) {
-			conn.setConnectTimeout( _timeout );
-		}
-		if ( _readTimeout != -1 ) {
-			conn.setReadTimeout( _readTimeout );
-		}
-		try {
-			conn.setRequestMethod( "POST" );
-		}
-		catch ( ProtocolException ex ) {
-			log.error( "Exception: " + ex.getMessage(), ex );
-		}
-		conn.setDoOutput( true );
-		conn.connect();
-		conn.getOutputStream().write( buffer.toString().getBytes() );
-
-		return conn.getInputStream();
 	}
 
 	public String auth_createToken() throws FacebookException, IOException {
@@ -2593,6 +2603,26 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 
 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
+	}
+
+
+	// ========== HELPERS ==========
+
+	public static void disconnect( HttpURLConnection conn ) {
+		if ( conn != null ) {
+			conn.disconnect();
+		}
+	}
+
+	public static void close( Closeable c ) {
+		if ( c != null ) {
+			try {
+				c.close();
+			}
+			catch ( IOException e ) {
+				// skip this exception
+			}
+		}
 	}
 
 	/**
