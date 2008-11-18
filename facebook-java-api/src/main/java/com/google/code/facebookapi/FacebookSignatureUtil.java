@@ -32,6 +32,8 @@
 package com.google.code.facebookapi;
 
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +42,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.CRC32;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -366,27 +369,29 @@ public final class FacebookSignatureUtil {
 			buffer.append( param );
 		}
 		buffer.append( secret );
+		return generateMD5( buffer.toString() );
+	}
+
+	public static String generateMD5( String value ) {
 		try {
-			java.security.MessageDigest md = java.security.MessageDigest.getInstance( "MD5" );
-			StringBuffer result = new StringBuffer();
+			MessageDigest md = MessageDigest.getInstance( "MD5" );
+			byte[] bytes;
 			try {
-				for ( byte b : md.digest( buffer.toString().getBytes( "UTF-8" ) ) ) {
-					result.append( Integer.toHexString( ( b & 0xf0 ) >>> 4 ) );
-					result.append( Integer.toHexString( b & 0x0f ) );
-				}
+				bytes = value.getBytes( "UTF-8" );
 			}
-			catch ( UnsupportedEncodingException e ) {
-				for ( byte b : md.digest( buffer.toString().getBytes() ) ) {
-					result.append( Integer.toHexString( ( b & 0xf0 ) >>> 4 ) );
-					result.append( Integer.toHexString( b & 0x0f ) );
-				}
+			catch ( UnsupportedEncodingException e1 ) {
+				bytes = value.getBytes();
+			}
+			StringBuffer result = new StringBuffer();
+			for ( byte b : md.digest( bytes ) ) {
+				result.append( Integer.toHexString( ( b & 0xf0 ) >>> 4 ) );
+				result.append( Integer.toHexString( b & 0x0f ) );
 			}
 			return result.toString();
 		}
-		catch ( java.security.NoSuchAlgorithmException ex ) {
-			log.error( "MD5 does not appear to be supported" + ex, ex );
+		catch ( NoSuchAlgorithmException ex ) {
+			throw new RuntimeException( ex );
 		}
-		return "";
 	}
 
 	/**
@@ -401,9 +406,14 @@ public final class FacebookSignatureUtil {
 	 * 
 	 * @param email
 	 * @return email_hash
+	 * @see IFacebookRestClient#connect_registerUsers(Collection)
 	 */
-	public String generateEmailHash( String email ) {
-		return "";
+	public static String generateEmailHash( String email ) {
+		email = email.trim().toLowerCase();
+		CRC32 crc = new CRC32();
+		crc.update( email.getBytes() );
+		String md5 = generateMD5( email );
+		return crc.getValue() + "_" + md5;
 	}
 
 }
