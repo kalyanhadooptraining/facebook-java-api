@@ -639,6 +639,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 
 	@Override
 	public JSONArray friends_get() throws FacebookException, IOException {
+		if ( batchMode ) {
+			Object out = super.friends_get();
+			if ( out instanceof JSONArray ) {
+				return (JSONArray) out;
+			}
+			return null;
+		}
 		if ( cacheFriendsList == null ) {
 			Object out = super.friends_get();
 			if ( out instanceof JSONArray ) {
