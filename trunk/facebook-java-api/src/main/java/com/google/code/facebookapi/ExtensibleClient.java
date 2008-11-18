@@ -1694,7 +1694,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParam( "obj_id1", object1Id, params );
 		addParam( "obj_id2", object2Id, params );
 		addParamIfNotBlank( "data", data, params );
-		addParamIfNotBlank( "assoc_time", associationTime.getTime() / 1000, params );
+		addParamSecondsIfNotBlank( "assoc_time", associationTime, params );
 		callMethod( FacebookMethod.DATA_SET_ASSOCIATION, params );
 	}
 
@@ -2686,6 +2686,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	protected static boolean addParamIfNotBlank( String name, Long value, Collection<Pair<String,CharSequence>> params ) {
 		if ( value != null ) {
 			return addParam( name, value, params );
+		}
+		return false;
+	}
+
+	protected static boolean addParamSecondsIfNotBlank( String name, Date value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null ) {
+			return addParam( name, value.getTime() / 1000, params );
 		}
 		return false;
 	}
