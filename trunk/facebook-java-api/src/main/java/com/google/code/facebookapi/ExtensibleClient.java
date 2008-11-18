@@ -2608,13 +2608,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	// ========== HELPERS ==========
 
-	public static void disconnect( HttpURLConnection conn ) {
+	protected static void disconnect( HttpURLConnection conn ) {
 		if ( conn != null ) {
 			conn.disconnect();
 		}
 	}
 
-	public static void close( Closeable c ) {
+	protected static void close( Closeable c ) {
 		if ( c != null ) {
 			try {
 				c.close();
@@ -2730,6 +2730,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return new JSONObject( map );
 	}
 
+	protected static JSONArray toJsonListOfStrings( Collection<String> list ) {
+		return new JSONArray( list );
+	}
+
+	protected static JSONArray toJsonListOfMaps( Collection<Map<String,String>> listOfMaps ) {
+		JSONArray out = new JSONArray();
+		for ( Map<String,String> map : listOfMaps ) {
+			out.put( toJson( map ) );
+		}
+		return out;
+	}
+
 	/**
 	 * Extracts a Boolean from a result that consists of a Boolean only.
 	 * 
@@ -2841,5 +2853,19 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return sms_send( userId, message.toString(), null, true );
 	}
 
+
+	// ========== CONNECT ==========
+
+	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.CONNECT_REGISTER_USERS, newPair( "accounts", toJsonListOfMaps( accounts ) ) );
+	}
+
+	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.CONNECT_UNREGISTER_USERS, newPair( "accounts", toJsonListOfStrings( email_hashes ) ) );
+	}
+
+	public int connect_getUnconnectedFriendsCount() throws FacebookException, IOException {
+		return extractInt( callMethod( FacebookMethod.CONNECT_GET_UNCONNECTED_FRIENDS_COUNT ) );
+	}
 
 }

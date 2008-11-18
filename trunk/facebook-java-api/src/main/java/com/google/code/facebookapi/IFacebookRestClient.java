@@ -3364,4 +3364,60 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException;
 
+	// ========== CONNECT ==========
+
+	/**
+	 * This method is used to create an association between an external user account and a Facebook user account. This method takes an array of account data, including a
+	 * required email_hash and optional account data. For each connected account, if the user exists, the information is added to the set of the user's connected
+	 * accounts. If the user has already authorized the site, the connected account is added in the confirmed state. If the user has not yet authorized the site, the
+	 * connected account is added in the pending state.
+	 * 
+	 * @param accounts
+	 *            An array of up to 1,000 arrays, or "maps," where each map represent a connected account. Each map can have the following properties:
+	 *            <ul>
+	 *            <li>email_hash: The public email hash of remote account. This property is required. Compute the email_hash property as follows:
+	 *            <ol>
+	 *            <li>1. Normalize the email address. Trim leading and trailing whitespace, and convert all characters to lowercase.
+	 *            <li>2. Compute the CRC32 value for the normalized email address and use the unsigned integer representation of this value. (Note that some
+	 *            implementations return signed integers, in which case you will need to convert that result to an unsigned integer.)
+	 *            <li>3. Compute the MD5 value for the normalized email address and use the hex representation of this value (using lowercase for A through F).
+	 *            <li>4. Combine these two value with an underscore. For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761.
+	 *            </ol>
+	 *            </li>
+	 *            <li>account_id: The user's account ID on the Facebook Connect site. This property is optional. If you specify the account_id property, then you must
+	 *            also set a Connect Preview URL in your application's settings in order to generate a full user URL. The Connect Preview URL contains an account_id
+	 *            parameter, such as http://www.example.com/profile.php?user=account_id. </li>
+	 *            <li>account_url: The URL to the user's account on the Facebook Connect site. This property is optional. If you specify the account_url property, that
+	 *            URL will be used directly. </li>
+	 *            </ul>
+	 *            Facebook recommends that you specify at least one of either the account_id or the account_url properties.
+	 * 
+	 * @return This method returns an array of email hashes that have been successfully registered. If any email hashes are missing, we recommend that you try registering
+	 *         them again later.
+	 * @see http://wiki.developers.facebook.com/index.php/Connect.registerUsers
+	 */
+	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException, IOException;
+
+	/**
+	 * This method allows a site to unregister a previously registered account (using connect.registerUsers). You should call this method if the user deletes his account
+	 * on your site.
+	 * 
+	 * @param email_hashes
+	 *            An array of email_hashes to unregister.
+	 * @return This method returns an array of unregistered email hashes. If any email hashes are missing, we recommend that you try unregistering the account again
+	 *         later.
+	 * @see http://wiki.developers.facebook.com/index.php/Connect.unregisterUsers
+	 */
+	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException, IOException;
+
+	/**
+	 * This method returns the number of friends of the current user who have accounts on your site, but have not yet connected their accounts. Also see
+	 * fb:unconnected-friends-count. You can use the response from this call to determine whether or not to display a link allowing the user to invite their friends to
+	 * connect as well.
+	 * 
+	 * @return This method returns an int that indicates the number of users who have not yet connected their accounts.
+	 * @see http://wiki.developers.facebook.com/index.php/Connect.getUnconnectedFriendsCount
+	 */
+	public int connect_getUnconnectedFriendsCount() throws FacebookException, IOException;
+
 }
