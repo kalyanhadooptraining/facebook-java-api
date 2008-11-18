@@ -3377,13 +3377,13 @@ public interface IFacebookRestClient<T> {
 	 *            <ul>
 	 *            <li>email_hash: The public email hash of remote account. This property is required. Compute the email_hash property as follows:
 	 *            <ol>
-	 *            <li>1. Normalize the email address. Trim leading and trailing whitespace, and convert all characters to lowercase.
-	 *            <li>2. Compute the CRC32 value for the normalized email address and use the unsigned integer representation of this value. (Note that some
-	 *            implementations return signed integers, in which case you will need to convert that result to an unsigned integer.)
-	 *            <li>3. Compute the MD5 value for the normalized email address and use the hex representation of this value (using lowercase for A through F).
-	 *            <li>4. Combine these two value with an underscore. For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761.
+	 *            <li>Normalize the email address. Trim leading and trailing whitespace, and convert all characters to lowercase.</li>
+	 *            <li>Compute the CRC32 value for the normalized email address and use the unsigned integer representation of this value. (Note that some implementations
+	 *            return signed integers, in which case you will need to convert that result to an unsigned integer.)</li>
+	 *            <li>Compute the MD5 value for the normalized email address and use the hex representation of this value (using lowercase for A through F).</li>
+	 *            <li>Combine these two value with an underscore.</li>
 	 *            </ol>
-	 *            </li>
+	 *            For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761. </li>
 	 *            <li>account_id: The user's account ID on the Facebook Connect site. This property is optional. If you specify the account_id property, then you must
 	 *            also set a Connect Preview URL in your application's settings in order to generate a full user URL. The Connect Preview URL contains an account_id
 	 *            parameter, such as http://www.example.com/profile.php?user=account_id. </li>
