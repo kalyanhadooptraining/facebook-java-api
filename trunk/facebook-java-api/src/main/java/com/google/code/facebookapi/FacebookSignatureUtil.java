@@ -48,29 +48,30 @@ import org.apache.commons.logging.LogFactory;
  * Utility for managing Facebook-specific parameters, specifically those related to session/login aspects.
  */
 public final class FacebookSignatureUtil {
+
 	/**
 	 * Compares two key=value style keys, only performing the comparison up to the first "=".
 	 */
 	private static final Comparator<String> KEY_COMPARATOR = new Comparator<String>() {
 		public int compare( String s1, String s2 ) {
-			int minLength = Math.min(s1.length(), s2.length());
-			for (int i = 0; i < minLength; i++) {
+			int minLength = Math.min( s1.length(), s2.length() );
+			for ( int i = 0; i < minLength; i++ ) {
 				char c1 = s1.charAt( i );
 				char c2 = s2.charAt( i );
-				if (c1 == '=') {
-					if (c2 == '=') {
+				if ( c1 == '=' ) {
+					if ( c2 == '=' ) {
 						return 0;
-					} 
-					
+					}
+
 					return -1;
 				}
-				
-				if (c2 == '=') {
+
+				if ( c2 == '=' ) {
 					return 1;
 				}
-					
-				if (c1 != c2) {
-				    return c1 - c2;
+
+				if ( c1 != c2 ) {
+					return c1 - c2;
 				}
 			}
 
@@ -279,12 +280,12 @@ public final class FacebookSignatureUtil {
 	 */
 	public static boolean autoVerifySignature( Map<String,String[]> requestParams, String secret ) {
 		String[] expectedParms = requestParams.get( "fb_sig" );
-		
-		// Make sure we aren't missing the signature 
-		if (expectedParms == null || (expectedParms.length == 0)) {
+
+		// Make sure we aren't missing the signature
+		if ( expectedParms == null || ( expectedParms.length == 0 ) ) {
 			return false;
 		}
-		
+
 		String expected = expectedParms[0];
 		return autoVerifySignature( requestParams, secret, expected );
 	}
@@ -385,6 +386,23 @@ public final class FacebookSignatureUtil {
 		catch ( java.security.NoSuchAlgorithmException ex ) {
 			log.error( "MD5 does not appear to be supported" + ex, ex );
 		}
+		return "";
+	}
+
+	/**
+	 * <ol>
+	 * <li>Normalize the email address. Trim leading and trailing whitespace, and convert all characters to lowercase.</li>
+	 * <li>Compute the CRC32 value for the normalized email address and use the unsigned integer representation of this value. (Note that some implementations return
+	 * signed integers, in which case you will need to convert that result to an unsigned integer.)</li>
+	 * <li>Compute the MD5 value for the normalized email address and use the hex representation of this value (using lowercase for A through F).</li>
+	 * <li>Combine these two value with an underscore.</li>
+	 * </ol>
+	 * For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761.
+	 * 
+	 * @param email
+	 * @return email_hash
+	 */
+	public String generateEmailHash( String email ) {
 		return "";
 	}
 
