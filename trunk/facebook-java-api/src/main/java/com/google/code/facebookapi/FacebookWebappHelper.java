@@ -307,6 +307,14 @@ public class FacebookWebappHelper<T> {
 	public boolean isAdded() {
 		return "1".equals( fbParams.get( FacebookParam.ADDED.getSignatureName() ) );
 	}
+	
+	/**
+	 * Returns true if UNINSTALL param exists and is 1.
+	 */
+	public boolean isUninstall() {
+		return "1".equals( fbParams.get( FacebookParam.UNINSTALL.getSignatureName() ) );
+	}
+
 
 	public boolean isLogin() {
 		return getUser() != null;
