@@ -544,7 +544,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			conn.setDoOutput( true );
 			conn.connect();
 			out = conn.getOutputStream();
-			out.write( paramString.toString().getBytes() );
+			out.write( paramString.toString().getBytes( "UTF-8" ) );
 			in = conn.getInputStream();
 			return getResponse( method, in );
 		}
@@ -593,7 +593,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			for ( Map.Entry<String,String> entry : params.entrySet() ) {
 				out.writeBytes( PREF + boundary + CRLF );
 
-				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
+				out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
 				// out.writeBytes( "Content-Transfer-Encoding: application/x-www-form-urlencoded" + CRLF );
 
 				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
@@ -601,7 +601,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" + CRLF );
 				out.writeBytes( CRLF );
-				out.writeBytes( entry.getValue().toString() );
+				byte[] valueBytes = entry.getValue().toString().getBytes( "UTF-8" );
+				out.write( valueBytes );
 				out.writeBytes( CRLF );
 			}
 
