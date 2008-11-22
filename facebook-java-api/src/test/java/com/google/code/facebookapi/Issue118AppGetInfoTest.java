@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
 
-public class Issue118AppGetInfo {
+public class Issue118AppGetInfoTest {
 
 	private static final String stuffAPIKEY_ExistsInDirectory = "16cce4f13025b2bb4517b3890c4f68b9";
 	private static final String stuffDevAPIKEY_NotInDirectory = "985c882028dc9bd8438fc349792fdc6b";
