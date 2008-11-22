@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -661,33 +662,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	private String getResponse( IFacebookMethod method, InputStream data ) throws UnsupportedEncodingException, IOException {
-		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
+		Reader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
 		StringBuilder buffer = new StringBuilder();
-		String line;
-		boolean insideTagBody = false;
-		while ( ( line = in.readLine() ) != null ) {
-			/*
-			 * is the last char a close ('>')? if not, we need to add a comma to the string as FB (unfortunately) lets people enter profile information and use hard
-			 * returns, which are stripped out For example, this is a "valid" XML from FB: <?xml version="1.0" encoding="UTF-8"?> <users_getInfo_response
-			 * xmlns="http://api.facebook.com/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://api.facebook.com/1.0/
-			 * http://api.facebook.com/1.0/facebook.xsd" list="true"> <user> <uid>12345678</uid> <first_name>Bob</first_name> <music>My Morning Jacket, Libertines The
-			 * Clash</music> </user> </users_getInfo_response>
-			 * 
-			 * When the buffer is built, <music> ends up like this: "My Morning Jacket, LibertinesTheClash" which makes it impossible to parse as the delimiters are
-			 * destroyed
-			 */
-			if ( "xml".equalsIgnoreCase( getResponseFormat() ) && method != FacebookMethod.BATCH_RUN ) {
-				if ( line.trim().startsWith( "<" ) && line.contains( ">" ) ) {
-					insideTagBody = true;
-				}
-				if ( line.trim().endsWith( ">" ) ) {
-					insideTagBody = false;
-				}
-				if ( insideTagBody ) {
-					line += ",";
-				}
-			}
-			buffer.append( line );
+		char[] buf = new char[1000];
+		int l = 0;
+		while ( l >= 0 ) {
+			buffer.append( buf, 0, l );
+			l = in.read( buf );
 		}
 		return buffer.toString();
 	}
