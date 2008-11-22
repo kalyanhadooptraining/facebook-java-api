@@ -1,5 +1,5 @@
 --- facebook.xsd	2008-11-17 20:22:49.000000000 -0800
-+++ src/main/resources/schema.xsd	2008-11-17 20:24:05.000000000 -0800
++++ src/main/resources/schema.xsd	2008-11-21 22:03:49.000000000 -0800
 @@ -28,7 +28,7 @@
  </xsd:simpleType>
  
@@ -9,6 +9,15 @@
  </xsd:simpleType>
  
  <xsd:simpleType name="flid">
+@@ -96,7 +96,7 @@
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="time">
+-  <xsd:restriction base="xsd:int" />
++  <xsd:restriction base="xsd:long" />
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="date">
 @@ -639,6 +639,17 @@
    </xsd:sequence>
  </xsd:complexType>
