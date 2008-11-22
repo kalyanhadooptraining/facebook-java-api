@@ -289,7 +289,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	private FriendsGetResponse cacheFriendsList;
 
 	@Override
-	public FriendsGetResponse friends_get() throws IOException, FacebookException {
+	public FriendsGetResponse friends_get() throws FacebookException {
 		if ( batchMode ) {
 			return (FriendsGetResponse) super.friends_get();
 		}
@@ -320,7 +320,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 * @param authToken
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
-	public String auth_getSession( String authToken ) throws FacebookException, IOException {
+	public String auth_getSession( String authToken ) throws FacebookException {
 		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
 		SessionInfo d = (SessionInfo) obj.getValue();
 		this.cacheSessionKey = d.getSessionKey();
@@ -345,7 +345,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 *             if <code>data</code> is not readable
 	 */
-	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
+	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException {
 		log.debug( "Facebook response:  " + rawResponse );
 		Object res = getResponsePOJO();
 		if ( res instanceof FacebookApiException ) {
@@ -423,43 +423,42 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
+	public String data_getUserPreference( Integer prefId ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
+	public Map<Integer,String> data_getUserPreferences() throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
+	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
 				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
 	}
 
-	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
+	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
+	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException {
 		MarketplaceGetListingsResponse resp = (MarketplaceGetListingsResponse) marketplace_getListings( listingIds, uids );
 		return resp.getListing();
 	}
 
-	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
+	public List<String> marketplace_getSubCategories() throws FacebookException {
 		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) marketplace_getSubCategories( null );
 		return resp.getMarketplaceSubcategory();
 	}
 
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
-			IOException {
+	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException {
 		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) marketplace_search( category.getName(), subcategory.getName(), searchTerm );
 		return resp.getListing();
 	}
 
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
+	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
 		if ( this._isDesktop ) {
 			// this method cannot be called from a desktop app
 			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
@@ -490,7 +489,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException, IOException {
+	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
 		this.batchMode = false;
 		List<Object> result = new ArrayList<Object>();
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
