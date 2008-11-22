@@ -72,7 +72,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			catch ( JAXBException ex ) {
 				log.error( "MalformedURLException: " + ex.getMessage(), ex );
-				JAXB_CONTEXT = null;
 			}
 		}
 	}
@@ -393,7 +392,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			result = URLEncoder.encode( result, "UTF8" );
 		}
 		catch ( UnsupportedEncodingException ex ) {
-			log.warn( "Unsuccessful attempt to encode '" + result + "' into UTF8", ex );
+			throw runtimeException( ex );
 		}
 		return result;
 	}
@@ -897,8 +896,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				try {
 					results.add( j.get( (String) it.next() ).toString() );
 				}
-				catch ( Exception ignored ) {
-					// ignore
+				catch ( Exception ex ) {
+					runtimeException( ex );
 				}
 			}
 		}
@@ -985,23 +984,15 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		if ( ( getResponseFormat() != null ) && ( !"xml".equalsIgnoreCase( getResponseFormat() ) ) ) {
 			// JAXB will not work with JSON
-			throw new RuntimeException( "You can only generate a response POJO when using XML formatted API responses!  JSON users go elsewhere!" );
+			throw new RuntimeException( "You can only generate a response POJO when using XML formatted API responses! JSON users go elsewhere!" );
 		}
-		Object pojo = null;
 		try {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-			pojo = unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
+			return unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
 		}
-		catch ( JAXBException ex ) {
-			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
+		catch ( Exception ex ) {
+			throw runtimeException( ex );
 		}
-		catch ( NullPointerException ex ) {
-			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
-		}
-		catch ( UnsupportedEncodingException ex ) {
-			log.error( "getResponsePOJO() - Could not unmarshall XML stream into POJO:" + ex.getMessage(), ex );
-		}
-		return pojo;
 	}
 
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException, IOException {
@@ -1411,8 +1402,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 					temp.put( property.getName(), properties.get( property ) );
 					encoding2.put( temp );
 				}
-				catch ( JSONException ignored ) {
-					// ignore
+				catch ( JSONException ex ) {
+					throw runtimeException( ex );
 				}
 			} else {
 				// we need to parse a boolean value
@@ -1429,8 +1420,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 					temp.put( property.getName(), val );
 					encoding2.put( temp );
 				}
-				catch ( JSONException ignored ) {
-					// ignore
+				catch ( JSONException ex ) {
+					throw runtimeException( ex );
 				}
 			}
 		}
@@ -1553,13 +1544,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "title_template", titleTemplate ) );
 		if ( null != titleData && !titleData.isEmpty() ) {
 			JSONObject titleDataJson = new JSONObject();
-			for ( String key : titleData.keySet() ) {
-				try {
+			try {
+				for ( String key : titleData.keySet() ) {
 					titleDataJson.put( key, titleData.get( key ) );
 				}
-				catch ( Exception ignored ) {
-					// ignore
-				}
+			}
+			catch ( Exception ex ) {
+				throw runtimeException( ex );
 			}
 			params.add( newPair( "title_data", titleDataJson ) );
 		}
@@ -1568,13 +1559,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			params.add( newPair( "body_template", bodyTemplate ) );
 			if ( null != bodyData && !bodyData.isEmpty() ) {
 				JSONObject bodyDataJson = new JSONObject();
-				for ( String key : bodyData.keySet() ) {
-					try {
+				try {
+					for ( String key : bodyData.keySet() ) {
 						bodyDataJson.put( key, bodyData.get( key ) );
 					}
-					catch ( Exception ignored ) {
-						// ignore
-					}
+				}
+				catch ( Exception ex ) {
+					throw runtimeException( ex );
 				}
 				params.add( newPair( "body_data", bodyDataJson ) );
 			}
@@ -1976,8 +1967,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				innerJSON.put( "items", fieldItems );
 				json.put( innerJSON );
 			}
-			catch ( Exception ignored ) {
-				ignored.printStackTrace();
+			catch ( Exception ex ) {
+				throw runtimeException( ex );
 			}
 		}
 		params.add( newPair( "info_fields", json ) );
@@ -1992,8 +1983,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				try {
 					itemJSON.put( key, item.getMap().get( key ) );
 				}
-				catch ( Exception e ) {
-					e.printStackTrace();
+				catch ( Exception ex ) {
+					throw runtimeException( ex );
 				}
 			}
 			json.put( itemJSON );
@@ -2074,7 +2065,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			setDefaultServerUrl( _serverUrl );
 		}
 		catch ( MalformedURLException ex ) {
-			throw new RuntimeException( ex );
+			throw runtimeException( ex );
 		}
 	}
 
@@ -2156,7 +2147,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 					jsonTemplateData.put( key, templateData.get( key ) );
 				}
 				catch ( Exception exception ) {
-					throw new RuntimeException( "Error constructing JSON object", exception );
+					throw runtimeException( exception );
 				}
 			}
 		}
@@ -2184,7 +2175,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				jsonTemplateData.put( "images", jsonArray );
 			}
 			catch ( Exception exception ) {
-				throw new RuntimeException( "Error constructing JSON object", exception );
+				throw runtimeException( exception );
 			}
 		}
 
@@ -2210,10 +2201,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			try {
 				c.close();
 			}
-			catch ( IOException e ) {
-				// skip this exception
+			catch ( IOException ex ) {
+				log.warn( "Trouble closing connection", ex );
 			}
 		}
+	}
+
+	protected static RuntimeException runtimeException( Exception ex ) {
+		if ( ! ( ex instanceof RuntimeException ) ) {
+			return new RuntimeException( ex );
+		}
+		return (RuntimeException) ex;
 	}
 
 	/**
@@ -2643,8 +2641,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 			tagStr = jsonTags.toString();
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( Exception ex ) {
+			throw runtimeException( ex );
 		}
 		return callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, newPair( "pid", photoId ), newPair( "tags", tagStr ), newPair( "uid", userId ) );
 	}
