@@ -96,7 +96,7 @@
 </xsd:simpleType>
 
 <xsd:simpleType name="time">
-  <xsd:restriction base="xsd:int" />
+  <xsd:restriction base="xsd:long" />
 </xsd:simpleType>
 
 <xsd:simpleType name="date">
