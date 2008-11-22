@@ -58,6 +58,8 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 							|| ( typeName.indexOf( "map" ) != -1 ) || ( typeName.indexOf( "object" ) != -1 ) ) {
 						// we don't autobox these for now, the user can parse them on their own
 						RETURN_TYPES.put( method, "default" );
+					} else if ( ( typeName.indexOf( "jsonarray" ) != -1 ) ) {
+						RETURN_TYPES.put( method, "default" );
 					} else {
 						RETURN_TYPES.put( method, "void" );
 					}
