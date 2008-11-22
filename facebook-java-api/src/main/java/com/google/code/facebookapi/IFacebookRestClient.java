@@ -34,6 +34,7 @@ package com.google.code.facebookapi;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -1063,6 +1064,22 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException;
+
+	/**
+	 * Uploads a photo to Facebook.
+	 * @param userId
+	 *            the id of the user uploading the photo
+	 * @param caption
+	 *            a description of the image contents
+	 * @param albumId
+	 *            the album into which the photo should be uploaded
+	 * @param fileName
+	 * @param fileStream
+	 * 
+	 * @return a T with the standard Facebook photo information
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
+	 */
+	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException, IOException;
 
 	/**
 	 * Retrieves the groups associated with a user
