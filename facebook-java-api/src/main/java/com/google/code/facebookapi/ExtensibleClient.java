@@ -510,13 +510,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 		boolean doEncode = true;
-		rawResponse = method.takesFile() ? postFileRequest( method, params, doEncode, fileName, fileStream ) : postRequest( method, params, doHttps, doEncode );
+		rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 		return parseCallResult( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ), method );
 	}
 
-	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps, boolean doEncode ) throws IOException {
+	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		CharSequence paramString = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", doEncode );
+		CharSequence paramString = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
 		}
@@ -560,7 +560,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @see #photos_upload
 	 */
 
-	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, boolean doEncode, String fileName, InputStream fileStream ) throws IOException {
+	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		HttpURLConnection con = null;
 		OutputStream urlOut = null;
 		InputStream in = null;
@@ -584,15 +584,22 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 			for ( Map.Entry<String,String> entry : params.entrySet() ) {
 				out.writeBytes( PREF + boundary + CRLF );
-				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" );
-				out.writeBytes( CRLF + CRLF );
-				out.writeBytes( doEncode ? encode( entry.getValue() ) : entry.getValue().toString() );
+
+				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
+				// out.writeBytes( "Content-Transfer-Encoding: application/x-www-form-urlencoded" + CRLF );
+
+				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
+				// out.writeBytes( "Content-Transfer-Encoding: quoted-printable" + CRLF );
+
+				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" + CRLF );
+				out.writeBytes( CRLF );
+				out.writeBytes( entry.getValue().toString() );
 				out.writeBytes( CRLF );
 			}
 
 			out.writeBytes( PREF + boundary + CRLF );
+			out.writeBytes( "Content-Type: image" + CRLF );
 			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
-			out.writeBytes( "Content-Type: image/jpeg" + CRLF );
 			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
 
 			// Write the file
@@ -2824,8 +2831,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
 		addParamIfNotBlankZero( "aid", albumId, params );
 		addParamIfNotBlank( "caption", caption, params );
-		addParamIfNotBlankZero( "uid", userId, params );
-		return callMethod( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params, fileName, fileStream );
+		boolean uid = addParamIfNotBlankZero( "uid", userId, params );
+		FacebookMethod method = uid ? FacebookMethod.PHOTOS_UPLOAD_NOSESSION : FacebookMethod.PHOTOS_UPLOAD;
+		return callMethod( method, params, fileName, fileStream );
 	}
 
 }
