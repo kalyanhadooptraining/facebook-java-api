@@ -1,7 +1,6 @@
 package com.google.code.facebookapi;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -85,14 +84,14 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.setFBML">http://wiki.developers.facebook.com/index.php/Profile.setFBML</a>
 	 */
-	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException, IOException;
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException;
 
 	/**
 	 * @see #profile_setFBML(Long, String, String, String, String)
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException, IOException;
+	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for a profile box on the logged-in user's profile.
@@ -103,7 +102,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
+	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for profile actions for the logged-in user.
@@ -115,7 +114,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
+	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for the logged-in user's profile on mobile devices.
@@ -127,7 +126,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException, IOException;
+	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for a profile box on the user or page profile with ID <code>profileId</code>.
@@ -141,7 +140,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
+	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for profile actions for the user or page profile with ID <code>profileId</code>.
@@ -155,7 +154,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
+	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for the user or page profile with ID <code>profileId</code> on mobile devices.
@@ -169,7 +168,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException, IOException;
+	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for the profile box and profile actions for the logged-in user. Refer to the FBML documentation for a description of the markup and its role in
@@ -184,7 +183,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException;
+	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for the profile box and profile actions for the user or page profile with ID <code>profileId</code>. Refer to the FBML documentation for a
@@ -201,7 +200,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException, IOException;
+	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException;
 
 	/**
 	 * Sets the FBML for the profile box, profile actions, and mobile devices for the user or page profile with ID <code>profileId</code>. Refer to the FBML
@@ -221,7 +220,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
-			throws FacebookException, IOException;
+			throws FacebookException;
 
 	/**
 	 * Sets the FBML for the profile box, profile actions, and mobile devices for the current user. Refer to the FBML documentation for a description of the markup and
@@ -240,8 +239,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated trying to reduce superfluous methods, use {@link #profile_setFBML(Long, String, String, String, String)}
 	 */
 	@Deprecated
-	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException,
-			IOException;
+	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException;
 
 	/**
 	 * Gets the FBML for the current user's profile box.
@@ -250,7 +248,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	public T profile_getFBML() throws FacebookException, IOException;
+	public T profile_getFBML() throws FacebookException;
 
 	/**
 	 * Gets the FBML for the user's profile box.
@@ -261,7 +259,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	public T profile_getFBML( Long userId ) throws FacebookException, IOException;
+	public T profile_getFBML( Long userId ) throws FacebookException;
 
 	/**
 	 * Gets the FBML for the current user's profile boxes.
@@ -272,7 +270,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	public T profile_getFBML( int type ) throws FacebookException, IOException;
+	public T profile_getFBML( int type ) throws FacebookException;
 
 	/**
 	 * Gets the FBML for the user's profile boxes.
@@ -285,7 +283,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
-	public T profile_getFBML( int type, Long userId ) throws FacebookException, IOException;
+	public T profile_getFBML( int type, Long userId ) throws FacebookException;
 
 	/**
 	 * Recaches the referenced url.
@@ -294,7 +292,7 @@ public interface IFacebookRestClient<T> {
 	 *            string representing the URL to refresh
 	 * @return boolean indicating whether the refresh succeeded
 	 */
-	public boolean fbml_refreshRefUrl( String url ) throws FacebookException, IOException;
+	public boolean fbml_refreshRefUrl( String url ) throws FacebookException;
 
 	/**
 	 * Recaches the referenced url.
@@ -303,7 +301,7 @@ public interface IFacebookRestClient<T> {
 	 *            the URL to refresh
 	 * @return boolean indicating whether the refresh succeeded
 	 */
-	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException, IOException;
+	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException;
 
 	/**
 	 * Recaches the image with the specified imageUrl.
@@ -312,7 +310,7 @@ public interface IFacebookRestClient<T> {
 	 *            String representing the image URL to refresh
 	 * @return boolean indicating whether the refresh succeeded
 	 */
-	public boolean fbml_refreshImgSrc( String imageUrl ) throws FacebookException, IOException;
+	public boolean fbml_refreshImgSrc( String imageUrl ) throws FacebookException;
 
 	/**
 	 * Recaches the image with the specified imageUrl.
@@ -321,7 +319,7 @@ public interface IFacebookRestClient<T> {
 	 *            the image URL to refresh
 	 * @return boolean indicating whether the refresh succeeded
 	 */
-	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException, IOException;
+	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating News Feed stories to the friends of that user. Stories are identified
@@ -337,7 +335,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated since 01/18/2008
 	 */
 	@Deprecated
-	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException, IOException;
+	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by the logged-in user, and publishes aggregating News Feed stories to their friends. Stories are identified
@@ -350,7 +348,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed Preview Console </a>
 	 */
 	@Deprecated
-	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException, IOException;
+	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by the logged-in user (or, if <code>pageActorId</code> is provided, page), and publishes aggregating News
@@ -364,7 +362,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
 	 * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed Preview Console </a>
 	 */
-	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException, IOException;
+	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by the logged-in user (or, if <code>pageActorId</code> is provided, page), and publishes aggregating News
@@ -398,7 +396,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images,
-			Long pageActorId ) throws FacebookException, IOException;
+			Long pageActorId ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating News Feed stories to the friends of that user. Stories are identified
@@ -432,7 +430,7 @@ public interface IFacebookRestClient<T> {
 	@Deprecated
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
-			throws FacebookException, IOException;
+			throws FacebookException;
 
 	/**
 	 * Retrieves whether two users are friends.
@@ -441,7 +439,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userId2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
-	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException, IOException;
+	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException;
 
 	/**
 	 * Retrieves whether pairs of users are friends. Returns whether the first user in <code>userIds1</code> is friends with the first user in <code>userIds2</code>,
@@ -451,21 +449,21 @@ public interface IFacebookRestClient<T> {
 	 * @param userIds2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
-	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException, IOException;
+	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user.
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
-	public T friends_get() throws FacebookException, IOException;
+	public T friends_get() throws FacebookException;
 
 	/**
 	 * Retrieves the friends uid.
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
-	public T friends_get( Long uid ) throws FacebookException, IOException;
+	public T friends_get( Long uid ) throws FacebookException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user that are members of the friends list with ID <code>friendListId</code>.
@@ -474,21 +472,21 @@ public interface IFacebookRestClient<T> {
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
-	public T friends_getList( Long friendListId ) throws FacebookException, IOException;
+	public T friends_getList( Long friendListId ) throws FacebookException;
 
 	/**
 	 * Retrieves the friend lists of the currently logged in user.
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
 	 */
-	public T friends_getLists() throws FacebookException, IOException;
+	public T friends_getLists() throws FacebookException;
 
 	/**
 	 * Retrieves the friends of the currently logged in user, who are also users of the calling application.
 	 * 
 	 * @return array of friends
 	 */
-	public T friends_getAppUsers() throws FacebookException, IOException;
+	public T friends_getAppUsers() throws FacebookException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -500,7 +498,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException;
+	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -512,7 +510,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException;
+	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -525,7 +523,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException, IOException;
+	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -538,14 +536,14 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException, IOException;
+	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the user ID of the user logged in to this API session
 	 * 
 	 * @return the Facebook user ID of the logged-in user
 	 */
-	public long users_getLoggedInUser() throws FacebookException, IOException;
+	public long users_getLoggedInUser() throws FacebookException;
 
 	/**
 	 * Retrieves an indicator of whether the logged-in user has added the application associated with the _apiKey.
@@ -555,7 +553,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated
 	 */
 	@Deprecated
-	public boolean users_isAppAdded() throws FacebookException, IOException;
+	public boolean users_isAppAdded() throws FacebookException;
 
 	/**
 	 * Retrieves an indicator of whether the specified user has added the application associated with the _apiKey.
@@ -567,13 +565,13 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated
 	 */
 	@Deprecated
-	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException;
+	public boolean users_isAppAdded( Long userId ) throws FacebookException;
 
 	/**
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppUser">Users.isAppUser</a>
 	 * @see #users_isAppUser(Long)
 	 */
-	public boolean users_isAppUser() throws FacebookException, IOException;
+	public boolean users_isAppUser() throws FacebookException;
 
 	/**
 	 * Returns whether the user (either the session user or user specified by uid) has authorized the calling application.
@@ -585,7 +583,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppUser">Users.isAppUser</a>
 	 */
-	public boolean users_isAppUser( Long userId ) throws FacebookException, IOException;
+	public boolean users_isAppUser( Long userId ) throws FacebookException;
 
 	/**
 	 * Sets the logged-in user's Facebook status. Requires the status_update extended permission.
@@ -595,7 +593,7 @@ public interface IFacebookRestClient<T> {
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String status ) throws FacebookException, IOException;
+	public boolean users_setStatus( String status ) throws FacebookException;
 
 	/**
 	 * Sets the spedified user's Facebook status. Requires the status_update extended permission.
@@ -605,7 +603,7 @@ public interface IFacebookRestClient<T> {
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String status, Long userId ) throws FacebookException, IOException;
+	public boolean users_setStatus( String status, Long userId ) throws FacebookException;
 
 	/**
 	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
@@ -620,11 +618,9 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException, IOException;
+	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException;
 
 	/**
 	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
@@ -641,11 +637,9 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException, IOException;
+	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException;
 
 	/**
 	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
@@ -663,11 +657,9 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException, IOException;
+	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException;
 
 	/**
 	 * Set the user's profile status message. This requires that the user has granted the application the 'status_update' permission, otherwise the call will return an
@@ -687,11 +679,9 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException, IOException;
+	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException;
 
 	/**
 	 * Clears the logged-in user's Facebook status. Requires the status_update extended permission.
@@ -701,7 +691,7 @@ public interface IFacebookRestClient<T> {
 	 * @see FacebookExtendedPerm#STATUS_UPDATE
 	 * @see http://wiki.developers.facebook.com/index.php/Users.setStatus
 	 */
-	public boolean users_clearStatus() throws FacebookException, IOException;
+	public boolean users_clearStatus() throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -715,7 +705,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return an T of photo objects.
 	 */
-	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException;
+	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -728,7 +718,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException, IOException;
+	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -741,7 +731,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Long subjId, Long albumId ) throws FacebookException, IOException;
+	public T photos_get( Long subjId, Long albumId ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -752,7 +742,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Collection<Long> photoIds ) throws FacebookException, IOException;
+	public T photos_get( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -763,7 +753,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Long subjId ) throws FacebookException, IOException;
+	public T photos_get( Long subjId ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata. Pass a user id and/or a list of album ids to specify the albums to be retrieved (at least one must be provided)
@@ -775,7 +765,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException, IOException;
+	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata for albums owned by a user.
@@ -785,7 +775,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Long userId ) throws FacebookException, IOException;
+	public T photos_getAlbums( Long userId ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata for a list of album IDs.
@@ -795,7 +785,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException, IOException;
+	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves the tags for the given set of photos.
@@ -804,7 +794,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException, IOException;
+	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -813,7 +803,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	public T photos_createAlbum( String albumName ) throws FacebookException, IOException;
+	public T photos_createAlbum( String albumName ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -826,7 +816,7 @@ public interface IFacebookRestClient<T> {
 	 *            The album description (optional).
 	 * @return an array of photo objects.
 	 */
-	public T photos_createAlbum( String name, String description, String location ) throws FacebookException, IOException;
+	public T photos_createAlbum( String name, String description, String location ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -837,7 +827,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return the created album
 	 */
-	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException, IOException;
+	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -852,7 +842,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return an array of photo objects.
 	 */
-	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException, IOException;
+	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException;
 
 	/**
 	 * Adds several tags to a photo.
@@ -863,7 +853,7 @@ public interface IFacebookRestClient<T> {
 	 *            A list of PhotoTags.
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException, IOException;
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -878,7 +868,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException, IOException;
+	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -893,7 +883,7 @@ public interface IFacebookRestClient<T> {
 	 *            The text of the tag.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException, IOException;
+	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -910,7 +900,7 @@ public interface IFacebookRestClient<T> {
 	 *            the user tagging the photo.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct, Long userId ) throws FacebookException, IOException;
+	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct, Long userId ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -927,7 +917,7 @@ public interface IFacebookRestClient<T> {
 	 *            the user tagging the photo.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct, Long userId ) throws FacebookException, IOException;
+	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct, Long userId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -937,7 +927,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( File photo ) throws FacebookException, IOException;
+	public T photos_upload( File photo ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -949,7 +939,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( File photo, String caption ) throws FacebookException, IOException;
+	public T photos_upload( File photo, String caption ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -961,7 +951,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( File photo, Long albumId ) throws FacebookException, IOException;
+	public T photos_upload( File photo, Long albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -975,7 +965,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException, IOException;
+	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -987,7 +977,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( Long userId, File photo ) throws FacebookException, IOException;
+	public T photos_upload( Long userId, File photo ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1001,7 +991,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException, IOException;
+	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1015,7 +1005,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException, IOException;
+	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1031,7 +1021,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException;
+	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1048,7 +1038,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException, IOException;
+	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException;
 
 	/**
 	 * Retrieves the groups associated with a user
@@ -1059,7 +1049,7 @@ public interface IFacebookRestClient<T> {
 	 *            Optional: group ids to query. A null parameter will get all groups for the user.
 	 * @return array of groups
 	 */
-	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException, IOException;
+	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException;
 
 	/**
 	 * Retrieves the membership list of a group
@@ -1068,7 +1058,7 @@ public interface IFacebookRestClient<T> {
 	 *            the group id
 	 * @return a T containing four membership lists of 'members', 'admins', 'officers', and 'not_replied'
 	 */
-	public T groups_getMembers( Number groupId ) throws FacebookException, IOException;
+	public T groups_getMembers( Number groupId ) throws FacebookException;
 
 	/**
 	 * Retrieves the results of a Facebook Query Language query
@@ -1077,7 +1067,7 @@ public interface IFacebookRestClient<T> {
 	 *            the FQL query statement
 	 * @return varies depending on the FQL query
 	 */
-	public T fql_query( CharSequence query ) throws FacebookException, IOException;
+	public T fql_query( CharSequence query ) throws FacebookException;
 
 	/**
 	 * Retrieves the outstanding notifications for the session user.
@@ -1085,7 +1075,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
 	 *         list of 'event_invites'
 	 */
-	public T notifications_get() throws FacebookException, IOException;
+	public T notifications_get() throws FacebookException;
 
 	/**
 	 * Send a notification message to the specified users.
@@ -1102,7 +1092,7 @@ public interface IFacebookRestClient<T> {
 	 *             notifications.send if all you want to send is a notification.
 	 */
 	@Deprecated
-	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException, IOException;
+	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException;
 
 	/**
 	 * Send a notification message to the specified users.
@@ -1112,7 +1102,7 @@ public interface IFacebookRestClient<T> {
 	 * @param notification
 	 *            the FBML to display on the notifications page.
 	 */
-	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException, IOException;
+	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
@@ -1120,7 +1110,7 @@ public interface IFacebookRestClient<T> {
 	 * @return an authentication token
 	 * @see http://wiki.developers.facebook.com/index.php/Auth.createToken
 	 */
-	public String auth_createToken() throws FacebookException, IOException;
+	public String auth_createToken() throws FacebookException;
 
 	/**
 	 * Call this function to retrieve the session information after your user has logged in.
@@ -1129,7 +1119,7 @@ public interface IFacebookRestClient<T> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 * @see http://wiki.developers.facebook.com/index.php/Auth.getSession
 	 */
-	public String auth_getSession( String authToken ) throws FacebookException, IOException;
+	public String auth_getSession( String authToken ) throws FacebookException;
 
 	/**
 	 * Call this function to get the user ID.
@@ -1137,7 +1127,7 @@ public interface IFacebookRestClient<T> {
 	 * @return The ID of the current session's user, or -1 if none.
 	 */
 	@Deprecated
-	public long auth_getUserId( String authToken ) throws FacebookException, IOException;
+	public long auth_getUserId( String authToken ) throws FacebookException;
 
 	public String getCacheSessionKey();
 
@@ -1160,7 +1150,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
 	 */
 	@Deprecated
-	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException;
+	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
 
 	/**
 	 * Modify a marketplace listing. The create_listing extended permission is required.
@@ -1171,7 +1161,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
 	 */
 	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException, IOException;
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
 
 	/**
 	 * Remove a marketplace listing. The create_listing extended permission is required.
@@ -1183,7 +1173,7 @@ public interface IFacebookRestClient<T> {
 	 * @see FacebookExtendedPerm#MARKETPLACE
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
 	 */
-	public boolean marketplace_removeListing( Long listingId ) throws FacebookException, IOException;
+	public boolean marketplace_removeListing( Long listingId ) throws FacebookException;
 
 	/**
 	 * Remove a marketplace listing. The create_listing extended permission is required.
@@ -1197,7 +1187,7 @@ public interface IFacebookRestClient<T> {
 	 * @see FacebookExtendedPerm#MARKETPLACE
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
 	 */
-	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException, IOException;
+	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException;
 
 	/**
 	 * Remove a marketplace listing. The create_listing extended permission is required.
@@ -1214,7 +1204,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListingStatus instead.
 	 */
 	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException, IOException;
+	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException;
 
 	/**
 	 * Get the categories available in marketplace.
@@ -1222,7 +1212,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T listing the marketplace categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
 	 */
-	public List<String> marketplace_getCategories() throws FacebookException, IOException;
+	public List<String> marketplace_getCategories() throws FacebookException;
 
 	/**
 	 * Get the subcategories available for a category.
@@ -1232,7 +1222,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T listing the marketplace sub-categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
 	 */
-	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException, IOException;
+	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
 
 	/**
 	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
@@ -1244,7 +1234,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T of marketplace listings
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
 	 */
-	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException, IOException;
+	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
 
 	/**
 	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
@@ -1261,7 +1251,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only. Please use the alternate version instead.
 	 */
 	@Deprecated
-	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException, IOException;
+	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -1274,7 +1264,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException;
+	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -1285,7 +1275,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_getByAlbum( Long albumId ) throws FacebookException, IOException;
+	public T photos_getByAlbum( Long albumId ) throws FacebookException;
 
 	/**
 	 * Get the categories available in marketplace.
@@ -1296,7 +1286,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated use the version that returns a List<String> instead.
 	 */
 	@Deprecated
-	public T marketplace_getCategoriesObject() throws FacebookException, IOException;
+	public T marketplace_getCategoriesObject() throws FacebookException;
 
 	/**
 	 * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
@@ -1363,9 +1353,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if any number of bad things happen
-	 * @throws IOException
 	 */
-	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException, IOException;
+	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException;
 
 	/**
 	 * Lookup a single preference value for the current user.
@@ -1377,10 +1366,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException;
+	public String data_getUserPreference( Integer prefId ) throws FacebookException;
 
 	/**
 	 * Get a map containing all preference values set for the current user.
@@ -1390,10 +1377,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException;
+	public Map<Integer,String> data_getUserPreferences() throws FacebookException;
 
 	/**
 	 * Set a user-preference value. The value can be any string up to 127 characters in length, while the preference id can only be an integer between 0 and 200. Any
@@ -1409,10 +1394,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException;
+	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException;
 
 	/**
 	 * Set multiple user-preferences values. The values can be strings up to 127 characters in length, while the preference id can only be an integer between 0 and 200.
@@ -1430,16 +1413,14 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException;
+	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException;
 
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
-	public boolean users_hasAppPermission( Permission perm ) throws FacebookException, IOException;
+	public boolean users_hasAppPermission( Permission perm ) throws FacebookException;
 
 	/**
 	 * Checks whether the user has opted in to an extended application permission.
@@ -1456,7 +1437,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
-	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException, IOException;
+	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException;
 
 	/**
 	 * Publishes a templatized action for the current user. The action will appear in their minifeed, and may appear in their friends' newsfeeds depending upon a number
@@ -1503,11 +1484,10 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if any number of bad things happen
-	 * @throws IOException
 	 */
 	@Deprecated
 	public boolean feed_publishTemplatizedAction( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
-			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException, IOException;
+			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException;
 
 	/**
 	 * Associates the specified FBML markup with the specified handle/id. The markup can then be referenced using the fb:ref FBML tag, to allow a given snippet to be
@@ -1523,10 +1503,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public boolean fbml_setRefHandle( String handle, String markup ) throws FacebookException, IOException;
+	public boolean fbml_setRefHandle( String handle, String markup ) throws FacebookException;
 
 	/**
 	 * Publishes a Mini-Feed story describing an action taken by a user, and publishes aggregating News Feed stories to the friends of that user. Stories are identified
@@ -1563,7 +1541,7 @@ public interface IFacebookRestClient<T> {
 	@Deprecated
 	public boolean feed_publishTemplatizedAction( Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
-			throws FacebookException, IOException;
+			throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing, or modify an existing one.
@@ -1579,10 +1557,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException, IOException;
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing, or modify an existing one.
@@ -1598,10 +1574,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException, IOException;
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing.
@@ -1615,10 +1589,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException, IOException;
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing, or modify an existing one.
@@ -1636,10 +1608,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException, IOException;
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing, or modify an existing one.
@@ -1657,10 +1627,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException, IOException;
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
 
 	/**
 	 * Create a new marketplace listing.
@@ -1676,10 +1644,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException, IOException;
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
 
 	/**
 	 * Return a list of all valid Marketplace subcategories.
@@ -1688,10 +1654,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public List<String> marketplace_getSubCategories() throws FacebookException, IOException;
+	public List<String> marketplace_getSubCategories() throws FacebookException;
 
 	/**
 	 * Retrieve listings from the marketplace. The listings can be filtered by listing-id or user-id (or both).
@@ -1705,10 +1669,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException;
+	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException;
 
 	/**
 	 * Search the marketplace listings by category, subcategory, and keyword.
@@ -1724,11 +1686,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
-			IOException;
+	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException;
 
 	/**
 	 * Remove a listing from the marketplace by id.
@@ -1742,10 +1701,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException, IOException;
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException;
 
 	/**
 	 * Remove a listing from the marketplace by id.
@@ -1761,10 +1718,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException, IOException;
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException;
 
 	/**
 	 * Modify a marketplace listing
@@ -1779,7 +1734,7 @@ public interface IFacebookRestClient<T> {
 	 * @see MarketplaceListing
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
 	 */
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException, IOException;
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
@@ -1792,7 +1747,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	public T pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException, IOException;
+	public T pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
@@ -1805,7 +1760,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	public T pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException, IOException;
+	public T pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages of the user with the given <code>userId</code>.
@@ -1817,7 +1772,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException, IOException;
+	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages of the user with the given <code>userId</code>.
@@ -1829,7 +1784,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException, IOException;
+	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Checks whether a page has added the application
@@ -1839,7 +1794,7 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the page has added the application
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded"> Developers Wiki: Pages.isAppAdded</a>
 	 */
-	public boolean pages_isAppAdded( Long pageId ) throws FacebookException, IOException;
+	public boolean pages_isAppAdded( Long pageId ) throws FacebookException;
 
 	/**
 	 * Checks whether a user is a fan of the page with the given <code>pageId</code>.
@@ -1851,7 +1806,7 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the user is a fan of the page
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
 	 */
-	public boolean pages_isFan( Long pageId, Long userId ) throws FacebookException, IOException;
+	public boolean pages_isFan( Long pageId, Long userId ) throws FacebookException;
 
 	/**
 	 * Checks whether the logged-in user is a fan of the page with the given <code>pageId</code>.
@@ -1861,7 +1816,7 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the logged-in user is a fan of the page
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
 	 */
-	public boolean pages_isFan( Long pageId ) throws FacebookException, IOException;
+	public boolean pages_isFan( Long pageId ) throws FacebookException;
 
 	/**
 	 * Checks whether the logged-in user for this session is an admin of the page with the given <code>pageId</code>.
@@ -1871,7 +1826,7 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the logged-in user is an admin
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin"> Developers Wiki: Pages.isAdmin</a>
 	 */
-	public boolean pages_isAdmin( Long pageId ) throws FacebookException, IOException;
+	public boolean pages_isAdmin( Long pageId ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail content can be specified as either plaintext or FBML. In either case, only a limited subset of markup is
@@ -1891,10 +1846,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException, IOException;
+	public T notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1916,10 +1869,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException, IOException;
+	public T notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as plaintext, and can contain a limited subset of HTML tags (specifically, only tags
@@ -1934,10 +1885,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException, IOException;
+	public T notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1954,10 +1903,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException, IOException;
+	public T notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as fbml, and can contain a limited subset of FBML tags (specifically, only tags that
@@ -1973,10 +1920,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException, IOException;
+	public T notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1994,10 +1939,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public T notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException, IOException;
+	public T notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send a notification message to the logged-in user.
@@ -2007,7 +1950,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send"> Developers Wiki: notifications.send</a>
 	 */
-	public void notifications_send( CharSequence notification ) throws FacebookException, IOException;
+	public void notifications_send( CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Sends a notification email to the specified users, who must have added your application. You can send five (5) emails to a user per day. Requires a session key for
@@ -2026,7 +1969,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
 	@Deprecated
-	public String notifications_sendEmail( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml ) throws FacebookException, IOException;
+	public String notifications_sendEmail( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml ) throws FacebookException;
 
 	/**
 	 * Sends a notification email to the specified users, who must have added your application. You can send five (5) emails to a user per day. Requires a session key for
@@ -2044,7 +1987,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
 	@Deprecated
-	public String notifications_sendEmailPlain( Collection<Long> recipientIds, CharSequence subject, CharSequence text ) throws FacebookException, IOException;
+	public String notifications_sendEmailPlain( Collection<Long> recipientIds, CharSequence subject, CharSequence text ) throws FacebookException;
 
 	/**
 	 * Sends a notification email to the specified users, who must have added your application. You can send five (5) emails to a user per day. Requires a session key for
@@ -2065,8 +2008,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only, please use one of the alternate notifications_sendEmail calls.
 	 */
 	@Deprecated
-	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException,
-			IOException;
+	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException;
 
 	/**
 	 * Set application properties. The properties are used by Facebook to describe the configuration of your application.
@@ -2079,9 +2021,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the properties are set successfully false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException, IOException;
+	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException;
 
 	/**
 	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
@@ -2094,12 +2035,11 @@ public interface IFacebookRestClient<T> {
 	 * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * 
 	 * @deprecated use admin_getAppPropertiesMap() instead
 	 */
 	@Deprecated
-	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException, IOException;
+	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException;
 
 	/**
 	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
@@ -2114,9 +2054,8 @@ public interface IFacebookRestClient<T> {
 	 *         represented by an empty string.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException, IOException;
+	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException;
 
 	/**
 	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
@@ -2130,9 +2069,8 @@ public interface IFacebookRestClient<T> {
 	 *         http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException;
+	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException;
 
 	/**
 	 * Get all cookies for the currently logged-in user.
@@ -2140,9 +2078,8 @@ public interface IFacebookRestClient<T> {
 	 * @return all cookies for the current user.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T data_getCookies() throws FacebookException, IOException;
+	public T data_getCookies() throws FacebookException;
 
 	/**
 	 * Get all cookies for the specified user.
@@ -2153,9 +2090,8 @@ public interface IFacebookRestClient<T> {
 	 * @return all cookies for the specified user.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T data_getCookies( Long userId ) throws FacebookException, IOException;
+	public T data_getCookies( Long userId ) throws FacebookException;
 
 	/**
 	 * Get a specific cookie for the currently logged-in user.
@@ -2166,9 +2102,8 @@ public interface IFacebookRestClient<T> {
 	 * @return the specified cookie for the current user.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T data_getCookies( String name ) throws FacebookException, IOException;
+	public T data_getCookies( String name ) throws FacebookException;
 
 	/**
 	 * Get a specific cookie for the specified user.
@@ -2181,9 +2116,8 @@ public interface IFacebookRestClient<T> {
 	 * @return the specified cookie for the specified user.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T data_getCookies( Long userId, CharSequence name ) throws FacebookException, IOException;
+	public T data_getCookies( Long userId, CharSequence name ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the current user. It will use the default expiry (never), and the default path ("/").
@@ -2196,9 +2130,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( String name, String value ) throws FacebookException, IOException;
+	public boolean data_setCookie( String name, String value ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the current user, under the specified path. It will use the default expiry (never).
@@ -2213,9 +2146,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( String name, String value, String path ) throws FacebookException, IOException;
+	public boolean data_setCookie( String name, String value, String path ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the specified user. The cookie will use the default expiry (never) and the default path ("/").
@@ -2230,9 +2162,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value ) throws FacebookException, IOException;
+	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the specified user, with the specified path. The cookie will use the default expiry (never).
@@ -2249,9 +2180,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, CharSequence path ) throws FacebookException, IOException;
+	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, CharSequence path ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the current user, with the specified expiration date. It will use the default path ("/").
@@ -2266,9 +2196,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( String name, String value, Long expires ) throws FacebookException, IOException;
+	public boolean data_setCookie( String name, String value, Long expires ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the current user, with the specified expiration date and path.
@@ -2285,9 +2214,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( String name, String value, Long expires, String path ) throws FacebookException, IOException;
+	public boolean data_setCookie( String name, String value, Long expires, String path ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the specified user, with the specified expiration date. The cookie will use the default path ("/").
@@ -2304,9 +2232,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires ) throws FacebookException, IOException;
+	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires ) throws FacebookException;
 
 	/**
 	 * Set a cookie for the specified user, with the specified expiration date and path.
@@ -2325,9 +2252,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the cookie is set successfully, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires, CharSequence path ) throws FacebookException, IOException;
+	public boolean data_setCookie( Long userId, CharSequence name, CharSequence value, Long expires, CharSequence path ) throws FacebookException;
 
 	/**
 	 * Create object in Data Store
@@ -2337,11 +2263,10 @@ public interface IFacebookRestClient<T> {
 	 * @param properties
 	 *            Optional - Name-value pairs of properties this new object has
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @return 64-bit integer: Numeric identifier (fbid) of newly created object.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObject"> Developers Wiki: Data.createObject</a>
 	 */
-	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException, IOException;
+	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException;
 
 	/**
 	 * Update properties of an existing object in Data Store
@@ -2353,10 +2278,9 @@ public interface IFacebookRestClient<T> {
 	 * @param replace
 	 *            True if replace all existing properties; false to merge into existing ones.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.updateObject"> Developers Wiki: Data.updateObject</a>
 	 */
-	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException, IOException;
+	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException;
 
 	/**
 	 * Delete object in Data Store
@@ -2364,11 +2288,10 @@ public interface IFacebookRestClient<T> {
 	 * @param objectId
 	 *            Numeric identifier (fbid) of the object to delete.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see #data_deleteObjects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObject"> Developers Wiki: Data.deleteObject</a>
 	 */
-	public void data_deleteObject( long objectId ) throws FacebookException, IOException;
+	public void data_deleteObject( long objectId ) throws FacebookException;
 
 	/**
 	 * Delete multiple objects in Data Store
@@ -2379,11 +2302,10 @@ public interface IFacebookRestClient<T> {
 	 * @param objectIds
 	 *            A list of 64-bit integers that are numeric identifiers (fbids) of objects to delete.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see #data_deleteObject
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObjects"> Developers Wiki: Data.deleteObjects</a>
 	 */
-	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException, IOException;
+	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException;
 
 	/**
 	 * Create an association between two objects
@@ -2400,10 +2322,9 @@ public interface IFacebookRestClient<T> {
 	 *            Optional (can be null) - Default to association creation time. A timestamp to store with this association. This timestamp is represented as number of
 	 *            seconds since the Unix Epoch (January 1 1970 00:00:00 GMT). )
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.setAssociation"> Developers Wiki: Data.setAssociation</a>
 	 */
-	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException, IOException;
+	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException;
 
 	/**
 	 * Removes an association between two object identifiers. Note that, the order of these two identifiers matters, unless this is a symmetric two-way association.
@@ -2415,10 +2336,9 @@ public interface IFacebookRestClient<T> {
 	 * @param object2Id
 	 *            Object identifier 2.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.removeAssociation"> Developers Wiki: Data.removeAssociation</a>
 	 */
-	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException, IOException;
+	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException;
 
 	/**
 	 * The name of this function may be misleading, but it actually removes associations between any other objects and a specified object. Those other associated objects
@@ -2429,10 +2349,9 @@ public interface IFacebookRestClient<T> {
 	 * @param objectId
 	 *            Object identifier.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.removeAssociatedObjects"> Developers Wiki: Data.removeAssociatedObjects</a>
 	 */
-	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException, IOException;
+	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException;
 
 	/**
 	 * Returns count of object ids that are associated with specified object. This function takes constant time to return the count, regardless how many objects are
@@ -2443,11 +2362,10 @@ public interface IFacebookRestClient<T> {
 	 * @param objectId
 	 *            Object identifier.
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @return int64 object count
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.getAssociatedObjectCount"> Developers Wiki: Data.getAssociatedObjectCount</a>
 	 */
-	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException, IOException;
+	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException;
 
 	/**
 	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
@@ -2460,7 +2378,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a boolean indicating whether the properties were successfully set
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
 	 */
-	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException, IOException;
+	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException;
 
 	/**
 	 * Gets property values previously set for an application on either the Facebook Developer application or the with the <code>admin.setAppProperties</code> call. A
@@ -2474,7 +2392,7 @@ public interface IFacebookRestClient<T> {
 	 * @see ApplicationProperty
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
 	 */
-	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException, IOException;
+	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException;
 
 	/**
 	 * Starts a batch of queries. Any API calls made after invoking 'beginBatch' will be deferred until the next time you call 'executeBatch', at which time they will be
@@ -2494,7 +2412,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a result containing the response to each individual query in the batch.
 	 */
-	public T batch_run( String methods, boolean serial ) throws FacebookException, IOException;
+	public T batch_run( String methods, boolean serial ) throws FacebookException;
 
 	/**
 	 * Executes a batch of queries. You define the queries to execute by calling 'beginBatch' and then invoking the desired API methods that you want to execute as part
@@ -2512,9 +2430,8 @@ public interface IFacebookRestClient<T> {
 	 * The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException, IOException;
+	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException;
 
 	/**
 	 * Gets the public information about the specified application. Only one of the 3 parameters needs to be specified.
@@ -2529,7 +2446,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException, IOException;
+	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException;
 
 	/**
 	 * Gets the public information about the specified application, by application id.
@@ -2540,7 +2457,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	public T application_getPublicInfoById( Long applicationId ) throws FacebookException, IOException;
+	public T application_getPublicInfoById( Long applicationId ) throws FacebookException;
 
 	/**
 	 * Gets the public information about the specified application, by API key.
@@ -2551,7 +2468,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException, IOException;
+	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException;
 
 	/**
 	 * Gets the public information about the specified application, by canvas-page name.
@@ -2562,7 +2479,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException, IOException;
+	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException;
 
 	/**
 	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
@@ -2574,7 +2491,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
-	public int admin_getAllocation( String allocationType ) throws FacebookException, IOException;
+	public int admin_getAllocation( String allocationType ) throws FacebookException;
 
 	/**
 	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
@@ -2586,7 +2503,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
-	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException, IOException;
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
 
 	/**
 	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
@@ -2595,7 +2512,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	@Deprecated
-	public int admin_getRequestAllocation() throws FacebookException, IOException;
+	public int admin_getRequestAllocation() throws FacebookException;
 
 	/**
 	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
@@ -2604,7 +2521,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	@Deprecated
-	public int admin_getNotificationAllocation() throws FacebookException, IOException;
+	public int admin_getNotificationAllocation() throws FacebookException;
 
 	/**
 	 * Retrieve the daily metrics for the current application.
@@ -2619,11 +2536,10 @@ public interface IFacebookRestClient<T> {
 	 * @return daily metrics for your app, for each day in the specified range
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException, IOException;
+	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
 
 	/**
 	 * Retrieve metrics for the current application.
@@ -2641,10 +2557,9 @@ public interface IFacebookRestClient<T> {
 	 * @return daily metrics for your app, for each day in the specified range
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
-	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException, IOException;
+	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
 
 	/**
 	 * Retrieve the daily metrics for the current application.
@@ -2659,11 +2574,10 @@ public interface IFacebookRestClient<T> {
 	 * @return daily metrics for your app, for each day in the specified range
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException, IOException;
+	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
 
 	/**
 	 * Retrieve the daily metrics for the current application.
@@ -2681,10 +2595,9 @@ public interface IFacebookRestClient<T> {
 	 * @return daily metrics for your app, for each day in the specified range
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
-	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException, IOException;
+	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
 
 	/**
 	 * Grant permission to an external app to make API calls on behalf of the current application.
@@ -2696,7 +2609,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return true if the operation succeeds false otherwise
 	 */
-	public boolean permissions_grantApiAccess( String apiKey, Set<FacebookMethod> methods ) throws FacebookException, IOException;
+	public boolean permissions_grantApiAccess( String apiKey, Set<FacebookMethod> methods ) throws FacebookException;
 
 	/**
 	 * Grant permission to an external app to make API calls on behalf of the current application. Access is granted to the full set of allowed API methods.
@@ -2706,7 +2619,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return true if the operation succeeds false otherwise
 	 */
-	public boolean permissions_grantFullApiAccess( String apiKey ) throws FacebookException, IOException;
+	public boolean permissions_grantFullApiAccess( String apiKey ) throws FacebookException;
 
 	/**
 	 * Check to see what permissions have been granted to current app by the specified external application.
@@ -2721,7 +2634,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
-	public T permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException, IOException;
+	public T permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException;
 
 	/**
 	 * Revokes the specified application's permission to call API methods on behalf of the current app.
@@ -2731,7 +2644,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return true if the operation succeeds false otherwise
 	 */
-	public boolean permissions_revokeApiAccess( String apiKey ) throws FacebookException, IOException;
+	public boolean permissions_revokeApiAccess( String apiKey ) throws FacebookException;
 
 	/**
 	 * Check to see what permissions have been granted to specified external application by the current application.
@@ -2746,7 +2659,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
-	public T permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException, IOException;
+	public T permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException;
 
 	/**
 	 * Expires the curently active session.
@@ -2754,9 +2667,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean auth_expireSession() throws FacebookException, IOException;
+	public boolean auth_expireSession() throws FacebookException;
 
 	/**
 	 * If this method is called for the logged in user, then no further API calls can be made on that user's behalf until the user decides to authorize the application
@@ -2765,9 +2677,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean auth_revokeAuthorization() throws FacebookException, IOException;
+	public boolean auth_revokeAuthorization() throws FacebookException;
 
 	/**
 	 * Begins permissions mode, and allows the current application to begin making requests on behalf of the application associated with the specified API key.
@@ -2805,7 +2716,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return the key.
 	 */
-	public String auth_promoteSession() throws FacebookException, IOException;
+	public String auth_promoteSession() throws FacebookException;
 
 	/**
 	 * Registers a feed template.
@@ -2817,7 +2728,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return the id which Facebook assigns to your template
 	 */
-	public Long feed_registerTemplateBundle( String template ) throws FacebookException, IOException;
+	public Long feed_registerTemplateBundle( String template ) throws FacebookException;
 
 	/**
 	 * Registers a feed template.
@@ -2829,7 +2740,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return the id which Facebook assigns to your template
 	 */
-	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException, IOException;
+	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException;
 
 	/**
 	 * Registers a feed template.
@@ -2849,7 +2760,7 @@ public interface IFacebookRestClient<T> {
 	 *             parameters. You are encouraged to use one of the alternate versions.
 	 */
 	@Deprecated
-	public Long feed_registerTemplateBundle( String template, String shortTemplate, String longTemplate ) throws FacebookException, IOException;
+	public Long feed_registerTemplateBundle( String template, String shortTemplate, String longTemplate ) throws FacebookException;
 
 	/**
 	 * Registers a feed template.
@@ -2868,7 +2779,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the id which Facebook assigns to your template
 	 */
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
-			List<BundleActionLink> actionLinks ) throws FacebookException, IOException;
+			List<BundleActionLink> actionLinks ) throws FacebookException;
 
 	/**
 	 * Registers a feed template.
@@ -2885,7 +2796,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the id which Facebook assigns to your template
 	 */
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
-			throws FacebookException, IOException;
+			throws FacebookException;
 
 	/**
 	 * Get a list of all registered template bundles for your application.
@@ -2893,9 +2804,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a list describing all registered feed templates.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T feed_getRegisteredTemplateBundles() throws FacebookException, IOException;
+	public T feed_getRegisteredTemplateBundles() throws FacebookException;
 
 	/**
 	 * Retrieve a template bundle by id.
@@ -2905,9 +2815,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return the specified template bundle definition.
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException, IOException;
+	public T feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException;
 
 	/**
 	 * Publishes a user action to the feed.
@@ -2920,9 +2829,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException, IOException;
+	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException;
 
 	/**
 	 * Publishes a user action to the feed.
@@ -2941,10 +2849,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException,
-			IOException;
+	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException;
 
 	/**
 	 * Get the specified user's application-info section.
@@ -2955,9 +2861,8 @@ public interface IFacebookRestClient<T> {
 	 * @return the user's application-info section.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T profile_getInfo( Long userId ) throws FacebookException, IOException;
+	public T profile_getInfo( Long userId ) throws FacebookException;
 
 	/**
 	 * Get the options associated with the specified field for an application info section.
@@ -2968,9 +2873,8 @@ public interface IFacebookRestClient<T> {
 	 * @return the options associated with the specified field for an application info section.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public T profile_getInfoOptions( String field ) throws FacebookException, IOException;
+	public T profile_getInfoOptions( String field ) throws FacebookException;
 
 	/**
 	 * Configures an application info section that the specified user can install on the Info tab of her profile.
@@ -2987,9 +2891,8 @@ public interface IFacebookRestClient<T> {
 	 *            the fields to set.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException, IOException;
+	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException;
 
 	/**
 	 * Specifies the objects for a field for an application info section. These options populate the typeahead for a thumbnail.
@@ -3000,9 +2903,8 @@ public interface IFacebookRestClient<T> {
 	 *            the field to set.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException, IOException;
+	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException;
 
 	/**
 	 * Adds several tags to a photo.
@@ -3016,7 +2918,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException, IOException;
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
 
 	/**
 	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
@@ -3046,9 +2948,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the message is sent, false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException, IOException;
+	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException;
 
 	/**
 	 * Sends a notification.
@@ -3061,10 +2962,9 @@ public interface IFacebookRestClient<T> {
 	 *            set to 'true' to send an "announcement" notification, otherwise set to false to send a "general" notification.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 * @see http://wiki.developers.facebook.com/index.php/Notifications.send
 	 */
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException, IOException;
+	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException;
 
 	/**
 	 * Deactivates the specified template bundle.
@@ -3075,9 +2975,8 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds, false otherwise.
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
-	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException, IOException;
+	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException;
 
 	/**
 	 * Publishes a user action to the feed.
@@ -3100,10 +2999,9 @@ public interface IFacebookRestClient<T> {
 	 * @return true if the call succeeds false otherwise
 	 * 
 	 * @throws FacebookException
-	 * @throws IOException
 	 */
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
-			int storySize ) throws FacebookException, IOException;
+			int storySize ) throws FacebookException;
 
 
 	// ========== EVENTS ==========
@@ -3122,7 +3020,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
-	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException, IOException;
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException;
 
 	/**
 	 * Returns all visible events according to the filters specified.
@@ -3140,7 +3038,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
-	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException, IOException;
+	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException;
 
 	/**
 	 * Retrieves the membership list of an event
@@ -3150,7 +3048,7 @@ public interface IFacebookRestClient<T> {
 	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
 	 * @see http://wiki.developers.facebook.com/index.php/Events.getMembers
 	 */
-	public T events_getMembers( Long eventId ) throws FacebookException, IOException;
+	public T events_getMembers( Long eventId ) throws FacebookException;
 
 	/**
 	 * Creates an event on behalf of the user if the application has an active session key for that user; otherwise it creates an event on behalf of the application.
@@ -3180,7 +3078,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.create
 	 */
-	public Long events_create( Map<String,String> event_info ) throws FacebookException, IOException;
+	public Long events_create( Map<String,String> event_info ) throws FacebookException;
 
 	/**
 	 * Edits the details of an existing event. The application must be an admin of the event. An application is the admin of an event if the application created the event
@@ -3208,7 +3106,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.edit
 	 */
-	public boolean events_edit( Long eid, Map<String,String> event_info ) throws FacebookException, IOException;
+	public boolean events_edit( Long eid, Map<String,String> event_info ) throws FacebookException;
 
 	/**
 	 * Cancels an event. The application must be an admin of the event. An application is the admin of an event if the application created the event on behalf of a user
@@ -3221,7 +3119,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.cancel
 	 */
-	public boolean events_cancel( Long eid, String cancel_message ) throws FacebookException, IOException;
+	public boolean events_cancel( Long eid, String cancel_message ) throws FacebookException;
 
 	/**
 	 * Sets a user's RSVP status for an event. An application can set a user's RSVP status only if the following are all true:
@@ -3238,7 +3136,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.rsvp
 	 */
-	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException, IOException;
+	public boolean events_rsvp( Long eid, String rsvp_status ) throws FacebookException;
 
 
 	// ========== MOBILE ==========
@@ -3250,10 +3148,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public boolean sms_canSend() throws FacebookException, IOException;
+	public boolean sms_canSend() throws FacebookException;
 
 	/**
 	 * Check to see if the application is permitted to send SMS messages to the specified user.
@@ -3265,10 +3161,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public boolean sms_canSend( Long userId ) throws FacebookException, IOException;
+	public boolean sms_canSend( Long userId ) throws FacebookException;
 
 	/**
 	 * Send an SMS message to the current application user.
@@ -3287,10 +3181,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
+	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException;
 
 	/**
 	 * Send an SMS message to the specified user.
@@ -3311,10 +3203,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
-	 * @throws IOException
-	 *             if a communication/network error happens.
 	 */
-	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException, IOException;
+	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException;
 
 	/**
 	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required
@@ -3327,12 +3217,11 @@ public interface IFacebookRestClient<T> {
 	 * @return a mobile session ID (can be used in {@link #sms_sendResponse})
 	 * @throws FacebookException
 	 *             in case of error, e.g. SMS is not enabled
-	 * @throws IOException
 	 * @see FacebookExtendedPerm#SMS
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
 	 */
-	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException, IOException;
+	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException;
 
 	/**
 	 * Sends a message via SMS to the user identified by <code>userId</code>. The SMS extended permission is required for success.
@@ -3343,12 +3232,11 @@ public interface IFacebookRestClient<T> {
 	 *            the message to be sent via SMS
 	 * @throws FacebookException
 	 *             in case of error
-	 * @throws IOException
 	 * @see FacebookExtendedPerm#SMS
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Application_generated_messages"> Developers Wiki: Mobile: Application Generated Messages</a>
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Mobile#Workflow"> Developers Wiki: Mobile: Workflow</a>
 	 */
-	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException, IOException;
+	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException;
 
 	// ========== CONNECT ==========
 
@@ -3382,7 +3270,7 @@ public interface IFacebookRestClient<T> {
 	 *         them again later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.registerUsers
 	 */
-	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException, IOException;
+	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException;
 
 	/**
 	 * This method allows a site to unregister a previously registered account (using connect.registerUsers). You should call this method if the user deletes his account
@@ -3394,7 +3282,7 @@ public interface IFacebookRestClient<T> {
 	 *         later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.unregisterUsers
 	 */
-	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException, IOException;
+	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException;
 
 	/**
 	 * This method returns the number of friends of the current user who have accounts on your site, but have not yet connected their accounts. Also see
@@ -3404,6 +3292,6 @@ public interface IFacebookRestClient<T> {
 	 * @return This method returns an int that indicates the number of users who have not yet connected their accounts.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.getUnconnectedFriendsCount
 	 */
-	public int connect_getUnconnectedFriendsCount() throws FacebookException, IOException;
+	public int connect_getUnconnectedFriendsCount() throws FacebookException;
 
 }

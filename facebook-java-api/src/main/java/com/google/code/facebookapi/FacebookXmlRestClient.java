@@ -178,7 +178,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * @param authToken
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
-	public String auth_getSession( String authToken ) throws FacebookException, IOException {
+	public String auth_getSession( String authToken ) throws FacebookException {
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
@@ -284,43 +284,42 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 	}
 
-	public String data_getUserPreference( Integer prefId ) throws FacebookException, IOException {
+	public String data_getUserPreference( Integer prefId ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	public Map<Integer,String> data_getUserPreferences() throws FacebookException, IOException {
+	public Map<Integer,String> data_getUserPreferences() throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException, IOException {
+	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException, IOException {
+	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookRestClient instead." );
 	}
 
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException, IOException {
+	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
-	public List<String> marketplace_getSubCategories() throws FacebookException, IOException {
+	public List<String> marketplace_getSubCategories() throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException,
-			IOException {
+	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException, IOException {
+	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
 		if ( this._isDesktop ) {
 			// this method cannot be called from a desktop app
 			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
@@ -351,7 +350,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException, IOException {
+	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
 		this.batchMode = false;
 		List<Object> result = new ArrayList<Object>();
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
@@ -444,7 +443,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	}
 
 	@Override
-	public Document friends_get() throws FacebookException, IOException {
+	public Document friends_get() throws FacebookException {
 		if ( batchMode ) {
 			return super.friends_get();
 		}
