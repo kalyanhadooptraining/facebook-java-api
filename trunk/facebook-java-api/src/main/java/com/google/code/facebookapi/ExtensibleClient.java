@@ -98,10 +98,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	protected String permissionsApiKey = null;
 
 
-	protected File _uploadFile = null;
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
-	protected static final int UPLOAD_BUFFER_SIZE = 512;
+	protected static final int UPLOAD_BUFFER_SIZE = 1024;
+
 
 	public static final String MARKETPLACE_STATUS_DEFAULT = "DEFAULT";
 	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
@@ -412,46 +412,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
-	public T photos_get( Collection<Long> photoIds ) throws FacebookException, IOException {
-		return photos_get( null /* subjId */, null /* albumId */, photoIds );
-	}
-
-	public T photos_get( Long subjId, Long albumId ) throws FacebookException, IOException {
-		return photos_get( subjId, albumId, null /* photoIds */);
-	}
-
-	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException, IOException {
-		return photos_get( subjId, null /* albumId */, photoIds );
-	}
-
-	public T photos_get( Long subjId ) throws FacebookException, IOException {
-		return photos_get( subjId, null /* albumId */, null /* photoIds */);
-	}
-
-	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
-		boolean hasUserId = null != subjId && 0 != subjId;
-		boolean hasAlbumId = null != albumId && 0 != albumId;
-		boolean hasPhotoIds = null != photoIds && !photoIds.isEmpty();
-		if ( !hasUserId && !hasAlbumId && !hasPhotoIds ) {
-			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
-		}
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		if ( hasUserId ) {
-			params.add( newPair( "subj_id", subjId ) );
-		}
-		if ( hasAlbumId ) {
-			params.add( newPair( "aid", albumId ) );
-		}
-		if ( hasPhotoIds ) {
-			params.add( newPair( "pids", delimit( photoIds ) ) );
-		}
-		return callMethod( FacebookMethod.PHOTOS_GET, params );
-	}
-
-	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException, IOException {
-		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, newPair( "pids", delimit( photoIds ) ) );
-	}
-
 	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException, IOException {
 		boolean hasGroups = ( null != groupIds && !groupIds.isEmpty() );
 		if ( null != userId ) {
@@ -473,7 +433,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 *             with a description of any errors given to us by the server.
 	 */
 	protected T callMethod( IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException, IOException {
-		return callMethod( method, Arrays.asList( paramPairs ) );
+		return callMethod( method, Arrays.asList( paramPairs ), null, null );
 	}
 
 	/**
@@ -487,6 +447,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 *             with a description of any errors given to us by the server.
 	 */
 	protected T callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException, IOException {
+		return callMethod( method, paramPairs, null, null );
+	}
+
+	protected T callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream ) throws FacebookException,
+			IOException {
 		rawResponse = null;
 		Map<String,String> params = new TreeMap<String,String>();
 		if ( permissionsApiKey != null ) {
@@ -545,7 +510,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 		boolean doEncode = true;
-		rawResponse = method.takesFile() ? postFileRequest( method, params, doEncode ) : postRequest( method, params, doHttps, doEncode );
+		rawResponse = method.takesFile() ? postFileRequest( method, params, doEncode, fileName, fileStream ) : postRequest( method, params, doHttps, doEncode );
 		return parseCallResult( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ), method );
 	}
 
@@ -594,16 +559,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload
 	 */
-	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, boolean doEncode ) throws IOException {
-		assert ( null != _uploadFile );
-		BufferedInputStream fileStream = new BufferedInputStream( new FileInputStream( _uploadFile ) );
-		try {
-			return postFileRequest( method, params, doEncode, _uploadFile.getName(), fileStream );
-		}
-		finally {
-			close( fileStream );
-		}
-	}
 
 	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, boolean doEncode, String fileName, InputStream fileStream ) throws IOException {
 		HttpURLConnection con = null;
@@ -642,13 +597,13 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 			// Write the file
 			out.writeBytes( CRLF );
-			byte b[] = new byte[UPLOAD_BUFFER_SIZE];
-			int byteCounter = 0;
-			int i;
-			while ( -1 != ( i = fileStream.read( b ) ) ) {
-				byteCounter += i;
-				out.write( b, 0, i );
+			byte buf[] = new byte[UPLOAD_BUFFER_SIZE];
+			int len = 0;
+			while ( len >= 0 ) {
+				out.write( buf, 0, len );
+				len = fileStream.read( buf );
 			}
+
 			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
 			out.flush();
 			in = con.getInputStream();
@@ -757,21 +712,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return _isDesktop;
 	}
 
-	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText ) throws FacebookException, IOException {
-		assert ( null != photoId && !photoId.equals( 0 ) );
-		assert ( null != taggedUserId || null != tagText );
-		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
-		assert ( null != yPct && yPct >= 0 && yPct <= 100 );
-		Pair<String,CharSequence> tagData;
-		if ( taggedUserId != null ) {
-			tagData = newPair( "tag_uid", taggedUserId );
-		} else {
-			tagData = newPair( "tag_text", tagText );
-		}
-		T d = callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), tagData, newPair( "x", xPct ), newPair( "y", yPct ) );
-		return extractBoolean( d );
-	}
-
 	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException, IOException {
 		if ( cacheAppAdded != null ) {
@@ -803,10 +743,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return users_setStatus( null, true );
 	}
 
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException, IOException {
-		return photos_addTag( photoId, xPct, yPct, null, tagText );
-	}
-
 	@Deprecated
 	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException, IOException {
 		notifications_send( recipientIds, notification );
@@ -815,51 +751,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public boolean fbml_refreshImgSrc( String imageUrl ) throws FacebookException, IOException {
 		return fbml_refreshImgSrc( new URL( imageUrl ) );
-	}
-
-	public T photos_upload( File photo ) throws FacebookException, IOException {
-		return photos_upload( photo, null /* caption */, null /* albumId */);
-	}
-
-	public T photos_upload( File photo, String caption ) throws FacebookException, IOException {
-		return photos_upload( photo, caption, null /* albumId */);
-	}
-
-	public T photos_upload( File photo, Long albumId ) throws FacebookException, IOException {
-		return photos_upload( photo, null /* caption */, albumId );
-	}
-
-	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
-		assert ( photo.exists() && photo.canRead() );
-		_uploadFile = photo;
-		if ( null != albumId ) {
-			params.add( newPair( "aid", albumId ) );
-		}
-		if ( null != caption ) {
-			params.add( newPair( "caption", caption ) );
-		}
-		return callMethod( FacebookMethod.PHOTOS_UPLOAD, params );
-	}
-
-	public T photos_createAlbum( String albumName ) throws FacebookException, IOException {
-		return photos_createAlbum( albumName, null /* description */, null /* location */);
-	}
-
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException, IOException {
-		return photos_addTag( photoId, xPct, yPct, taggedUserId, null );
-	}
-
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException, IOException {
-		assert ( photoId > 0 );
-		assert ( null != tags && !tags.isEmpty() );
-
-		JSONArray jsonTags = new JSONArray();
-		for ( PhotoTag tag : tags ) {
-			jsonTags.put( tag.jsonify() );
-		}
-
-		return callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), newPair( "tags", jsonTags ) );
 	}
 
 	public void setIsDesktop( boolean isDesktop ) {
@@ -882,39 +773,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			buffer.append( entry.getKey() ).append( equals ).append( doEncode ? encode( value ) : value );
 		}
 		return buffer;
-	}
-
-	public T photos_createAlbum( String name, String description, String location ) throws FacebookException, IOException {
-		assert ( null != name && !"".equals( name ) );
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		params.add( newPair( "name", name ) );
-		if ( null != description ) {
-			params.add( newPair( "description", description ) );
-		}
-		if ( null != location ) {
-			params.add( newPair( "location", location ) );
-		}
-		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
-	}
-
-	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException, IOException {
-		return photos_getAlbums( null /* userId */, albumIds );
-	}
-
-	public T photos_getAlbums( Long userId ) throws FacebookException, IOException {
-		return photos_getAlbums( userId, null /* albumIds */);
-	}
-
-	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException, IOException {
-		boolean hasUserId = null != userId && userId != 0;
-		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
-		assert ( hasUserId || hasAlbumIds ); // one of the two must be provided
-		if ( hasUserId ) {
-			return ( hasAlbumIds ) ? callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ), newPair( "aids", delimit( albumIds ) ) ) : callMethod(
-					FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ) );
-		} else {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "aids", delimit( albumIds ) ) );
-		}
 	}
 
 	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException, IOException {
@@ -1095,34 +953,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		addParamIfNotBlank( "query", query, params );
 		return callMethod( FacebookMethod.MARKETPLACE_SEARCH, params );
-	}
-
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param albumId
-	 *            retrieve from photos from this album (optional)
-	 * @param photoIds
-	 *            retrieve from this list of photos (optional)
-	 * @return an T of photo objects.
-	 * @see #photos_get(Integer, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
-	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
-		return photos_get( null /* subjId */, albumId, photoIds );
-	}
-
-	/**
-	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
-	 * 
-	 * @param albumId
-	 *            retrieve from photos from this album (optional)
-	 * @return an T of photo objects.
-	 * @see #photos_get(Integer, Long, Collection)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
-	 */
-	public T photos_getByAlbum( Long albumId ) throws FacebookException, IOException {
-		return photos_get( null /* subjId */, albumId, null /* photoIds */);
 	}
 
 	/**
@@ -2124,76 +1954,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 				newPair( "uid", userId ) ) );
 	}
 
-	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException, IOException {
-		assert ( null != photoId && !photoId.equals( 0 ) );
-		assert ( null != taggedUserId || null != tagText );
-		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
-		assert ( null != yPct && yPct >= 0 && yPct <= 100 );
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
-		if ( taggedUserId != null ) {
-			params.add( newPair( "tag_uid", taggedUserId ) );
-		} else {
-			params.add( newPair( "tag_text", tagText ) );
-		}
-		params.add( newPair( "x", xPct ) );
-		params.add( newPair( "y", yPct ) );
-		params.add( newPair( "pid", photoId ) );
-		params.add( newPair( "owner_uid", userId ) );
-		return extractBoolean( callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params ) );
-	}
-
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
-		return photos_addTag( photoId, pct, pct2, taggedUserId, null, userId );
-	}
-
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
-		return photos_addTag( photoId, pct, pct2, null, tagText );
-	}
-
-	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException, IOException {
-		return photos_createAlbum( albumName, null, null, userId );
-	}
-
-	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException, IOException {
-		assert ( null != name && !"".equals( name ) );
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		params.add( newPair( "name", name ) );
-		if ( null != description ) {
-			params.add( newPair( "description", description ) );
-		}
-		if ( null != location ) {
-			params.add( newPair( "location", location ) );
-		}
-		params.add( newPair( "uid", userId ) );
-		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
-	}
-
-	public T photos_upload( Long userId, File photo ) throws FacebookException, IOException {
-		return photos_upload( userId, photo, null, null );
-	}
-
-	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException, IOException {
-		return photos_upload( userId, photo, caption, null );
-	}
-
-	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException, IOException {
-		return photos_upload( userId, photo, null, albumId );
-	}
-
-	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		assert ( photo.exists() && photo.canRead() );
-		_uploadFile = photo;
-		if ( null != albumId ) {
-			params.add( newPair( "aid", albumId ) );
-		}
-		if ( null != caption ) {
-			params.add( newPair( "caption", caption ) );
-		}
-		params.add( newPair( "uid", userId ) );
-		return callMethod( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params );
-	}
-
 	@Deprecated
 	public boolean users_isAppAdded( Long userId ) throws FacebookException, IOException {
 		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, newPair( "uid", userId ) ) );
@@ -2375,23 +2135,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParam( "field", field.getFieldName(), params );
 		addParam( "options", json.toString(), params );
 		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
-	}
-
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException, IOException {
-		assert ( photoId > 0 );
-		assert ( null != tags && !tags.isEmpty() );
-		String tagStr = null;
-		try {
-			JSONArray jsonTags = new JSONArray();
-			for ( PhotoTag tag : tags ) {
-				jsonTags.put( tag.jsonify() );
-			}
-			tagStr = jsonTags.toString();
-		}
-		catch ( Exception ignored ) {
-			// ignore
-		}
-		return callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, newPair( "pid", photoId ), newPair( "tags", tagStr ), newPair( "uid", userId ) );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException, IOException {
@@ -2854,6 +2597,235 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public int connect_getUnconnectedFriendsCount() throws FacebookException, IOException {
 		return extractInt( callMethod( FacebookMethod.CONNECT_GET_UNCONNECTED_FRIENDS_COUNT ) );
+	}
+
+	// ========== PHOTOS ==========
+
+	public T photos_get( Collection<Long> photoIds ) throws FacebookException, IOException {
+		return photos_get( null /* subjId */, null /* albumId */, photoIds );
+	}
+
+	public T photos_get( Long subjId, Long albumId ) throws FacebookException, IOException {
+		return photos_get( subjId, albumId, null /* photoIds */);
+	}
+
+	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException, IOException {
+		return photos_get( subjId, null /* albumId */, photoIds );
+	}
+
+	public T photos_get( Long subjId ) throws FacebookException, IOException {
+		return photos_get( subjId, null /* albumId */, null /* photoIds */);
+	}
+
+	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
+		boolean hasUserId = null != subjId && 0 != subjId;
+		boolean hasAlbumId = null != albumId && 0 != albumId;
+		boolean hasPhotoIds = null != photoIds && !photoIds.isEmpty();
+		if ( !hasUserId && !hasAlbumId && !hasPhotoIds ) {
+			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
+		}
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
+		if ( hasUserId ) {
+			params.add( newPair( "subj_id", subjId ) );
+		}
+		if ( hasAlbumId ) {
+			params.add( newPair( "aid", albumId ) );
+		}
+		if ( hasPhotoIds ) {
+			params.add( newPair( "pids", delimit( photoIds ) ) );
+		}
+		return callMethod( FacebookMethod.PHOTOS_GET, params );
+	}
+
+	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException, IOException {
+		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, newPair( "pids", delimit( photoIds ) ) );
+	}
+
+	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException, IOException {
+		return photos_addTag( photoId, xPct, yPct, null, tagText );
+	}
+
+	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText ) throws FacebookException, IOException {
+		assert ( null != photoId && !photoId.equals( 0 ) );
+		assert ( null != taggedUserId || null != tagText );
+		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
+		assert ( null != yPct && yPct >= 0 && yPct <= 100 );
+		Pair<String,CharSequence> tagData;
+		if ( taggedUserId != null ) {
+			tagData = newPair( "tag_uid", taggedUserId );
+		} else {
+			tagData = newPair( "tag_text", tagText );
+		}
+		T d = callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), tagData, newPair( "x", xPct ), newPair( "y", yPct ) );
+		return extractBoolean( d );
+	}
+
+	public T photos_createAlbum( String albumName ) throws FacebookException, IOException {
+		return photos_createAlbum( albumName, null /* description */, null /* location */);
+	}
+
+	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException, IOException {
+		return photos_addTag( photoId, xPct, yPct, taggedUserId, null );
+	}
+
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException, IOException {
+		assert ( photoId > 0 );
+		assert ( null != tags && !tags.isEmpty() );
+
+		JSONArray jsonTags = new JSONArray();
+		for ( PhotoTag tag : tags ) {
+			jsonTags.put( tag.jsonify() );
+		}
+
+		return callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), newPair( "tags", jsonTags ) );
+	}
+
+	public T photos_createAlbum( String name, String description, String location ) throws FacebookException, IOException {
+		assert ( null != name && !"".equals( name ) );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
+		params.add( newPair( "name", name ) );
+		if ( null != description ) {
+			params.add( newPair( "description", description ) );
+		}
+		if ( null != location ) {
+			params.add( newPair( "location", location ) );
+		}
+		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
+	}
+
+	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException, IOException {
+		return photos_getAlbums( null /* userId */, albumIds );
+	}
+
+	public T photos_getAlbums( Long userId ) throws FacebookException, IOException {
+		return photos_getAlbums( userId, null /* albumIds */);
+	}
+
+	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException, IOException {
+		boolean hasUserId = null != userId && userId != 0;
+		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
+		assert ( hasUserId || hasAlbumIds ); // one of the two must be provided
+		if ( hasUserId ) {
+			return ( hasAlbumIds ) ? callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ), newPair( "aids", delimit( albumIds ) ) ) : callMethod(
+					FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ) );
+		} else {
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "aids", delimit( albumIds ) ) );
+		}
+	}
+
+	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException, IOException {
+		return photos_get( null /* subjId */, albumId, photoIds );
+	}
+
+	public T photos_getByAlbum( Long albumId ) throws FacebookException, IOException {
+		return photos_get( null /* subjId */, albumId, null /* photoIds */);
+	}
+
+	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException, IOException {
+		assert ( null != photoId && !photoId.equals( 0 ) );
+		assert ( null != taggedUserId || null != tagText );
+		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
+		assert ( null != yPct && yPct >= 0 && yPct <= 100 );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
+		if ( taggedUserId != null ) {
+			params.add( newPair( "tag_uid", taggedUserId ) );
+		} else {
+			params.add( newPair( "tag_text", tagText ) );
+		}
+		params.add( newPair( "x", xPct ) );
+		params.add( newPair( "y", yPct ) );
+		params.add( newPair( "pid", photoId ) );
+		params.add( newPair( "owner_uid", userId ) );
+		return extractBoolean( callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params ) );
+	}
+
+	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
+		return photos_addTag( photoId, pct, pct2, taggedUserId, null, userId );
+	}
+
+	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException, IOException {
+		return photos_addTag( photoId, pct, pct2, null, tagText );
+	}
+
+	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException, IOException {
+		return photos_createAlbum( albumName, null, null, userId );
+	}
+
+	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException, IOException {
+		assert ( null != name && !"".equals( name ) );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
+		params.add( newPair( "name", name ) );
+		if ( null != description ) {
+			params.add( newPair( "description", description ) );
+		}
+		if ( null != location ) {
+			params.add( newPair( "location", location ) );
+		}
+		params.add( newPair( "uid", userId ) );
+		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
+	}
+
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException, IOException {
+		assert ( photoId > 0 );
+		assert ( null != tags && !tags.isEmpty() );
+		String tagStr = null;
+		try {
+			JSONArray jsonTags = new JSONArray();
+			for ( PhotoTag tag : tags ) {
+				jsonTags.put( tag.jsonify() );
+			}
+			tagStr = jsonTags.toString();
+		}
+		catch ( Exception ignored ) {
+			// ignore
+		}
+		return callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, newPair( "pid", photoId ), newPair( "tags", tagStr ), newPair( "uid", userId ) );
+	}
+
+	public T photos_upload( File photo ) throws FacebookException, IOException {
+		return photos_upload( photo, null /* caption */, null /* albumId */);
+	}
+
+	public T photos_upload( File photo, String caption ) throws FacebookException, IOException {
+		return photos_upload( photo, caption, null /* albumId */);
+	}
+
+	public T photos_upload( File photo, Long albumId ) throws FacebookException, IOException {
+		return photos_upload( photo, null /* caption */, albumId );
+	}
+
+	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException, IOException {
+		return photos_upload( null, photo, caption, albumId );
+	}
+
+	public T photos_upload( Long userId, File photo ) throws FacebookException, IOException {
+		return photos_upload( userId, photo, null, null );
+	}
+
+	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException, IOException {
+		return photos_upload( userId, photo, caption, null );
+	}
+
+	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException, IOException {
+		return photos_upload( userId, photo, null, albumId );
+	}
+
+	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException, IOException {
+		BufferedInputStream fileStream = new BufferedInputStream( new FileInputStream( photo ) );
+		try {
+			return photos_upload( userId, caption, albumId, photo.getName(), fileStream );
+		}
+		finally {
+			close( fileStream );
+		}
+	}
+
+	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException, IOException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
+		addParamIfNotBlankZero( "aid", albumId, params );
+		addParamIfNotBlank( "caption", caption, params );
+		addParamIfNotBlankZero( "uid", userId, params );
+		return callMethod( FacebookMethod.PHOTOS_UPLOAD_NOSESSION, params, fileName, fileStream );
 	}
 
 }
