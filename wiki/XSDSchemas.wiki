@@ -1,0 +1,13 @@
+#summary Describes the interplay between facebook.xsd, schema.xsd and facebook.xsd.diff
+
+= Introduction =
+
+The schema.xsd file used to generate the Java XML Bindings (JAXB) differs slightly from what Facebook makes available in facebook.xsd. The differences between the files are maintained in facebook.xsd.diff and this file should be updated whenever either facebook.xsd or schema.xsd is updated.
+
+= Details =
+
+A Maven plugin is used to generate the Java bindings. The details are in facebook-api/facebook-java-api-schema/pom.xml.
+
+Could someone who knows about this process please fill in:
+   * Where we get facebook.xsd from?
+   * What's the purpose of the facebook.xsd.diff when we could relatively easily create a diff (patch) whenever we want to. Is someone looking from Facebook looking at the discrepancies?
