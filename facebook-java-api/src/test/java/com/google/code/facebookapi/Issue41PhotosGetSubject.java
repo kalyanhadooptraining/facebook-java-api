@@ -30,9 +30,9 @@ public class Issue41PhotosGetSubject {
 
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
+		xpath.setNamespaceContext(new FacebookNamespaceContext());
 
-		String numOfPhotos = xpath.evaluate("count(//*[local-name()='photo'])",
-				result);
+		String numOfPhotos = xpath.evaluate("count(//fbapi:photo)", result);
 
 		assertTrue(Integer.parseInt(numOfPhotos) > 0);
 	}
