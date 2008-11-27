@@ -1354,6 +1354,39 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		T doc = callMethod( FacebookMethod.DATA_SET_COOKIE, params );
 		return extractBoolean( doc );
 	}
+	
+	public String data_getUserPreference(int prefId) throws FacebookException {
+		return extractString( callMethod( FacebookMethod.DATA_GET_USER_PREFERENCE, newPair( "pref_id", prefId ) ) );
+	}
+
+	public T data_getUserPreferences() throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_USER_PREFERENCES );
+	}
+
+	public void data_setUserPreference(int prefId, String value) throws FacebookException {
+		if(value != null && value.length() > 128) {
+			throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER,
+					"Attempt to set a preference which hold a maximum of 128 characters " +
+					"to a value with " + value.length() + " characters. The Facebook API " +
+				    "silently truncates this value to 128 characters which can lead to " +
+				    "unpredictable results. If you want the truncation behaviour, please " +
+				    "truncate the string in your Java code.");
+		}
+		callMethod(FacebookMethod.DATA_SET_USER_PREFERENCE, newPair("pref_id", prefId), newPair("value", value));
+	}
+
+	public void data_setUserPreferences(Map<Integer, String> values, boolean replace) throws FacebookException {
+		JSONObject prefs = new JSONObject();
+		for (Integer key : values.keySet()) {
+			try {
+				prefs.put(key.toString(), values.get(key));
+			} catch(JSONException ex) {
+				throw runtimeException( ex );
+			}
+		}
+		
+		callMethod(FacebookMethod.DATA_SET_USER_PREFERENCES, newPair("values", prefs.toString()), newPairTF("replace", replace));
+	}
 
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
 		return extractLong( callMethod( FacebookMethod.DATA_CREATE_OBJECT, newPair( "obj_type", objectType ), newPair( "properties", toJson( properties ) ) ) );

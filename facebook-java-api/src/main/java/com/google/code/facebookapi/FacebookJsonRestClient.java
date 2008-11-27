@@ -493,26 +493,6 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	public String data_getUserPreference( Integer prefId ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
-				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-	}
-
-	public Map<Integer,String> data_getUserPreferences() throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
-				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-	}
-
-	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD,
-				"The FacebookJsonRestClient does not support this API call.  Please use an instance of FacebookRestClient instead." );
-	}
-
-	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookRestClient instead." );
-	}
-
 	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException {
 		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
