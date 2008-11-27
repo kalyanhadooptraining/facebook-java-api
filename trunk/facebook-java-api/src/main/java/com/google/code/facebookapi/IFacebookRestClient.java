@@ -1367,7 +1367,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public String data_getUserPreference( Integer prefId ) throws FacebookException;
+	public String data_getUserPreference( int prefId ) throws FacebookException;
 
 	/**
 	 * Get a map containing all preference values set for the current user.
@@ -1378,7 +1378,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public Map<Integer,String> data_getUserPreferences() throws FacebookException;
+	public T data_getUserPreferences() throws FacebookException;
 
 	/**
 	 * Set a user-preference value. The value can be any string up to 127 characters in length, while the preference id can only be an integer between 0 and 200. Any
@@ -1395,7 +1395,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public void data_setUserPreference( Integer prefId, String value ) throws FacebookException;
+	public void data_setUserPreference( int prefId, String value ) throws FacebookException;
 
 	/**
 	 * Set multiple user-preferences values. The values can be strings up to 127 characters in length, while the preference id can only be an integer between 0 and 200.
