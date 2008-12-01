@@ -1,0 +1,10 @@
+#summary Initial suggestion for an adapter pattern to rationalise the JSON, XML and JAXB requirements.
+
+= Introduction =
+
+The API already does a good job of separating the concerns of basic communication with the API and producing different return types. Most of the basic communication is handled by ExtensibleClient while the subclasses such as FacebookXMLRestClient do the required datatype conversion.
+
+I'd like to suggest a good way of completely separating these concerns and taking advantage of the "covariance" (narrowing return type) functionality available in Java 5 to produce a very consistent API. Additionally, the approach I'm suggesting means that a single logical connection to Facebook, with a single set of internal variables to hold the state of the connection and cached details, can be used to return data in different formats.
+
+
+= Details =
