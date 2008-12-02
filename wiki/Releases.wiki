@@ -8,8 +8,12 @@ I am encouraging people to use the maven repository, through Maven, Ivy or any o
 
 We currently have 3 releases available under our [http://code.google.com/p/facebook-java-api/downloads/list Downloads] page.  I'll explain the differences here:
 
+  * 2.0.3
+    * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
   * 2.0.2
     * Just basic bug fixes and api enhancements, since Facebook keeps changing their apis.
+
+=== Deprecated ===
   * 2.0.1
     * We changed the root package for all classes from "com.facebook.api" to "com.google.code.facebookapi".  This was to separate us from "com.facebook" since we are not facebook officially.  Also this allowed us to deploy our jar files into the Maven Central Repository, thus making it easier for everyone to use our library.
   * 2.0.0
