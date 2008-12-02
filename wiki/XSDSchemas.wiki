@@ -8,6 +8,7 @@ The schema.xsd file used to generate the Java XML Bindings (JAXB) differs slight
 
 A Maven plugin is used to generate the Java bindings. The details are in facebook-api/facebook-java-api-schema/pom.xml.
 
-Could someone who knows about this process please fill in:
-   * Where we get facebook.xsd from?
-   * What's the purpose of the facebook.xsd.diff when we could relatively easily create a diff (patch) whenever we want to. Is someone looking from Facebook looking at the discrepancies?
+facebook.xsd is published at http://api.facebook.com/1.0/facebook.xsd and defines the response formats. Because this is a REST API, the request formats do not have an XML schema or similar; instead we rely on the API documentation at http://wiki.developers.facebook.com/index.php/API
+
+Could someone who knows the process please comment:
+What's the purpose of the facebook.xsd.diff when we could relatively easily create a diff (patch) whenever we want to. Is someone looking from Facebook looking at the discrepancies?
