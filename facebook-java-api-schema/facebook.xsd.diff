@@ -1,5 +1,5 @@
 --- facebook.xsd	2008-11-17 20:22:49.000000000 -0800
-+++ src/main/resources/schema.xsd	2008-11-21 22:03:49.000000000 -0800
++++ src/main/resources/schema.xsd	2008-12-01 19:48:16.000000000 -0800
 @@ -28,7 +28,7 @@
  </xsd:simpleType>
  
@@ -115,3 +115,23 @@
  <xsd:element name="admin_getMetrics_response">
    <xsd:complexType>
      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+@@ -1496,4 +1550,19 @@
+ 
+ <xsd:element name="error_response" type="FacebookApiException" />
+ 
++<xsd:element name="batch_run_response">
++  <xsd:complexType>
++    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
++      <xsd:element name="friends_get_response">
++        <xsd:complexType>
++          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++            <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
++          </xsd:sequence>
++          <xsd:attribute name="list" type="xsd:boolean" />
++        </xsd:complexType>
++    </xsd:element>
++    </xsd:sequence>
++  </xsd:complexType>
++</xsd:element>
++
+ </xsd:schema>
