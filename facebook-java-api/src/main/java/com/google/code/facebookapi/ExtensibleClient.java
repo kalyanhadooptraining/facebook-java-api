@@ -1365,9 +1365,12 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public void data_setUserPreference( int prefId, String value ) throws FacebookException {
 		if ( value != null && value.length() > 128 ) {
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Attempt to set a preference which hold a maximum of 128 characters " + "to a value with "
-					+ value.length() + " characters. The Facebook API " + "silently truncates this value to 128 characters which can lead to "
-					+ "unpredictable results. If you want the truncation behaviour, please " + "truncate the string in your Java code." );
+			throw new FacebookException(
+					ErrorCode.GEN_INVALID_PARAMETER,
+					String
+							.format(
+									"Attempt to set a preference which hold a maximum of 128 characters to a value with %d characters. The Facebook API silently truncates this value to 128 characters which can lead to unpredictable results. If you want the truncation behaviour, please truncate the string in your Java code.",
+									value.length() ) );
 		}
 		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, newPair( "pref_id", prefId ), newPair( "value", value ) );
 	}
