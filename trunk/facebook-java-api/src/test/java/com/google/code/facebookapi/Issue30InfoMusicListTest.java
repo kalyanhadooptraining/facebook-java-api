@@ -18,7 +18,7 @@ public class Issue30InfoMusicListTest {
 		Set<CharSequence> fields = new HashSet<CharSequence>( Arrays.asList( "uid", "music" ) );
 		UsersGetInfoResponse response = (UsersGetInfoResponse) client.users_getInfo( Arrays.asList( uid ), fields );
 		User user = response.getUser().get( 0 );
-		System.out.println( "music:" + user.getMusic().getValue() );
+		System.out.println( "music:" + user.getMusic() );
 		System.out.println( "music-raw:" + client.getRawResponse() );
 	}
 
