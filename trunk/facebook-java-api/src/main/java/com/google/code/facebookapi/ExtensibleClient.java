@@ -1354,8 +1354,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		T doc = callMethod( FacebookMethod.DATA_SET_COOKIE, params );
 		return extractBoolean( doc );
 	}
-	
-	public String data_getUserPreference(int prefId) throws FacebookException {
+
+	public String data_getUserPreference( int prefId ) throws FacebookException {
 		return extractString( callMethod( FacebookMethod.DATA_GET_USER_PREFERENCE, newPair( "pref_id", prefId ) ) );
 	}
 
@@ -1363,29 +1363,27 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.DATA_GET_USER_PREFERENCES );
 	}
 
-	public void data_setUserPreference(int prefId, String value) throws FacebookException {
-		if(value != null && value.length() > 128) {
-			throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER,
-					"Attempt to set a preference which hold a maximum of 128 characters " +
-					"to a value with " + value.length() + " characters. The Facebook API " +
-				    "silently truncates this value to 128 characters which can lead to " +
-				    "unpredictable results. If you want the truncation behaviour, please " +
-				    "truncate the string in your Java code.");
+	public void data_setUserPreference( int prefId, String value ) throws FacebookException {
+		if ( value != null && value.length() > 128 ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Attempt to set a preference which hold a maximum of 128 characters " + "to a value with "
+					+ value.length() + " characters. The Facebook API " + "silently truncates this value to 128 characters which can lead to "
+					+ "unpredictable results. If you want the truncation behaviour, please " + "truncate the string in your Java code." );
 		}
-		callMethod(FacebookMethod.DATA_SET_USER_PREFERENCE, newPair("pref_id", prefId), newPair("value", value));
+		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, newPair( "pref_id", prefId ), newPair( "value", value ) );
 	}
 
-	public void data_setUserPreferences(Map<Integer, String> values, boolean replace) throws FacebookException {
+	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException {
 		JSONObject prefs = new JSONObject();
-		for (Integer key : values.keySet()) {
+		for ( Integer key : values.keySet() ) {
 			try {
-				prefs.put(key.toString(), values.get(key));
-			} catch(JSONException ex) {
+				prefs.put( key.toString(), values.get( key ) );
+			}
+			catch ( JSONException ex ) {
 				throw runtimeException( ex );
 			}
 		}
-		
-		callMethod(FacebookMethod.DATA_SET_USER_PREFERENCES, newPair("values", prefs.toString()), newPairTF("replace", replace));
+
+		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCES, newPair( "values", prefs.toString() ), newPairTF( "replace", replace ) );
 	}
 
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
@@ -1404,107 +1402,112 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException {
 		callMethod( FacebookMethod.DATA_DELETE_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) );
 	}
-	
-	public T data_getObject(long objectId) throws FacebookException {
-	    return callMethod( FacebookMethod.DATA_GET_OBJECT, newPair( "obj_id", objectId) );
-	}
-	
-	public T data_getObjects(Collection<Long> objectIds) throws FacebookException {
-	    return callMethod( FacebookMethod.DATA_GET_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) );
-	}
-	
-	public T data_getObjectProperty(long objectId, String propertyName) throws FacebookException {
-	    return callMethod( FacebookMethod.DATA_GET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ) );
-	}
-	
-	public void data_setObjectProperty(long objectId, String propertyName, String value) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_SET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ), newPair("value", value) );
+
+	public T data_getObject( long objectId ) throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_OBJECT, newPair( "obj_id", objectId ) );
 	}
 
-	public void data_createObjectType(String name) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_CREATE_OBJECT_TYPE, newPair( "name", name ) );
-    }
+	public T data_getObjects( Collection<Long> objectIds ) throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) );
+	}
 
-	public void data_dropObjectType(String objectType) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_DROP_OBJECT_TYPE, newPair( "obj_type", objectType ) );
+	public T data_getObjectProperty( long objectId, String propertyName ) throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ) );
 	}
-	
-	public void data_renameObjectType(String objectType, String newName) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_RENAME_OBJECT_TYPE, newPair( "obj_type", objectType ), newPair( "new_name", newName ) );
-	    
-	}
-	
-	public void data_defineObjectProperty(String objectType, String propertyName, PropertyType propertyType) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_DEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "prop_type", propertyType.getValue() ) );
-	}
-	
-	public void data_undefineObjectProperty(String objectType, String propertyName) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_UNDEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ) );	    
-	}
-	
-	public void data_renameObjectProperty(String objectType, String propertyName, String newPropertyName) throws FacebookException {
-	    callMethod( FacebookMethod.DATA_RENAME_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "new_name", newPropertyName ) );
-	}
-	
-    public T data_getObjectTypes() throws FacebookException {
-        return callMethod( FacebookMethod.DATA_GET_OBJECT_TYPES );
-    }
-    
-    public T data_getObjectType( String objectType ) throws FacebookException {
-        return callMethod( FacebookMethod.DATA_GET_OBJECT_TYPE, newPair( "obj_type", objectType ) );
-    }
 
-	public void data_defineAssociation(String associationName, AssociationType associationType, AssociationInfo associationInfo1, AssociationInfo associationInfo2, String inverseName) throws FacebookException {
+	public void data_setObjectProperty( long objectId, String propertyName, String value ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_SET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ), newPair( "value", value ) );
+	}
+
+	public void data_createObjectType( String name ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_CREATE_OBJECT_TYPE, newPair( "name", name ) );
+	}
+
+	public void data_dropObjectType( String objectType ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_DROP_OBJECT_TYPE, newPair( "obj_type", objectType ) );
+	}
+
+	public void data_renameObjectType( String objectType, String newName ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_RENAME_OBJECT_TYPE, newPair( "obj_type", objectType ), newPair( "new_name", newName ) );
+
+	}
+
+	public void data_defineObjectProperty( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_DEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "prop_type",
+				propertyType.getValue() ) );
+	}
+
+	public void data_undefineObjectProperty( String objectType, String propertyName ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_UNDEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ) );
+	}
+
+	public void data_renameObjectProperty( String objectType, String propertyName, String newPropertyName ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_RENAME_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "new_name",
+				newPropertyName ) );
+	}
+
+	public T data_getObjectTypes() throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_OBJECT_TYPES );
+	}
+
+	public T data_getObjectType( String objectType ) throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_OBJECT_TYPE, newPair( "obj_type", objectType ) );
+	}
+
+	public void data_defineAssociation( String associationName, AssociationType associationType, AssociationInfo associationInfo1, AssociationInfo associationInfo2,
+			String inverseName ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
-		addParam("name", associationName, params);
-		addParam("assoc_type", associationType.getValue(), params);
+		addParam( "name", associationName, params );
+		addParam( "assoc_type", associationType.getValue(), params );
 		JSONObject assocInfo1 = new JSONObject();
 		try {
-			assocInfo1.put("alias", associationInfo1.getAlias());
-			assocInfo1.put("object_type", associationInfo1.getObjectType());
-			assocInfo1.put("unique", associationInfo1.isUnique());
-		} catch ( JSONException ex ) {
+			assocInfo1.put( "alias", associationInfo1.getAlias() );
+			assocInfo1.put( "object_type", associationInfo1.getObjectType() );
+			assocInfo1.put( "unique", associationInfo1.isUnique() );
+		}
+		catch ( JSONException ex ) {
 			throw runtimeException( ex );
 		}
-		addParam("assoc_info1", assocInfo1.toString(), params);
+		addParam( "assoc_info1", assocInfo1.toString(), params );
 		JSONObject assocInfo2 = new JSONObject();
 		try {
-			assocInfo2.put("alias", associationInfo2.getAlias());
-			assocInfo2.put("object_type", associationInfo2.getObjectType());
-			assocInfo2.put("unique", associationInfo2.isUnique());
-		} catch ( JSONException ex ) {
+			assocInfo2.put( "alias", associationInfo2.getAlias() );
+			assocInfo2.put( "object_type", associationInfo2.getObjectType() );
+			assocInfo2.put( "unique", associationInfo2.isUnique() );
+		}
+		catch ( JSONException ex ) {
 			throw runtimeException( ex );
 		}
-		addParam("assoc_info2", assocInfo2, params);
-		addParamIfNotBlank("inverse", inverseName, params);
-		
-        callMethod( FacebookMethod.DATA_DEFINE_ASSOCIATION, params );  
-    }	
+		addParam( "assoc_info2", assocInfo2, params );
+		addParamIfNotBlank( "inverse", inverseName, params );
 
-	public void data_undefineAssociation(String name) throws FacebookException {
-        callMethod( FacebookMethod.DATA_UNDEFINE_ASSOCIATION, newPair( "name", name) );
+		callMethod( FacebookMethod.DATA_DEFINE_ASSOCIATION, params );
 	}
-	
-	public void data_renameAssociation(String name, String newName, String newAlias1, String newAlias2) throws FacebookException {
+
+	public void data_undefineAssociation( String name ) throws FacebookException {
+		callMethod( FacebookMethod.DATA_UNDEFINE_ASSOCIATION, newPair( "name", name ) );
+	}
+
+	public void data_renameAssociation( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		addParam("name", name, params);
-		addParam("new_name", newName, params);
-		addParamIfNotBlank("new_alias1", newAlias1, params);
-		addParamIfNotBlank("new_alias2", newAlias2, params); 
-				
-	    callMethod( FacebookMethod.DATA_RENAME_ASSOCIATION, params );
+		addParam( "name", name, params );
+		addParam( "new_name", newName, params );
+		addParamIfNotBlank( "new_alias1", newAlias1, params );
+		addParamIfNotBlank( "new_alias2", newAlias2, params );
+
+		callMethod( FacebookMethod.DATA_RENAME_ASSOCIATION, params );
 	}
 
-    public T data_getAssociationDefinition(String name) throws FacebookException {
-        return callMethod( FacebookMethod.DATA_GET_ASSOCIATION_DEFINITION, newPair( "name", name ) );
-    }
+	public T data_getAssociationDefinition( String name ) throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_ASSOCIATION_DEFINITION, newPair( "name", name ) );
+	}
 
-    public T data_getAssociationDefinitions() throws FacebookException {
-        return callMethod( FacebookMethod.DATA_GET_ASSOCIATION_DEFINITIONS );
-    }
+	public T data_getAssociationDefinitions() throws FacebookException {
+		return callMethod( FacebookMethod.DATA_GET_ASSOCIATION_DEFINITIONS );
+	}
 
 
-    public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException {
+	public void data_setAssociation( String associationName, long object1Id, long object2Id, String data, Date associationTime ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
 		addParam( "name", associationName, params );
 		addParam( "obj_id1", object1Id, params );
