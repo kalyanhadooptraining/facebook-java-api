@@ -2720,13 +2720,16 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
 		boolean hasUserId = null != userId && userId != 0;
 		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
-		assert ( hasUserId || hasAlbumIds ); // one of the two must be provided
+		if ( hasUserId && hasAlbumIds ) {
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ), newPair( "aids", delimit( albumIds ) ) );
+		}
 		if ( hasUserId ) {
-			return ( hasAlbumIds ) ? callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ), newPair( "aids", delimit( albumIds ) ) ) : callMethod(
-					FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ) );
-		} else {
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ) );
+		}
+		if ( hasAlbumIds ) {
 			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "aids", delimit( albumIds ) ) );
 		}
+		throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Atleast one of userId or albumIds is required." );
 	}
 
 	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
