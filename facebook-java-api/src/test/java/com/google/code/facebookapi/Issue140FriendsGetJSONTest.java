@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -31,6 +32,7 @@ public class Issue140FriendsGetJSONTest {
 	}
 
 	@Test
+	@Ignore
 	public void testFriendsGetBatchJAXB() throws Exception {
 		IFacebookRestClient<Object> client = FacebookSessionTestUtils
 				.getValidClient(FacebookJaxbRestClient.class);
