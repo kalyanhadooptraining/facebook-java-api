@@ -1415,7 +1415,36 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException;
-
+	
+	/**
+	 * An object type is like a "table" in SQL terminology, or a "class" in object-oriented programming concepts.
+	 * Each object type has a unique human-readable "name" that will be used to identify itself throughout the API.
+	 * Each object type also has a list of properties that one has to define individually. Each property is like a
+	 * "column" in an SQL table, or a "data member" in an object class.
+	 *  
+	 * @param name
+	 * @throws FacebookException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.createObjectType</a>
+	 */
+	public void data_createObjectType( String name ) throws FacebookException;
+	
+	/**
+	 * Remove a previously defined object type. This will also delete ALL objects of this type. This deletion is NOT reversible. 
+	 * 
+	 * @param objectType
+	 * @throws FacebookException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.dropObjectType</a>
+	 */
+	public void data_dropObjectType( String objectType )  throws FacebookException;
+	public void data_renameObjectType( String name, String newName ) throws FacebookException;
+	public void data_defineObjectProperty ( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException;
+	public void data_undefineObjectProperty ( String objectType, String propertyName ) throws FacebookException;
+	public void data_renameObjectProperty ( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
+	public T data_getObjectTypes() throws FacebookException;
+	public T data_getObjectType( String objectType ) throws FacebookException;
+	
+	
+	
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
@@ -2306,6 +2335,64 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObjects"> Developers Wiki: Data.deleteObjects</a>
 	 */
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException;
+	
+	public T data_getObject ( long objectId ) throws FacebookException;
+	public T data_getObjects ( Collection<Long> objectIds ) throws FacebookException;
+	public T data_getObjectProperty ( long objectId, String propertyName ) throws FacebookException;
+	public void data_setObjectProperty ( long objectId, String propertyName, String value ) throws FacebookException;
+	
+	/**
+	 * 
+	 * @param associationName
+	 *            Name of forward association to create. This name needs to be
+	 *            unique among all object types and associations defined for
+	 *            this application. This name also needs to be a valid
+	 *            identifier, which is no longer than 32 characters, starting
+	 *            with a letter (a-z) and consisting of only small letters
+	 *            (a-z), numbers (0-9) and/or underscores.
+	 * @param associationType
+	 * @param associationInfo1
+	 * @param associationInfo2
+	 * @param inverseName
+	 *            Optional - name of backward association, if it is two-way
+	 *            asymmetric. This name needs to be unique among all object
+	 *            types and associations defined for this application. This name
+	 *            also needs to be a valid identifier, which is no longer than
+	 *            32 characters, starting with a letter (a-z) and consisting of
+	 *            only small letters (a-z), numbers (0-9) and/or underscores.
+	 * @throws FacebookException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.defineAssociation"> Developers Wiki: Data.defineAssociation</a>
+	 */
+	public void data_defineAssociation(String associationName,
+			AssociationType associationType, AssociationInfo associationInfo1,
+			AssociationInfo associationInfo2, String inverseName)
+			throws FacebookException;
+	
+	/**
+	 * Remove a previously defined association. This will also delete this type of associations established between objects. This deletion is not reversible.
+	 * 
+	 * @param name
+	 * @throws FacebookException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.undefineAssociation"> Developers Wiki: Data.undefineAssociation</a>
+	 */
+	public void data_undefineAssociation ( String name ) throws FacebookException;
+	
+	/**
+	 * Rename a previously defined association. Note that, any renaming here only affects one direction. To change names and aliases for another direction,
+	 * rename with the name of that direction of association. 
+	 * 
+	 * @param name
+	 * @param newName
+	 * @param newAlias1
+	 * @param newAlias2
+	 * 
+	 * @throws FacebookException
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.renameAssociation"> Developers Wiki: Data.renameAssociation</a>
+	 */
+	public void data_renameAssociation ( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
+	public T data_getAssociationDefinition ( String associationName ) throws FacebookException;
+	public T data_getAssociationDefinitions () throws FacebookException;
+	
 
 	/**
 	 * Create an association between two objects

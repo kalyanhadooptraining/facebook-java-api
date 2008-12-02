@@ -173,15 +173,35 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences"),
 	DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference"),
 	DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences"),
+	
+	DATA_CREATE_OBJECT_TYPE("facebook.data.createObjectType"),
+	DATA_DROP_OBJECT_TYPE("facebook.data.dropObjectType"),
+	DATA_RENAME_OBJECT_TYPE("facebook.data.renameObjectType"),
+	DATA_DEFINE_OBJECT_PROPERTY("facebook.data.defineObjectProperty"),
+	DATA_UNDEFINE_OBJECT_PROPERTY("facebook.data.undefineObjectProperty"),
+	DATA_RENAME_OBJECT_PROPERTY("facebook.data.renameObjectProperty"),
+	DATA_GET_OBJECT_TYPES("facebook.data.getObjectTypes"),
+	DATA_GET_OBJECT_TYPE("facebook.data.getObjectType"),
 
 	DATA_CREATE_OBJECT("facebook.data.createObject"),
 	DATA_UPDATE_OBJECT("facebook.data.updateObject"),
 	DATA_DELETE_OBJECT("facebook.data.deleteObject"),
 	DATA_DELETE_OBJECTS("facebook.data.deleteObjects"),
+	DATA_GET_OBJECT("facebook.data.getObject"),
+	DATA_GET_OBJECTS("facebook.data.getObjects"),
+	DATA_GET_OBJECT_PROPERTY("facebook.data.getObjectProperty"),
+	DATA_SET_OBJECT_PROPERTY("facebook.data.setObjectProperty"),
 	DATA_SET_ASSOCIATION("facebook.data.setAssociation"),
 	DATA_REMOVE_ASSOCIATION("facebook.data.removeAssociation"),
 	DATA_REMOVE_ASSOCIATED_OBJECTS("facebook.data.removeAssociatedObjects"),
 	DATA_GET_ASSOCIATED_OBJECT_COUNT("facebook.data.getAssociatedObjectCount"),
+	
+	DATA_DEFINE_ASSOCIATION("facebook.data.defineAssociation"),
+	DATA_UNDEFINE_ASSOCIATION("facebook.data.undefineAssociation"),
+	DATA_RENAME_ASSOCIATION("facebook.data.renameAssociation"),
+	DATA_GET_ASSOCIATION_DEFINITION("facebook.data.getAssociationDefinition"),
+	DATA_GET_ASSOCIATION_DEFINITIONS("facebook.data.getAssociationDefinitions"),	
+	
 
 	// SMS - Mobile
 	SMS_CAN_SEND("facebook.sms.canSend"),
