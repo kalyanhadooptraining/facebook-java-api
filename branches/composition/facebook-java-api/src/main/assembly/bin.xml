@@ -1,0 +1,31 @@
+<assembly>
+    <id>bin</id>
+    <formats>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <includeSiteDirectory>true</includeSiteDirectory>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+<!--
+        <fileSet>
+            <directory>../shale-clay</directory>
+            <outputDirectory>shale-clay</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>*.txt</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+-->
+
+    </fileSets>
+</assembly>
