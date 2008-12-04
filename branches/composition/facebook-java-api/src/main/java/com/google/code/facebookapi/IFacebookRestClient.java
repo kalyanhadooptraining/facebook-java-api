@@ -1677,48 +1677,6 @@ public interface IFacebookRestClient<T> {
 	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
 
 	/**
-	 * Return a list of all valid Marketplace subcategories.
-	 * 
-	 * @return a list of marketplace subcategories allowed by Facebook.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<String> marketplace_getSubCategories() throws FacebookException;
-
-	/**
-	 * Retrieve listings from the marketplace. The listings can be filtered by listing-id or user-id (or both).
-	 * 
-	 * @param listingIds
-	 *            the ids of listings to filter by, only listings matching the specified ids will be returned.
-	 * @param uids
-	 *            the ids of users to filter by, only listings submitted by those users will be returned.
-	 * 
-	 * @return A list of marketplace listings that meet the specified filter criteria.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException;
-
-	/**
-	 * Search the marketplace listings by category, subcategory, and keyword.
-	 * 
-	 * @param category
-	 *            the category to search in, optional (unless subcategory is specified).
-	 * @param subcategory
-	 *            the subcategory to search in, optional.
-	 * @param searchTerm
-	 *            the keyword to search for, optional.
-	 * 
-	 * @return a list of marketplace entries that match the specified search parameters.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException;
-
-	/**
 	 * Remove a listing from the marketplace by id.
 	 * 
 	 * @param listingId
@@ -2782,21 +2740,6 @@ public interface IFacebookRestClient<T> {
 	 * called again.
 	 */
 	public void endPermissionsMode();
-
-	/**
-	 * Get the JAXB context that is being used by the client.
-	 * 
-	 * @return the JAXB context object.
-	 */
-	public JAXBContext getJaxbContext();
-
-	/**
-	 * Set the JAXB context that the client will use.
-	 * 
-	 * @param context
-	 *            the context to use.
-	 */
-	public void setJaxbContext( JAXBContext context );
 
 	/**
 	 * Generate a key for the current session that can be used to authenticate client-side components.

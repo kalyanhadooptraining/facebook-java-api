@@ -33,6 +33,7 @@
 package com.google.code.facebookapi;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -40,10 +41,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,6 +60,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.google.code.facebookapi.schema.Listing;
@@ -64,7 +69,7 @@ import com.google.code.facebookapi.schema.Listing;
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of
  * {@link org.w3c.dom.Document}.
  */
-public class FacebookXmlRestClient extends ExtensibleClient<Document> {
+public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements IFacebookRestClient<Document> {
 
 	protected static Log log = LogFactory.getLog( FacebookXmlRestClient.class );
 
@@ -114,41 +119,49 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			}
 		}
 	}
+	
+	private ExtensibleClient client;
+	public ExtensibleClient getClient() {
+		return client;
+	}
+	public void setClient(ExtensibleClient client) {
+		this.client = client;
+	}
 
 	public FacebookXmlRestClient( String apiKey, String secret ) {
-		super( apiKey, secret );
+		client = new ExtensibleClient( apiKey, secret );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, int connectionTimeout ) {
-		super( apiKey, secret, connectionTimeout );
+		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey ) {
-		super( apiKey, secret, sessionKey );
+		client = new ExtensibleClient( apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( apiKey, secret, sessionKey, connectionTimeout );
+		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		super( serverAddr, apiKey, secret, sessionKey );
+		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
+		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		super( serverUrl, apiKey, secret, sessionKey );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
 
 	/**
@@ -179,25 +192,18 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
-		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
-		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
-		if ( this._isDesktop ) {
-			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
-		}
-		return this.cacheSessionKey;
+		return client.auth_getSession( authToken );
 	}
 
-	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
+	protected Document parseCallResult( String rawResponse ) throws FacebookException {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( namespaceAware );
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse( data );
+			Document doc = builder.parse( rawResponse );
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
-			printDom( doc, method.methodName() + "| " );
+			//printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
@@ -210,6 +216,9 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			throw new RuntimeException( "Trouble configuring XML Parser", ex );
 		}
 		catch ( SAXException ex ) {
+			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
+		}
+		catch ( IOException ex ) {
 			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
 		}
 	}
@@ -284,32 +293,8 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 	}
 
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
-	public List<String> marketplace_getSubCategories() throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		if ( this._isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
-		}
-		JSONArray props = new JSONArray();
-		for ( ApplicationProperty property : properties ) {
-			props.put( property.getName() );
-		}
-		Document d = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
-		return extractString( d );
+		return client.admin_getAppPropertiesAsString( properties );
 	}
 
 	/**
@@ -331,21 +316,29 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * @throws IOException
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
-		this.batchMode = false;
+		client.setResponseFormat( "xml" );
+		//Take a copy of the queries being run so that we can associate them
+		//with the correct return type later.
+		List<BatchQuery> queries = new ArrayList<BatchQuery>();
+		Collections.copy( queries, client.getQueries() );
+		
+		List<? extends Object> clientResults = client.executeBatch( serial );
+		
 		List<Object> result = new ArrayList<Object>();
-		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
-		while ( !this.queries.isEmpty() ) {
-			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 15 at once
-				Document doc = batch_run( encodeMethods( buffer ), serial );
+
+		try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			
+			int outerBatchCount = 0;
+			
+			for(Object clientResult : clientResults) {
+				Document doc = builder.parse( new InputSource(clientResult.toString()) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
 					String response = extractNodeString( responses.item( count ) );
 					try {
-						DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 						Document respDoc = builder.parse( new ByteArrayInputStream( response.getBytes( "UTF-8" ) ) );
-						String type = RETURN_TYPES.get( buffer.get( count ).getMethod() );
+						String type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
 						// possible types are document, string, bool, int, long, void
 						if ( type.equals( "default" ) ) {
 							result.add( respDoc );
@@ -369,11 +362,42 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 					}
 				}
 			}
+		} catch(ParserConfigurationException ex) {
+			throw new RuntimeException("Error parsing batch response", ex);
+		}
+		catch ( SAXException ex ) {
+			throw new RuntimeException("Error parsing batch response", ex);
+		}
+		catch ( IOException ex ) {
+			throw new RuntimeException("Error parsing batch response", ex);
 		}
 
 		return result;
 	}
 
+	/**
+	 * Extracts a Boolean from a result that consists of a Boolean only.
+	 * 
+	 * @param result
+	 * @return the Boolean
+	 */
+	protected boolean extractBoolean( Object result ) {
+		if ( result == null ) {
+			return false;
+		}
+		return 1 == extractInt( result );
+	}
+	
+	/**
+	 * Extracts an Long from a result that consists of an Long only.
+	 * 
+	 * @param result
+	 * @return the Long
+	 */
+	protected int extractInt( Object result ) {
+		return -999;
+	}
+	
 	public static String extractNodeString( Node d ) {
 		if ( d == null ) {
 			return null;
@@ -381,15 +405,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		return d.getFirstChild().getTextContent();
 	}
 
-	protected Document cacheFriendsList;
-
 	/**
 	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
 	 * 
 	 * @return the friends-list stored in the API client.
 	 */
 	public Document getCacheFriendsList() {
-		return cacheFriendsList;
+		return toFriendsGetResponse(client.getCacheFriendsList());
 	}
 
 	/**
@@ -399,7 +421,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the new list to use.
 	 */
 	public void setCacheFriendsList( List<Long> ids ) {
-		this.cacheFriendsList = toFriendsGetResponse( ids );
+		client.setCacheFriendsList( ids );
 	}
 
 	public static Document toFriendsGetResponse( List<Long> ids ) {
@@ -422,15 +444,485 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 	}
 
-	@Override
 	public Document friends_get() throws FacebookException {
-		if ( batchMode ) {
-			return super.friends_get();
+		if ( client.isBatchMode() ) {
+			client.friends_get(); //Will return null
+			return null;
 		}
-		if ( cacheFriendsList == null ) {
-			cacheFriendsList = super.friends_get();
+		if(client.getCacheFriendsList() == null) {
+			Object rawResponse = client.friends_get();
+			return parseCallResult( rawResponse.toString() );
 		}
-		return cacheFriendsList;
+		return getCacheFriendsList();
+	}
+
+	public Document admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getDailyMetrics( metrics, start, end );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getDailyMetrics( metrics, start, end );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getMetrics( metrics, start, end, period);
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getMetrics( metrics, start, end, period );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfo( applicationId, applicationKey, applicationCanvas );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfoByApiKey( applicationKey );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfoByCanvasName( applicationCanvas );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document application_getPublicInfoById( Long applicationId ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfoById( applicationId );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document batch_run( String methods, boolean serial ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.batch_run( methods, serial );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.connect_registerUsers( accounts );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = connect_unregisterUsers( email_hashes );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document data_getAssociationDefinition( String associationName ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.data_getAssociationDefinition( associationName );
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document data_getAssociationDefinitions() throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.data_getAssociationDefinitions();
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document data_getCookies() throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.data_getCookies();
+		return parseCallResult( (String)rawResponse );
+	}
+
+	public Document data_getCookies( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getCookies( String name ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getCookies( Long userId, CharSequence name ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getObject( long objectId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getObjectProperty( long objectId, String propertyName ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getObjectType( String objectType ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getObjectTypes() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getObjects( Collection<Long> objectIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document data_getUserPreferences() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document events_getMembers( Long eventId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document feed_getRegisteredTemplateBundles() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document fql_query( CharSequence query ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_areFriends( long userId1, long userId2 ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_get( Long uid ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_getAppUsers() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_getList( Long friendListId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document friends_getLists() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object getResponsePOJO() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document groups_getMembers( Number groupId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document marketplace_getCategoriesObject() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document marketplace_getSubCategories( CharSequence category ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_get() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_createAlbum( String albumName ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_createAlbum( String name, String description, String location ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_createAlbum( String albumName, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_get( Long subjId, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_get( Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_get( Long subjId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getAlbums( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getByAlbum( Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_getTags( Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( File photo ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( File photo, String caption ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( File photo, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( File photo, String caption, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( Long userId, File photo ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( Long userId, File photo, String caption ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( Long userId, File photo, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getFBML() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getFBML( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getFBML( int type ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getFBML( int type, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getInfo( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document profile_getInfoOptions( String field ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

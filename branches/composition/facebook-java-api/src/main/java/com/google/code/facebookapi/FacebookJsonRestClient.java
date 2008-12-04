@@ -1,18 +1,20 @@
 package com.google.code.facebookapi;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,13 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.code.facebookapi.schema.Listing;
-
 /**
  * A FacebookRestClient that uses the JSON result format. This means results from calls to the Facebook API are returned as <a href="http://www.json.org/">JSON</a> and
  * transformed into Java <code>Object</code>'s.
  */
-public class FacebookJsonRestClient extends ExtensibleClient<Object> {
+public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( FacebookJsonRestClient.class );
 
@@ -67,6 +67,14 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			}
 		}
 	}
+	
+	private ExtensibleClient client;
+	public ExtensibleClient getClient() {
+		return client;
+	}
+	public void setClient(ExtensibleClient client) {
+		this.client = client;
+	}
 
 	/**
 	 * Constructor.
@@ -77,7 +85,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret ) {
-		super( apiKey, secret );
+		client = new ExtensibleClient( apiKey, secret );
 	}
 
 	/**
@@ -91,7 +99,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, int connectionTimeout ) {
-		super( apiKey, secret, connectionTimeout );
+		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 	}
 
 	/**
@@ -105,7 +113,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey ) {
-		super( apiKey, secret, sessionKey );
+		client = new ExtensibleClient( apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -121,7 +129,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( apiKey, secret, sessionKey, connectionTimeout );
+		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 
@@ -141,7 +149,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		super( serverAddr, apiKey, secret, sessionKey );
+		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -162,7 +170,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		super( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
+		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 
@@ -179,7 +187,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		super( serverUrl, apiKey, secret, sessionKey );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 	}
 
 	/**
@@ -197,7 +205,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
 	/**
@@ -217,7 +225,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		super( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
+		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
 
 	/**
@@ -267,19 +275,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
-		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
-		try {
-			this.cacheSessionKey = d.getString( "session_key" );
-			this.cacheUserId = d.getLong( "uid" );
-			this.cacheSessionExpires = d.getLong( "expires" );
-			if ( this.isDesktop() ) {
-				this.cacheSessionSecret = d.getString( "secret" );
-			}
-		}
-		catch ( Exception ex ) {
-			ex.printStackTrace();
-		}
-		return this.cacheSessionKey;
+		return client.auth_getSession( authToken );
 	}
 
 	/**
@@ -296,18 +292,12 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *             if <code>data</code> is not readable
 	 * @see JSONObject
 	 */
-	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
-		BufferedReader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-		StringBuilder buffer = new StringBuilder();
-		String line;
-		while ( ( line = in.readLine() ) != null ) {
-			buffer.append( line );
-		}
-		String jsonResp = buffer.toString();
+	protected Object parseCallResult( String rawResponse ) throws FacebookException {
+		String jsonResp = rawResponse;
 		Object json = null;
-		if ( this.rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
+		if ( rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
 			try {
-				if ( this.rawResponse.matches( "\\{.*\\}" ) ) {
+				if ( rawResponse.matches( "\\{.*\\}" ) ) {
 					json = new JSONObject( jsonResp );
 				} else {
 					json = new JSONArray( jsonResp );
@@ -317,22 +307,22 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				ignored.printStackTrace();
 			}
 		} else {
-			if ( this.rawResponse.startsWith( "\"" ) ) {
-				this.rawResponse = this.rawResponse.substring( 1 );
+			if ( rawResponse.startsWith( "\"" ) ) {
+				rawResponse = rawResponse.substring( 1 );
 			}
-			if ( this.rawResponse.endsWith( "\"" ) ) {
-				this.rawResponse = this.rawResponse.substring( 0, this.rawResponse.length() - 1 );
+			if ( rawResponse.endsWith( "\"" ) ) {
+				rawResponse = rawResponse.substring( 0, rawResponse.length() - 1 );
 			}
 			try {
 				// it's either a number...
-				json = Long.parseLong( this.rawResponse );
+				json = Long.parseLong( rawResponse );
 			}
 			catch ( Exception e ) {
 				// ...or a string
-				json = this.rawResponse;
+				json = rawResponse;
 			}
 		}
-		log.debug( method.methodName() + ": " + json );
+		//log.debug( method.methodName() + ": " + json );
 
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
@@ -493,32 +483,8 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		}
 	}
 
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
-	public List<String> marketplace_getSubCategories() throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException {
-		throw new FacebookException( ErrorCode.GEN_UNKNOWN_METHOD, "The FacebookJsonRestClient does not support this API call.  "
-				+ "Please use an instance of FacebookJaxbRestClient instead." );
-	}
-
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		if ( this._isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
-		}
-		JSONArray props = new JSONArray();
-		for ( ApplicationProperty property : properties ) {
-			props.put( property.getName() );
-		}
-		callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
-		return this.rawResponse;
+		return client.admin_getAppPropertiesAsString( properties );
 	}
 
 	/**
@@ -540,47 +506,57 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 * @throws IOException
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
-		this.batchMode = false;
+		client.setResponseFormat( "json" );
+		//Take a copy of the queries being run so that we can associate them
+		//with the correct return type later.
+		List<BatchQuery> queries = new ArrayList<BatchQuery>();
+		Collections.copy( queries, client.getQueries() );
+		
+		List<? extends Object> clientResults = client.executeBatch( serial );
+		
 		List<Object> result = new ArrayList<Object>();
-		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
-		while ( !this.queries.isEmpty() ) {
-			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 15 at once
-				JSONArray doc = (JSONArray) batch_run( encodeMethods( buffer ), serial );
-				for ( int count = 0; count < doc.length(); count++ ) {
-					try {
-						String response = (String) doc.get( count );
-						if ( response.startsWith( "\"" ) ) {
-							// remove extraneous quote characters
-							response = response.substring( 1, response.length() - 1 );
-						}
-						String type = RETURN_TYPES.get( buffer.get( count ).getMethod() );
-						// possible types are document, string, bool, int, long, void
-						if ( type.equals( "default" ) ) {
-							if ( response.matches( "\\{.*\\}" ) ) {
-								result.add( new JSONObject( response.replace( "\\", "" ) ) );
-							} else {
-								result.add( new JSONArray( response ) );
-							}
-						} else if ( type.equals( "string" ) ) {
-							result.add( response );
-						} else if ( type.equals( "bool" ) ) {
-							result.add( extractBoolean( response ) );
-						} else if ( type.equals( "int" ) ) {
-							result.add( extractInt( response ) );
-						} else if ( type.equals( "long" ) ) {
-							result.add( extractLong( response ) );
-						} else {
-							// void
-							result.add( null );
-						}
+		
+		int outerBatchCount = 0;
+		
+		for(Object clientResult : clientResults) {
+			JSONArray doc;
+			try {
+				doc = new JSONArray(clientResult);
+			} catch(JSONException ex) {
+				throw new RuntimeException("Error parsing client result", ex);
+			}
+			for ( int count = 0; count < doc.length(); count++ ) {
+				try {
+					String response = (String) doc.get( count );
+					if ( response.startsWith( "\"" ) ) {
+						// remove extraneous quote characters
+						response = response.substring( 1, response.length() - 1 );
 					}
-					catch ( Exception ignored ) {
-						ignored.printStackTrace();
-						if ( result.size() < count + 1 ) {
-							result.add( null );
+					String type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
+					// possible types are document, string, bool, int, long, void
+					if ( type.equals( "default" ) ) {
+						if ( response.matches( "\\{.*\\}" ) ) {
+							result.add( new JSONObject( response.replace( "\\", "" ) ) );
+						} else {
+							result.add( new JSONArray( response ) );
 						}
+					} else if ( type.equals( "string" ) ) {
+						result.add( response );
+					} else if ( type.equals( "bool" ) ) {
+						result.add( extractBoolean( response ) );
+					} else if ( type.equals( "int" ) ) {
+						result.add( extractInt( response ) );
+					} else if ( type.equals( "long" ) ) {
+						result.add( extractLong( response ) );
+					} else {
+						// void
+						result.add( null );
+					}
+				}
+				catch ( Exception ignored ) {
+					ignored.printStackTrace();
+					if ( result.size() < count + 1 ) {
+						result.add( null );
 					}
 				}
 			}
@@ -588,15 +564,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		return result;
 	}
 
-	protected JSONArray cacheFriendsList;
-
 	/**
 	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
 	 * 
 	 * @return the friends-list stored in the API client.
 	 */
 	public JSONArray getCacheFriendsList() {
-		return cacheFriendsList;
+		return toFriendsGetResponse( client.getCacheFriendsList() );
 	}
 
 	/**
@@ -606,7 +580,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 	 *            the new list to use.
 	 */
 	public void setCacheFriendsList( List<Long> ids ) {
-		this.cacheFriendsList = toFriendsGetResponse( ids );
+		client.setCacheFriendsList( ids );
 	}
 
 	public static JSONArray toFriendsGetResponse( List<Long> ids ) {
@@ -617,22 +591,373 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		return out;
 	}
 
-	@Override
-	public JSONArray friends_get() throws FacebookException {
-		if ( batchMode ) {
-			Object out = super.friends_get();
-			if ( out instanceof JSONArray ) {
-				return (JSONArray) out;
-			}
-			return null;
-		}
-		if ( cacheFriendsList == null ) {
-			Object out = super.friends_get();
-			if ( out instanceof JSONArray ) {
-				cacheFriendsList = (JSONArray) out;
-			}
-		}
-		return cacheFriendsList;
+	public Object admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException {
+		client.setResponseFormat( "json" );
+		Object rawResponse = client.admin_getDailyMetrics( metrics, start, end );
+		return parseCallResult( (String)rawResponse );
 	}
-
+	public Object admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object application_getPublicInfoById( Long applicationId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object batch_run( String methods, boolean serial ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getAssociationDefinition( String associationName ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getAssociationDefinitions() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getCookies() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getCookies( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getCookies( String name ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getCookies( Long userId, CharSequence name ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getObject( long objectId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getObjectProperty( long objectId, String propertyName ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getObjectType( String objectType ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getObjectTypes() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getObjects( Collection<Long> objectIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object data_getUserPreferences() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object events_getMembers( Long eventId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object feed_getRegisteredTemplateBundles() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object fql_query( CharSequence query ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_areFriends( long userId1, long userId2 ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_get( Long uid ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_getAppUsers() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_getList( Long friendListId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_getLists() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object getResponsePOJO() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object groups_getMembers( Number groupId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object marketplace_getCategoriesObject() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object marketplace_getSubCategories( CharSequence category ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_get() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_createAlbum( String albumName ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_createAlbum( String name, String description, String location ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_createAlbum( String albumName, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_get( Long subjId, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_get( Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_get( Long subjId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getAlbums( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getByAlbum( Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_getTags( Collection<Long> photoIds ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( File photo ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( File photo, String caption ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( File photo, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( File photo, String caption, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( Long userId, File photo ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( Long userId, File photo, String caption ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( Long userId, File photo, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getFBML() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getFBML( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getFBML( int type ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getFBML( int type, Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getInfo( Long userId ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object profile_getInfoOptions( String field ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object friends_get() throws FacebookException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
