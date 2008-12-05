@@ -131,6 +131,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret );
 		initJaxbSupport();
 	}
@@ -146,6 +147,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 		initJaxbSupport();
 	}
@@ -161,6 +163,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the session-id to use
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, String sessionKey ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey );
 		initJaxbSupport();
 	}
@@ -178,6 +181,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
 		initJaxbSupport();
 	}
@@ -199,6 +203,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
+		super( "xml" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 		initJaxbSupport();
 	}
@@ -221,6 +226,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
+		super( "xml" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 		initJaxbSupport();
 	}
@@ -238,6 +244,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the session-id to use
 	 */
 	public FacebookJaxbRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 		initJaxbSupport();
 	}
@@ -257,6 +264,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 		initJaxbSupport();
 	}
@@ -278,6 +286,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 		initJaxbSupport();
 	}

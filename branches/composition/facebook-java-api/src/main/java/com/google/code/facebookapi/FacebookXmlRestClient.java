@@ -127,38 +127,47 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
+		super( "xml" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
+		super( "xml" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
 	public FacebookXmlRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
+		super( "xml" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
 

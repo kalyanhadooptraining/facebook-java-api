@@ -85,6 +85,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret ) {
+		super( "json" );
 		client = new ExtensibleClient( apiKey, secret );
 	}
 
@@ -99,6 +100,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, int connectionTimeout ) {
+		super( "json" );
 		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 	}
 
@@ -113,6 +115,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey ) {
+		super( "json" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey );
 	}
 
@@ -129,6 +132,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "json" );
 		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
 	}
 
@@ -149,6 +153,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
+		super( "json" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 	}
 
@@ -170,6 +175,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
+		super( "json" );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
@@ -187,6 +193,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+		super( "json" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 	}
 
@@ -205,6 +212,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
+		super( "json" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
@@ -225,6 +233,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClient( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
+		super( "json" );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
 
