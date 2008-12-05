@@ -1289,15 +1289,6 @@ public interface IFacebookRestClient<T> {
 	public T marketplace_getCategoriesObject() throws FacebookException;
 
 	/**
-	 * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
-	 * 
-	 * Note that calling this method consumes the data held in the internal buffer, and thus it may only be called once per API call.
-	 * 
-	 * @return a String representation of the last API response sent by Facebook
-	 */
-	public String getRawResponse();
-
-	/**
 	 * Returns a JAXB object of the type that corresponds to the last API call made on the client. Each Facebook Platform API call that returns a Document object has a
 	 * JAXB response object associated with it. The naming convention is generally intuitive. For example, if you invoke the 'user_getInfo' API call, the associated JAXB
 	 * response object is 'UsersGetInfoResponse'.<br />

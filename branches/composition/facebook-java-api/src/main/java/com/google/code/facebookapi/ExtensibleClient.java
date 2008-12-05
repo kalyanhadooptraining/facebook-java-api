@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,10 +41,8 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.google.code.facebookapi.schema.Listing;
-import com.google.code.facebookapi.schema.SessionInfo;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
@@ -83,7 +79,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	/** filled in when session is established only used for desktop apps */
 	protected String cacheSessionSecret;
 
-	protected String rawResponse;
 	protected boolean batchMode;
 	public boolean isBatchMode() {
 		return batchMode;
@@ -347,7 +342,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document d = builder.parse( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
+			Document d = builder.parse( new InputSource( new StringReader( rawResponse ) ) );
 			this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 			this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 			this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
@@ -488,7 +483,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	protected String callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream ) throws FacebookException {
-		rawResponse = null;
 		Map<String,String> params = new TreeMap<String,String>();
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -547,7 +541,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 		boolean doEncode = true;
 		try {
-			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
+			String rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return rawResponse;
 		}
 		catch ( IOException ex ) {
@@ -831,7 +825,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public String auth_createToken() throws FacebookException {
-		Object d = callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
+		setResponseFormat("json");
+		String d = callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
 		return extractString( d );
 	}
 
@@ -1002,10 +997,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	public Object marketplace_getCategoriesObject() throws FacebookException {
 		return callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
-	}
-
-	public String getRawResponse() {
-		return rawResponse;
 	}
 
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException {
@@ -2507,7 +2498,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return the Long
 	 */
 	protected int extractInt( Object result ) {
-		return -999;
+		return Integer.parseInt( result.toString() );
 	}
 
 	/**
@@ -2517,7 +2508,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return the Long
 	 */
 	protected Long extractLong( Object result ) {
-		return -999L;
+		return Long.valueOf(result.toString());
 	}
 
 
@@ -2528,7 +2519,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return the String
 	 */
 	protected String extractString( Object result ) {
-		return "-999";
+		String res = (String)result;
+		return res.substring( 1, res.length() - 1 );
 	}
 
 	// ========== EVENTS ==========
@@ -2910,8 +2902,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
-		return this.rawResponse;
+		return callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, newPair( "properties", props ) );
 	}
 
 	/**

@@ -36,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,15 +56,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.google.code.facebookapi.schema.Listing;
 
 /**
  * A FacebookRestClient that uses the XML result format. This means results from calls to the Facebook API are returned as XML and transformed into instances of
@@ -200,7 +198,7 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( namespaceAware );
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse( rawResponse );
+			Document doc = builder.parse( new InputSource(new StringReader(rawResponse)));
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
 			//printDom( doc, method.methodName() + "| " );
@@ -450,6 +448,7 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 			return null;
 		}
 		if(client.getCacheFriendsList() == null) {
+			client.setResponseFormat( "xml" );
 			Object rawResponse = client.friends_get();
 			return parseCallResult( rawResponse.toString() );
 		}
@@ -611,8 +610,9 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 	}
 
 	public Document fql_query( CharSequence query ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.fql_query( query );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document friends_areFriends( long userId1, long userId2 ) throws FacebookException {

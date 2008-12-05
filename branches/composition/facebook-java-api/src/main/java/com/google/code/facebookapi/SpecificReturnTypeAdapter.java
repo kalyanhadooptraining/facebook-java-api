@@ -64,9 +64,11 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().connect_getUnconnectedFriendsCount();
 	}
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
+		getClient().setResponseFormat( "json" );
 		return getClient().data_createObject( objectType, properties );
 	}
 	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException {
+		getClient().setResponseFormat( "json" );
 		return getClient().data_getAssociatedObjectCount( associationName, objectId );
 	}
 	public String data_getUserPreference( int prefId ) throws FacebookException {
