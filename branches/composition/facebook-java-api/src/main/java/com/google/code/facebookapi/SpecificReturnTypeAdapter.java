@@ -206,26 +206,22 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_deactivateTemplateBundleByID( bundleId );
 	}
 
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( titleTemplate );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( titleTemplate, pageActorId );
 	}
 
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
@@ -661,8 +657,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public long users_getLoggedInUser() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return 0;
+		return getClient().users_getLoggedInUser();
 	}
 
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException {

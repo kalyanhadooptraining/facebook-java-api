@@ -27,10 +27,10 @@
  */
 package com.google.code.facebookapi;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,7 +54,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -62,13 +61,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
+import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
 import com.google.code.facebookapi.schema.FacebookApiException;
 import com.google.code.facebookapi.schema.FriendsGetResponse;
 import com.google.code.facebookapi.schema.Listing;
 import com.google.code.facebookapi.schema.MarketplaceGetListingsResponse;
 import com.google.code.facebookapi.schema.MarketplaceGetSubCategoriesResponse;
 import com.google.code.facebookapi.schema.MarketplaceSearchResponse;
-import com.google.code.facebookapi.schema.SessionInfo;
+import com.google.code.facebookapi.schema.UsersGetInfoResponse;
 
 /**
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
@@ -304,24 +304,24 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 		}
 	}
 	
-	/*
-	public Object getResponsePOJO() {
+	public Object getResponsePOJO( String rawResponse ) {
 		if ( JAXB_CONTEXT == null ) {
 			return null;
 		}
+		/*
 		if ( ( client.getResponseFormat() != null ) && ( !"xml".equalsIgnoreCase( getResponseFormat() ) ) ) {
 			// JAXB will not work with JSON
 			throw new RuntimeException( "You can only generate a response POJO when using XML formatted API responses! JSON users go elsewhere!" );
 		}
+		*/
 		try {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-			return unmarshaller.unmarshal( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ) );
+			return unmarshaller.unmarshal( new StringReader( rawResponse ) );
 		}
 		catch ( Exception ex ) {
-			throw runtimeException( ex );
+			throw new RuntimeException( ex );
 		}
 	}
-	*/
 	
 	public JAXBContext getJaxbContext() {
 		return JAXB_CONTEXT;
@@ -401,7 +401,7 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	 */
 	protected Object parseCallResult( String rawResponse ) throws FacebookException {
 		log.debug( "Facebook response:  " + rawResponse );
-		Object res = getResponsePOJO();
+		Object res = getResponsePOJO( rawResponse );
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
 			int errorCode = error.getErrorCode();
@@ -589,29 +589,33 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public AdminGetMetricsResponse admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getMetrics( metrics, start, end, period );
+		return (AdminGetMetricsResponse)parseCallResult( (String)rawResponse );
 	}
-	public Object admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public AdminGetMetricsResponse admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.admin_getMetrics( metrics, start, end, period );
+		return (AdminGetMetricsResponse)parseCallResult( (String)rawResponse );
 	}
 	public Object application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public ApplicationGetPublicInfoResponse application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfoByApiKey( applicationKey );
+		return (ApplicationGetPublicInfoResponse)parseCallResult( (String)rawResponse );
 	}
 	public Object application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object application_getPublicInfoById( Long applicationId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public ApplicationGetPublicInfoResponse application_getPublicInfoById( Long applicationId ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.application_getPublicInfoById( applicationId );
+		return (ApplicationGetPublicInfoResponse)parseCallResult( (String)rawResponse );
 	}
 	public Object batch_run( String methods, boolean serial ) throws FacebookException {
 		// TODO Auto-generated method stub
@@ -718,10 +722,6 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 		return null;
 	}
 	public Object friends_getLists() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Object getResponsePOJO() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -933,9 +933,10 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public UsersGetInfoResponse users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.users_getInfo( userIds, fields );
+		return (UsersGetInfoResponse)parseCallResult( (String)rawResponse );
 	}
 	public Object users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		// TODO Auto-generated method stub

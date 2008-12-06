@@ -843,7 +843,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	@Deprecated
 	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
-		Object result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
+		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
 				"listing_attrs", attrs.jsonify() ) );
 		return extractLong( result );
 	}
@@ -863,7 +863,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
-		Object result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId ),
+		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId ),
 				newPair( "listing_attrs", attrs.jsonify() ) );
 		return extractLong( result );
 	}
@@ -894,7 +894,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException {
 		assert MARKETPLACE_STATUS_DEFAULT.equals( status ) || MARKETPLACE_STATUS_SUCCESS.equals( status ) || MARKETPLACE_STATUS_NOT_SUCCESS.equals( status ) : "Invalid status: "
 				+ status;
-		Object result = callMethod( FacebookMethod.MARKETPLACE_REMOVE_LISTING, newPair( "listing_id", listingId ), newPair( "status", status ) );
+		String result = callMethod( FacebookMethod.MARKETPLACE_REMOVE_LISTING, newPair( "listing_id", listingId ), newPair( "status", status ) );
 		return extractBoolean( result );
 	}
 
@@ -1058,7 +1058,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException {
-		Object result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
+		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
 				"listing_attrs", attributes ) );
 		return extractLong( result );
 	}
@@ -1076,7 +1076,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException {
-		Object result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId ),
+		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId ),
 				newPair( "listing_attrs", attrs.getAttribs() ) );
 		return extractLong( result );
 	}
@@ -1340,7 +1340,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		addParam( "value", value, params );
 		addParamIfNotBlankZero( "expires", expires, params );
 		addParamIfNotBlank( "path", path, params );
-		Object doc = callMethod( FacebookMethod.DATA_SET_COOKIE, params );
+		String doc = callMethod( FacebookMethod.DATA_SET_COOKIE, params );
 		return extractBoolean( doc );
 	}
 
@@ -1571,12 +1571,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		// now we've built our JSON-encoded parameter, so attempt to set the properties
 		try {
 			// first assume that Facebook is sensible enough to be able to undestand an associative array
-			Object d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding1 ) );
+			String d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding1 ) );
 			return extractBoolean( d );
 		}
 		catch ( FacebookException e ) {
 			// if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
-			Object d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding2 ) );
+			String d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding2 ) );
 			return extractBoolean( d );
 		}
 	}
@@ -2484,11 +2484,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @param result
 	 * @return the Boolean
 	 */
-	protected boolean extractBoolean( Object result ) {
-		if ( result == null ) {
-			return false;
+	protected boolean extractBoolean( String result ) throws FacebookException {
+		if("json".equals( responseFormat )) {
+			return FacebookJsonRestClient.extractBoolean( FacebookJsonRestClient.parseCallResult( result ) );
+		} else {
+			return FacebookXmlRestClient.extractBoolean( FacebookXmlRestClient.parseCallResult( result ) );
 		}
-		return 1 == extractInt( result );
 	}
 
 	/**
@@ -2497,8 +2498,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @param result
 	 * @return the Long
 	 */
-	protected int extractInt( Object result ) {
-		return Integer.parseInt( result.toString() );
+	protected int extractInt( String result ) throws FacebookException {
+		if("json".equals( responseFormat )) {
+			return FacebookJsonRestClient.extractInt( FacebookJsonRestClient.parseCallResult( result ) );
+		} else {
+			return FacebookXmlRestClient.extractInt( FacebookXmlRestClient.parseCallResult( result ) );
+		}
 	}
 
 	/**
@@ -2507,8 +2512,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @param result
 	 * @return the Long
 	 */
-	protected Long extractLong( Object result ) {
-		return Long.valueOf(result.toString());
+	protected Long extractLong( String result ) throws FacebookException {
+		if("json".equals( responseFormat )) {
+			return FacebookJsonRestClient.extractLong( FacebookJsonRestClient.parseCallResult( result ) );
+		} else {
+			return FacebookXmlRestClient.extractLong( FacebookXmlRestClient.parseCallResult( result ) );
+		}
 	}
 
 
@@ -2518,9 +2527,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @param result
 	 * @return the String
 	 */
-	protected String extractString( Object result ) {
-		String res = (String)result;
-		return res.substring( 1, res.length() - 1 );
+	protected String extractString( String result ) throws FacebookException {
+		if("json".equals( responseFormat )) {
+			return FacebookJsonRestClient.extractString( FacebookJsonRestClient.parseCallResult( result ) );
+		} else {
+			return FacebookXmlRestClient.extractString( FacebookXmlRestClient.parseCallResult( result ) );
+		}
 	}
 
 	// ========== EVENTS ==========
@@ -2661,7 +2673,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		} else {
 			tagData = newPair( "tag_text", tagText );
 		}
-		Object d = callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), tagData, newPair( "x", xPct ), newPair( "y", yPct ) );
+		String d = callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), tagData, newPair( "x", xPct ), newPair( "y", yPct ) );
 		return extractBoolean( d );
 	}
 
@@ -2879,7 +2891,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	@Deprecated
 	public String notifications_sendEmailStr( Collection<Long> recipients, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException {
-		return extractString( notifications_sendEmail( recipients, subject, text, fbml ) );
+		return extractString( (String)notifications_sendEmail( recipients, subject, text, fbml ) );
 	}
 
 	@Deprecated
@@ -2932,10 +2944,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	
 	public List<Long> getCacheFriendsList() {
 		return cacheFriendsList;
-	}
-
-	public Object getResponsePOJO() {
-		throw new UnsupportedOperationException("Use FacebookJaxbRestClient if you want to get POJOs");
 	}
 
 	public void setCacheFriendsList( List<Long> friendIds ) {

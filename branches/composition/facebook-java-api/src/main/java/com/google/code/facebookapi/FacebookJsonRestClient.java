@@ -252,7 +252,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @param val
 	 * @return the String
 	 */
-	public String extractString( Object val ) {
+	static String extractString( Object val ) {
 		if ( val == null ) {
 			return null;
 		}
@@ -301,7 +301,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 *             if <code>data</code> is not readable
 	 * @see JSONObject
 	 */
-	protected Object parseCallResult( String rawResponse ) throws FacebookException {
+	static Object parseCallResult( String rawResponse ) throws FacebookException {
 		String jsonResp = rawResponse;
 		Object json = null;
 		if ( rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
@@ -358,7 +358,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @param url
 	 * @return the URL
 	 */
-	protected URL extractURL( Object url ) throws IOException {
+	static URL extractURL( Object url ) throws IOException {
 		if ( url == null ) {
 			return null;
 		}
@@ -383,7 +383,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @param val
 	 * @return the Integer
 	 */
-	protected int extractInt( Object val ) {
+	static int extractInt( Object val ) {
 		if ( val == null ) {
 			return 0;
 		}
@@ -424,7 +424,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @param val
 	 * @return the Boolean
 	 */
-	protected boolean extractBoolean( Object val ) {
+	static boolean extractBoolean( Object val ) {
 		if ( val == null ) {
 			return false;
 		}
@@ -461,7 +461,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @param val
 	 * @return the Integer
 	 */
-	protected Long extractLong( Object val ) {
+	static Long extractLong( Object val ) {
 		if ( val == null ) {
 			return 0l;
 		}
@@ -738,10 +738,6 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		return null;
 	}
 	public Object friends_getLists() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Object getResponsePOJO() {
 		// TODO Auto-generated method stub
 		return null;
 	}
