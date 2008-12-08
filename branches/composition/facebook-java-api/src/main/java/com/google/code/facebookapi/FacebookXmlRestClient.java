@@ -316,15 +316,16 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 		client.setResponseFormat( "xml" );
 		//Take a copy of the queries being run so that we can associate them
 		//with the correct return type later.
-		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries().size());
-		Collections.copy( queries, client.getQueries() );
+		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
 		List<? extends Object> clientResults = client.executeBatch( serial );
 		
 		List<Object> result = new ArrayList<Object>();
 
 		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware( true );
+			DocumentBuilder builder = factory.newDocumentBuilder();
 			
 			int outerBatchCount = 0;
 			

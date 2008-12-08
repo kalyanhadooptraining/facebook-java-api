@@ -518,8 +518,7 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		client.setResponseFormat( "json" );
 		//Take a copy of the queries being run so that we can associate them
 		//with the correct return type later.
-		List<BatchQuery> queries = new ArrayList<BatchQuery>();
-		Collections.copy( queries, client.getQueries() );
+		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
 		List<? extends Object> clientResults = client.executeBatch( serial );
 		
