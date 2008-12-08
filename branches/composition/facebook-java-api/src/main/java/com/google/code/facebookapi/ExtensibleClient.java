@@ -548,6 +548,32 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			throw runtimeException( ex );
 		}
 	}
+	
+	/**
+	 * The ExtensibleClient shouldn't be responsible for error checking.
+	 * Instead, it should just return the raw response that Facebook
+	 * gives it.
+	 * 
+	 * However, because "void" and non-Object return types are
+	 * currently defined on this class and within IFacebookRestClient,
+	 * we need to have a way of generating a FacebookException. Apart from
+	 * the Exception mechanism, there's no way of notifying a class that
+	 * has called a void method that the response from Facebook was an error.
+	 * 
+	 * The correct end state for ExtensibleClient is to have this
+	 * validateResponse method removed and for every method to return
+	 * an Object which holds the raw response from Facebook.
+	 * 
+	 * @param rawResponse
+	 * @throws FacebookException
+	 */
+	private void validateVoidResponse( String rawResponse ) throws FacebookException {
+		if("json".equals( responseFormat )) {
+			FacebookJsonRestClient.parseCallResult( rawResponse );
+		} else {
+			FacebookXmlRestClient.parseCallResult( rawResponse );
+		}
+	}
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
@@ -1361,7 +1387,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 									"Attempt to set a preference which hold a maximum of 128 characters to a value with %d characters. The Facebook API silently truncates this value to 128 characters which can lead to unpredictable results. If you want the truncation behaviour, please truncate the string in your Java code.",
 									value.length() ) );
 		}
-		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, newPair( "pref_id", prefId ), newPair( "value", value ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_SET_USER_PREFERENCE, newPair( "pref_id", prefId ), newPair( "value", value ) ) );
 	}
 
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException {
@@ -1375,7 +1401,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			}
 		}
 
-		callMethod( FacebookMethod.DATA_SET_USER_PREFERENCES, newPair( "values", prefs.toString() ), newPairTF( "replace", replace ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_SET_USER_PREFERENCES, newPair( "values", prefs.toString() ), newPairTF( "replace", replace ) ) );
 	}
 
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
@@ -1383,16 +1409,16 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_UPDATE_OBJECT, newPair( "obj_id", String.valueOf( objectId ) ), newPair( "properties", toJson( properties ) ), newPairTF(
-				"replace", replace ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_UPDATE_OBJECT, newPair( "obj_id", String.valueOf( objectId ) ), newPair( "properties", toJson( properties ) ), newPairTF(
+				"replace", replace ) ) );
 	}
 
 	public void data_deleteObject( long objectId ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_DELETE_OBJECT, newPair( "obj_id", objectId ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DELETE_OBJECT, newPair( "obj_id", objectId ) ) );
 	}
 
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_DELETE_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DELETE_OBJECTS, newPair( "obj_ids", delimit( objectIds ) ) ) );
 	}
 
 	public Object data_getObject( long objectId ) throws FacebookException {
@@ -1408,34 +1434,34 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public void data_setObjectProperty( long objectId, String propertyName, String value ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_SET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ), newPair( "value", value ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_SET_OBJECT_PROPERTY, newPair( "obj_id", objectId ), newPair( "prop_name", propertyName ), newPair( "value", value ) ) );
 	}
 
 	public void data_createObjectType( String name ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_CREATE_OBJECT_TYPE, newPair( "name", name ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_CREATE_OBJECT_TYPE, newPair( "name", name ) ) );
 	}
 
 	public void data_dropObjectType( String objectType ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_DROP_OBJECT_TYPE, newPair( "obj_type", objectType ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DROP_OBJECT_TYPE, newPair( "obj_type", objectType ) ) );
 	}
 
 	public void data_renameObjectType( String objectType, String newName ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_RENAME_OBJECT_TYPE, newPair( "obj_type", objectType ), newPair( "new_name", newName ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_RENAME_OBJECT_TYPE, newPair( "obj_type", objectType ), newPair( "new_name", newName ) ) );
 
 	}
 
 	public void data_defineObjectProperty( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_DEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "prop_type",
-				propertyType.getValue() ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "prop_type",
+				propertyType.getValue() ) ) );
 	}
 
 	public void data_undefineObjectProperty( String objectType, String propertyName ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_UNDEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_UNDEFINE_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ) ) );
 	}
 
 	public void data_renameObjectProperty( String objectType, String propertyName, String newPropertyName ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_RENAME_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "new_name",
-				newPropertyName ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_RENAME_OBJECT_PROPERTY, newPair( "obj_type", objectType ), newPair( "prop_name", propertyName ), newPair( "new_name",
+				newPropertyName ) ) );
 	}
 
 	public Object data_getObjectTypes() throws FacebookException {
@@ -1473,11 +1499,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		addParam( "assoc_info2", assocInfo2, params );
 		addParamIfNotBlank( "inverse", inverseName, params );
 
-		callMethod( FacebookMethod.DATA_DEFINE_ASSOCIATION, params );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DEFINE_ASSOCIATION, params ) );
 	}
 
 	public void data_undefineAssociation( String name ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_UNDEFINE_ASSOCIATION, newPair( "name", name ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_UNDEFINE_ASSOCIATION, newPair( "name", name ) ) );
 	}
 
 	public void data_renameAssociation( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException {
@@ -1487,7 +1513,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		addParamIfNotBlank( "new_alias1", newAlias1, params );
 		addParamIfNotBlank( "new_alias2", newAlias2, params );
 
-		callMethod( FacebookMethod.DATA_RENAME_ASSOCIATION, params );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_RENAME_ASSOCIATION, params ) );
 	}
 
 	public Object data_getAssociationDefinition( String name ) throws FacebookException {
@@ -1506,15 +1532,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		addParam( "obj_id2", object2Id, params );
 		addParamIfNotBlank( "data", data, params );
 		addParamSecondsIfNotBlank( "assoc_time", associationTime, params );
-		callMethod( FacebookMethod.DATA_SET_ASSOCIATION, params );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_SET_ASSOCIATION, params ) );
 	}
 
 	public void data_removeAssociation( String associationName, long object1Id, long object2Id ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATION, newPair( "name", associationName ), newPair( "obj_id1", object1Id ), newPair( "obj_id2", object2Id ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATION, newPair( "name", associationName ), newPair( "obj_id1", object1Id ), newPair( "obj_id2", object2Id ) ) );
 	}
 
 	public void data_removeAssociatedObjects( String associationName, long objectId ) throws FacebookException {
-		callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATED_OBJECTS, newPair( "name", associationName ), newPair( "obj_id", objectId ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_REMOVE_ASSOCIATED_OBJECTS, newPair( "name", associationName ), newPair( "obj_id", objectId ) ) );
 	}
 
 	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException {
@@ -2113,7 +2139,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			}
 		}
 		params.add( newPair( "info_fields", json ) );
-		callMethod( FacebookMethod.PROFILE_SET_INFO, params );
+		validateVoidResponse( callMethod( FacebookMethod.PROFILE_SET_INFO, params ) );
 	}
 
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException {
@@ -2133,7 +2159,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
 		addParam( "field", field.getFieldName(), params );
 		addParam( "options", json.toString(), params );
-		callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params );
+		validateVoidResponse( callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params ) );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException {
@@ -2251,9 +2277,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 		Pair<String,CharSequence> type = newPair( "type", isAppToUser ? "app_to_user" : "user_to_user" );
 		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "to_ids", delimit( recipientIds ) ), newPair( "notification", notification ), type );
+			validateVoidResponse( callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "to_ids", delimit( recipientIds ) ), newPair( "notification", notification ), type ) );
 		} else {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ), type );
+			validateVoidResponse( callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ), type ) );
 		}
 	}
 
