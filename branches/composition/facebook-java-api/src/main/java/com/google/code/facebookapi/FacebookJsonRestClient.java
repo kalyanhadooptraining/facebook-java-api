@@ -302,6 +302,9 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 	 * @see JSONObject
 	 */
 	static Object parseCallResult( String rawResponse ) throws FacebookException {
+		if( rawResponse == null ) {
+			return null;
+		}
 		String jsonResp = rawResponse;
 		Object json = null;
 		if ( rawResponse.matches( "[\\{\\[].*[\\}\\]]" ) ) {
@@ -688,9 +691,10 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object data_getUserPreferences() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONArray data_getUserPreferences() throws FacebookException {
+		client.setResponseFormat( "json" );
+		Object rawResponse = client.data_getUserPreferences();
+		return (JSONArray)parseCallResult( (String)rawResponse );
 	}
 	public Object events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException {
 		// TODO Auto-generated method stub
@@ -724,9 +728,10 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object friends_get( Long uid ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONArray friends_get( Long uid ) throws FacebookException {
+		client.setResponseFormat( "json" );
+		Object rawResponse = client.friends_get( uid );
+		return (JSONArray)parseCallResult( (String)rawResponse );
 	}
 	public Object friends_getAppUsers() throws FacebookException {
 		// TODO Auto-generated method stub
@@ -960,8 +965,9 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object friends_get() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONArray friends_get() throws FacebookException {
+		client.setResponseFormat( "json" );
+		Object rawResponse = client.friends_get();
+		return (JSONArray)parseCallResult( (String)rawResponse );
 	}
 }

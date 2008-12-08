@@ -62,6 +62,7 @@ import org.xml.sax.SAXException;
 
 import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
 import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
+import com.google.code.facebookapi.schema.DataGetUserPreferencesResponse;
 import com.google.code.facebookapi.schema.FacebookApiException;
 import com.google.code.facebookapi.schema.FriendsGetResponse;
 import com.google.code.facebookapi.schema.Listing;
@@ -672,9 +673,10 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object data_getUserPreferences() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+	public DataGetUserPreferencesResponse data_getUserPreferences() throws FacebookException {
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.data_getUserPreferences();
+		return (DataGetUserPreferencesResponse)parseCallResult( (String)rawResponse );		
 	}
 	public Object events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException {
 		// TODO Auto-generated method stub

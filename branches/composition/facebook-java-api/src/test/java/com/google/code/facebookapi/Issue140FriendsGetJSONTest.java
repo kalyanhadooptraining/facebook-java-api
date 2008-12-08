@@ -32,7 +32,6 @@ public class Issue140FriendsGetJSONTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFriendsGetBatchJAXB() throws Exception {
 		IFacebookRestClient<Object> client = FacebookSessionTestUtils
 				.getValidClient(FacebookJaxbRestClient.class);
