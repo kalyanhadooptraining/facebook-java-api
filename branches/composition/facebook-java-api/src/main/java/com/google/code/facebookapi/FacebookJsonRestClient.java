@@ -523,15 +523,17 @@ public class FacebookJsonRestClient extends SpecificReturnTypeAdapter implements
 		//with the correct return type later.
 		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
-		List<? extends Object> clientResults = client.executeBatch( serial );
+		List<String> clientResults = client.executeBatch( serial );
 		
 		List<Object> result = new ArrayList<Object>();
 		
 		int outerBatchCount = 0;
 		
-		for(Object clientResult : clientResults) {
+		for(String clientResult : clientResults) {
 			JSONArray doc;
 			try {
+				//Must ensure that JSONArray(String) constructor
+				//is called. JSONArray(Object) behaves differently.
 				doc = new JSONArray(clientResult);
 			} catch(JSONException ex) {
 				throw new RuntimeException("Error parsing client result", ex);

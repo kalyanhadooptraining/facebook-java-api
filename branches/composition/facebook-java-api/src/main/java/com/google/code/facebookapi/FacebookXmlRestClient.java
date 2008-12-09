@@ -318,7 +318,7 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 		//with the correct return type later.
 		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
-		List<? extends Object> clientResults = client.executeBatch( serial );
+		List<String> clientResults = client.executeBatch( serial );
 		
 		List<Object> result = new ArrayList<Object>();
 
@@ -329,8 +329,8 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 			
 			int outerBatchCount = 0;
 			
-			for(Object clientResult : clientResults) {
-				Document doc = builder.parse( new InputSource(clientResult.toString()) );
+			for(String clientResult : clientResults) {
+				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
 					String response = extractNodeString( responses.item( count ) );

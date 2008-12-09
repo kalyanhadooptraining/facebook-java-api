@@ -2948,9 +2948,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * broken down by the adapters into the actual individual responses.
 	 * One string is returned per 15 methods in the batch.
 	 */
-	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
+	public List<String> executeBatch( boolean serial ) throws FacebookException {
 		this.batchMode = false;
-		List<Object> result = new ArrayList<Object>();
+		List<String> result = new ArrayList<String>();
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
 		
 		while ( !this.queries.isEmpty() ) {
