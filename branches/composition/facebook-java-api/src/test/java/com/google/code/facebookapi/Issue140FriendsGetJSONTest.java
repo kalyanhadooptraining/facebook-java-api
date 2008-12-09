@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -12,7 +11,7 @@ public class Issue140FriendsGetJSONTest {
 
 	@Test
 	public void testFriendsGetBatchJSON() throws Exception {
-		IFacebookRestClient<Object> client = FacebookSessionTestUtils
+		FacebookJsonRestClient client = FacebookSessionTestUtils
 				.getValidClient(FacebookJsonRestClient.class);
 
 		client.beginBatch();
@@ -33,7 +32,7 @@ public class Issue140FriendsGetJSONTest {
 
 	@Test
 	public void testFriendsGetBatchJAXB() throws Exception {
-		IFacebookRestClient<Object> client = FacebookSessionTestUtils
+		FacebookJaxbRestClient client = FacebookSessionTestUtils
 				.getValidClient(FacebookJaxbRestClient.class);
 
 		client.beginBatch();
@@ -54,7 +53,7 @@ public class Issue140FriendsGetJSONTest {
 
 	@Test
 	public void testFriendsGetBatchXML() throws Exception {
-		IFacebookRestClient<Document> client = FacebookSessionTestUtils
+		FacebookXmlRestClient client = FacebookSessionTestUtils
 				.getValidClient(FacebookXmlRestClient.class);
 
 		client.beginBatch();
