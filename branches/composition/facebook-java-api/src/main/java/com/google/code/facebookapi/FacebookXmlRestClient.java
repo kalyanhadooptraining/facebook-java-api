@@ -42,7 +42,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -710,103 +709,123 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 	}
 
 	public Document notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.notifications_sendFbmlEmail( recipients, subject, fbml );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.notifications_sendFbmlEmailToCurrentUser( subject, fbml );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.notifications_sendTextEmail( recipients, subject, email );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.notifications_sendTextEmailToCurrentUser( subject, email );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.pages_getInfo( pageIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.pages_getInfo( pageIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.pages_getInfo( userId, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.pages_getInfo( userId, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.permissions_checkAvailableApiAccess( apiKey );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.permissions_checkGrantedApiAccess( apiKey );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_addTags( photoId, tags );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_addTags( photoId, tags, userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_createAlbum( String albumName ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_createAlbum( albumName );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_createAlbum( String name, String description, String location ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_createAlbum( name, description, location );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_createAlbum( String albumName, Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_createAlbum( albumName, userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_createAlbum( name, description, location, userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_get( subjId, albumId, photoIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_get( subjId, photoIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_get( subjId, albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_get( Collection<Long> photoIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_get( photoIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_get( Long subjId ) throws FacebookException {
@@ -816,128 +835,153 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 	}
 
 	public Document photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getAlbums( userId, albumIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_getAlbums( Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getAlbums( userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getAlbums( albumIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getByAlbum( albumId, photoIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_getByAlbum( Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getByAlbum( albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_getTags( Collection<Long> photoIds ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_getTags( photoIds );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( File photo ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( photo );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( File photo, String caption ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( photo, caption );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( File photo, Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( photo, albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( File photo, String caption, Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( photo, caption, albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( userId, photo );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( userId, photo, caption );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( userId, photo, albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( userId, photo, caption, albumId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.photos_upload( userId, caption, albumId, fileName, fileStream );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getFBML() throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getFBML();
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getFBML( Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getFBML( userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getFBML( int type ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getFBML( type );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getFBML( int type, Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getFBML( type, userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getInfo( Long userId ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getInfo( userId );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document profile_getInfoOptions( String field ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.profile_getInfoOptions( field );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.users_getInfo( userIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.users_getInfo( userIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.users_getStandardInfo( userIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 	public Document users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
-		// TODO Auto-generated method stub
-		return null;
+		client.setResponseFormat( "xml" );
+		Object rawResponse = client.users_getStandardInfo( userIds, fields );
+		return parseCallResult( (String)rawResponse );
 	}
 
 }
