@@ -79,9 +79,9 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 	protected static Log log = LogFactory.getLog( FacebookJaxbRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
-	private static final Map<FacebookMethod,String> RETURN_TYPES;
+	private static final Map<FacebookMethod,Class> RETURN_TYPES;
 	static {
-		RETURN_TYPES = new HashMap<FacebookMethod,String>();
+		RETURN_TYPES = new HashMap<FacebookMethod,Class>();
 		Method[] candidates = FacebookJaxbRestClient.class.getMethods();
 		// this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
 		for ( FacebookMethod method : EnumSet.allOf( FacebookMethod.class ) ) {
@@ -90,26 +90,8 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 			name = name.replace( ".", "_" );
 			for ( Method candidate : candidates ) {
 				if ( candidate.getName().equalsIgnoreCase( name ) ) {
-					String typeName = candidate.getReturnType().getName().toLowerCase();
-					// possible types are Document, String, Boolean, Integer, Long, void
-					if ( typeName.indexOf( "object" ) != -1 ) {
-						RETURN_TYPES.put( method, "default" );
-					} else if ( typeName.indexOf( "string" ) != -1 ) {
-						RETURN_TYPES.put( method, "string" );
-					} else if ( typeName.indexOf( "bool" ) != -1 ) {
-						RETURN_TYPES.put( method, "bool" );
-					} else if ( typeName.indexOf( "long" ) != -1 ) {
-						RETURN_TYPES.put( method, "long" );
-					} else if ( typeName.indexOf( "int" ) != -1 ) {
-						RETURN_TYPES.put( method, "int" );
-					} else if ( ( typeName.indexOf( "applicationpropertyset" ) != -1 ) || ( typeName.indexOf( "list" ) != -1 ) || ( typeName.indexOf( "url" ) != -1 )
-							|| ( typeName.indexOf( "map" ) != -1 ) || ( typeName.indexOf( "object" ) != -1 ) ) {
-						// we don't autobox these for now, the user can parse them on their own
-						RETURN_TYPES.put( method, "default" );
-					} else {
-						RETURN_TYPES.put( method, "void" );
-					}
-					break;
+					Class returnType = candidate.getReturnType();
+					RETURN_TYPES.put(method, returnType);
 				}
 			}
 		}
@@ -537,17 +519,16 @@ public class FacebookJaxbRestClient extends SpecificReturnTypeAdapter implements
 					String response = extractNodeString( responses.item( count ) );
 					try {
 						Object pojo = parseCallResult( response );
-						String type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
-						// possible types are document, string, bool, int, long, void
-						if ( type.equals( "default" ) ) {
+						Class type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
+						if(!type.isPrimitive()) {
 							result.add( pojo );
-						} else if ( type.equals( "string" ) ) {
+						} else if ( type.equals( String.class ) ) {
 							result.add( extractString( pojo ) );
-						} else if ( type.equals( "bool" ) ) {
+						} else if ( type.equals( Boolean.class ) ) {
 							result.add( extractBoolean( pojo ) );
-						} else if ( type.equals( "int" ) ) {
+						} else if ( type.equals( Integer.class ) ) {
 							result.add( extractInt( pojo ) );
-						} else if ( type.equals( "long" ) ) {
+						} else if ( type.equals( Long.class ) ) {
 							result.add( (long) extractLong( pojo ) );
 						} else {
 							// void
