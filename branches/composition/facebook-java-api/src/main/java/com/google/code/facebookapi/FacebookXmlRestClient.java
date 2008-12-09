@@ -191,12 +191,12 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 		return client.auth_getSession( authToken );
 	}
 
-	static Document parseCallResult( String rawResponse ) throws FacebookException {
+	static Document parseCallResult( Object rawResponse ) throws FacebookException {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware( true );
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse( new InputSource(new StringReader(rawResponse)));
+			Document doc = builder.parse( new InputSource(new StringReader((String)rawResponse)));
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
 			//printDom( doc, method.methodName() + "| " );
@@ -447,541 +447,541 @@ public class FacebookXmlRestClient extends SpecificReturnTypeAdapter implements 
 	public Document admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.admin_getDailyMetrics( metrics, start, end );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.admin_getDailyMetrics( metrics, start, end );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.admin_getMetrics( metrics, start, end, period);
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.admin_getMetrics( metrics, start, end, period );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.application_getPublicInfo( applicationId, applicationKey, applicationCanvas );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.application_getPublicInfoByApiKey( applicationKey );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.application_getPublicInfoByCanvasName( applicationCanvas );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document application_getPublicInfoById( Long applicationId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.application_getPublicInfoById( applicationId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document batch_run( String methods, boolean serial ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.batch_run( methods, serial );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.connect_registerUsers( accounts );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = connect_unregisterUsers( email_hashes );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getAssociationDefinition( String associationName ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getAssociationDefinition( associationName );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getAssociationDefinitions() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getAssociationDefinitions();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getCookies() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getCookies();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getCookies( Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getCookies( userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getCookies( String name ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getCookies( name );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getCookies( Long userId, CharSequence name ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getCookies( userId, name );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document data_getObject( long objectId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getObject( objectId );
-		return parseCallResult( (String)rawResponse );	
+		return parseCallResult( rawResponse );	
 	}
 
 	public Document data_getObjectProperty( long objectId, String propertyName ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getObjectProperty( objectId, propertyName );
-		return parseCallResult( (String)rawResponse );	
+		return parseCallResult( rawResponse );	
 	}
 
 	public Document data_getObjectType( String objectType ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getObjectType( objectType );
-		return parseCallResult( (String)rawResponse );		
+		return parseCallResult( rawResponse );		
 	}
 
 	public Document data_getObjectTypes() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getObjectTypes();
-		return parseCallResult( (String)rawResponse );	
+		return parseCallResult( rawResponse );	
 	}
 
 	public Document data_getObjects( Collection<Long> objectIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getObjects( objectIds );
-		return parseCallResult( (String)rawResponse );	
+		return parseCallResult( rawResponse );	
 	}
 
 	public Document data_getUserPreferences() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.data_getUserPreferences();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.events_get( userId, eventIds, startTime, endTime );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.events_get( userId, eventIds, startTime, endTime, rsvp_status );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document events_getMembers( Long eventId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.events_getMembers( eventId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.feed_getRegisteredTemplateBundleByID( id );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document feed_getRegisteredTemplateBundles() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.feed_getRegisteredTemplateBundles();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document fql_query( CharSequence query ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.fql_query( query );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_areFriends( long userId1, long userId2 ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_areFriends( userId1, userId2 );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_areFriends( userIds1, userIds2 );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_get( Long uid ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_get( uid );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_getAppUsers() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_getAppUsers();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_getList( Long friendListId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_getList( friendListId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document friends_getLists() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.friends_getLists();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.groups_get( userId, groupIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document groups_getMembers( Number groupId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.groups_getMembers( groupId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document marketplace_getCategoriesObject() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.marketplace_getCategoriesObject();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.marketplace_getListings( listingIds, userIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document marketplace_getSubCategories( CharSequence category ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.marketplace_getSubCategories( category );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.marketplace_search( category, subCategory, query );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_get() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_get();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendEmail( recipients, subject, email, fbml );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendEmailToCurrentUser( subject, email, fbml );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendFbmlEmail( recipients, subject, fbml );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendFbmlEmailToCurrentUser( subject, fbml );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendTextEmail( recipients, subject, email );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.notifications_sendTextEmailToCurrentUser( subject, email );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.pages_getInfo( pageIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.pages_getInfo( pageIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.pages_getInfo( userId, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.pages_getInfo( userId, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.permissions_checkAvailableApiAccess( apiKey );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.permissions_checkGrantedApiAccess( apiKey );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_addTags( photoId, tags );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_addTags( photoId, tags, userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_createAlbum( String albumName ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_createAlbum( albumName );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_createAlbum( String name, String description, String location ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_createAlbum( name, description, location );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_createAlbum( String albumName, Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_createAlbum( albumName, userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_createAlbum( name, description, location, userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_get( subjId, albumId, photoIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_get( subjId, photoIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_get( Long subjId, Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_get( subjId, albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_get( Collection<Long> photoIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_get( photoIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_get( Long subjId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_get( subjId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getAlbums( userId, albumIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getAlbums( Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getAlbums( userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getAlbums( albumIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getByAlbum( albumId, photoIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getByAlbum( Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getByAlbum( albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_getTags( Collection<Long> photoIds ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_getTags( photoIds );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( File photo ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( photo );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( File photo, String caption ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( photo, caption );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( File photo, Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( photo, albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( File photo, String caption, Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( photo, caption, albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( userId, photo );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( userId, photo, caption );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( userId, photo, albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( userId, photo, caption, albumId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.photos_upload( userId, caption, albumId, fileName, fileStream );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getFBML() throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getFBML();
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getFBML( Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getFBML( userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getFBML( int type ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getFBML( type );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getFBML( int type, Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getFBML( type, userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getInfo( Long userId ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getInfo( userId );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document profile_getInfoOptions( String field ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.profile_getInfoOptions( field );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.users_getInfo( userIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.users_getInfo( userIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.users_getStandardInfo( userIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 	public Document users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		client.setResponseFormat( "xml" );
 		Object rawResponse = client.users_getStandardInfo( userIds, fields );
-		return parseCallResult( (String)rawResponse );
+		return parseCallResult( rawResponse );
 	}
 
 }
