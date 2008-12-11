@@ -195,6 +195,12 @@
   </xsd:sequence>
 </xsd:complexType>
 
+<xsd:complexType name="fql_query_response">
+  <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+    <xsd:any />
+  </xsd:sequence>
+</xsd:complexType>
+
 <xsd:complexType name="session_info">
   <xsd:sequence>
     <xsd:element name="session_key" type="session_key" />
@@ -1564,5 +1570,7 @@
     </xsd:sequence>
   </xsd:complexType>
 </xsd:element>
+
+<xsd:element name="fql_query_response" type="fql_query_response"/>
 
 </xsd:schema>
