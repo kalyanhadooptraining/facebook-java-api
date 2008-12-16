@@ -2,7 +2,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     schemaLocation="schema.xsd" node="/xs:schema">
     <globalBindings generateElementProperty="false"/>
-    <bindings node="//xs:complexType[@name='fql_query_response']/xs:sequence">
+    <bindings node="//xs:element[@name='fql_query_response']/xs:complexType/xs:sequence">
         <property name="results"/>
     </bindings>
 </bindings>
