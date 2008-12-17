@@ -8,6 +8,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.google.code.facebookapi.schema.FriendsGetResponse;
+
 public class Issue140FriendsGetJSONTest {
 
 	@Test
@@ -32,9 +34,8 @@ public class Issue140FriendsGetJSONTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFriendsGetBatchJAXB() throws Exception {
-		IFacebookRestClient<Object> client = FacebookSessionTestUtils
+		FacebookJaxbRestClient client = FacebookSessionTestUtils
 				.getValidClient(FacebookJaxbRestClient.class);
 
 		client.beginBatch();
@@ -48,8 +49,10 @@ public class Issue140FriendsGetJSONTest {
 		List<? extends Object> results = client.executeBatch(false);
 		assertEquals(2, results.size());
 		for (Object r : results) {
-			System.out.println("Result: " + r);
 			assertNotNull(r);
+			FriendsGetResponse fgr = (FriendsGetResponse) r;
+			List<Long> uids = fgr.getUid();
+			assertTrue( uids.size() > 0 );
 		}
 	}
 

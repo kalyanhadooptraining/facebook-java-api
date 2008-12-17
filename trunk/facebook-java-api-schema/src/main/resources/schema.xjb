@@ -5,5 +5,8 @@
     <bindings node="//xs:element[@name='fql_query_response']/xs:complexType/xs:sequence">
         <property name="results"/>
     </bindings>
+    <bindings node="//xs:element[@name='batch_run_response']/xs:complexType/xs:sequence">
+        <property name="results"/>
+    </bindings>
 </bindings>
 
