@@ -197,9 +197,9 @@
 
 <xsd:element name="fql_query_response">
   <xsd:complexType>
-      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-        <xsd:any />
-      </xsd:sequence>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any />
+    </xsd:sequence>
   </xsd:complexType>
 </xsd:element>
 
@@ -1560,15 +1560,8 @@
 
 <xsd:element name="batch_run_response">
   <xsd:complexType>
-    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-      <xsd:element name="friends_get_response">
-        <xsd:complexType>
-          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
-          </xsd:sequence>
-          <xsd:attribute name="list" type="xsd:boolean" />
-        </xsd:complexType>
-    </xsd:element>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any/>
     </xsd:sequence>
   </xsd:complexType>
 </xsd:element>
