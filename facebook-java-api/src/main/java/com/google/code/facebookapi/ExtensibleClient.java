@@ -204,14 +204,19 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			return null;
 		}
 		StringBuilder buffer = new StringBuilder();
+		boolean empty = true;
 		boolean notFirst = false;
 		for ( Object item : iterable ) {
 			if ( notFirst ) {
 				buffer.append( "," );
 			} else {
+				empty = false;
 				notFirst = true;
 			}
 			buffer.append( item.toString() );
+		}
+		if ( empty ) {
+			return null;
 		}
 		return buffer;
 	}
@@ -667,28 +672,28 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.NOTIFICATIONS_GET );
 	}
 
-	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+	public T users_getStandardInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
 		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, newPair( "uids", delimit( userIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+	public T users_getStandardInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
 		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, newPair( "uids", delimit( userIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
+	public T users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
 		return callMethod( FacebookMethod.USERS_GET_INFO, newPair( "uids", delimit( userIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
+	public T users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
@@ -2444,11 +2449,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return false;
 	}
 
-	protected static boolean addParamDelimitIfNotEmpty( String name, Collection value, Collection<Pair<String,CharSequence>> params ) {
-		if ( value != null && !value.isEmpty() ) {
-			return addParam( name, delimit( value ), params );
-		}
-		return false;
+	protected static boolean addParamDelimitIfNotBlankEmpty( String name, Iterable value, Collection<Pair<String,CharSequence>> params ) {
+		return addParamIfNotBlank( name, delimit( value ), params );
 	}
 
 	protected static boolean addParam( String name, Object value, Collection<Pair<String,CharSequence>> params ) {
@@ -2543,7 +2545,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
 		addParamIfNotBlankZero( "uid", userId, params );
-		addParamDelimitIfNotEmpty( "eids", eventIds, params );
+		addParamDelimitIfNotBlankEmpty( "eids", eventIds, params );
 		addParamIfNotBlankZero( "start_time", startTime, params );
 		addParamIfNotBlankZero( "end_time", endTime, params );
 		return callMethod( FacebookMethod.EVENTS_GET, params );
@@ -2617,7 +2619,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	// ========== PHOTOS ==========
 
-	public T photos_get( Collection<Long> photoIds ) throws FacebookException {
+	public T photos_get( Iterable<Long> photoIds ) throws FacebookException {
 		return photos_get( null /* subjId */, null /* albumId */, photoIds );
 	}
 
@@ -2625,7 +2627,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_get( subjId, albumId, null /* photoIds */);
 	}
 
-	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
+	public T photos_get( Long subjId, Iterable<Long> photoIds ) throws FacebookException {
 		return photos_get( subjId, null /* albumId */, photoIds );
 	}
 
@@ -2633,27 +2635,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_get( subjId, null /* albumId */, null /* photoIds */);
 	}
 
-	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
-		boolean hasUserId = null != subjId && 0 != subjId;
-		boolean hasAlbumId = null != albumId && 0 != albumId;
-		boolean hasPhotoIds = null != photoIds && !photoIds.isEmpty();
-		if ( !hasUserId && !hasAlbumId && !hasPhotoIds ) {
-			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
-		}
+	public T photos_get( Long subjId, Long albumId, Iterable<Long> photoIds ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		if ( hasUserId ) {
-			params.add( newPair( "subj_id", subjId ) );
-		}
-		if ( hasAlbumId ) {
-			params.add( newPair( "aid", albumId ) );
-		}
-		if ( hasPhotoIds ) {
-			params.add( newPair( "pids", delimit( photoIds ) ) );
+		addParamIfNotBlankZero( "subj_id", subjId, params );
+		addParamIfNotBlankZero( "aid", albumId, params );
+		addParamDelimitIfNotBlankEmpty( "pids", photoIds, params );
+		if ( params.isEmpty() ) {
+			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
 		}
 		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
-	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException {
+	public T photos_getTags( Iterable<Long> photoIds ) throws FacebookException {
 		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, newPair( "pids", delimit( photoIds ) ) );
 	}
 
@@ -2684,15 +2677,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_addTag( photoId, xPct, yPct, taggedUserId, null );
 	}
 
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
-		assert ( photoId > 0 );
-		assert ( null != tags && !tags.isEmpty() );
-
+	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags ) throws FacebookException {
 		JSONArray jsonTags = new JSONArray();
 		for ( PhotoTag tag : tags ) {
 			jsonTags.put( tag.jsonify() );
 		}
-
 		return callMethod( FacebookMethod.PHOTOS_ADD_TAG, newPair( "pid", photoId ), newPair( "tags", jsonTags ) );
 	}
 
@@ -2709,7 +2698,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
 	}
 
-	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
+	public T photos_getAlbums( Iterable<Long> albumIds ) throws FacebookException {
 		return photos_getAlbums( null /* userId */, albumIds );
 	}
 
@@ -2717,22 +2706,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return photos_getAlbums( userId, null /* albumIds */);
 	}
 
-	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
-		boolean hasUserId = null != userId && userId != 0;
-		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
-		if ( hasUserId && hasAlbumIds ) {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ), newPair( "aids", delimit( albumIds ) ) );
+	public T photos_getAlbums( Long userId, Iterable<Long> albumIds ) throws FacebookException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
+		addParamIfNotBlankZero( "uid", userId, params );
+		addParamDelimitIfNotBlankEmpty( "aids", albumIds, params );
+		if ( params.isEmpty() ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Atleast one of userId or albumIds is required." );
 		}
-		if ( hasUserId ) {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "uid", userId ) );
-		}
-		if ( hasAlbumIds ) {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, newPair( "aids", delimit( albumIds ) ) );
-		}
-		throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Atleast one of userId or albumIds is required." );
+		return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, params );
 	}
 
-	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
+	public T photos_getByAlbum( Long albumId, Iterable<Long> photoIds ) throws FacebookException {
 		return photos_get( null /* subjId */, albumId, photoIds );
 	}
 
@@ -2784,9 +2768,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
 	}
 
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
-		assert ( photoId > 0 );
-		assert ( null != tags && !tags.isEmpty() );
+	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags, Long userId ) throws FacebookException {
 		String tagStr = null;
 		try {
 			JSONArray jsonTags = new JSONArray();
