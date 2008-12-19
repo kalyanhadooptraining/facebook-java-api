@@ -498,7 +498,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
+	public T users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -510,7 +510,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
+	public T users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -523,7 +523,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
+	public T users_getStandardInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -536,7 +536,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
+	public T users_getStandardInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the user ID of the user logged in to this API session
@@ -705,7 +705,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return an T of photo objects.
 	 */
-	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Long subjId, Long albumId, Iterable<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -718,7 +718,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Long subjId, Iterable<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -742,7 +742,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Iterable<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -765,7 +765,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException;
+	public T photos_getAlbums( Long userId, Iterable<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata for albums owned by a user.
@@ -785,7 +785,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException;
+	public T photos_getAlbums( Iterable<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves the tags for the given set of photos.
@@ -794,7 +794,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException;
+	public T photos_getTags( Iterable<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -853,7 +853,7 @@ public interface IFacebookRestClient<T> {
 	 *            A list of PhotoTags.
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException;
+	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -1264,7 +1264,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_getByAlbum( Long albumId, Iterable<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -1415,36 +1415,41 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException;
-	
+
 	/**
-	 * An object type is like a "table" in SQL terminology, or a "class" in object-oriented programming concepts.
-	 * Each object type has a unique human-readable "name" that will be used to identify itself throughout the API.
-	 * Each object type also has a list of properties that one has to define individually. Each property is like a
+	 * An object type is like a "table" in SQL terminology, or a "class" in object-oriented programming concepts. Each object type has a unique human-readable "name" that
+	 * will be used to identify itself throughout the API. Each object type also has a list of properties that one has to define individually. Each property is like a
 	 * "column" in an SQL table, or a "data member" in an object class.
-	 *  
+	 * 
 	 * @param name
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.createObjectType</a>
 	 */
 	public void data_createObjectType( String name ) throws FacebookException;
-	
+
 	/**
-	 * Remove a previously defined object type. This will also delete ALL objects of this type. This deletion is NOT reversible. 
+	 * Remove a previously defined object type. This will also delete ALL objects of this type. This deletion is NOT reversible.
 	 * 
 	 * @param objectType
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.dropObjectType</a>
 	 */
-	public void data_dropObjectType( String objectType )  throws FacebookException;
+	public void data_dropObjectType( String objectType ) throws FacebookException;
+
 	public void data_renameObjectType( String name, String newName ) throws FacebookException;
-	public void data_defineObjectProperty ( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException;
-	public void data_undefineObjectProperty ( String objectType, String propertyName ) throws FacebookException;
-	public void data_renameObjectProperty ( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
+
+	public void data_defineObjectProperty( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException;
+
+	public void data_undefineObjectProperty( String objectType, String propertyName ) throws FacebookException;
+
+	public void data_renameObjectProperty( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
+
 	public T data_getObjectTypes() throws FacebookException;
+
 	public T data_getObjectType( String objectType ) throws FacebookException;
-	
-	
-	
+
+
+
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
@@ -2335,39 +2340,34 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObjects"> Developers Wiki: Data.deleteObjects</a>
 	 */
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException;
-	
-	public T data_getObject ( long objectId ) throws FacebookException;
-	public T data_getObjects ( Collection<Long> objectIds ) throws FacebookException;
-	public T data_getObjectProperty ( long objectId, String propertyName ) throws FacebookException;
-	public void data_setObjectProperty ( long objectId, String propertyName, String value ) throws FacebookException;
-	
+
+	public T data_getObject( long objectId ) throws FacebookException;
+
+	public T data_getObjects( Collection<Long> objectIds ) throws FacebookException;
+
+	public T data_getObjectProperty( long objectId, String propertyName ) throws FacebookException;
+
+	public void data_setObjectProperty( long objectId, String propertyName, String value ) throws FacebookException;
+
 	/**
 	 * 
 	 * @param associationName
-	 *            Name of forward association to create. This name needs to be
-	 *            unique among all object types and associations defined for
-	 *            this application. This name also needs to be a valid
-	 *            identifier, which is no longer than 32 characters, starting
-	 *            with a letter (a-z) and consisting of only small letters
-	 *            (a-z), numbers (0-9) and/or underscores.
+	 *            Name of forward association to create. This name needs to be unique among all object types and associations defined for this application. This name also
+	 *            needs to be a valid identifier, which is no longer than 32 characters, starting with a letter (a-z) and consisting of only small letters (a-z), numbers
+	 *            (0-9) and/or underscores.
 	 * @param associationType
 	 * @param associationInfo1
 	 * @param associationInfo2
 	 * @param inverseName
-	 *            Optional - name of backward association, if it is two-way
-	 *            asymmetric. This name needs to be unique among all object
-	 *            types and associations defined for this application. This name
-	 *            also needs to be a valid identifier, which is no longer than
-	 *            32 characters, starting with a letter (a-z) and consisting of
+	 *            Optional - name of backward association, if it is two-way asymmetric. This name needs to be unique among all object types and associations defined for
+	 *            this application. This name also needs to be a valid identifier, which is no longer than 32 characters, starting with a letter (a-z) and consisting of
 	 *            only small letters (a-z), numbers (0-9) and/or underscores.
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.defineAssociation"> Developers Wiki: Data.defineAssociation</a>
 	 */
-	public void data_defineAssociation(String associationName,
-			AssociationType associationType, AssociationInfo associationInfo1,
-			AssociationInfo associationInfo2, String inverseName)
-			throws FacebookException;
-	
+	public void data_defineAssociation( String associationName, AssociationType associationType, AssociationInfo associationInfo1, AssociationInfo associationInfo2,
+			String inverseName ) throws FacebookException;
+
 	/**
 	 * Remove a previously defined association. This will also delete this type of associations established between objects. This deletion is not reversible.
 	 * 
@@ -2375,11 +2375,11 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.undefineAssociation"> Developers Wiki: Data.undefineAssociation</a>
 	 */
-	public void data_undefineAssociation ( String name ) throws FacebookException;
-	
+	public void data_undefineAssociation( String name ) throws FacebookException;
+
 	/**
-	 * Rename a previously defined association. Note that, any renaming here only affects one direction. To change names and aliases for another direction,
-	 * rename with the name of that direction of association. 
+	 * Rename a previously defined association. Note that, any renaming here only affects one direction. To change names and aliases for another direction, rename with
+	 * the name of that direction of association.
 	 * 
 	 * @param name
 	 * @param newName
@@ -2389,10 +2389,12 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.renameAssociation"> Developers Wiki: Data.renameAssociation</a>
 	 */
-	public void data_renameAssociation ( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
-	public T data_getAssociationDefinition ( String associationName ) throws FacebookException;
-	public T data_getAssociationDefinitions () throws FacebookException;
-	
+	public void data_renameAssociation( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
+
+	public T data_getAssociationDefinition( String associationName ) throws FacebookException;
+
+	public T data_getAssociationDefinitions() throws FacebookException;
+
 
 	/**
 	 * Create an association between two objects
@@ -3005,7 +3007,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
+	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags, Long userId ) throws FacebookException;
 
 	/**
 	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
