@@ -737,14 +737,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException {
-		if ( cacheAppAdded != null ) {
+		if ( cacheAppAdded == null ) {
 			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
 		return cacheAppAdded;
 	}
 
 	public boolean users_isAppUser() throws FacebookException {
-		if ( cacheAppUser != null ) {
+		if ( cacheAppUser == null ) {
 			cacheAppUser = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
 		}
 		return cacheAppUser;
