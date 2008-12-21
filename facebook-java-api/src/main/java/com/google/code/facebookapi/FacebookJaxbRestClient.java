@@ -475,8 +475,8 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
 		while ( !this.queries.isEmpty() ) {
 			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 15 at once
+			if ( ( buffer.size() == BATCH_LIMIT ) || ( this.queries.isEmpty() ) ) {
+				// we can only actually batch up to 20 at once
 				batch_run( encodeMethods( buffer ), serial );
 				try {
 					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

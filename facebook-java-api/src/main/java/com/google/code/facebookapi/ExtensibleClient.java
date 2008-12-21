@@ -50,6 +50,8 @@ import org.w3c.dom.NodeList;
 public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
+	
+	public static final int BATCH_LIMIT = 20;
 
 	public static URL SERVER_URL = null;
 	public static URL HTTPS_SERVER_URL = null;

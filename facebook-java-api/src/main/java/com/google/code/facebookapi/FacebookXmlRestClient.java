@@ -336,8 +336,8 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
 		while ( !this.queries.isEmpty() ) {
 			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 15 at once
+			if ( ( buffer.size() == BATCH_LIMIT ) || ( this.queries.isEmpty() ) ) {
+				// we can only actually batch up to 20 at once
 				Document doc = batch_run( encodeMethods( buffer ), serial );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
