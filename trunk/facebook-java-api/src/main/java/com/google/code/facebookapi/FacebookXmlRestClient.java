@@ -35,6 +35,7 @@ package com.google.code.facebookapi;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,10 +45,16 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -179,7 +186,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
-		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
+		List<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		params.add( newPair( "auth_token", authToken ) );
+		if ( this._isDesktop ) {
+			params.add( newPair( "generate_session_secret", "true" ) );
+		}
+		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
+		XMLTestUtils.print( d );
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
@@ -200,6 +213,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
+				XMLTestUtils.print( doc );
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				throw new FacebookException( errorCode, message );
@@ -429,6 +443,15 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		}
 		if ( cacheFriendsList == null ) {
 			cacheFriendsList = super.friends_get();
+		}
+		try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			StringWriter rawResponseStringWriter = new StringWriter();
+			t.transform( new DOMSource (cacheFriendsList), new StreamResult(rawResponseStringWriter) );
+			rawResponse = rawResponseStringWriter.toString();
+		} catch(TransformerException ex) {
+			throw new RuntimeException("Error replaying cached friends list into rawResponse");
 		}
 		return cacheFriendsList;
 	}
