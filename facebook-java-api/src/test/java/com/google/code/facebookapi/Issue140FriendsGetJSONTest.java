@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -79,7 +78,7 @@ public class Issue140FriendsGetJSONTest {
 	public void testGetAppUsers() throws Exception {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 		FacebookXmlRestClient.initJaxbSupport();
-		
+
 		client.friends_getAppUsers();
 		FriendsGetAppUsersResponse fbResponse = (FriendsGetAppUsersResponse) client.getResponsePOJO();
 
