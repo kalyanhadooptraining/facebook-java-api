@@ -419,7 +419,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	private String generateSignature( List<String> params, boolean requiresSession ) {
-		String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
+		//String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
+		String secret = _secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
