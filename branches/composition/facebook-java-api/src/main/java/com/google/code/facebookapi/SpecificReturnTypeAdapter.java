@@ -34,6 +34,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().admin_getAllocation( allocationType );
 	}
 
+	@Deprecated
 	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().admin_getAppProperties( properties );
@@ -49,11 +50,13 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().admin_getAppPropertiesMap( properties );
 	}
 
+	@Deprecated
 	public int admin_getNotificationAllocation() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().admin_getNotificationAllocation();
 	}
 
+	@Deprecated
 	public int admin_getRequestAllocation() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().admin_getRequestAllocation();
@@ -79,6 +82,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().auth_expireSession();
 	}
 
+	@Deprecated
 	public long auth_getUserId( String authToken ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_getUserId( authToken );
@@ -209,6 +213,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().feed_deactivateTemplateBundleByID( bundleId );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate );
@@ -228,304 +233,261 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images,
 			Long pageActorId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images, pageActorId );
 	}
 
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
 	public boolean feed_publishTemplatizedAction( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, pictures, targetIds );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_publishUserAction( bundleId );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_publishUserAction( bundleId, templateData, targetIds, bodyGeneral );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_publishUserAction( bundleId, templateData, images, targetIds, bodyGeneral, storySize );
 	}
 
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_registerTemplateBundle( template );
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_registerTemplateBundle( templates );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( String template, String shortTemplate, String longTemplate ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_registerTemplateBundle( template, shortTemplate, longTemplate );
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
 			List<BundleActionLink> actionLinks ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate, actionLinks );
 	}
 
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
 			throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate );
 	}
 
+	@Deprecated
 	public Boolean getCacheAppAdded() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheAppAdded();
 	}
 
 	public Boolean getCacheAppUser() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheAppUser();
 	}
 
 	public Long getCacheSessionExpires() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheSessionExpires();
 	}
 
 	public String getCacheSessionKey() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheSessionKey();
 	}
 
 	public String getCacheSessionSecret() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheSessionSecret();
 	}
 
 	public Long getCacheUserId() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getCacheUserId();
 	}
 
 	public URL getDefaultServerUrl() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getRawResponse() {
-		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().getDefaultServerUrl();
 	}
 
 	public boolean isDesktop() {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().isDesktop();
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().liveMessage_send( recipient, eventName, message );
 	}
 
+	@Deprecated
 	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( showOnProfile, attrs );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( listingId, showOnProfile, attributes );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( listingId, showOnProfile, listing );
 	}
 
 	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( showOnProfile, listing );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( listingId, showOnProfile, attributes, userId );
 	}
 
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( listingId, showOnProfile, listing, userId );
 	}
 
 	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_createListing( showOnProfile, listing, userId );
 	}
 
+	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_editListing( listingId, showOnProfile, attrs );
 	}
 
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_editListing( listingId, showOnProfile, attrs );
 	}
 
+	@Deprecated
 	public List<String> marketplace_getCategories() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().marketplace_getCategories();
 	}
 
 	public boolean marketplace_removeListing( Long listingId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().marketplace_removeListing( listingId );
 	}
 
 	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().marketplace_removeListing( listingId, userId );
 	}
 
+	@Deprecated
 	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().marketplace_removeListing( listingId, status );
 	}
 
 	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().marketplace_removeListing( listingId, status );
 	}
 
 	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().marketplace_removeListing( listingId, status, userId );
 	}
 
+	@Deprecated
 	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().notifications_send( recipientIds, notification, email );
 	}
 
+	@Deprecated
 	public String notifications_sendEmail( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().notifications_sendEmail( recipientIds, subject, fbml );
 	}
 
+	@Deprecated
 	public String notifications_sendEmailPlain( Collection<Long> recipientIds, CharSequence subject, CharSequence text ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().notifications_sendEmailPlain( recipientIds, subject, text );
 	}
 
+	@Deprecated
 	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().notifications_sendEmailStr( recipientIds, subject, fbml, text );
 	}
 
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().pages_isAdmin( pageId );
 	}
 
 	public boolean pages_isAppAdded( Long pageId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().pages_isAppAdded( pageId );
 	}
 
 	public boolean pages_isFan( Long pageId, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().pages_isFan( pageId, userId );
 	}
 
 	public boolean pages_isFan( Long pageId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().pages_isFan( pageId );
 	}
 
 	public boolean permissions_grantApiAccess( String apiKey, Set<FacebookMethod> methods ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().permissions_grantApiAccess( apiKey, methods );
 	}
 
 	public boolean permissions_grantFullApiAccess( String apiKey ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().permissions_grantFullApiAccess( apiKey );
 	}
 
 	public boolean permissions_revokeApiAccess( String apiKey ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().permissions_revokeApiAccess( apiKey );
 	}
 
 	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2 ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().photos_addTag( photoId, taggedUserId, pct, pct2 );
 	}
 
 	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2 ) throws FacebookException {
@@ -579,80 +541,67 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, mobileFbmlMarkup );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setMobileFBML( fbmlMarkup );
 	}
 
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setMobileFBML( fbmlMarkup, profileId );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setProfileActionFBML( fbmlMarkup );
 	}
 
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setProfileActionFBML( fbmlMarkup, profileId );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setProfileActionFBML( fbmlMarkup );
 	}
 
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setProfileFBML( fbmlMarkup, profileId );
 	}
 
 	public boolean sms_canSend() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().sms_canSend();
 	}
 
 	public boolean sms_canSend( Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().sms_canSend( userId );
 	}
 
 	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().sms_send( message, smsSessionId, makeNewSession );
 	}
 
 	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return null;
+		return getClient().sms_send( userId, message, smsSessionId, makeNewSession );
 	}
 
 	public int sms_sendMessageWithSession( Long userId, CharSequence message ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return 0;
+		return getClient().sms_sendMessageWithSession( userId, message );
 	}
 
 	public boolean users_clearStatus() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_clearStatus();
 	}
 
 	public long users_getLoggedInUser() throws FacebookException {
@@ -662,38 +611,34 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_hasAppPermission( perm );
 	}
 
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_hasAppPermission( perm, userId );
 	}
 
+	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_isAppAdded();
 	}
 
+	@Deprecated
 	public boolean users_isAppAdded( Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_isAppAdded( userId );
 	}
 
 	public boolean users_isAppUser() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_isAppUser();
 	}
 
 	public boolean users_isAppUser( Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_isAppUser( userId );
 	}
 
 	public boolean users_setStatus( String status ) throws FacebookException {
