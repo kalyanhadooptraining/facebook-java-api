@@ -492,51 +492,43 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2 ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().photos_addTag( photoId, tagText, pct, pct2 );
 	}
 
 	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().photos_addTag( photoId, taggedUserId, pct, pct2, userId );
 	}
 
 	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().photos_addTag( photoId, tagText, pct, pct2, userId );
 	}
 
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, profileMain );
 	}
 
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( userId, profileFbml, actionFbml, mobileFbml );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, profileId );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, mobileFbmlMarkup, profileId );
 	}
 
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException {
@@ -643,38 +635,32 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 
 	public boolean users_setStatus( String status ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( status );
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( status, userId );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( newStatus, clear );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( newStatus, clear, userId );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( newStatus, clear, statusIncludesVerb );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		// TODO Auto-generated method stub
-		return false;
+		return getClient().users_setStatus( newStatus, clear, statusIncludesVerb, userId );
 	}
 
 }
