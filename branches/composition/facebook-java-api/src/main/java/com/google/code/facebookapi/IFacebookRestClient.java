@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.code.facebookapi.schema.Listing;
+import com.google.code.facebookapi.schema.FriendsGetListsResponse;
+import com.google.code.facebookapi.schema.FriendsGetResponse;
 
 /**
  * Generic interface for a FacebookRestClient, parameterized by output format. For continually updated documentation, please refer to the <a
@@ -456,6 +456,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
 	public T friends_get() throws FacebookException;
 
 	/**
@@ -463,6 +464,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
 	public T friends_get( Long uid ) throws FacebookException;
 
 	/**
@@ -472,6 +474,7 @@ public interface IFacebookRestClient<T> {
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetListsResponse.class, JSON = JSONArray.class)
 	public T friends_getList( Long friendListId ) throws FacebookException;
 
 	/**
@@ -479,6 +482,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
 	 */
+	@FacebookReturnType(JAXB = FriendsGetListsResponse.class, JSON = JSONArray.class)
 	public T friends_getLists() throws FacebookException;
 
 	/**
