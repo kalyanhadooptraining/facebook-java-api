@@ -581,6 +581,7 @@
         <xsd:attribute name="list" type="xsd:boolean" />
       </xsd:complexType>
     </xsd:element>
+    <xsd:element name="locale" type="xsd:string" minOccurs="0" nillable="true" />
   </xsd:all>
 </xsd:complexType>
 
