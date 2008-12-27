@@ -104,6 +104,7 @@ public enum ProfileField {
 	WALL_COUNT("wall_count"), // Total number of posts to the user's wall.
 	WORK_HISTORY("work_history"), // list of work history information, as work_info elements, each of which contain location, company_name, position, description,
 									// start_date and end_date child elements. If no work history information is returned, this element will be blank.
+	LOCALE("locale"), // User locale (e.g. en_US)
 	/*
 	 * Notes on each of the children: o location is user-entered, and has a similar format to current_location and hometown_location above o company_name is user-entered,
 	 * and does not necessarily correspond to a Facebook work network o description is user-entered, and may be blank o position is user-entered, and may be blank o
