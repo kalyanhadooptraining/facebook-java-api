@@ -1,0 +1,137 @@
+--- facebook.xsd	2008-11-17 20:22:49.000000000 -0800
++++ src/main/resources/schema.xsd	2008-12-01 19:48:16.000000000 -0800
+@@ -28,7 +28,7 @@
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="uid">
+-  <xsd:restriction base="xsd:int" />
++  <xsd:restriction base="xsd:long" />
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="flid">
+@@ -96,7 +96,7 @@
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="time">
+-  <xsd:restriction base="xsd:int" />
++  <xsd:restriction base="xsd:long" />
+ </xsd:simpleType>
+ 
+ <xsd:simpleType name="date">
+@@ -639,6 +639,17 @@
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<!--
++<xsd:complexType name="container">
++  <xsd:sequence>
++    <xsd:element name="name" type="xsd:string" />
++    <xsd:element name="assoc_type" type="xsd:int" />
++    <xsd:element name="assoc_info1" type="assoc_object_type" />
++    <xsd:element name="assoc_info2" type="assoc_object_type" />
++  </xsd:sequence>
++</xsd:complexType>
++-->
++
+ <xsd:complexType name="listing">
+   <xsd:sequence>
+     <xsd:element name="listing_id" type="lid" />
+@@ -881,6 +892,29 @@
+     <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
+     <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
+     <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_adds" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_removes" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_blocks" type="xsd:int" minOccurs="0" />
++    <xsd:element name="unique_unblocks" type="xsd:int" minOccurs="0" />
++
++    <xsd:element name="canvas_page_views_http_code_0" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_100" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_200" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_200ND" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_301" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_302" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_303" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_400" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_401" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_403" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_404" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_405" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_413" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_422" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_500" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_502" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_503" type="xsd:int" minOccurs="0" />
++    <xsd:element name="canvas_page_views_http_code_505" type="xsd:int" minOccurs="0" />
+   </xsd:all>
+ </xsd:complexType>
+ 
+@@ -1364,7 +1398,7 @@
+ <xsd:element name="data_getObjects_response">
+   <xsd:complexType>
+     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+-      <xsd:element name="data_getObjects_response_elt" type="container" minOccurs="0" maxOccurs="unbounded" />
++      <xsd:element name="container" type="container" minOccurs="0" maxOccurs="unbounded" />
+     </xsd:sequence>
+     <xsd:attribute name="list" type="xsd:boolean" />
+   </xsd:complexType>
+@@ -1448,11 +1482,29 @@
+ 
+ <xsd:element name="application_getPublicInfo_response">
+   <xsd:complexType>
++   <xsd:sequence>
++      <xsd:element name="app_id" type="xsd:long" />
++      <xsd:element name="api_key" type="xsd:string" />
++      <xsd:element name="canvas_name" type="xsd:string" />
++      <xsd:element name="display_name" type="xsd:string" />
++      <xsd:element name="icon_url" type="xsd:string" />
++      <xsd:element name="logo_url" type="xsd:string" />
++      <xsd:element name="developers">
++        <xsd:complexType>
+     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+-      <xsd:element name="app_info" type="app_info" minOccurs="0" maxOccurs="unbounded" />
++            <xsd:element name="developer_info" type="developer_info" minOccurs="0" maxOccurs="unbounded" />
+     </xsd:sequence>
+     <xsd:attribute name="list" type="xsd:boolean" />
+   </xsd:complexType>
++      </xsd:element>
++      <xsd:element name="company_name" type="xsd:string" />
++      <xsd:element name="description" type="xsd:string" />
++      <xsd:element name="daily_active_users" type="xsd:long" />
++      <xsd:element name="weekly_active_users" type="xsd:long" />
++      <xsd:element name="monthly_active_users" type="xsd:long" />    
++      <xsd:element name="daily_active_percentage" type="xsd:int" />
++    </xsd:sequence>  
++  </xsd:complexType>
+ </xsd:element>
+ 
+ <xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
+@@ -1481,6 +1533,8 @@
+   </xsd:complexType>
+ </xsd:element>
+ 
++<xsd:element name="feed_publishTemplatizedAction_response" type="xsd:boolean" />
++
+ <xsd:element name="admin_getMetrics_response">
+   <xsd:complexType>
+     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+@@ -1496,4 +1550,19 @@
+ 
+ <xsd:element name="error_response" type="FacebookApiException" />
+ 
++<xsd:element name="batch_run_response">
++  <xsd:complexType>
++    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
++      <xsd:element name="friends_get_response">
++        <xsd:complexType>
++          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++            <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
++          </xsd:sequence>
++          <xsd:attribute name="list" type="xsd:boolean" />
++        </xsd:complexType>
++    </xsd:element>
++    </xsd:sequence>
++  </xsd:complexType>
++</xsd:element>
++
+ </xsd:schema>
