@@ -39,9 +39,9 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 				out.println();
 				out.println("import javax.annotation.Generated;");
 				out.println();
-				DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss.mmm-zzzz");
+				DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
 				String now = isoDateFormat.format(new Date());
-				out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\" date=\"" + now + "\"");
+				out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
 				out.println("public class FacebookXmlRestClientExtended extends FacebookXmlRestClient {");
 				out.println("}");
 							
