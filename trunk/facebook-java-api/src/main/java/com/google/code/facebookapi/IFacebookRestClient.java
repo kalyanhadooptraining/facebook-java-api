@@ -29,6 +29,9 @@ public interface IFacebookRestClient<T> {
 	public static final String SERVER_ADDR = "http://" + FB_SERVER;
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
+	public String getApiKey();
+	public String getSecret();
+	
 	/**
 	 * Check to see if the client is running in desktop-app mode
 	 * 
