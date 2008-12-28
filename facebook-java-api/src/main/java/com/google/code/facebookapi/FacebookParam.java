@@ -64,6 +64,15 @@ public enum FacebookParam implements CharSequence {
 	IN_NEW_FACEBOOK("in_new_facebook"),
 
 	IN_IFRAME("in_iframe"),
+	
+	// parameters passed from a Facebook Page
+	IS_ADMIN("is_admin"),
+	IS_FAN("is_fan"),
+	TYPE("type"),
+
+	// for use in javascript
+	SS("ss"),
+	
 	// SMS sig params
 	SMS("sms"),
 	MESSAGE("message"),

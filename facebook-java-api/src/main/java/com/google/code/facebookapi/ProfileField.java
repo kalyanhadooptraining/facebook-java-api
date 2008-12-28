@@ -36,6 +36,8 @@ package com.google.code.facebookapi;
  * Enum for specifying profile-field names. When making API calls, you can generally just pass a set of literal strings specifying field-names if your prefer.
  */
 public enum ProfileField {
+	UID("uid"), // The user ID corresponding to the user info returned. This is always returned, whether included in fields or not, 
+				// and always as the first subelement.
 	ABOUT_ME("about_me"), // Text element corresponding to Facebook 'About Me' profile section. May be blank
 	ACTIVITIES("activities"), // User-entered "Activities" profile field. No guaranteed formatting.
 	AFFILIATIONS("affiliations"), // list of network affiliations, as affiliations_elt elements, each of which contain year, type, status, name, and key child elements.
@@ -53,6 +55,9 @@ public enum ProfileField {
 	 */
 	EDUCATION_HISTORY("education_history"), // From the user-entered Education Info profile fields. List of school information, as school_info_elt elements, each of which
 											// contain name, year, and key child elements. If no school information is returned, this element will be blank.
+	EMAIL_HASHES("email_hashes"), // An array containing a set of confirmed email hashes for the user. Emails are registered via the connect.registerUsers API call
+									// and are only confirmed when the user adds your application. The format of each email hash is the crc32 and md5 hashes 
+									// of the email address combined with an underscore (_).
 	/*
 	 * Notes on each of the children: o year is a four-digit year, and may be blank o name is the name of the school, and is user-specified o key is a unique identifier
 	 * for the school network. The user-to-network relation may be stored. This may be blank also.
@@ -73,6 +78,8 @@ public enum ProfileField {
 	INTERESTS("interests"), // User-entered "Interests" profile field. No guaranteed formatting.
 	IS_APP_USER("is_app_user"), // Indicates whether the user has used the calling application.
 	LAST_NAME("last_name"), // is generated from the user-entered "Name" profile field.
+	LOCALE("locale"), // This is the current locale code in which the user has chosen to browse Facebook. The basic format is LL_CC, where LL is a two-letter 
+						// language code, and CC is a two-letter country code. For instance, 'en_US' represents US English.
 	MEETING_FOR("meeting_for"), // list of desired relationship types corresponding to the "Looking For" profile element. If no relationship typed are specified, the
 								// meeting_for element will be empty. Otherwise represented as a list of meeting_for_elt child text elements, which may each contain one
 								// of the following strings: Friendship, A Relationship, Dating, Random Play, Whatever I can get
@@ -84,12 +91,18 @@ public enum ProfileField {
 	NAME("name"), // User-entered "Name" profile field. May not be blank.
 	NOTES_COUNT("notes_count"), // Total number of notes written by the user.
 	PIC("pic"), // URL of user profile picture, with max width 100px and max height 300px. May be blank.
+	PIC_WITH_LOGO("pic_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 100px and max height 300px. May be blank.
 	PIC_BIG("pic_big"), // URL of user profile picture, with max width 200px and max height 600px. May be blank.
+	PIC_BIG_WITH_LOGO("pic_big_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 200px and max height 600px. May be blank.
 	PIC_SMALL("pic_small"), // URL of user profile picture, with max width 50px and max height 150px. May be blank.
+	PIC_SMALL_WITH_LOGO("pic_small_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 50px and max height 150px. May be blank.
 	PIC_SQUARE("pic_square"), // URL of a square section of the user profile picture, with width 50px and height 50px. May be blank.
+	PIC_SQUARE_WITH_LOGO("pic_square_with_logo"), // URL of a square section of the user profile picture with a Facebook logo overlaid, with width 50px and height 50px. May be blank.	
 	POLITICAL("political"), // User-entered "Political View" profile field. Is either blank or one of the following strings: Very Liberal, Liberal, Moderate,
 							// Conservative, Very Conservative, Apathetic, Liberation, Other
 	PROFILE_UPDATE_TIME("profile_update_time"), // Time (in seconds since epoch) that the user's profile was last updated.
+	PROFILE_URL("profile_url"), // URL of the Facebook profile of the user.
+	PROXIED_EMAIL("proxied_email"), // A proxied wrapper alternative for contacting the user through email, instead of directly calling notifications.sendEmail.
 	QUOTES("quotes"), // User-entered "Favorite Quotes" profile field. No guaranteed formatting.
 	RELATIONSHIP_STATUS("relationship_status"), // User-entered "Relationship Status" profile field. Is either blank or one of the following strings: Single, In a
 												// Relationship, In an Open Relationship, Engaged, Married, It's Complicated
@@ -104,7 +117,6 @@ public enum ProfileField {
 	WALL_COUNT("wall_count"), // Total number of posts to the user's wall.
 	WORK_HISTORY("work_history"), // list of work history information, as work_info elements, each of which contain location, company_name, position, description,
 									// start_date and end_date child elements. If no work history information is returned, this element will be blank.
-	LOCALE("locale"), // User locale (e.g. en_US)
 	/*
 	 * Notes on each of the children: o location is user-entered, and has a similar format to current_location and hometown_location above o company_name is user-entered,
 	 * and does not necessarily correspond to a Facebook work network o description is user-entered, and may be blank o position is user-entered, and may be blank o

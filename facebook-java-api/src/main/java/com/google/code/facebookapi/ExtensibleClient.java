@@ -157,6 +157,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
+	public String getApiKey() {
+		return _apiKey;
+	}
+	
+	public String getSecret() {
+		return _secret;
+	}
+
 	public void beginPermissionsMode( String apiKey ) {
 		this.permissionsApiKey = apiKey;
 	}
