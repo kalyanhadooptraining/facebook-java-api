@@ -1,5 +1,8 @@
 package com.google.code.facebookapi;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 /**
  * Used in the IFacebookRestClient interface to tie together
  * the method call (e.g. friends_get) and its return type.
@@ -18,7 +21,8 @@ package com.google.code.facebookapi;
  * 
  * @author david.j.boden
  */
+@Target(ElementType.METHOD)
 public @interface FacebookReturnType {
-	Class<?> JSON();
-	Class<?> JAXB();
+	Class<?> JSON() default Object.class;
+	Class<?> JAXB() default Object.class;
 }
