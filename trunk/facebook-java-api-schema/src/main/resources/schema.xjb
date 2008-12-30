@@ -8,8 +8,5 @@
     <bindings node="//xs:element[@name='batch_run_response']/xs:complexType/xs:sequence">
         <property name="results"/>
     </bindings>
-    <bindings node="//xs:simpleType[@name='visible']">
-        <typesafeEnumClass/>
-    </bindings>
 </bindings>
 
