@@ -38,10 +38,11 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
         super.init(processingEnv);
         try {
             Elements eltUtils = processingEnv.getElementUtils();
-            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClientExtended",
-                                                                               eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClient"));
-            Writer xmlJavaWriter = xmlJava.openWriter();
-            out = new PrintWriter(xmlJavaWriter);
+            JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClientExtended",
+            		                                                           eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+                                                                               eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClient"));
+            Writer jaxbJavaWriter = jaxbJava.openWriter();
+            out = new PrintWriter(jaxbJavaWriter);
             
             out.println("package com.google.code.facebookapi;");
             out.println();
@@ -50,7 +51,7 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
             DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
             String now = isoDateFormat.format(new Date());
             out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
-            out.println("public class FacebookXmlRestClientExtended extends FacebookXmlRestClient {");
+            out.println("public class FacebookJaxbRestClientExtended extends FacebookJaxbRestClient {");
         } catch(IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -84,24 +85,55 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	}
 	
 	class AnnotationVisitor extends ElementScanner6<Void, PrintWriter> {
+		
+		
 	    @Override
 	    public Void visitExecutable(ExecutableElement e, PrintWriter out) {
-	        out.print("visitExecutable " + e.getKind() + " " + e.getSimpleName());
+	    	
+	    	processingEnv.getElementUtils().printElements(out, e);
+	    	
+	    	//Get JAXB and JSON return types - default to Object
+	    	String jaxbReturnType = "Object";
+	    	String jsonReturnType = "Object";
+	    	
 	        List<? extends AnnotationMirror> annotations = e.getAnnotationMirrors();
 	        Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams = annotations.get(0).getElementValues();
 	        for(ExecutableElement key : annotationParams.keySet()) {
-	            out.print(" " + key.getSimpleName() + ":" + annotationParams.get(key));
+	        	if(key.getSimpleName().contentEquals("JAXB")) {
+	        		if(annotationParams.get(key) != null) {
+	        			jaxbReturnType = annotationParams.get(key).toString();
+	        		}
+	        	} else if(key.getSimpleName().contentEquals("JSON")) {
+	        		if(annotationParams.get(key) != null) {
+	        		    jsonReturnType = annotationParams.get(key).toString();
+	        		}
+	        	}
 	        }
-	        out.print(e.getReturnType() + " : ");
-	        //returns 0 out.print("  Number of enclosed elements: " + e.getEnclosedElements().size() + " ");
+	    	
+	    	StringBuilder methodCode = new StringBuilder();
+	    	methodCode.append("    public ");
+	    	methodCode.append(jaxbReturnType);
+	    	methodCode.append(" ");
+	    	methodCode.append(e.getSimpleName()).append("(");
+	    	
+	    	List<? extends VariableElement> parameters = e.getParameters();
+	        for(VariableElement param : parameters) {
+	            methodCode.append(param.toString() + ", ");
+	        }
 	        
-	        List<? extends TypeParameterElement> parameters = e.getTypeParameters();
-	        for(TypeParameterElement param : parameters) {
-	            out.print(param.getSimpleName() + ", ");
+	    	List<? extends TypeParameterElement> typeParameters = e.getTypeParameters();
+	        for(TypeParameterElement param : typeParameters) {
+	            methodCode.append(param.toString() + ", ");
 	        }
-	        out.println();
+	    	
+	    	methodCode.append(") {");
+
+	        out.println(methodCode);
+	        out.println("        client.setResponseFormat(\"xml\");");
+	        out.println("        Object rawResponse = client." + e.getSimpleName() + "();");
+	        out.println("        return (" + jaxbReturnType + ")parseCallResult( rawResponse );");
+	        out.println("    }");
 	        return null;
-	        
 	    }
 	}
 
