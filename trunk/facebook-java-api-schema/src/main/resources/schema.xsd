@@ -449,8 +449,19 @@
     <xsd:element name="location" type="xsd:string" />
     <xsd:element name="link" type="xsd:string" />
     <xsd:element name="size" type="xsd:int" />
+    <xsd:element name="visible" type="visible"/>
   </xsd:sequence>
 </xsd:complexType>
+
+<xsd:simpleType name="visible">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="friends"/>
+    <xsd:enumeration value="friends-of-friends"/>
+    <xsd:enumeration value="networks"/>
+    <xsd:enumeration value="everyone"/>
+    <xsd:enumeration value="custom"/>
+  </xsd:restriction>
+</xsd:simpleType>
 
 <xsd:complexType name="affiliation">
   <xsd:sequence>
