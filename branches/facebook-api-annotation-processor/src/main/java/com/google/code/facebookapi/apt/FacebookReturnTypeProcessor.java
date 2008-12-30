@@ -3,6 +3,7 @@ package com.google.code.facebookapi.apt;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,12 +20,15 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.util.ElementScanner6;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleElementVisitor6;
 import javax.tools.JavaFileObject;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
@@ -87,10 +91,34 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	class AnnotationVisitor extends ElementScanner6<Void, PrintWriter> {
 		
 		
-	    @Override
+	    @SuppressWarnings("unchecked")
+        @Override
 	    public Void visitExecutable(ExecutableElement e, PrintWriter out) {
+	        
+	        TypeElement el = (TypeElement)e.getEnclosingElement();
+	        List<? extends Element> methods = el.getEnclosedElements();
+	        for(Element method : methods) {
+	            if(method.getKind().equals(ElementKind.METHOD)) {
+	                ExecutableElement exe = (ExecutableElement)method;
+	                Annotation a = null;
+	                try {
+	                    a = exe.getAnnotation((Class<? extends Annotation>)Class.forName("com.google.code.facebookapi.FacebookReturnType"));
+	                } catch(ClassNotFoundException ex) {
+	                    
+	                }
+	                if(a != null) {
+	                    processingEnv.getElementUtils().printElements(out, exe);
+	                }
+	            }
+	        }
 	    	
 	    	processingEnv.getElementUtils().printElements(out, e);
+	    	
+	    	PrintVisitor printVisitor = new PrintVisitor();
+	    	e.accept(printVisitor, out);
+	    	
+	    	ExecutableType type = (ExecutableType)e.asType();
+	    	out.println(type.getParameterTypes().size());
 	    	
 	    	//Get JAXB and JSON return types - default to Object
 	    	String jaxbReturnType = "Object";
@@ -133,6 +161,14 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        out.println("        Object rawResponse = client." + e.getSimpleName() + "();");
 	        out.println("        return (" + jaxbReturnType + ")parseCallResult( rawResponse );");
 	        out.println("    }");
+	        return null;
+	    }
+	}
+	
+	class PrintVisitor extends SimpleElementVisitor6<Void, PrintWriter> {
+	    @Override
+	    protected Void defaultAction(Element e, PrintWriter out) {
+	        out.println("defaultAction " + e.getKind() + " " + e.getSimpleName());
 	        return null;
 	    }
 	}
