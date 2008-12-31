@@ -363,7 +363,7 @@ public final class FacebookSignatureUtil {
 	 * @return the signature
 	 */
 	public static String generateSignature( List<String> params, String secret ) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		Collections.sort( params, KEY_COMPARATOR );
 		for ( String param : params ) {
 			buffer.append( param );
@@ -382,7 +382,7 @@ public final class FacebookSignatureUtil {
 			catch ( UnsupportedEncodingException e1 ) {
 				bytes = value.getBytes();
 			}
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			for ( byte b : md.digest( bytes ) ) {
 				result.append( Integer.toHexString( ( b & 0xf0 ) >>> 4 ) );
 				result.append( Integer.toHexString( b & 0x0f ) );
