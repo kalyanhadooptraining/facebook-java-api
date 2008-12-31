@@ -32,30 +32,54 @@ import javax.tools.JavaFileObject;
 public class FacebookReturnTypeProcessor extends AbstractProcessor {
     
     PrintWriter outJAXB;
+    PrintWriter outJSON;
+    PrintWriter outXML;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
+        
+        DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
+        String now = isoDateFormat.format(new Date());
+        
         try {
             Elements eltUtils = processingEnv.getElementUtils();
             JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClientExtended",
-            		                                                           eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-                                                                               eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClient"));
+            		                                                            eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClient"));
             Writer jaxbJavaWriter = jaxbJava.openWriter();
             outJAXB = new PrintWriter(jaxbJavaWriter);
             
-            outJAXB.println("package com.google.code.facebookapi;");
-            outJAXB.println();
-            outJAXB.println("import javax.annotation.Generated;");
-            outJAXB.println();
-            DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
-            String now = isoDateFormat.format(new Date());
-            outJAXB.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
-            outJAXB.println("public class FacebookJaxbRestClientExtended extends FacebookJaxbRestClient {");
-            outJAXB.println();
+            JavaFileObject jsonJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClientExtended",
+                    															eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+                    															eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClient"));
+            Writer jsonJavaWriter = jsonJava.openWriter();
+            outJSON = new PrintWriter(jsonJavaWriter);
+            
+            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClientExtended",
+																			   eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+																			   eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClient"));
+            Writer xmlJavaWriter = xmlJava.openWriter();
+            outXML = new PrintWriter(xmlJavaWriter);
+            
+            writeHeader(outJAXB, "Jaxb", now);
+            writeHeader(outJSON, "Json", now);
+            writeHeader(outXML, "Xml", now);
+            
         } catch(IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    private void writeHeader(PrintWriter out, String classNamePart, String now) {
+        out.println("package com.google.code.facebookapi;");
+        out.println();
+        out.println("import javax.annotation.Generated;");
+        out.println();
+
+        out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
+        out.println("public class Facebook" + classNamePart + "RestClientExtended extends Facebook" + classNamePart + "RestClient {");
+        out.println();
     }
 	
 	@Override
@@ -77,6 +101,14 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 		    outJAXB.println("}");
 		    outJAXB.flush();
 		    outJAXB.close();
+		    
+		    outJSON.println("}");
+		    outJSON.flush();
+		    outJSON.close();
+		    
+		    outXML.println("}");
+		    outXML.flush();
+		    outXML.close();
 		}
 		
 		return true;
@@ -99,6 +131,7 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	//Get JAXB and JSON return types - default to Object
 	    	String jaxbReturnType = "Object";
 	    	String jsonReturnType = "Object";
+	    	String xmlReturnType = "org.w3c.dom.Document";
 	    	
 	        List<? extends AnnotationMirror> annotations = e.getAnnotationMirrors();
 	        Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams = annotations.get(0).getElementValues();
@@ -116,7 +149,7 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	
 	    	StringBuilder methodCode = new StringBuilder();
 	    	methodCode.append("    public ");
-	    	methodCode.append(jaxbReturnType);
+	    	methodCode.append("%RETURNTYPE%");
 	    	methodCode.append(" ");
 	    	methodCode.append(e.getSimpleName()).append("( ");
 	    	
@@ -156,12 +189,27 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	
 	    	methodCode.append(" {");
 
-	        outJAXB.println(methodCode);
+	        outJAXB.println(methodCode.toString().replace("%RETURNTYPE%", jaxbReturnType));
 	        outJAXB.println("        client.setResponseFormat(\"xml\");");
 	        outJAXB.println("        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );");
 	        outJAXB.println("        return (" + jaxbReturnType + ")parseCallResult( rawResponse );");
 	        outJAXB.println("    }");
 	        outJAXB.println();
+	        
+	        outJSON.println(methodCode.toString().replace("%RETURNTYPE%", jsonReturnType));
+	        outJSON.println("        client.setResponseFormat(\"json\");");
+	        outJSON.println("        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );");
+	        outJSON.println("        return (" + jsonReturnType + ")parseCallResult( rawResponse );");
+	        outJSON.println("    }");
+	        outJSON.println();
+	        
+	        outXML.println(methodCode.toString().replace("%RETURNTYPE%", xmlReturnType));
+	        outXML.println("        client.setResponseFormat(\"xml\");");
+	        outXML.println("        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );");
+	        outXML.println("        return (" + xmlReturnType + ")parseCallResult( rawResponse );");
+	        outXML.println("    }");
+	        outXML.println();
+	        
 	        return null;
 	    }
 	}
