@@ -3,7 +3,6 @@ package com.google.code.facebookapi.apt;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,22 +19,19 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementScanner6;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleElementVisitor6;
 import javax.tools.JavaFileObject;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes("com.google.code.facebookapi.FacebookReturnType")
 public class FacebookReturnTypeProcessor extends AbstractProcessor {
     
-    PrintWriter out;
+    PrintWriter outJAXB;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -46,25 +42,24 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
             		                                                           eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClient"));
             Writer jaxbJavaWriter = jaxbJava.openWriter();
-            out = new PrintWriter(jaxbJavaWriter);
+            outJAXB = new PrintWriter(jaxbJavaWriter);
             
-            out.println("package com.google.code.facebookapi;");
-            out.println();
-            out.println("import javax.annotation.Generated;");
-            out.println();
+            outJAXB.println("package com.google.code.facebookapi;");
+            outJAXB.println();
+            outJAXB.println("import javax.annotation.Generated;");
+            outJAXB.println();
             DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
             String now = isoDateFormat.format(new Date());
-            out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
-            out.println("public class FacebookJaxbRestClientExtended extends FacebookJaxbRestClient {");
+            outJAXB.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
+            outJAXB.println("public class FacebookJaxbRestClientExtended extends FacebookJaxbRestClient {");
+            outJAXB.println();
         } catch(IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 	
 	@Override
-	public boolean process( Set<? extends TypeElement> annotations, RoundEnvironment roundEnv ) {
-		System.out.println("Processed annotation" + annotations);
-				
+	public boolean process( Set<? extends TypeElement> annotations, RoundEnvironment roundEnv ) {		
 	    AnnotationVisitor visitor = new AnnotationVisitor();
 	    
 	    for(TypeElement element : annotations) {
@@ -72,16 +67,16 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(element);
 	        
             for(Element annotatedElement : elements) {
-                visitor.scan(annotatedElement, out);
+                visitor.scan(annotatedElement, outJAXB);
                 //out.println("Element " + annotatedElement.getKind() + " " + annotatedElement.accept(visitor, out));
             }
 	        
 	    }
 		
 		if(roundEnv.processingOver()) {
-		    out.println("}");
-		    out.flush();
-		    out.close();
+		    outJAXB.println("}");
+		    outJAXB.flush();
+		    outJAXB.close();
 		}
 		
 		return true;
@@ -93,32 +88,13 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 		
 	    @SuppressWarnings("unchecked")
         @Override
-	    public Void visitExecutable(ExecutableElement e, PrintWriter out) {
+	    public Void visitExecutable(ExecutableElement e, PrintWriter outJAXB) {
 	        
+	    	//These two lines are required to ensure that the
+	    	//object tree actually bothers to parse the method
+	    	//parameters. Otherwise they're empty for every method!
 	        TypeElement el = (TypeElement)e.getEnclosingElement();
 	        List<? extends Element> methods = el.getEnclosedElements();
-	        for(Element method : methods) {
-	            if(method.getKind().equals(ElementKind.METHOD)) {
-	                ExecutableElement exe = (ExecutableElement)method;
-	                Annotation a = null;
-	                try {
-	                    a = exe.getAnnotation((Class<? extends Annotation>)Class.forName("com.google.code.facebookapi.FacebookReturnType"));
-	                } catch(ClassNotFoundException ex) {
-	                    
-	                }
-	                if(a != null) {
-	                    processingEnv.getElementUtils().printElements(out, exe);
-	                }
-	            }
-	        }
-	    	
-	    	processingEnv.getElementUtils().printElements(out, e);
-	    	
-	    	PrintVisitor printVisitor = new PrintVisitor();
-	    	e.accept(printVisitor, out);
-	    	
-	    	ExecutableType type = (ExecutableType)e.asType();
-	    	out.println(type.getParameterTypes().size());
 	    	
 	    	//Get JAXB and JSON return types - default to Object
 	    	String jaxbReturnType = "Object";
@@ -142,33 +118,50 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	methodCode.append("    public ");
 	    	methodCode.append(jaxbReturnType);
 	    	methodCode.append(" ");
-	    	methodCode.append(e.getSimpleName()).append("(");
+	    	methodCode.append(e.getSimpleName()).append("( ");
 	    	
+	    	StringBuilder paramListCode = new StringBuilder();
+	    	
+	    	boolean isFirstParam = true;
 	    	List<? extends VariableElement> parameters = e.getParameters();
 	        for(VariableElement param : parameters) {
-	            methodCode.append(param.toString() + ", ");
-	        }
-	        
-	    	List<? extends TypeParameterElement> typeParameters = e.getTypeParameters();
-	        for(TypeParameterElement param : typeParameters) {
-	            methodCode.append(param.toString() + ", ");
+	        	if(!isFirstParam) {
+	        		methodCode.append(", ");
+	        		paramListCode.append(", ");
+	        	}
+	        	TypeMirror paramType = param.asType();
+	        	
+	        	methodCode.append(paramType.toString());
+	        	methodCode.append(" ");
+	            methodCode.append(param.toString());
+	            
+	            paramListCode.append(param.toString());
+	            
+	            isFirstParam = false;
 	        }
 	    	
-	    	methodCode.append(") {");
+	    	methodCode.append(" ) ");
+	    	
+	    	List<? extends TypeMirror> thrownTypes = e.getThrownTypes();
+	    	boolean isFirstType = true;
+	    	for(TypeMirror type : thrownTypes) {
+	    		if(isFirstType) {
+	    			methodCode.append("throws ");
+	    		} else {
+	    			methodCode.append(", ");
+	    		}
+	    		methodCode.append(type.toString());
+	    		isFirstType = false;
+	    	}
+	    	
+	    	methodCode.append(" {");
 
-	        out.println(methodCode);
-	        out.println("        client.setResponseFormat(\"xml\");");
-	        out.println("        Object rawResponse = client." + e.getSimpleName() + "();");
-	        out.println("        return (" + jaxbReturnType + ")parseCallResult( rawResponse );");
-	        out.println("    }");
-	        return null;
-	    }
-	}
-	
-	class PrintVisitor extends SimpleElementVisitor6<Void, PrintWriter> {
-	    @Override
-	    protected Void defaultAction(Element e, PrintWriter out) {
-	        out.println("defaultAction " + e.getKind() + " " + e.getSimpleName());
+	        outJAXB.println(methodCode);
+	        outJAXB.println("        client.setResponseFormat(\"xml\");");
+	        outJAXB.println("        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );");
+	        outJAXB.println("        return (" + jaxbReturnType + ")parseCallResult( rawResponse );");
+	        outJAXB.println("    }");
+	        outJAXB.println();
 	        return null;
 	    }
 	}
