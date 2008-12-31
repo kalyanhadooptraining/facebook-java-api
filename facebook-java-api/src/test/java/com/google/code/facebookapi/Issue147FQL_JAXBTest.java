@@ -1,11 +1,11 @@
 package com.google.code.facebookapi;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.junit.Test;
 import org.w3c.dom.Element;
-
-import static org.junit.Assert.*;
 
 import com.google.code.facebookapi.schema.FqlQueryResponse;
 

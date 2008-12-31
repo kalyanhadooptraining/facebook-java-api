@@ -1,6 +1,8 @@
 package com.google.code.facebookapi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.util.List;
