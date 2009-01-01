@@ -422,6 +422,7 @@
     <xsd:element name="link" type="xsd:string" />
     <xsd:element name="caption" type="xsd:string" />
     <xsd:element name="created" type="time" />
+    <xsd:element name="modified" type="time" />
     <xsd:element name="story_fbid" type="id" />
   </xsd:sequence>
 </xsd:complexType>
