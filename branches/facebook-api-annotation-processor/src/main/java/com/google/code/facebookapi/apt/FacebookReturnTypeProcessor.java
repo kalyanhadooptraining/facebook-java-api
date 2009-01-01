@@ -19,7 +19,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -38,27 +40,27 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        
+                
         DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
         String now = isoDateFormat.format(new Date());
         
-        try {
+        try {       	
             Elements eltUtils = processingEnv.getElementUtils();
-            JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClientExtended",
+            JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClient",
             		                                                            eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClient"));
+                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClientBase"));
             Writer jaxbJavaWriter = jaxbJava.openWriter();
             outJAXB = new PrintWriter(jaxbJavaWriter);
             
-            JavaFileObject jsonJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClientExtended",
+            JavaFileObject jsonJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClient",
                     															eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-                    															eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClient"));
+                    															eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase"));
             Writer jsonJavaWriter = jsonJava.openWriter();
             outJSON = new PrintWriter(jsonJavaWriter);
             
-            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClientExtended",
+            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClient",
 																			   eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-																			   eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClient"));
+																			   eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClientBase"));
             Writer xmlJavaWriter = xmlJava.openWriter();
             outXML = new PrintWriter(xmlJavaWriter);
             
@@ -66,9 +68,123 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
             writeHeader(outJSON, "Json", now);
             writeHeader(outXML, "Xml", now);
             
+            CopyConstructorVisitor copyConstructors = new CopyConstructorVisitor();
+            
+            TypeElement facebookJaxbRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClientBase");
+            facebookJaxbRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Jaxb", outJAXB));
+
+            TypeElement facebookJsonRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase");
+            facebookJsonRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Json", outJSON));
+            
+            TypeElement facebookXmlRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClientBase");
+            facebookXmlRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Xml", outXML));
+            
         } catch(IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    class CopyConstructorVisitor extends ElementScanner6<Void, Tuple<String, PrintWriter>> {
+    	@Override
+    	public Void visitExecutable(ExecutableElement e, Tuple<String, PrintWriter> tuple) {
+    		String clientType = tuple.a;
+    		PrintWriter out = tuple.b;
+    		if(e.getKind() == ElementKind.CONSTRUCTOR) {
+    			out.print("    ");
+    			out.print(modifiers(e));
+    			out.print(" ");
+    			out.print("Facebook"); out.print(clientType); out.print("RestClient");
+    			out.print("( ");
+    			out.print(parametersIncludingTypes(e));
+    			out.print(" ) ");
+    			out.print(throwClause(e));
+    			out.println(" {");
+    			out.print("        super( ");
+    			out.print(parametersExcludingTypes(e));
+    			out.println(" );");
+    			out.println("    }");
+    			out.println();
+    		}
+    		return null;
+    	}
+    }
+    
+    class Tuple<A, B> {
+    	public A a;
+    	public B b;
+    	public Tuple(A a, B b) {
+    		this.a = a;
+    		this.b = b;
+    	}
+    }
+    
+    private CharSequence modifiers(ExecutableElement e) {
+    	StringBuilder modifiers = new StringBuilder();
+    	Set<Modifier> modifierSet = e.getModifiers();
+    	boolean isFirstModifier = true;
+    	for(Modifier m : modifierSet) {
+        	if(!isFirstModifier) {
+        		modifiers.append(" ");
+        	}
+    		modifiers.append(m.toString());
+    	}
+    	
+    	return modifiers;
+    }
+    
+    private CharSequence throwClause(ExecutableElement e) {
+    	StringBuilder throwClause = new StringBuilder();
+    	List<? extends TypeMirror> thrownTypes = e.getThrownTypes();
+    	boolean isFirstThrows = true;
+    	for(TypeMirror t : thrownTypes) {
+        	if(isFirstThrows) {
+        		throwClause.append("throws ");
+        	} else {
+        		throwClause.append(", ");
+        	}
+        	throwClause.append(t.toString());
+    	}
+    	
+    	return throwClause;
+    }
+    
+    private CharSequence parametersIncludingTypes(ExecutableElement e) {
+    	StringBuilder methodCode = new StringBuilder();
+    	
+    	boolean isFirstParam = true;
+    	List<? extends VariableElement> parameters = e.getParameters();
+        for(VariableElement param : parameters) {
+        	if(!isFirstParam) {
+        		methodCode.append(", ");
+        	}
+        	TypeMirror paramType = param.asType();
+        	
+        	methodCode.append(paramType.toString());
+        	methodCode.append(" ");
+            methodCode.append(param.toString());
+            
+            isFirstParam = false;
+        }
+        
+        return methodCode;
+    }
+    
+    private CharSequence parametersExcludingTypes(ExecutableElement e) {	
+    	StringBuilder paramListCode = new StringBuilder();
+    	
+    	boolean isFirstParam = true;
+    	List<? extends VariableElement> parameters = e.getParameters();
+        for(VariableElement param : parameters) {
+        	if(!isFirstParam) {
+        		paramListCode.append(", ");
+        	}
+            
+            paramListCode.append(param.toString());
+            
+            isFirstParam = false;
+        }
+        
+        return paramListCode;
     }
     
     private void writeHeader(PrintWriter out, String classNamePart, String now) {
@@ -78,7 +194,7 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
         out.println();
 
         out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
-        out.println("public class Facebook" + classNamePart + "RestClientExtended extends Facebook" + classNamePart + "RestClient {");
+        out.println("public class Facebook" + classNamePart + "RestClient extends Facebook" + classNamePart + "RestClientBase {");
         out.println();
     }
 	
@@ -117,8 +233,6 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	
 	class AnnotationVisitor extends ElementScanner6<Void, PrintWriter> {
 		
-		
-	    @SuppressWarnings("unchecked")
         @Override
 	    public Void visitExecutable(ExecutableElement e, PrintWriter outJAXB) {
 	        
