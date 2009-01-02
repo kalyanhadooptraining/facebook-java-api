@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -79,6 +80,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	/** filled in when session is established only used for desktop apps */
 	protected String cacheSessionSecret;
 
+	protected String rawResponse;
 	protected boolean batchMode;
 	public boolean isBatchMode() {
 		return batchMode;
@@ -483,6 +485,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	protected String callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream ) throws FacebookException {
+		rawResponse = null;
 		Map<String,String> params = new TreeMap<String,String>();
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -541,7 +544,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
 		boolean doEncode = true;
 		try {
-			String rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
+			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return rawResponse;
 		}
 		catch ( IOException ex ) {
@@ -569,9 +572,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	private void validateVoidResponse( String rawResponse ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			FacebookJsonRestClient.parseCallResult( rawResponse );
+			FacebookJsonRestClientBase.parseCallResult( rawResponse );
 		} else {
-			FacebookXmlRestClient.parseCallResult( rawResponse );
+			FacebookXmlRestClientBase.parseCallResult( rawResponse );
 		}
 	}
 
@@ -1023,6 +1026,14 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	public Object marketplace_getCategoriesObject() throws FacebookException {
 		return callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
+	}
+
+	public String getRawResponse() {
+		return rawResponse;
+	}
+
+	public Object getResponsePOJO() {
+		return new FacebookJaxbRestClient(this).getResponsePOJO();
 	}
 
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException {
@@ -2512,9 +2523,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected boolean extractBoolean( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClient.extractBoolean( FacebookJsonRestClient.parseCallResult( result ) );
+			return FacebookJsonRestClientBase.extractBoolean( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClient.extractBoolean( FacebookXmlRestClient.parseCallResult( result ) );
+			return FacebookXmlRestClientBase.extractBoolean( FacebookXmlRestClientBase.parseCallResult( result ) );
 		}
 	}
 
@@ -2526,9 +2537,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected int extractInt( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClient.extractInt( FacebookJsonRestClient.parseCallResult( result ) );
+			return FacebookJsonRestClientBase.extractInt( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClient.extractInt( FacebookXmlRestClient.parseCallResult( result ) );
+			return FacebookXmlRestClientBase.extractInt( FacebookXmlRestClientBase.parseCallResult( result ) );
 		}
 	}
 
@@ -2540,9 +2551,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected Long extractLong( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClient.extractLong( FacebookJsonRestClient.parseCallResult( result ) );
+			return FacebookJsonRestClientBase.extractLong( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClient.extractLong( FacebookXmlRestClient.parseCallResult( result ) );
+			return FacebookXmlRestClientBase.extractLong( FacebookXmlRestClientBase.parseCallResult( result ) );
 		}
 	}
 
@@ -2555,9 +2566,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected String extractString( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClient.extractString( FacebookJsonRestClient.parseCallResult( result ) );
+			return FacebookJsonRestClientBase.extractString( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClient.extractString( FacebookXmlRestClient.parseCallResult( result ) );
+			return FacebookXmlRestClientBase.extractString( FacebookXmlRestClientBase.parseCallResult( result ) );
 		}
 	}
 
@@ -2974,6 +2985,22 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public void setCacheFriendsList( List<Long> friendIds ) {
 		this.cacheFriendsList = friendIds;
+	}
+
+	/**
+	 * @Deprecated Use FacebookJaxbRestClient.getJaxbContext() instead
+	 */
+	@Deprecated
+	public JAXBContext getJaxbContext() {
+		return FacebookJaxbRestClient.JAXB_CONTEXT;
+	}
+	
+	/**
+	 * @Deprecated Use FacebookJaxbRestClient.setJaxbContext(context) instead
+	 */
+	@Deprecated
+	public void setJaxbContext( JAXBContext context ) {
+		FacebookJaxbRestClient.JAXB_CONTEXT = context;
 	}
 
 }
