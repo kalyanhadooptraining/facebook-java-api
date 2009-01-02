@@ -25,4 +25,5 @@ import java.lang.annotation.Target;
 public @interface FacebookReturnType {
 	Class<?> JSON() default Object.class;
 	Class<?> JAXB() default Object.class;
+	Class<?> JAXBList() default Object.class;
 }
