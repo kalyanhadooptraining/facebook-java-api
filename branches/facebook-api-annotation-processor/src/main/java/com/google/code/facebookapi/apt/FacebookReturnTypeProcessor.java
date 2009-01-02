@@ -206,11 +206,7 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        //We know this is the right type, this processor only supports one annotation type
 	        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(element);
 	        
-            for(Element annotatedElement : elements) {
-                visitor.scan(annotatedElement, outJAXB);
-                //out.println("Element " + annotatedElement.getKind() + " " + annotatedElement.accept(visitor, out));
-            }
-	        
+	        visitor.scan(elements, outJAXB);
 	    }
 		
 		if(roundEnv.processingOver()) {
@@ -266,42 +262,12 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	methodCode.append("%RETURNTYPE%");
 	    	methodCode.append(" ");
 	    	methodCode.append(e.getSimpleName()).append("( ");
-	    	
-	    	StringBuilder paramListCode = new StringBuilder();
-	    	
-	    	boolean isFirstParam = true;
-	    	List<? extends VariableElement> parameters = e.getParameters();
-	        for(VariableElement param : parameters) {
-	        	if(!isFirstParam) {
-	        		methodCode.append(", ");
-	        		paramListCode.append(", ");
-	        	}
-	        	TypeMirror paramType = param.asType();
-	        	
-	        	methodCode.append(paramType.toString());
-	        	methodCode.append(" ");
-	            methodCode.append(param.toString());
-	            
-	            paramListCode.append(param.toString());
-	            
-	            isFirstParam = false;
-	        }
-	    	
+	    	methodCode.append(parametersIncludingTypes(e));
 	    	methodCode.append(" ) ");
-	    	
-	    	List<? extends TypeMirror> thrownTypes = e.getThrownTypes();
-	    	boolean isFirstType = true;
-	    	for(TypeMirror type : thrownTypes) {
-	    		if(isFirstType) {
-	    			methodCode.append("throws ");
-	    		} else {
-	    			methodCode.append(", ");
-	    		}
-	    		methodCode.append(type.toString());
-	    		isFirstType = false;
-	    	}
-	    	
+	    	methodCode.append(throwClause(e));    	
 	    	methodCode.append(" {");
+	    	
+	    	CharSequence paramListCode = parametersExcludingTypes(e);
 
 	        outJAXB.println(methodCode.toString().replace("%RETURNTYPE%", jaxbReturnType));
 	        outJAXB.println("        client.setResponseFormat(\"xml\");");
