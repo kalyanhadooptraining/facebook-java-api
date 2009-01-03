@@ -194,6 +194,9 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
         out.println();
 
         out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
+        if(classNamePart.equals("Jaxb")) {
+        	out.println("@SuppressWarnings(\"unchecked\")");
+        }
         out.println("public class Facebook" + classNamePart + "RestClient extends Facebook" + classNamePart + "RestClientBase {");
         out.println();
     }
@@ -227,17 +230,24 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 
 	}
 	
+	/**
+	 * These two lines are required to ensure that the
+	 * object tree actually bothers to parse the method
+	 * parameters. Otherwise they're empty for every method!
+	 * @param e
+	 */
+	private void shakeEnclosingElementMethods(Element e) {
+        TypeElement el = (TypeElement)e.getEnclosingElement();
+        el.getEnclosedElements();
+	}
+	
 	class AnnotationVisitor extends ElementScanner6<Void, PrintWriter> {
 		
         @Override
 	    public Void visitExecutable(ExecutableElement e, PrintWriter outJAXB) {
-	        
-	    	//These two lines are required to ensure that the
-	    	//object tree actually bothers to parse the method
-	    	//parameters. Otherwise they're empty for every method!
-	        TypeElement el = (TypeElement)e.getEnclosingElement();
-	        List<? extends Element> methods = el.getEnclosedElements();
 	    	
+        	shakeEnclosingElementMethods(e);
+        	
 	    	//Get JAXB and JSON return types - default to Object
 	    	String jaxbReturnType = "Object";
 	    	String jsonReturnType = "Object";
@@ -245,8 +255,15 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	    	
 	        List<? extends AnnotationMirror> annotations = e.getAnnotationMirrors();
 	        Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams = annotations.get(0).getElementValues();
+	        boolean jaxbAlreadySet = false;
 	        for(ExecutableElement key : annotationParams.keySet()) {
-	        	if(key.getSimpleName().contentEquals("JAXB")) {
+	        	if(key.getSimpleName().contentEquals("JAXBList")) {
+	        		if(annotationParams.get(key) != null) {
+	        			jaxbReturnType = "java.util.List<" + annotationParams.get(key).toString() + ">";
+	        			jaxbAlreadySet = true;
+	        		}	        		
+	        	}
+	            else if(!jaxbAlreadySet && key.getSimpleName().contentEquals("JAXB")) {
 	        		if(annotationParams.get(key) != null) {
 	        			jaxbReturnType = annotationParams.get(key).toString();
 	        		}
@@ -258,6 +275,11 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        }
 	    	
 	    	StringBuilder methodCode = new StringBuilder();
+	    	
+	    	if(e.getAnnotation(Deprecated.class) != null) {
+	    		methodCode.append("    @Deprecated").append(System.getProperty("line.separator"));
+	    	}
+	    	
 	    	methodCode.append("    public ");
 	    	methodCode.append("%RETURNTYPE%");
 	    	methodCode.append(" ");
