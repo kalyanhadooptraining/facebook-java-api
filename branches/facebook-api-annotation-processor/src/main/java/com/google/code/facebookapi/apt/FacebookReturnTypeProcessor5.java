@@ -34,41 +34,6 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
     
     public FacebookReturnTypeProcessor5(AnnotationProcessorEnvironment processingEnv) {
         this.processingEnv = processingEnv;
-                
-        DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
-        String now = isoDateFormat.format(new Date());
-        
-        try {       	
-            outJAXB = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClient");
-            outJSON = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClient");
-            outXML = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClient");
-            
-            writeHeader(outJAXB, "Jaxb", now);
-            writeHeader(outJSON, "Json", now);
-            writeHeader(outXML, "Xml", now);
-            
-            CopyConstructorVisitor copyConstructorsJaxb = new CopyConstructorVisitor("Jaxb", outJAXB);
-            CopyConstructorVisitor copyConstructorsJson = new CopyConstructorVisitor("Json", outJSON);
-            CopyConstructorVisitor copyConstructorsXml = new CopyConstructorVisitor("Xml", outXML);
-            
-            ClassDeclaration facebookJaxbRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookJaxbRestClientBase");
-            for(ConstructorDeclaration cd : facebookJaxbRestClientBase.getConstructors()) {
-                cd.accept(copyConstructorsJaxb);
-            }
-
-            ClassDeclaration facebookJsonRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookJsonRestClientBase");
-            for(ConstructorDeclaration cd : facebookJsonRestClientBase.getConstructors()) {
-                cd.accept(copyConstructorsJson);
-            }
-            
-            ClassDeclaration facebookXmlRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookXmlRestClientBase");
-            for(ConstructorDeclaration cd : facebookXmlRestClientBase.getConstructors()) {
-                cd.accept(copyConstructorsXml);
-            }
-            
-        } catch(IOException ex) {
-            throw new RuntimeException(ex);
-        }
     }
     
     class CopyConstructorVisitor extends SimpleDeclarationVisitor {
@@ -265,6 +230,42 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	
     public void process() {
 	
+        DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
+        String now = isoDateFormat.format(new Date());
+
+        try {
+            outJAXB = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClient");
+            outJSON = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClient");
+            outXML = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClient");
+        } catch(IOException ex) {
+            System.out.println("Ignoring second attempt to process annotations");
+            return;
+        }
+        
+        writeHeader(outJAXB, "Jaxb", now);
+        writeHeader(outJSON, "Json", now);
+        writeHeader(outXML, "Xml", now);
+        
+        CopyConstructorVisitor copyConstructorsJaxb = new CopyConstructorVisitor("Jaxb", outJAXB);
+        CopyConstructorVisitor copyConstructorsJson = new CopyConstructorVisitor("Json", outJSON);
+        CopyConstructorVisitor copyConstructorsXml = new CopyConstructorVisitor("Xml", outXML);
+        
+        ClassDeclaration facebookJaxbRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookJaxbRestClientBase");
+        for(ConstructorDeclaration cd : facebookJaxbRestClientBase.getConstructors()) {
+            cd.accept(copyConstructorsJaxb);
+        }
+
+        ClassDeclaration facebookJsonRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookJsonRestClientBase");
+        for(ConstructorDeclaration cd : facebookJsonRestClientBase.getConstructors()) {
+            cd.accept(copyConstructorsJson);
+        }
+        
+        ClassDeclaration facebookXmlRestClientBase = (ClassDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookXmlRestClientBase");
+        for(ConstructorDeclaration cd : facebookXmlRestClientBase.getConstructors()) {
+            cd.accept(copyConstructorsXml);
+        }
+        
+        
 	    AnnotationVisitor visitor = new AnnotationVisitor();
 	    
 	    Collection<Declaration> elements = processingEnv.getDeclarationsAnnotatedWith((AnnotationTypeDeclaration)processingEnv.getTypeDeclaration("com.google.code.facebookapi.FacebookReturnType"));
@@ -315,17 +316,17 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	        for(AnnotationTypeElementDeclaration key : annotationParams.keySet()) {
 	        	if(key.getSimpleName().contentEquals("JAXBList")) {
 	        		if(annotationParams.get(key) != null) {
-	        			jaxbReturnType = "java.util.List<" + annotationParams.get(key).toString() + ">";
+	        			jaxbReturnType = "java.util.List<" + stripDotClass(annotationParams.get(key).toString()) + ">";
 	        			jaxbAlreadySet = true;
 	        		}	        		
 	        	}
 	            else if(!jaxbAlreadySet && key.getSimpleName().contentEquals("JAXB")) {
 	        		if(annotationParams.get(key) != null) {
-	        			jaxbReturnType = annotationParams.get(key).toString();
+	        			jaxbReturnType = stripDotClass(annotationParams.get(key).toString());
 	        		}
 	        	} else if(key.getSimpleName().contentEquals("JSON")) {
 	        		if(annotationParams.get(key) != null) {
-	        		    jsonReturnType = annotationParams.get(key).toString();
+	        		    jsonReturnType = stripDotClass(annotationParams.get(key).toString());
 	        		}
 	        	}
 	        }
@@ -370,4 +371,12 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	    }
 	}
 
+	
+	String stripDotClass(String input) {
+	    if(!input.endsWith(".class")) {
+	        return input;
+	    } else {
+	        return input.substring(0, input.length() - 6);
+	    }
+	}
 }
