@@ -32,7 +32,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 					<artifactId>tools</artifactId>
 					<version>1.5.0</version>
 					<scope>system</scope>
-					<systemPath>C:\program files\Java\jdk1.5.0_15\lib\tools.jar</systemPath>
+					<systemPath>${java.home}/../lib/tools.jar</systemPath>
 				</dependency>
 			</dependencies>
 		</profile>
