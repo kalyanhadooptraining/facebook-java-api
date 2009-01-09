@@ -7,11 +7,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class XMLTestUtils {
 
-	public static void print(Document dom) {
+	public static void print(Node dom) {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer t = factory.newTransformer();

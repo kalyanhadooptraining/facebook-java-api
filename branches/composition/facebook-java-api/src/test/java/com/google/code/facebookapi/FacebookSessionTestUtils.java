@@ -14,6 +14,8 @@ public class FacebookSessionTestUtils {
 
 	private static String APIKEY = System.getProperty( "APIKEY" );
 	private static String SECRET = System.getProperty( "SECRET" );
+	
+	public static String lastTokenUsed;
 
 	public static String getValidSessionID() throws IOException, FacebookException {
 		IFacebookRestClient<Document> client = new FacebookXmlRestClient( APIKEY, SECRET );
@@ -36,6 +38,7 @@ public class FacebookSessionTestUtils {
 		}
 
 		String sessionID = client.auth_getSession( token );
+		lastTokenUsed = token;
 		return sessionID;
 	}
 

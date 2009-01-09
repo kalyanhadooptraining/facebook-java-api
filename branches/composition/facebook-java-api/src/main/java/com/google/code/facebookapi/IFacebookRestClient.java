@@ -54,6 +54,9 @@ public interface IFacebookRestClient<T> {
 	public static final String SERVER_ADDR = "http://" + FB_SERVER;
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
+	public String getApiKey();
+	public String getSecret();
+	
 	/**
 	 * Check to see if the client is running in desktop-app mode
 	 * 
@@ -2426,11 +2429,11 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.undefineAssociation"> Developers Wiki: Data.undefineAssociation</a>
 	 */
-	public void data_undefineAssociation ( String name ) throws FacebookException;
-	
+	public void data_undefineAssociation( String name ) throws FacebookException;
+
 	/**
-	 * Rename a previously defined association. Note that, any renaming here only affects one direction. To change names and aliases for another direction,
-	 * rename with the name of that direction of association. 
+	 * Rename a previously defined association. Note that, any renaming here only affects one direction. To change names and aliases for another direction, rename with
+	 * the name of that direction of association.
 	 * 
 	 * @param name
 	 * @param newName

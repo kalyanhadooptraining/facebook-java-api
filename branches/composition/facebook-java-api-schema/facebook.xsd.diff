@@ -1,5 +1,5 @@
 --- facebook.xsd	2008-11-17 20:22:49.000000000 -0800
-+++ src/main/resources/schema.xsd	2008-12-01 19:48:16.000000000 -0800
++++ src/main/resources/schema.xsd	2008-12-30 22:20:12.000000000 -0800
 @@ -28,7 +28,7 @@
  </xsd:simpleType>
  
@@ -18,7 +18,51 @@
  </xsd:simpleType>
  
  <xsd:simpleType name="date">
-@@ -639,6 +639,17 @@
+@@ -195,6 +195,14 @@
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<xsd:element name="fql_query_response">
++  <xsd:complexType>
++    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++      <xsd:any />
++    </xsd:sequence>
++  </xsd:complexType>
++</xsd:element>
++
+ <xsd:complexType name="session_info">
+   <xsd:sequence>
+     <xsd:element name="session_key" type="session_key" />
+@@ -441,9 +449,20 @@
+     <xsd:element name="location" type="xsd:string" />
+     <xsd:element name="link" type="xsd:string" />
+     <xsd:element name="size" type="xsd:int" />
++    <xsd:element name="visible" type="visible" minOccurs="0"/>
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<xsd:simpleType name="visible">
++  <xsd:restriction base="xsd:string">
++    <xsd:enumeration value="friends"/>
++    <xsd:enumeration value="friends-of-friends"/>
++    <xsd:enumeration value="networks"/>
++    <xsd:enumeration value="everyone"/>
++    <xsd:enumeration value="custom"/>
++  </xsd:restriction>
++</xsd:simpleType>
++
+ <xsd:complexType name="affiliation">
+   <xsd:sequence>
+     <xsd:element name="nid" type="nid" />
+@@ -573,6 +592,7 @@
+         <xsd:attribute name="list" type="xsd:boolean" />
+       </xsd:complexType>
+     </xsd:element>
++    <xsd:element name="locale" type="xsd:string" minOccurs="0" nillable="true" />
+   </xsd:all>
+ </xsd:complexType>
+ 
+@@ -639,6 +659,17 @@
    </xsd:sequence>
  </xsd:complexType>
  
@@ -36,7 +80,7 @@
  <xsd:complexType name="listing">
    <xsd:sequence>
      <xsd:element name="listing_id" type="lid" />
-@@ -881,6 +892,29 @@
+@@ -881,6 +912,29 @@
      <xsd:element name="unique_canvas_page_views" type="xsd:int" minOccurs="0" />
      <xsd:element name="canvas_http_request_time_avg" type="xsd:int" minOccurs="0" />
      <xsd:element name="canvas_fbml_render_time_avg" type="xsd:int" minOccurs="0" />
@@ -66,7 +110,7 @@
    </xsd:all>
  </xsd:complexType>
  
-@@ -1364,7 +1398,7 @@
+@@ -1364,7 +1418,7 @@
  <xsd:element name="data_getObjects_response">
    <xsd:complexType>
      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
@@ -75,7 +119,7 @@
      </xsd:sequence>
      <xsd:attribute name="list" type="xsd:boolean" />
    </xsd:complexType>
-@@ -1448,11 +1482,29 @@
+@@ -1448,11 +1502,29 @@
  
  <xsd:element name="application_getPublicInfo_response">
    <xsd:complexType>
@@ -106,7 +150,7 @@
  </xsd:element>
  
  <xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
-@@ -1481,6 +1533,8 @@
+@@ -1481,6 +1553,8 @@
    </xsd:complexType>
  </xsd:element>
  
@@ -115,21 +159,14 @@
  <xsd:element name="admin_getMetrics_response">
    <xsd:complexType>
      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-@@ -1496,4 +1550,19 @@
+@@ -1496,4 +1570,12 @@
  
  <xsd:element name="error_response" type="FacebookApiException" />
  
 +<xsd:element name="batch_run_response">
 +  <xsd:complexType>
-+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-+      <xsd:element name="friends_get_response">
-+        <xsd:complexType>
-+          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-+            <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
-+          </xsd:sequence>
-+          <xsd:attribute name="list" type="xsd:boolean" />
-+        </xsd:complexType>
-+    </xsd:element>
++    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++      <xsd:any/>
 +    </xsd:sequence>
 +  </xsd:complexType>
 +</xsd:element>

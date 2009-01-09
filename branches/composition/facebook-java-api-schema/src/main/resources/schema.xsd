@@ -195,6 +195,14 @@
   </xsd:sequence>
 </xsd:complexType>
 
+<xsd:element name="fql_query_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any />
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+
 <xsd:complexType name="session_info">
   <xsd:sequence>
     <xsd:element name="session_key" type="session_key" />
@@ -414,6 +422,7 @@
     <xsd:element name="link" type="xsd:string" />
     <xsd:element name="caption" type="xsd:string" />
     <xsd:element name="created" type="time" />
+    <xsd:element name="modified" type="time" />
     <xsd:element name="story_fbid" type="id" />
   </xsd:sequence>
 </xsd:complexType>
@@ -441,8 +450,19 @@
     <xsd:element name="location" type="xsd:string" />
     <xsd:element name="link" type="xsd:string" />
     <xsd:element name="size" type="xsd:int" />
+    <xsd:element name="visible" type="visible" minOccurs="0"/>
   </xsd:sequence>
 </xsd:complexType>
+
+<xsd:simpleType name="visible">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="friends"/>
+    <xsd:enumeration value="friends-of-friends"/>
+    <xsd:enumeration value="networks"/>
+    <xsd:enumeration value="everyone"/>
+    <xsd:enumeration value="custom"/>
+  </xsd:restriction>
+</xsd:simpleType>
 
 <xsd:complexType name="affiliation">
   <xsd:sequence>
@@ -573,6 +593,7 @@
         <xsd:attribute name="list" type="xsd:boolean" />
       </xsd:complexType>
     </xsd:element>
+    <xsd:element name="locale" type="xsd:string" minOccurs="0" nillable="true" />
   </xsd:all>
 </xsd:complexType>
 
@@ -1552,15 +1573,8 @@
 
 <xsd:element name="batch_run_response">
   <xsd:complexType>
-    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-      <xsd:element name="friends_get_response">
-        <xsd:complexType>
-          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="uid" type="uid" minOccurs="0" maxOccurs="unbounded" />
-          </xsd:sequence>
-          <xsd:attribute name="list" type="xsd:boolean" />
-        </xsd:complexType>
-    </xsd:element>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any/>
     </xsd:sequence>
   </xsd:complexType>
 </xsd:element>

@@ -148,6 +148,14 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this.queries = new ArrayList<BatchQuery>();
 	}
 
+	public String getApiKey() {
+		return _apiKey;
+	}
+	
+	public String getSecret() {
+		return _secret;
+	}
+	
 	public void beginPermissionsMode( String apiKey ) {
 		this.permissionsApiKey = apiKey;
 	}
@@ -212,14 +220,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return null;
 		}
 		StringBuilder buffer = new StringBuilder();
+		boolean empty = true;
 		boolean notFirst = false;
 		for ( Object item : iterable ) {
 			if ( notFirst ) {
 				buffer.append( "," );
 			} else {
+				empty = false;
 				notFirst = true;
 			}
 			buffer.append( item.toString() );
+		}
+		if ( empty ) {
+			return null;
 		}
 		return buffer;
 	}
@@ -341,7 +354,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
 		setResponseFormat( "xml" );
-		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
+		List<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		params.add( newPair( "auth_token", authToken ) );
+		if ( this._isDesktop ) {
+			params.add( newPair( "generate_session_secret", "true" ) );
+		}
+		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document d = builder.parse( new InputSource( new StringReader( rawResponse ) ) );
@@ -442,7 +460,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	private String generateSignature( List<String> params, boolean requiresSession ) {
-		String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
+		//String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
+		String secret = _secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
@@ -771,14 +790,14 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	@Deprecated
 	public boolean users_isAppAdded() throws FacebookException {
-		if ( cacheAppAdded != null ) {
+		if ( cacheAppAdded == null ) {
 			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
 		}
 		return cacheAppAdded;
 	}
 
 	public boolean users_isAppUser() throws FacebookException {
-		if ( cacheAppUser != null ) {
+		if ( cacheAppUser == null ) {
 			cacheAppUser = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_USER ) );
 		}
 		return cacheAppUser;
@@ -2470,11 +2489,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return false;
 	}
 
-	protected static boolean addParamDelimitIfNotEmpty( String name, Collection value, Collection<Pair<String,CharSequence>> params ) {
-		if ( value != null && !value.isEmpty() ) {
-			return addParam( name, delimit( value ), params );
-		}
-		return false;
+	protected static boolean addParamDelimitIfNotBlankEmpty( String name, Iterable value, Collection<Pair<String,CharSequence>> params ) {
+		return addParamIfNotBlank( name, delimit( value ), params );
 	}
 
 	protected static boolean addParam( String name, Object value, Collection<Pair<String,CharSequence>> params ) {
@@ -2581,7 +2597,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Object events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
 		addParamIfNotBlankZero( "uid", userId, params );
-		addParamDelimitIfNotEmpty( "eids", eventIds, params );
+		addParamDelimitIfNotBlankEmpty( "eids", eventIds, params );
 		addParamIfNotBlankZero( "start_time", startTime, params );
 		addParamIfNotBlankZero( "end_time", endTime, params );
 		return callMethod( FacebookMethod.EVENTS_GET, params );
@@ -2957,7 +2973,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	/**
 	 * Returns a list of String raw responses which will be further
 	 * broken down by the adapters into the actual individual responses.
-	 * One string is returned per 15 methods in the batch.
+	 * One string is returned per 20 methods in the batch.
 	 */
 	public List<String> executeBatch( boolean serial ) throws FacebookException {
 		this.batchMode = false;
@@ -2966,8 +2982,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		
 		while ( !this.queries.isEmpty() ) {
 			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 15 ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 15 at once
+			if ( ( buffer.size() == 20 ) || ( this.queries.isEmpty() ) ) {
+				// we can only actually batch up to 20 at once
 				
 				String batchRawResponse = batch_run( encodeMethods( buffer ), serial );
 				result.add( batchRawResponse );

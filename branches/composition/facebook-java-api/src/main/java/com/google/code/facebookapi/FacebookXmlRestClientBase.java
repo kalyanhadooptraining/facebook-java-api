@@ -72,6 +72,14 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		factory.setNamespaceAware( true );
 	}
 	
+	public boolean isNamespaceAware() {
+		return factory.isNamespaceAware();
+	}
+
+	public void setNamespaceAware( boolean v ) {
+		factory.setNamespaceAware( v );
+	}
+	
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
 	static {
@@ -451,6 +459,10 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 
 	public Object getResponsePOJO() {
 		return new FacebookJaxbRestClient(client).getResponsePOJO();
+	}
+	
+	public static void initJaxbSupport() {
+		FacebookJaxbRestClient.initJaxbSupport();
 	}
 
 	/**

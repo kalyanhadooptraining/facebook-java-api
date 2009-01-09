@@ -23,7 +23,13 @@ public abstract class BaseAdapter {
 
 	protected abstract ExtensibleClient getClient();
 
-
+	public String getApiKey() {
+		return getClient().getApiKey();
+	}
+	
+	public String getSecret() {
+		return getClient().getSecret();
+	}
 
 	public void beginBatch() {
 		getClient().setResponseFormat( responseFormat );
