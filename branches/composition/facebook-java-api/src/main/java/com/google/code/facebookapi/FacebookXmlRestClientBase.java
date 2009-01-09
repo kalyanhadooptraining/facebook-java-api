@@ -67,10 +67,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 
 	protected static Log log = LogFactory.getLog( FacebookXmlRestClientBase.class );
 
-	protected static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	static {
-		factory.setNamespaceAware( true );
-	}
+	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	
 	public boolean isNamespaceAware() {
 		return factory.isNamespaceAware();
@@ -124,19 +121,28 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	public void setClient(ExtensibleClient client) {
 		this.client = client;
 	}
+	
+	public FacebookXmlRestClientBase( ExtensibleClient client ) {
+		super( "xml" );
+		factory.setNamespaceAware( true );
+		this.client = client;
+	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( apiKey, secret );
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, int connectionTimeout ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( apiKey, secret, sessionKey );
 	}
 
@@ -147,26 +153,31 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 
 	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
 		super( "xml" );
+		factory.setNamespaceAware( true );
 		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
 	}
 
@@ -201,7 +212,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		return client.auth_getSession( authToken );
 	}
 
-	static Document parseCallResult( Object rawResponse ) throws FacebookException {
+	Document parseCallResult( Object rawResponse ) throws FacebookException {
 		if( rawResponse == null ) {
 			return null;
 		}
@@ -420,9 +431,10 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		client.setCacheFriendsList( ids );
 	}
 
-	public static Document toFriendsGetResponse( List<Long> ids ) {
+	public Document toFriendsGetResponse( List<Long> ids ) {
 		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
+			DocumentBuilderFactory localFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = localFactory.newDocumentBuilder();
 			Document doc = builder.newDocument();
 			Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
 			root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );

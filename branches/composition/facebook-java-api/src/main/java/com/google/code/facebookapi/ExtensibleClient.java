@@ -593,7 +593,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if("json".equals( responseFormat )) {
 			FacebookJsonRestClientBase.parseCallResult( rawResponse );
 		} else {
-			FacebookXmlRestClientBase.parseCallResult( rawResponse );
+			new FacebookXmlRestClient(this).parseCallResult( rawResponse );
 		}
 	}
 
@@ -2541,7 +2541,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if("json".equals( responseFormat )) {
 			return FacebookJsonRestClientBase.extractBoolean( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClientBase.extractBoolean( FacebookXmlRestClientBase.parseCallResult( result ) );
+			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
+			return FacebookXmlRestClientBase.extractBoolean( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2555,7 +2556,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if("json".equals( responseFormat )) {
 			return FacebookJsonRestClientBase.extractInt( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClientBase.extractInt( FacebookXmlRestClientBase.parseCallResult( result ) );
+			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
+			return FacebookXmlRestClientBase.extractInt( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2569,7 +2571,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if("json".equals( responseFormat )) {
 			return FacebookJsonRestClientBase.extractLong( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClientBase.extractLong( FacebookXmlRestClientBase.parseCallResult( result ) );
+			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
+			return FacebookXmlRestClientBase.extractLong( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2584,7 +2587,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if("json".equals( responseFormat )) {
 			return FacebookJsonRestClientBase.extractString( FacebookJsonRestClientBase.parseCallResult( result ) );
 		} else {
-			return FacebookXmlRestClientBase.extractString( FacebookXmlRestClientBase.parseCallResult( result ) );
+			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
+			return FacebookXmlRestClientBase.extractString( xmlClient.parseCallResult( result ) );
 		}
 	}
 
