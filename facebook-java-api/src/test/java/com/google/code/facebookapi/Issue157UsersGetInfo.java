@@ -3,7 +3,6 @@ package com.google.code.facebookapi;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.Assert;
