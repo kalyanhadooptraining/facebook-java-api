@@ -252,8 +252,17 @@
     <xsd:element name="update_time" type="time" />
     <xsd:element name="location" type="xsd:string" />
     <xsd:element name="venue" type="location" />
+    <xsd:element name="privacy" type="privacy" />
   </xsd:sequence>
 </xsd:complexType>
+
+<xsd:simpleType name="privacy">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="OPEN"/>
+    <xsd:enumeration value="CLOSED"/>
+    <xsd:enumeration value="SECRET"/>
+  </xsd:restriction>
+</xsd:simpleType>
 
 <xsd:complexType name="event_member">
   <xsd:sequence>
