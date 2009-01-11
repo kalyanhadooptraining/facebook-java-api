@@ -360,25 +360,17 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
-		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document d = builder.parse( new InputSource( new StringReader( rawResponse ) ) );
-			this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-			this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-			this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
-			if ( this._isDesktop ) {
-				this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
-			}
-			return this.cacheSessionKey;
-		} catch(ParserConfigurationException ex) {
-			throw new RuntimeException("Could not parse reponse", ex);
-		} catch ( UnsupportedEncodingException ex) {
-			throw new RuntimeException("Could not parse reponse", ex);
-		} catch ( SAXException ex ) {
-			throw new RuntimeException("Could not parse reponse", ex);
-		} catch ( IOException ex ) {
-			throw new RuntimeException("Could not parse reponse", ex);
+		
+		//Catch errors and return as FacebookException
+		Document d = new FacebookXmlRestClient(this).parseCallResult( rawResponse );
+		
+		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
+		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
+		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
+		if ( this._isDesktop ) {
+			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
+		return this.cacheSessionKey;
 	}
 
 	@Deprecated
