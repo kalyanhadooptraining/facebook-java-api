@@ -2972,17 +2972,25 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * One string is returned per 20 methods in the batch.
 	 */
 	public List<String> executeBatch( boolean serial ) throws FacebookException {
+		int BATCH_LIMIT = 20;
 		this.batchMode = false;
 		List<String> result = new ArrayList<String>();
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
 		
 		while ( !this.queries.isEmpty() ) {
 			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == 20 ) || ( this.queries.isEmpty() ) ) {
+			if ( ( buffer.size() == BATCH_LIMIT ) || ( this.queries.isEmpty() ) ) {
 				// we can only actually batch up to 20 at once
 				
 				String batchRawResponse = batch_run( encodeMethods( buffer ), serial );
 				result.add( batchRawResponse );
+			}
+			
+			if( buffer.size() == BATCH_LIMIT ) {
+				log.debug("Clearing buffer for the next run.");
+				buffer.clear();
+			} else {
+				log.trace( "No need to clear buffer, this is the final iteration of the batch" );
 			}
 		}
 		
