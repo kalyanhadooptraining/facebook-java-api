@@ -583,6 +583,14 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 						}
 					}
 				}
+				//End for loop
+				
+				if( buffer.size() == BATCH_LIMIT ) {
+					log.debug("Clearing buffer for the next run.");
+					buffer.clear();
+				} else {
+					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+				}
 			}
 		}
 		return result;

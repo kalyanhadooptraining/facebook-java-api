@@ -30,6 +30,7 @@ package com.google.code.facebookapi;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,6 +44,7 @@ import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +52,7 @@ import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.google.code.facebookapi.schema.FacebookApiException;
 import com.google.code.facebookapi.schema.FriendsGetResponse;
@@ -478,41 +481,60 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 			if ( ( buffer.size() == BATCH_LIMIT ) || ( this.queries.isEmpty() ) ) {
 				// we can only actually batch up to 20 at once
 				batch_run( encodeMethods( buffer ), serial );
+				DocumentBuilder builder;
+				Document doc;
 				try {
-					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-					Document doc = builder.parse( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
-					NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
-					for ( int count = 0; count < responses.getLength(); count++ ) {
-						String response = extractNodeString( responses.item( count ) );
-						try {
-							this.rawResponse = response;
-							Object pojo = parseCallResult( null, null );
-							String type = RETURN_TYPES.get( buffer.get( count ).getMethod() );
-							// possible types are document, string, bool, int, long, void
-							if ( type.equals( "default" ) ) {
-								result.add( pojo );
-							} else if ( type.equals( "string" ) ) {
-								result.add( extractString( pojo ) );
-							} else if ( type.equals( "bool" ) ) {
-								result.add( extractBoolean( pojo ) );
-							} else if ( type.equals( "int" ) ) {
-								result.add( extractInt( pojo ) );
-							} else if ( type.equals( "long" ) ) {
-								result.add( (long) extractLong( pojo ) );
-							} else {
-								// void
-								result.add( null );
-							}
+					builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+					doc = builder.parse( new ByteArrayInputStream( this.rawResponse.getBytes( "UTF-8" ) ) );
+				}
+				catch ( ParserConfigurationException ex ) {
+					throw new RuntimeException( ex );
+				}
+				catch ( UnsupportedEncodingException ex ) {
+					throw new RuntimeException( ex );
+				}
+				catch ( SAXException ex ) {
+					throw new RuntimeException( ex );
+				}
+				catch ( IOException ex ) {
+					throw new RuntimeException( ex );
+				}
+				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
+				for ( int count = 0; count < responses.getLength(); count++ ) {
+					String response = extractNodeString( responses.item( count ) );
+					try {
+						this.rawResponse = response;
+						Object pojo = parseCallResult( null, null );
+						String type = RETURN_TYPES.get( buffer.get( count ).getMethod() );
+						// possible types are document, string, bool, int, long, void
+						if ( type.equals( "default" ) ) {
+							result.add( pojo );
+						} else if ( type.equals( "string" ) ) {
+							result.add( extractString( pojo ) );
+						} else if ( type.equals( "bool" ) ) {
+							result.add( extractBoolean( pojo ) );
+						} else if ( type.equals( "int" ) ) {
+							result.add( extractInt( pojo ) );
+						} else if ( type.equals( "long" ) ) {
+							result.add( (long) extractLong( pojo ) );
+						} else {
+							// void
+							result.add( null );
 						}
-						catch ( Exception e ) {
-							if ( result.size() < count + 1 ) {
-								result.add( null );
-							}
+					}
+					catch ( Exception e ) {
+						if ( result.size() < count + 1 ) {
+							result.add( null );
 						}
 					}
 				}
-				catch ( Exception ignored ) {
-					// ignore
+				//End for loop
+				
+				if( buffer.size() == BATCH_LIMIT ) {
+					log.debug("Clearing buffer for the next run.");
+					buffer.clear();
+				} else {
+					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
 				}
 			}
 		}
