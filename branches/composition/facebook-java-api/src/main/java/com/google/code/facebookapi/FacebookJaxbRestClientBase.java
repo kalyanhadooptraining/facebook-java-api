@@ -330,32 +330,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		return parse((String)val);
 	}
 
-	public FriendsGetResponse friends_get() throws FacebookException {
-		if ( client.isBatchMode() ) {
-			client.friends_get();
-			return null;
-		}
-		if ( client.getCacheFriendsList() == null ) {
-			return (FriendsGetResponse) parseCallResult( (String)client.friends_get() );
-		}
-		return toFriendsGetResponse( client.getCacheFriendsList() );
-	}
-
-	public FriendsGetResponse getCacheFriendsList() {
-		return toFriendsGetResponse( client.getCacheFriendsList() );
-	}
-
-	public void setCacheFriendsList( List<Long> ids ) {
-		client.setCacheFriendsList( ids );
-	}
-
-	public static FriendsGetResponse toFriendsGetResponse( List<Long> ids ) {
-		FriendsGetResponse out = new FriendsGetResponse();
-		out.setList( true );
-		out.getUid().addAll( ids );
-		return out;
-	}
-
 	/**
 	 * Call this function to retrieve the session information after your user has logged in.
 	 * 

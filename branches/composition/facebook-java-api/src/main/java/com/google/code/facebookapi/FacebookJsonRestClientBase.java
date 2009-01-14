@@ -565,32 +565,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		return result;
 	}
 
-	/**
-	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
-	 * 
-	 * @return the friends-list stored in the API client.
-	 */
-	public JSONArray getCacheFriendsList() {
-		return toFriendsGetResponse( client.getCacheFriendsList() );
-	}
-
-	/**
-	 * Set/override the list of friends stored in the client.
-	 * 
-	 * @param friendsList
-	 *            the new list to use.
-	 */
-	public void setCacheFriendsList( List<Long> ids ) {
-		client.setCacheFriendsList( ids );
-	}
-
-	public static JSONArray toFriendsGetResponse( List<Long> ids ) {
-		JSONArray out = new JSONArray();
-		for ( Long id : ids ) {
-			out.put( id );
-		}
-		return out;
-	}
 	
 	@Deprecated
 	public Object getResponsePOJO() {

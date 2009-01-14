@@ -53,7 +53,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -410,59 +409,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			return null;
 		}
 		return d.getFirstChild().getTextContent();
-	}
-
-	/**
-	 * Return the object's 'friendsList' property. This method does not call the Facebook API server.
-	 * 
-	 * @return the friends-list stored in the API client.
-	 */
-	public Document getCacheFriendsList() {
-		return toFriendsGetResponse(client.getCacheFriendsList());
-	}
-
-	/**
-	 * Set/override the list of friends stored in the client.
-	 * 
-	 * @param friendsList
-	 *            the new list to use.
-	 */
-	public void setCacheFriendsList( List<Long> ids ) {
-		client.setCacheFriendsList( ids );
-	}
-
-	public Document toFriendsGetResponse( List<Long> ids ) {
-		try {
-			DocumentBuilderFactory localFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = localFactory.newDocumentBuilder();
-			Document doc = builder.newDocument();
-			Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
-			root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );
-			root.setAttribute( "list", "true" );
-			for ( Long id : ids ) {
-				Element uid = doc.createElement( "uid" );
-				uid.appendChild( doc.createTextNode( Long.toString( id ) ) );
-				root.appendChild( uid );
-			}
-			doc.appendChild( root );
-			return doc;
-		}
-		catch ( ParserConfigurationException ex ) {
-			throw new RuntimeException( ex );
-		}
-	}
-
-	public Document friends_get() throws FacebookException {
-		if ( client.isBatchMode() ) {
-			client.friends_get(); //Will return null
-			return null;
-		}
-		if(client.getCacheFriendsList() == null) {
-			client.setResponseFormat( "xml" );
-			Object rawResponse = client.friends_get();
-			return parseCallResult( rawResponse.toString() );
-		}
-		return getCacheFriendsList();
 	}
 
 	public String getRawResponse() {

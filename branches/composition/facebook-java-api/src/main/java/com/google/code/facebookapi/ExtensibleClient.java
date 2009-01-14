@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -33,6 +33,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,10 +46,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
@@ -853,7 +858,66 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Object friends_get() throws FacebookException {
-		return callMethod( FacebookMethod.FRIENDS_GET );
+		if ( batchMode ) {
+			log.debug( "Request to get friends list as part of a batch. " +
+					   "This will result in a request to Facebook's server.");
+			friends_get();
+			return null;
+		}
+		if ( cacheFriendsList == null ) {
+			log.debug( "No cached list of friends. Going to Facebook to get it." );
+			return callMethod( FacebookMethod.FRIENDS_GET );
+		}
+		
+		return toFriendsGetResponse( cacheFriendsList );
+	}
+	
+	/**
+	 * Must be able to turn our cached value into either a
+	 * JSON or XML response. We're mirroring what the
+	 * Facebook server would do.
+	 * 
+	 * @return String that looks like it came from the Facebook server
+	 */
+	//
+	private String toFriendsGetResponse( List<Long> ids ) {
+		if( "json".equals( responseFormat ) ) {
+			JSONArray out = new JSONArray();
+			for ( Long id : ids ) {
+				out.put( id );
+			}
+			return out.toString();
+		} else {
+			try {
+				DocumentBuilderFactory localFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = localFactory.newDocumentBuilder();
+				Document doc = builder.newDocument();
+				Element root = doc.createElementNS( "http://api.facebook.com/1.0/", "friends_get_response" );
+				root.setAttributeNS( "http://api.facebook.com/1.0/", "friends_get_response", "http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" );
+				root.setAttribute( "list", "true" );
+				for ( Long id : ids ) {
+					Element uid = doc.createElement( "uid" );
+					uid.appendChild( doc.createTextNode( Long.toString( id ) ) );
+					root.appendChild( uid );
+				}
+				doc.appendChild( root );
+				
+				TransformerFactory tf = TransformerFactory.newInstance();
+				Transformer t = tf.newTransformer();
+				StringWriter out = new StringWriter();
+				t.transform( new DOMSource( doc ), new StreamResult( out ) );
+				return out.toString();
+			}
+			catch ( ParserConfigurationException ex ) {
+				throw new RuntimeException( ex );
+			}
+			catch ( TransformerConfigurationException ex ) {
+				throw new RuntimeException( ex );
+			}
+			catch ( TransformerException ex ) {
+				throw new RuntimeException( ex );
+			}
+		}
 	}
 
 	public Object friends_get( Long uid ) throws FacebookException {

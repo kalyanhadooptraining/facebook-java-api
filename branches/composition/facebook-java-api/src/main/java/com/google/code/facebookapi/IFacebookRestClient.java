@@ -72,7 +72,8 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void setIsDesktop( boolean isDesktop );
 
-	public T getCacheFriendsList();
+	@FacebookReturnType(JAXB=FriendsGetResponse.class, JSON=JSONArray.class)
+	public T getCacheFriendsList() throws FacebookException;
 
 	public void setCacheFriendsList( List<Long> friendIds );
 
