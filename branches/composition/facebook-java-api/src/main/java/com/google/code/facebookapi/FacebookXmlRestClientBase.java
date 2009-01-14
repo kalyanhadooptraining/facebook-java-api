@@ -32,18 +32,13 @@
 
 package com.google.code.facebookapi;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -74,43 +69,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 
 	public void setNamespaceAware( boolean v ) {
 		factory.setNamespaceAware( v );
-	}
-	
-	// used so that executeBatch can return the correct types in its list, without killing efficiency.
-	private static final Map<FacebookMethod,String> RETURN_TYPES;
-	static {
-		RETURN_TYPES = new HashMap<FacebookMethod,String>();
-		Method[] candidates = FacebookXmlRestClient.class.getMethods();
-		// this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
-		for ( FacebookMethod method : EnumSet.allOf( FacebookMethod.class ) ) {
-			String name = method.methodName();
-			name = name.substring( name.indexOf( "." ) + 1 );
-			name = name.replace( ".", "_" );
-			for ( Method candidate : candidates ) {
-				if ( candidate.getName().equalsIgnoreCase( name ) ) {
-					String typeName = candidate.getReturnType().getName().toLowerCase();
-					// possible types are Document, String, Boolean, Integer, Long, void
-					if ( typeName.indexOf( "document" ) != -1 ) {
-						RETURN_TYPES.put( method, "default" );
-					} else if ( typeName.indexOf( "string" ) != -1 ) {
-						RETURN_TYPES.put( method, "string" );
-					} else if ( typeName.indexOf( "bool" ) != -1 ) {
-						RETURN_TYPES.put( method, "bool" );
-					} else if ( typeName.indexOf( "long" ) != -1 ) {
-						RETURN_TYPES.put( method, "long" );
-					} else if ( typeName.indexOf( "int" ) != -1 ) {
-						RETURN_TYPES.put( method, "int" );
-					} else if ( ( typeName.indexOf( "applicationpropertyset" ) != -1 ) || ( typeName.indexOf( "list" ) != -1 ) || ( typeName.indexOf( "url" ) != -1 )
-							|| ( typeName.indexOf( "map" ) != -1 ) || ( typeName.indexOf( "object" ) != -1 ) ) {
-						// we don't autobox these for now, the user can parse them on their own
-						RETURN_TYPES.put( method, "default" );
-					} else {
-						RETURN_TYPES.put( method, "void" );
-					}
-					break;
-				}
-			}
-		}
 	}
 	
 	protected ExtensibleClient client;
@@ -332,20 +290,15 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	 * @throws FacebookException
 	 * @throws IOException
 	 */
-	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
+	public List<Document> executeBatch( boolean serial ) throws FacebookException {
 		client.setResponseFormat( "xml" );
-		//Take a copy of the queries being run so that we can associate them
-		//with the correct return type later.
-		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
 		List<String> clientResults = client.executeBatch( serial );
 		
-		List<Object> result = new ArrayList<Object>();
+		List<Document> result = new ArrayList<Document>();
 
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			
-			int outerBatchCount = 0;
 			
 			for(String clientResult : clientResults) {
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
@@ -353,28 +306,11 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 				for ( int count = 0; count < responses.getLength(); count++ ) {
 					String response = extractNodeString( responses.item( count ) );
 					try {
-						Document respDoc = builder.parse( new ByteArrayInputStream( response.getBytes( "UTF-8" ) ) );
-						String type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
-						// possible types are document, string, bool, int, long, void
-						if ( type.equals( "default" ) ) {
-							result.add( respDoc );
-						} else if ( type.equals( "string" ) ) {
-							result.add( extractString( respDoc ) );
-						} else if ( type.equals( "bool" ) ) {
-							result.add( extractBoolean( respDoc ) );
-						} else if ( type.equals( "int" ) ) {
-							result.add( extractInt( respDoc ) );
-						} else if ( type.equals( "long" ) ) {
-							result.add( (long) extractInt( respDoc ) );
-						} else {
-							// void
-							result.add( null );
-						}
+						Document respDoc = parseCallResult( response );
+						result.add(  respDoc );
 					}
-					catch ( Exception ignored ) {
-						if ( result.size() < count + 1 ) {
-							result.add( null );
-						}
+					catch ( FacebookException ignored ) {
+						result.add( null );
 					}
 				}
 			}

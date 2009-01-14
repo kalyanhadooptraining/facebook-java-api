@@ -29,15 +29,11 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -56,7 +52,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.google.code.facebookapi.schema.FacebookApiException;
-import com.google.code.facebookapi.schema.FriendsGetResponse;
 
 /**
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
@@ -64,25 +59,6 @@ import com.google.code.facebookapi.schema.FriendsGetResponse;
 public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapter implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( FacebookJaxbRestClientBase.class );
-
-	// used so that executeBatch can return the correct types in its list, without killing efficiency.
-	private static final Map<FacebookMethod,Class> RETURN_TYPES;
-	static {
-		RETURN_TYPES = new HashMap<FacebookMethod,Class>();
-		Method[] candidates = FacebookJaxbRestClient.class.getMethods();
-		// this loop is inefficient, but it only executes once per JVM, so it doesn't really matter
-		for ( FacebookMethod method : EnumSet.allOf( FacebookMethod.class ) ) {
-			String name = method.methodName();
-			name = name.substring( name.indexOf( "." ) + 1 );
-			name = name.replace( ".", "_" );
-			for ( Method candidate : candidates ) {
-				if ( candidate.getName().equalsIgnoreCase( name ) ) {
-					Class returnType = candidate.getReturnType();
-					RETURN_TYPES.put(method, returnType);
-				}
-			}
-		}
-	}
 
 	protected ExtensibleClient client;
 	public ExtensibleClient getClient() {
@@ -458,9 +434,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
 		client.setResponseFormat( "xml" );
-		//Take a copy of the queries being run so that we can associate them
-		//with the correct return type later.
-		List<BatchQuery> queries = new ArrayList<BatchQuery>(client.getQueries());
 		
 		List<String> clientResults = client.executeBatch( serial );
 		
@@ -468,8 +441,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		
-			int outerBatchCount = 0;
 			
 			for(String clientResult : clientResults) {
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
@@ -478,26 +449,10 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 					String response = extractNodeString( responses.item( count ) );
 					try {
 						Object pojo = parseCallResult( response );
-						Class type = RETURN_TYPES.get( queries.get( outerBatchCount++ ).getMethod() );
-						if(!type.isPrimitive()) {
-							result.add( pojo );
-						} else if ( type.equals( String.class ) ) {
-							result.add( extractString( pojo ) );
-						} else if ( type.equals( Boolean.class ) ) {
-							result.add( extractBoolean( pojo ) );
-						} else if ( type.equals( Integer.class ) ) {
-							result.add( extractInt( pojo ) );
-						} else if ( type.equals( Long.class ) ) {
-							result.add( (long) extractLong( pojo ) );
-						} else {
-							// void
-							result.add( null );
-						}
+						result.add( pojo );
 					}
 					catch ( Exception e ) {
-						if ( result.size() < count + 1 ) {
-							result.add( null );
-						}
+						result.add( null );
 					}
 				}
 			}
