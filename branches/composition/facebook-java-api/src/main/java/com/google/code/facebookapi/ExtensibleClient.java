@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -860,9 +861,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Object friends_get() throws FacebookException {
 		if ( batchMode ) {
 			log.debug( "Request to get friends list as part of a batch. " +
-					   "This will result in a request to Facebook's server.");
-			friends_get();
-			return null;
+					   "This will ultimately result in a request to Facebook's server.");
+			return callMethod( FacebookMethod.FRIENDS_GET );
 		}
 		if ( cacheFriendsList == null ) {
 			log.debug( "No cached list of friends. Going to Facebook to get it." );
@@ -3048,13 +3048,13 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				
 				String batchRawResponse = batch_run( encodeMethods( buffer ), serial );
 				result.add( batchRawResponse );
-			}
-			
-			if( buffer.size() == BATCH_LIMIT ) {
-				log.debug("Clearing buffer for the next run.");
-				buffer.clear();
-			} else {
-				log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+				
+				if( buffer.size() == BATCH_LIMIT ) {
+					log.debug("Clearing buffer for the next run.");
+					buffer.clear();
+				} else {
+					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+				}
 			}
 		}
 		
