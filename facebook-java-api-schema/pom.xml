@@ -13,6 +13,14 @@
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
   
+  <dependencies>
+    <dependency>
+      <groupId>org.jvnet.jaxb2_commons</groupId> 
+      <artifactId>runtime</artifactId>
+      <version>RELEASE</version>
+    </dependency> 
+  </dependencies>
+  
   <repositories>
     <repository>
       <id>maven2-repository.dev.java.net</id>
@@ -48,9 +56,23 @@
       <plugin>
 	<groupId>org.jvnet.jaxb2.maven2</groupId>
 	<artifactId>maven-jaxb2-plugin</artifactId>
-	<configuration>
-	  <generatePackage>com.google.code.facebookapi.schema</generatePackage>
-	</configuration>
+    <configuration>
+      <generatePackage>com.google.code.facebookapi.schema</generatePackage>
+        
+      <extension>true</extension>
+      <args>
+        <arg>-XtoString</arg>
+        <arg>-Xequals</arg>
+        <arg>-XhashCode</arg>
+      </args>
+      <plugins>
+        <plugin>
+          <groupId>org.jvnet.jaxb2_commons</groupId>
+          <artifactId>basic</artifactId>
+          <version>RELEASE</version>
+        </plugin>
+      </plugins>
+    </configuration>
 	<executions>
 	  <execution>
 	    <goals>
