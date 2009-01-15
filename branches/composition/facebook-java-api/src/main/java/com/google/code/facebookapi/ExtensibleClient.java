@@ -859,17 +859,38 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Object friends_get() throws FacebookException {
+		if( cacheFriendsList != null && !batchMode ) {
+			//Pretend we went to the Facebook server
+			rawResponse = toFriendsGetResponse( cacheFriendsList );
+			log.trace( "Didn't need to go to the Facebook server" );
+			return rawResponse;
+		}
+		
 		if ( batchMode ) {
 			log.debug( "Request to get friends list as part of a batch. " +
 					   "This will ultimately result in a request to Facebook's server.");
 			return callMethod( FacebookMethod.FRIENDS_GET );
 		}
-		if ( cacheFriendsList == null ) {
-			log.debug( "No cached list of friends. Going to Facebook to get it." );
-			return callMethod( FacebookMethod.FRIENDS_GET );
-		}
 		
-		return toFriendsGetResponse( cacheFriendsList );
+		log.trace( "We're not in batch mode and we don't have " +
+				   "a cached list of friends.");
+		
+		if(cacheSessionKey == null) {
+			log.trace( "friends_get() called without a session key. Trying to get cached logged in user and " +
+					   "call the sessionless version of the facebook method specifying the uid.");
+			
+			if( cacheUserId == null ) {
+				throw new FacebookException( ErrorCode.SESSION_REQUIRED, "friends_get can't return " +
+						                     "a value if it doesn't have either a session key or " +
+						                     "the uid of a user." );
+			} else {
+				return friends_get( cacheUserId );
+			}
+		}		
+
+		log.debug( "No cached list of friends but a session key is available. " +
+				   "Going to Facebook to get the list." );
+		return callMethod( FacebookMethod.FRIENDS_GET );
 	}
 	
 	/**
@@ -924,12 +945,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( uid != null ) {
 			return callMethod( FacebookMethod.FRIENDS_GET_NOSESSION, newPair( "uid", uid ) );
 		} else {
-			return callMethod( FacebookMethod.FRIENDS_GET );
+			return friends_get();
 		}
 	}
 
 	public String auth_createToken() throws FacebookException {
-		setResponseFormat("json");
 		String d = callMethod( FacebookMethod.AUTH_CREATE_TOKEN );
 		return extractString( d );
 	}
@@ -2595,7 +2615,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected boolean extractBoolean( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClientBase.extractBoolean( FacebookJsonRestClientBase.parseCallResult( result ) );
+			return (Boolean)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
 			return FacebookXmlRestClientBase.extractBoolean( xmlClient.parseCallResult( result ) );
@@ -2610,7 +2630,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected int extractInt( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClientBase.extractInt( FacebookJsonRestClientBase.parseCallResult( result ) );
+			return (Integer)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
 			return FacebookXmlRestClientBase.extractInt( xmlClient.parseCallResult( result ) );
@@ -2625,7 +2645,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected Long extractLong( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClientBase.extractLong( FacebookJsonRestClientBase.parseCallResult( result ) );
+			return (Long)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
 			return FacebookXmlRestClientBase.extractLong( xmlClient.parseCallResult( result ) );
@@ -2641,7 +2661,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected String extractString( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return FacebookJsonRestClientBase.extractString( FacebookJsonRestClientBase.parseCallResult( result ) );
+			return (String)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
 			return FacebookXmlRestClientBase.extractString( xmlClient.parseCallResult( result ) );

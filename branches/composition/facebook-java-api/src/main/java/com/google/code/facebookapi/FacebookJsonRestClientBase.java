@@ -195,34 +195,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
 		return client.admin_getAppPropertiesAsString( properties );
 	}
-	
-	/**
-	 * Extracts a String from a result consisting entirely of a String.
-	 * 
-	 * @param val
-	 * @return the String
-	 */
-	static String extractString( Object val ) {
-		if ( val == null ) {
-			return null;
-		}
-		try {
-			if ( val instanceof JSONArray ) {
-				try {
-					// sometimes facebook will wrap its primitive types in JSON markup
-					return (String) ( (JSONArray) val ).get( 0 );
-				}
-				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
-				}
-			}
-			return (String) val;
-		}
-		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
-			return null;
-		}
-	}
 
 	/**
 	 * Sets the session information (sessionKey) using the token from auth_createToken.
@@ -236,6 +208,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public String auth_getSession( String authToken ) throws FacebookException {
 		return client.auth_getSession( authToken );
 	}
+	
 
 	/**
 	 * Parses the result of an API call from JSON into Java Objects.
@@ -256,36 +229,8 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 			return null;
 		}
 		String jsonResp = (String)rawResponse;
-		Object json = null;
-		if ( jsonResp.matches( "[\\{\\[].*[\\}\\]]" ) ) {
-			try {
-				if ( jsonResp.matches( "\\{.*\\}" ) ) {
-					json = new JSONObject( jsonResp );
-				} else {
-					json = new JSONArray( jsonResp );
-				}
-			}
-			catch ( Exception ignored ) {
-				ignored.printStackTrace();
-			}
-		} else {
-			if ( jsonResp.startsWith( "\"" ) ) {
-				jsonResp = jsonResp.substring( 1 );
-			}
-			if ( jsonResp.endsWith( "\"" ) ) {
-				jsonResp = jsonResp.substring( 0, jsonResp.length() - 1 );
-			}
-			try {
-				// it's either a number...
-				json = Long.parseLong( jsonResp );
-			}
-			catch ( Exception e ) {
-				// ...or a string
-				json = jsonResp;
-			}
-		}
-		//log.debug( method.methodName() + ": " + json );
-
+		Object json = jsonToJavaValue( jsonResp );
+		
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
 			try {
@@ -303,146 +248,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 			}
 		}
 		return json;
-	}
-
-	/**
-	 * Extracts a URL from a result that consists of a URL only. For JSON, that result is simply a String.
-	 * 
-	 * @param url
-	 * @return the URL
-	 */
-	static URL extractURL( Object url ) throws IOException {
-		if ( url == null ) {
-			return null;
-		}
-		if ( url instanceof String ) {
-			return ( "".equals( url ) ) ? null : new URL( (String) url );
-		}
-		if ( url instanceof JSONArray ) {
-			try {
-				// sometimes facebook will wrap its primitive types in JSON markup
-				return new URL( (String) ( (JSONArray) url ).get( 0 ) );
-			}
-			catch ( Exception e ) {
-				log.error( "Exception: " + e.getMessage(), e );
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Extracts an Integer from a result that consists of an Integer only.
-	 * 
-	 * @param val
-	 * @return the Integer
-	 */
-	static int extractInt( Object val ) {
-		if ( val == null ) {
-			return 0;
-		}
-		try {
-			if ( val instanceof JSONArray ) {
-				try {
-					// sometimes facebook will wrap its primitive types in JSON markup
-					val = ( (JSONArray) val ).get( 0 );
-					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
-						val = 1;
-					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
-						val = 0;
-					}
-				}
-				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
-				}
-			}
-			if ( val instanceof String ) {
-				// shouldn't happen, really
-				return Integer.parseInt( (String) val );
-			}
-			if ( val instanceof Long ) {
-				// this one will happen, the parse method parses all numbers as longs
-				return ( (Long) val ).intValue();
-			}
-			return (Integer) val;
-		}
-		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
-			return 0;
-		}
-	}
-
-	/**
-	 * Extracts a Boolean from a result that consists of a Boolean only.
-	 * 
-	 * @param val
-	 * @return the Boolean
-	 */
-	static boolean extractBoolean( Object val ) {
-		if ( val == null ) {
-			return false;
-		}
-		try {
-			if ( val instanceof JSONArray ) {
-				try {
-					// sometimes facebook will wrap its primitive types in JSON markup
-					val = ( (JSONArray) val ).get( 0 );
-				}
-				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
-				}
-			}
-			if ( val instanceof String ) {
-				return ( val.equals( "true" ) || val.equals( "1" ) );
-			}
-			if ( val instanceof Boolean ) {
-				return (Boolean) val;
-			}
-			if ( val instanceof Number ) {
-				return ( (Number) val ).longValue() == 1l;
-			}
-			return ( (Long) val == 1l );
-		}
-		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
-		}
-		return false;
-	}
-
-	/**
-	 * Extracts a Long from a result that consists of an Long only.
-	 * 
-	 * @param val
-	 * @return the Integer
-	 */
-	static Long extractLong( Object val ) {
-		if ( val == null ) {
-			return 0l;
-		}
-		try {
-			if ( val instanceof JSONArray ) {
-				try {
-					// sometimes facebook will wrap its primitive types in JSON markup
-					val = ( (JSONArray) val ).get( 0 );
-					if ( "true".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
-						val = 1l;
-					} else if ( "false".equals( val ) || ( val instanceof Boolean && (Boolean) val ) ) {
-						val = 0l;
-					}
-				}
-				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
-				}
-			}
-			if ( val instanceof String ) {
-				// shouldn't happen, really
-				return Long.parseLong( (String) val );
-			}
-			return (Long) val;
-		}
-		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
-			return null;
-		}
 	}
 
 	/**
@@ -517,4 +322,89 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public void setJaxbContext( JAXBContext context ) {
 		FacebookJaxbRestClient.JAXB_CONTEXT = context;
 	}
+	
+	
+	
+	
+	public static Object jsonToJavaValue(String s) {
+		try {
+			return new JSONArray(s);
+		} catch(JSONException ex) {		
+		}
+		
+		try {
+			return new JSONObject(s);
+		} catch(JSONException ex) {
+		}
+		
+		return stringToValue( s );
+		
+	}
+	
+	
+    /**
+     * COPIED FROM LATEST JSON.ORG SOURCE CODE FOR JSONObject
+     * 
+     * Try to convert a string into a number, boolean, or null. If the string
+     * can't be converted, return the string.
+     * @param s A String.
+     * @return A simple JSON value.
+     */
+    static public Object stringToValue(String s) {
+        if (s.equals("")) {
+            return s;
+        }
+        if (s.equalsIgnoreCase("true")) {
+            return Boolean.TRUE;
+        }
+        if (s.equalsIgnoreCase("false")) {
+            return Boolean.FALSE;
+        }
+        if (s.equalsIgnoreCase("null")) {
+            return JSONObject.NULL;
+        }
+
+        /*
+         * If it might be a number, try converting it. We support the 0- and 0x-
+         * conventions. If a number cannot be produced, then the value will just
+         * be a string. Note that the 0-, 0x-, plus, and implied string
+         * conventions are non-standard. A JSON parser is free to accept
+         * non-JSON forms as long as it accepts all correct JSON forms.
+         */
+
+        char b = s.charAt(0);
+        if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+            if (b == '0') {
+                if (s.length() > 2 &&
+                        (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
+                    try {
+                        return new Integer(Integer.parseInt(s.substring(2),
+                                16));
+                    } catch (Exception e) {
+                        /* Ignore the error */
+                    }
+                } else {
+                    try {
+                        return new Integer(Integer.parseInt(s, 8));
+                    } catch (Exception e) {
+                        /* Ignore the error */
+                    }
+                }
+            }
+            try {
+                return new Integer(s);
+            } catch (Exception e) {
+                try {
+                    return new Long(s);
+                } catch (Exception f) {
+                    try {
+                        return new Double(s);
+                    }  catch (Exception g) {
+                    	/* Ignore the error */
+                    }
+                }
+            }
+        }
+        return s;
+    }
 }
