@@ -325,7 +325,10 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	
 	
 	
-	
+	/**
+	 * Determines the correct datatype for a json string and converts it.
+	 * The json.org library really should have a method to do this.
+	 */
 	public static Object jsonToJavaValue(String s) {
 		try {
 			return new JSONArray(s);
@@ -337,7 +340,14 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		} catch(JSONException ex) {
 		}
 		
-		return stringToValue( s );
+		Object returnMe = stringToValue( s );
+		//If we have a string, strip off the quotes
+		if(returnMe instanceof String) {
+			String strValue = (String)returnMe;
+			returnMe = strValue.trim().substring( 1, strValue.length() - 1 );
+		}
+			
+		return returnMe;
 		
 	}
 	

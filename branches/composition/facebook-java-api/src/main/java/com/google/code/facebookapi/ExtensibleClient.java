@@ -2618,7 +2618,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (Boolean)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
-			return FacebookXmlRestClientBase.extractBoolean( xmlClient.parseCallResult( result ) );
+			return extractBoolean( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2633,7 +2633,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (Integer)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
-			return FacebookXmlRestClientBase.extractInt( xmlClient.parseCallResult( result ) );
+			return extractInt( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2643,12 +2643,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @param result
 	 * @return the Long
 	 */
-	protected Long extractLong( String result ) throws FacebookException {
+	protected long extractLong( String result ) throws FacebookException {
 		if("json".equals( responseFormat )) {
-			return (Long)FacebookJsonRestClientBase.parseCallResult( result );
+			//May be a java.lang.Integer or java.lang.Long returned
+			//We can't cast Integer to Long!
+			Number num = (Number)FacebookJsonRestClientBase.parseCallResult( result );
+			return num.longValue();
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
-			return FacebookXmlRestClientBase.extractLong( xmlClient.parseCallResult( result ) );
+			return extractLong( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2664,7 +2667,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (String)FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(this);
-			return FacebookXmlRestClientBase.extractString( xmlClient.parseCallResult( result ) );
+			return extractString( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -3107,4 +3110,69 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		FacebookJaxbRestClient.JAXB_CONTEXT = context;
 	}
 
+	
+	/**
+	 * Extracts a String from a Document consisting entirely of a String.
+	 * 
+	 * @return the String
+	 */
+	private String extractString( Document d ) {
+		if ( d == null ) {
+			return null;
+		}
+		return d.getFirstChild().getTextContent();
+	}
+	
+	/**
+	 * Extracts a URL from a document that consists of a URL only.
+	 * 
+	 * @param doc
+	 * @return the URL
+	 */
+	private URL extractURL( Document doc ) throws IOException {
+		if ( doc == null ) {
+			return null;
+		}
+		String url = doc.getFirstChild().getTextContent();
+		return ( null == url || "".equals( url ) ) ? null : new URL( url );
+	}
+
+	/**
+	 * Extracts an Integer from a document that consists of an Integer only.
+	 * 
+	 * @param doc
+	 * @return the Integer
+	 */
+	private int extractInt( Document doc ) {
+		if ( doc == null ) {
+			return 0;
+		}
+		return Integer.parseInt( doc.getFirstChild().getTextContent() );
+	}
+
+	/**
+	 * Extracts a Long from a document that consists of a Long only.
+	 * 
+	 * @param doc
+	 * @return the Long
+	 */
+	private Long extractLong( Document doc ) {
+		if ( doc == null ) {
+			return 0l;
+		}
+		return Long.parseLong( doc.getFirstChild().getTextContent() );
+	}
+	
+	/**
+	 * Extracts a Boolean from a result that consists of a Boolean only.
+	 * 
+	 * @param result
+	 * @return the Boolean
+	 */
+	private boolean extractBoolean( Document result ) {
+		if ( result == null ) {
+			return false;
+		}
+		return 1 == extractInt( result );
+	}
 }

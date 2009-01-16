@@ -48,6 +48,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -148,18 +149,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	/**
-	 * Extracts a String from a T consisting entirely of a String.
-	 * 
-	 * @return the String
-	 */
-	public static String extractString( Document d ) {
-		if ( d == null ) {
-			return null;
-		}
-		return d.getFirstChild().getTextContent();
-	}
-
-	/**
 	 * Call this function to retrieve the session information after your user has logged in.
 	 * 
 	 * @param authToken
@@ -178,14 +167,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			Document doc = builder.parse( new InputSource(new StringReader((String)rawResponse)));
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
-			//printDom( doc, method.methodName() + "| " );
-			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
-			if ( errors.getLength() > 0 ) {
-				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
-				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
-				throw new FacebookException( errorCode, message );
-			}
-			return doc;
+			return parseCallResult( doc );
 		}
 		catch ( ParserConfigurationException ex ) {
 			throw new RuntimeException( "Trouble configuring XML Parser", ex );
@@ -197,45 +179,24 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
 		}
 	}
-
+	
 	/**
-	 * Extracts a URL from a document that consists of a URL only.
+	 * Used in the context of optimisation. If we already have an XML snippet,
+	 * it's not sensible to convert it to a string and then convert it back to
+	 * a document.
 	 * 
 	 * @param doc
-	 * @return the URL
+	 * @return
+	 * @throws FacebookException
 	 */
-	static URL extractURL( Document doc ) throws IOException {
-		if ( doc == null ) {
-			return null;
+	Document parseCallResult( Document doc ) throws FacebookException {
+		NodeList errors = doc.getElementsByTagName( ERROR_TAG );
+		if ( errors.getLength() > 0 ) {
+			int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
+			String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
+			throw new FacebookException( errorCode, message );
 		}
-		String url = doc.getFirstChild().getTextContent();
-		return ( null == url || "".equals( url ) ) ? null : new URL( url );
-	}
-
-	/**
-	 * Extracts an Integer from a document that consists of an Integer only.
-	 * 
-	 * @param doc
-	 * @return the Integer
-	 */
-	static int extractInt( Document doc ) {
-		if ( doc == null ) {
-			return 0;
-		}
-		return Integer.parseInt( doc.getFirstChild().getTextContent() );
-	}
-
-	/**
-	 * Extracts a Long from a document that consists of a Long only.
-	 * 
-	 * @param doc
-	 * @return the Long
-	 */
-	static Long extractLong( Document doc ) {
-		if ( doc == null ) {
-			return 0l;
-		}
-		return Long.parseLong( doc.getFirstChild().getTextContent() );
+		return doc;
 	}
 
 	/**
@@ -304,9 +265,12 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
-					String response = extractNodeString( responses.item( count ) );
+					Node responseNode = responses.item( count );
+					Document respDoc = builder.newDocument();
+					responseNode = respDoc.importNode( responseNode, true );
+					respDoc.appendChild( responseNode );
 					try {
-						Document respDoc = parseCallResult( response );
+						respDoc = parseCallResult( respDoc );
 						result.add(  respDoc );
 					}
 					catch ( FacebookException ignored ) {
@@ -325,26 +289,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		}
 
 		return result;
-	}
-
-	/**
-	 * Extracts a Boolean from a result that consists of a Boolean only.
-	 * 
-	 * @param result
-	 * @return the Boolean
-	 */
-	static boolean extractBoolean( Document result ) {
-		if ( result == null ) {
-			return false;
-		}
-		return 1 == extractInt( result );
-	}
-	
-	public static String extractNodeString( Node d ) {
-		if ( d == null ) {
-			return null;
-		}
-		return d.getFirstChild().getTextContent();
 	}
 
 	public String getRawResponse() {
