@@ -15,21 +15,10 @@
   
   <dependencies>
     <dependency>
-      <groupId>net.java.dev.jaxb2-commons</groupId>
-      <artifactId>jaxb-fluent-api</artifactId>
-      <version>2.0.1</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>com.sun.xml</groupId>
-	  <artifactId>jaxb-xjc</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <version>2.0EA3</version>
-    </dependency>
+      <groupId>org.jvnet.jaxb2_commons</groupId> 
+      <artifactId>runtime</artifactId>
+      <version>RELEASE</version>
+    </dependency> 
   </dependencies>
   
   <repositories>
@@ -67,22 +56,23 @@
       <plugin>
 	<groupId>org.jvnet.jaxb2.maven2</groupId>
 	<artifactId>maven-jaxb2-plugin</artifactId>
-	<configuration>
-	  <generatePackage>com.google.code.facebookapi.schema</generatePackage>
-	  <extension>true</extension>
-	  <args>
-            <arg>-XtoString</arg>
-            <arg>-Xequals</arg>
-            <arg>-XhashCode</arg>
-	  </args>
-	  <plugins>
-            <plugin>
-              <groupId>org.jvnet.jaxb2_commons</groupId>
-              <artifactId>basic</artifactId>
-              <version>RELEASE</version>
-            </plugin>
-	  </plugins>
-	</configuration>
+    <configuration>
+      <generatePackage>com.google.code.facebookapi.schema</generatePackage>
+        
+      <extension>true</extension>
+      <args>
+        <arg>-XtoString</arg>
+        <arg>-Xequals</arg>
+        <arg>-XhashCode</arg>
+      </args>
+      <plugins>
+        <plugin>
+          <groupId>org.jvnet.jaxb2_commons</groupId>
+          <artifactId>basic</artifactId>
+          <version>RELEASE</version>
+        </plugin>
+      </plugins>
+    </configuration>
 	<executions>
 	  <execution>
 	    <goals>
