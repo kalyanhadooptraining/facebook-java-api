@@ -1293,6 +1293,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T listing the marketplace sub-categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
 	 */
+	@Deprecated
 	@FacebookReturnType(JAXB=MarketplaceGetSubCategoriesResponse.class, JSON=JSONArray.class)
 	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
 
@@ -1306,6 +1307,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T of marketplace listings
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
 	 */
+	@Deprecated
 	@FacebookReturnType(JAXB=MarketplaceGetListingsResponse.class, JSON=JSONArray.class)
 	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
 
