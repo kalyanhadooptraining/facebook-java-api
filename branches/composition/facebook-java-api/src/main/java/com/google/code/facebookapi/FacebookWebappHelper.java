@@ -47,6 +47,7 @@ public class FacebookWebappHelper<T> {
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
 	/** @deprecated please use different constructor, or factory methods */
+	@SuppressWarnings("unchecked")
 	@Deprecated
 	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
 		this( request, response, apiKey, secret, (IFacebookRestClient<T>) new FacebookXmlRestClient( apiKey, secret ) );

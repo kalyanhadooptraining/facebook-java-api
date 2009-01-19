@@ -60,10 +60,6 @@ public class MarketListing {
 
 	protected JSONObject attribs;
 
-	private MarketListing() {
-		// empty constructor not allowed
-	}
-
 	/**
 	 * Constructor.
 	 * 

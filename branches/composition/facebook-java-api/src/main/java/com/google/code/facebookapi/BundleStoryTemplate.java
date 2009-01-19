@@ -7,6 +7,7 @@ import org.json.JSONObject;
 /**
  * A simple data structure for storing a story-template used in the feed_registerTemplateBundle API call.
  */
+@SuppressWarnings("serial")
 public class BundleStoryTemplate implements Serializable {
 
 	private String body;

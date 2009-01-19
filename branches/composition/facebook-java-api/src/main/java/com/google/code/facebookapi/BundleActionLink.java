@@ -9,6 +9,7 @@ import org.json.JSONObject;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Action_Links}
  */
+@SuppressWarnings("serial")
 public class BundleActionLink implements Serializable {
 
 	private String text;

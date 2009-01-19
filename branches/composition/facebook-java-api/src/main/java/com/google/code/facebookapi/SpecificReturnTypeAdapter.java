@@ -353,6 +353,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().marketplace_createListing( showOnProfile, attrs );
 	}
 
+	@Deprecated
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().marketplace_createListing( listingId, showOnProfile, attributes );
@@ -389,6 +390,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().marketplace_editListing( listingId, showOnProfile, attrs );
 	}
 
+	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().marketplace_editListing( listingId, showOnProfile, attrs );

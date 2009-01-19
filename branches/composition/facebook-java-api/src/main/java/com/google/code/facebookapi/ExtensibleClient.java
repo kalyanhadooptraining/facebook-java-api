@@ -55,6 +55,7 @@ import org.w3c.dom.NodeList;
  * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/> For continually updated
  * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
+@SuppressWarnings("unchecked")
 public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
@@ -558,7 +559,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 
 		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
-		boolean doEncode = true;
 		try {
 			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return rawResponse;
@@ -1063,6 +1063,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return a T listing the marketplace sub-categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
 	 */
+	@Deprecated
 	public Object marketplace_getSubCategories( CharSequence category ) throws FacebookException {
 		return callMethod( FacebookMethod.MARKETPLACE_GET_SUBCATEGORIES, newPair( "category", category ) );
 	}
@@ -1077,6 +1078,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return a T of marketplace listings
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
 	 */
+	@Deprecated
 	public Object marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
 		if ( null != listingIds && !listingIds.isEmpty() ) {
@@ -1118,6 +1120,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return a T listing the marketplace categories
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
 	 */
+	@Deprecated
 	public Object marketplace_getCategoriesObject() throws FacebookException {
 		return callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
 	}
@@ -1188,6 +1191,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 
+	@Deprecated
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException {
 		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", "0" ), newPair(
 				"listing_attrs", attributes ) );
@@ -1206,6 +1210,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return marketplace_removeListing( listingId, status.getName() );
 	}
 
+	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException {
 		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, newPair( "show_on_profile", showOnProfile ? "1" : "0" ), newPair( "listing_id", listingId ),
 				newPair( "listing_attrs", attrs.getAttribs() ) );
@@ -3120,20 +3125,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return null;
 		}
 		return d.getFirstChild().getTextContent();
-	}
-	
-	/**
-	 * Extracts a URL from a document that consists of a URL only.
-	 * 
-	 * @param doc
-	 * @return the URL
-	 */
-	private URL extractURL( Document doc ) throws IOException {
-		if ( doc == null ) {
-			return null;
-		}
-		String url = doc.getFirstChild().getTextContent();
-		return ( null == url || "".equals( url ) ) ? null : new URL( url );
 	}
 
 	/**
