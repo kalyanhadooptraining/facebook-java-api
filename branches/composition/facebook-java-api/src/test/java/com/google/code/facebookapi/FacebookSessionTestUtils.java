@@ -46,6 +46,11 @@ public class FacebookSessionTestUtils {
 	}
 
 	@SuppressWarnings("unchecked")
+	public static <T extends IFacebookRestClient> T getSessionlessValidClient( Class<T> clientReturnType ) {
+		return getSessionlessIFacebookRestClient( clientReturnType );
+	}
+	
+	@SuppressWarnings("unchecked")
 	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType ) throws IOException, FacebookException {
 		final String SESSION_PREFERENCE = "/com/google/code/facebookapi/test/sessionID";
 
@@ -85,5 +90,16 @@ public class FacebookSessionTestUtils {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	private static <T extends IFacebookRestClient> T getSessionlessIFacebookRestClient( Class<T> clientReturnType ) {
+		try {
+			JUnitProperties properties = new JUnitProperties();
+			Constructor<T> clientConstructor = clientReturnType.getConstructor( String.class, String.class );
+			return clientConstructor.newInstance( properties.getAPIKEY(), properties.getSECRET() );
+		}
+		catch ( Exception ex ) {
+			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
+		}
+	}
 }
