@@ -2988,6 +2988,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Object photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
+		if( fileStream == null ) {
+			throw new FacebookException(ErrorCode.GEN_INVALID_PARAMETER, "fileStream specified was null. fileName was specified as " + fileName);
+		}
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
 		addParamIfNotBlankZero( "aid", albumId, params );
 		addParamIfNotBlank( "caption", caption, params );
