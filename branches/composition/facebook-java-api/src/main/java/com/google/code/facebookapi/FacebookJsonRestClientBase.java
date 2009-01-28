@@ -344,7 +344,9 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		//If we have a string, strip off the quotes
 		if(returnMe instanceof String) {
 			String strValue = (String)returnMe;
-			returnMe = strValue.trim().substring( 1, strValue.length() - 1 );
+			if(strValue.length() > 1) {
+				returnMe = strValue.trim().substring( 1, strValue.length() - 1 );
+			}
 		}
 			
 		return returnMe;
