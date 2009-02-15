@@ -30,8 +30,9 @@ public interface IFacebookRestClient<T> {
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
 	public String getApiKey();
+
 	public String getSecret();
-	
+
 	/**
 	 * Check to see if the client is running in desktop-app mode
 	 * 
@@ -1141,122 +1142,6 @@ public interface IFacebookRestClient<T> {
 	public String getCacheSessionSecret();
 
 	/**
-	 * Create a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param showOnProfile
-	 *            whether
-	 * @return the id of the created listing
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
-
-	/**
-	 * Modify a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @return the id of the edited listing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
-	 */
-	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	public boolean marketplace_removeListing( Long listingId ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @param userId
-	 *            the id of the user removing the listing
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @param status
-	 *            MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListingStatus instead.
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException;
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 */
-	public List<String> marketplace_getCategories() throws FacebookException;
-
-	/**
-	 * Get the subcategories available for a category.
-	 * 
-	 * @param category
-	 *            a category, e.g. "HOUSING"
-	 * @return a T listing the marketplace sub-categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
-	 */
-	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
-
-	/**
-	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
-	 * 
-	 * @param listingIds
-	 *            listing identifiers (required if uids is null/empty)
-	 * @param userIds
-	 *            posting user identifiers (required if listingIds is null/empty)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
-	 */
-	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
-
-	/**
-	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
-	 * 
-	 * @param category
-	 *            the category of listings desired (optional except if subcategory is provided)
-	 * @param subCategory
-	 *            the subcategory of listings desired (optional)
-	 * @param query
-	 *            a query string (optional)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the alternate version instead.
-	 */
-	@Deprecated
-	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
-
-	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
 	 * 
 	 * @param albumId
@@ -1279,17 +1164,6 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	public T photos_getByAlbum( Long albumId ) throws FacebookException;
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 * 
-	 * @deprecated use the version that returns a List<String> instead.
-	 */
-	@Deprecated
-	public T marketplace_getCategoriesObject() throws FacebookException;
 
 	/**
 	 * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
@@ -1579,199 +1453,6 @@ public interface IFacebookRestClient<T> {
 	public boolean feed_publishTemplatizedAction( Integer actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
-	 * @param attributes
-	 *            JSON-encoded attributes for this listing.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing.
-	 * 
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
-	 * @param attributes
-	 *            JSON-encoded attributes for this listing.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing.
-	 * 
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
-
-	/**
-	 * Return a list of all valid Marketplace subcategories.
-	 * 
-	 * @return a list of marketplace subcategories allowed by Facebook.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<String> marketplace_getSubCategories() throws FacebookException;
-
-	/**
-	 * Retrieve listings from the marketplace. The listings can be filtered by listing-id or user-id (or both).
-	 * 
-	 * @param listingIds
-	 *            the ids of listings to filter by, only listings matching the specified ids will be returned.
-	 * @param uids
-	 *            the ids of users to filter by, only listings submitted by those users will be returned.
-	 * 
-	 * @return A list of marketplace listings that meet the specified filter criteria.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException;
-
-	/**
-	 * Search the marketplace listings by category, subcategory, and keyword.
-	 * 
-	 * @param category
-	 *            the category to search in, optional (unless subcategory is specified).
-	 * @param subcategory
-	 *            the subcategory to search in, optional.
-	 * @param searchTerm
-	 *            the keyword to search for, optional.
-	 * 
-	 * @return a list of marketplace entries that match the specified search parameters.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException;
-
-	/**
-	 * Remove a listing from the marketplace by id.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to remove.
-	 * @param status
-	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
-	 * 
-	 * @return true if the listing was successfully removed false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException;
-
-	/**
-	 * Remove a listing from the marketplace by id.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to remove.
-	 * @param status
-	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
-	 * @param userId
-	 *            the id of the user removing the listing.
-	 * 
-	 * @return true if the listing was successfully removed false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException;
-
-	/**
-	 * Modify a marketplace listing
-	 * 
-	 * @param listingId
-	 *            identifies the listing to be modified
-	 * @param showOnProfile
-	 *            whether the listing can be shown on the user's profile
-	 * @param attrs
-	 *            the properties of the listing
-	 * @return the id of the edited listing
-	 * @see MarketplaceListing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 */
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
@@ -3385,5 +3066,344 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.getUnconnectedFriendsCount
 	 */
 	public int connect_getUnconnectedFriendsCount() throws FacebookException;
+
+	// ========== MARKET ==========
+
+	/**
+	 * Create a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param showOnProfile
+	 *            whether
+	 * @return the id of the created listing
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
+
+	/**
+	 * Modify a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @return the id of the edited listing
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
+	 */
+	@Deprecated
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @param userId
+	 *            the id of the user removing the listing
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @param status
+	 *            MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListingStatus instead.
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException;
+
+	/**
+	 * Get the categories available in marketplace.
+	 * 
+	 * @return a T listing the marketplace categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
+	 */
+	@Deprecated
+	public List<String> marketplace_getCategories() throws FacebookException;
+
+	/**
+	 * Get the subcategories available for a category.
+	 * 
+	 * @param category
+	 *            a category, e.g. "HOUSING"
+	 * @return a T listing the marketplace sub-categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
+	 */
+	@Deprecated
+	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
+
+	/**
+	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
+	 * 
+	 * @param listingIds
+	 *            listing identifiers (required if uids is null/empty)
+	 * @param userIds
+	 *            posting user identifiers (required if listingIds is null/empty)
+	 * @return a T of marketplace listings
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
+	 */
+	@Deprecated
+	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
+
+	/**
+	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
+	 * 
+	 * @param category
+	 *            the category of listings desired (optional except if subcategory is provided)
+	 * @param subCategory
+	 *            the subcategory of listings desired (optional)
+	 * @param query
+	 *            a query string (optional)
+	 * @return a T of marketplace listings
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the alternate version instead.
+	 */
+	@Deprecated
+	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
+
+	/**
+	 * Get the categories available in marketplace.
+	 * 
+	 * @return a T listing the marketplace categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
+	 * 
+	 * @deprecated use the version that returns a List<String> instead.
+	 */
+	@Deprecated
+	public T marketplace_getCategoriesObject() throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+	 * @param attributes
+	 *            JSON-encoded attributes for this listing.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing.
+	 * 
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+	 * @param attributes
+	 *            JSON-encoded attributes for this listing.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing.
+	 * 
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
+
+	/**
+	 * Return a list of all valid Marketplace subcategories.
+	 * 
+	 * @return a list of marketplace subcategories allowed by Facebook.
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public List<String> marketplace_getSubCategories() throws FacebookException;
+
+	/**
+	 * Retrieve listings from the marketplace. The listings can be filtered by listing-id or user-id (or both).
+	 * 
+	 * @param listingIds
+	 *            the ids of listings to filter by, only listings matching the specified ids will be returned.
+	 * @param uids
+	 *            the ids of users to filter by, only listings submitted by those users will be returned.
+	 * 
+	 * @return A list of marketplace listings that meet the specified filter criteria.
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException;
+
+	/**
+	 * Search the marketplace listings by category, subcategory, and keyword.
+	 * 
+	 * @param category
+	 *            the category to search in, optional (unless subcategory is specified).
+	 * @param subcategory
+	 *            the subcategory to search in, optional.
+	 * @param searchTerm
+	 *            the keyword to search for, optional.
+	 * 
+	 * @return a list of marketplace entries that match the specified search parameters.
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException;
+
+	/**
+	 * Remove a listing from the marketplace by id.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to remove.
+	 * @param status
+	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+	 * 
+	 * @return true if the listing was successfully removed false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException;
+
+	/**
+	 * Remove a listing from the marketplace by id.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to remove.
+	 * @param status
+	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+	 * @param userId
+	 *            the id of the user removing the listing.
+	 * 
+	 * @return true if the listing was successfully removed false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException;
+
+	/**
+	 * Modify a marketplace listing
+	 * 
+	 * @param listingId
+	 *            identifies the listing to be modified
+	 * @param showOnProfile
+	 *            whether the listing can be shown on the user's profile
+	 * @param attrs
+	 *            the properties of the listing
+	 * @return the id of the edited listing
+	 * @see MarketplaceListing
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 */
+	@Deprecated
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
 
 }

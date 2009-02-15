@@ -431,11 +431,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		return resp.getListing();
 	}
 
+	@Deprecated
 	public List<String> marketplace_getSubCategories() throws FacebookException {
 		MarketplaceGetSubCategoriesResponse resp = (MarketplaceGetSubCategoriesResponse) marketplace_getSubCategories( null );
 		return resp.getMarketplaceSubcategory();
 	}
 
+	@Deprecated
 	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException {
 		MarketplaceSearchResponse resp = (MarketplaceSearchResponse) marketplace_search( category.getName(), subcategory.getName(), searchTerm );
 		return resp.getListing();

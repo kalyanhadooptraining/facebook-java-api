@@ -127,13 +127,21 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction"),
 	FEED_DEACTIVATE_TEMPLATE_BUNDLE("facebook.feed.deactivateTemplateBundleByID"),
 	// Marketplace
+	@Deprecated
 	MARKET_CREATE_LISTING("facebook.marketplace.createListing"),
+	@Deprecated
 	MARKET_CREATE_LISTING_NOSESSION("facebook.marketplace.createListing"),
+	@Deprecated
 	MARKET_GET_CATEGORIES("facebook.marketplace.getCategories"),
+	@Deprecated
 	MARKET_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories"),
+	@Deprecated
 	MARKET_GET_LISTINGS("facebook.marketplace.getListings"),
+	@Deprecated
 	MARKET_REMOVE_LISTING("facebook.marketplace.removeListing"),
+	@Deprecated
 	MARKET_REMOVE_LISTING_NOSESSION("facebook.marketplace.removeListing"),
+	@Deprecated
 	MARKET_SEARCH("facebook.marketplace.search"),
 	/**
 	 * @deprecated provided for legacy support only. Please use MARKET_GET_CATEGORIES instead.
