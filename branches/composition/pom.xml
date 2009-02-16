@@ -3,7 +3,7 @@
   <groupId>com.google.code.facebookapi</groupId>
   <artifactId>parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.5-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Facebook Java Library - Parent Pom</name>
   <description>Facebook Java Library - Parent Pom</description>
   <url>http://code.google.com/p/facebook-java-api/</url>
