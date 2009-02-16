@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -915,17 +914,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return users_setStatus( newStatus, clear, false );
 	}
 
-	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
-	 * 
-	 * @param pageIds
-	 *            the page IDs
-	 * @param fields
-	 *            a set of page profile fields
-	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
-	 */
 	public T pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException {
 		if ( pageIds == null || pageIds.isEmpty() ) {
 			throw new IllegalArgumentException( "pageIds cannot be empty or null" );
@@ -937,17 +925,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( method, newPair( "page_ids", delimit( pageIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
-	 * 
-	 * @param pageIds
-	 *            the page IDs
-	 * @param fields
-	 *            a set of page profile fields
-	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
-	 */
 	public T pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException {
 		if ( pageIds == null || pageIds.isEmpty() ) {
 			throw new IllegalArgumentException( "pageIds cannot be empty or null" );
@@ -959,16 +936,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( method, newPair( "page_ids", delimit( pageIds ) ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	/**
-	 * Retrieves the requested profile fields for the Facebook Pages of the user with the given <code>userId</code>.
-	 * 
-	 * @param userId
-	 *            the ID of a user about whose pages to fetch info (defaulted to the logged-in user)
-	 * @param fields
-	 *            a set of PageProfileFields
-	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see http://wiki.developers.facebook.com/index.php/Pages.getInfo
-	 */
 	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
@@ -982,16 +949,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "uid", userId ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	/**
-	 * Retrieves the requested profile fields for the Facebook Pages of the user with the given <code>userId</code>.
-	 * 
-	 * @param userId
-	 *            the ID of a user about whose pages to fetch info (defaulted to the logged-in user)
-	 * @param fields
-	 *            a set of page profile fields
-	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
-	 * @see http://wiki.developers.facebook.com/index.php/Pages.getInfo
-	 */
 	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
@@ -1005,68 +962,22 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.PAGES_GET_INFO, newPair( "uid", userId ), newPair( "fields", delimit( fields ) ) );
 	}
 
-	/**
-	 * Checks whether a page has added the application
-	 * 
-	 * @param pageId
-	 *            the ID of the page
-	 * @return true if the page has added the application
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAppAdded"> Developers Wiki: Pages.isAppAdded</a>
-	 */
 	public boolean pages_isAppAdded( Long pageId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_APP_ADDED, newPair( "page_id", pageId ) ) );
 	}
 
-	/**
-	 * Checks whether a user is a fan of the page with the given <code>pageId</code>.
-	 * 
-	 * @param pageId
-	 *            the ID of the page
-	 * @param userId
-	 *            the ID of the user (defaults to the logged-in user if null)
-	 * @return true if the user is a fan of the page
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
-	 */
 	public boolean pages_isFan( Long pageId, Long userId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_FAN, newPair( "page_id", pageId ), newPair( "uid", userId ) ) );
 	}
 
-	/**
-	 * Checks whether the logged-in user is a fan of the page with the given <code>pageId</code>.
-	 * 
-	 * @param pageId
-	 *            the ID of the page
-	 * @return true if the logged-in user is a fan of the page
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isFan"> Developers Wiki: Pages.isFan</a>
-	 */
 	public boolean pages_isFan( Long pageId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_FAN, newPair( "page_id", pageId ) ) );
 	}
 
-	/**
-	 * Checks whether the logged-in user for this session is an admin of the page with the given <code>pageId</code>.
-	 * 
-	 * @param pageId
-	 *            the ID of the page
-	 * @return true if the logged-in user is an admin
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin"> Developers Wiki: Pages.isAdmin</a>
-	 */
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.PAGES_IS_ADMIN, newPair( "page_id", pageId ) ) );
 	}
 
-	/**
-	 * Associates a "<code>handle</code>" with FBML markup so that the handle can be used within the <a
-	 * href="http://wiki.developers.facebook.com/index.php/Fb:ref">fb:ref</a> FBML tag. A handle is unique within an application and allows an application to publish
-	 * identical FBML to many user profiles and do subsequent updates without having to republish FBML for each user.
-	 * 
-	 * @param handle -
-	 *            a string, unique within the application, that
-	 * @param fbmlMarkup -
-	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
-	 * @return a boolean indicating whether the FBML was successfully set
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle"> Developers Wiki: Fbml.setRefHandle</a>
-	 */
 	public boolean fbml_setRefHandle( String handle, String fbmlMarkup ) throws FacebookException {
 		if ( _isDesktop ) {
 			// this method cannot be called from a desktop app
@@ -1351,153 +1262,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractLong( callMethod( FacebookMethod.DATA_GET_ASSOCIATED_OBJECT_COUNT, newPair( "name", associationName ), newPair( "obj_id", objectId ) ) );
 	}
 
-	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException {
-		if ( _isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
-		}
-
-		if ( ( properties == null ) || ( properties.isEmpty() ) ) {
-			// nothing to do
-			return true;
-		}
-
-		// Facebook is nonspecific about how they want the parameters encoded in JSON, so we make two attempts
-		JSONObject encoding1 = new JSONObject();
-		JSONArray encoding2 = new JSONArray();
-		for ( ApplicationProperty property : properties.keySet() ) {
-			JSONObject temp = new JSONObject();
-			if ( property.getType().equals( "string" ) ) {
-				// simple case, just treat it as a literal string
-				try {
-					encoding1.put( property.getName(), properties.get( property ) );
-					temp.put( property.getName(), properties.get( property ) );
-					encoding2.put( temp );
-				}
-				catch ( JSONException ex ) {
-					throw runtimeException( ex );
-				}
-			} else {
-				// we need to parse a boolean value
-				String val = properties.get( property );
-				if ( ( val == null ) || ( val.equals( "" ) ) || ( val.equalsIgnoreCase( "false" ) ) || ( val.equals( "0" ) ) ) {
-					// false
-					val = "0";
-				} else {
-					// true
-					val = "1";
-				}
-				try {
-					encoding1.put( property.getName(), val );
-					temp.put( property.getName(), val );
-					encoding2.put( temp );
-				}
-				catch ( JSONException ex ) {
-					throw runtimeException( ex );
-				}
-			}
-		}
-
-		// now we've built our JSON-encoded parameter, so attempt to set the properties
-		try {
-			// first assume that Facebook is sensible enough to be able to undestand an associative array
-			T d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding1 ) );
-			return extractBoolean( d );
-		}
-		catch ( FacebookException e ) {
-			// if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
-			T d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding2 ) );
-			return extractBoolean( d );
-		}
-	}
-
-	/**
-	 * @deprecated use admin_getAppPropertiesMap() instead
-	 */
-	@Deprecated
-	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException {
-		String json = admin_getAppPropertiesAsString( properties );
-		if ( json == null ) {
-			return null;
-		}
-		try {
-			if ( json.matches( "\\{.*\\}" ) ) {
-				return new JSONObject( json );
-			} else {
-				JSONArray temp = new JSONArray( json );
-				JSONObject result = new JSONObject();
-				for ( int count = 0; count < temp.length(); count++ ) {
-					JSONObject obj = (JSONObject) temp.get( count );
-					Iterator it = obj.keys();
-					while ( it.hasNext() ) {
-						String next = (String) it.next();
-						result.put( next, obj.get( next ) );
-					}
-				}
-				return result;
-			}
-		}
-		catch ( Exception e ) {
-			// response failed to parse
-			throw new FacebookException( ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json );
-		}
-	}
-
-	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException {
-		Map<ApplicationProperty,String> result = new LinkedHashMap<ApplicationProperty,String>();
-		String json = admin_getAppPropertiesAsString( properties );
-		if ( json == null ) {
-			return null;
-		}
-		if ( json.matches( "\\{.*\\}" ) ) {
-			json = json.substring( 1, json.lastIndexOf( "}" ) );
-		} else {
-			json = json.substring( 1, json.lastIndexOf( "]" ) );
-		}
-		String[] parts = json.split( "\\," );
-		for ( String part : parts ) {
-			parseFragment( part, result );
-		}
-
-		return result;
-	}
-
-	static Map<ApplicationProperty,String> parseProperties( String json ) {
-		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
-		if ( json == null ) {
-			return null;
-		}
-		if ( json.matches( "\\{.*\\}" ) ) {
-			json = json.substring( 1, json.lastIndexOf( "}" ) );
-		} else {
-			json = json.substring( 1, json.lastIndexOf( "]" ) );
-		}
-		String[] parts = json.split( "\\," );
-		for ( String part : parts ) {
-			parseFragment( part, result );
-		}
-		return result;
-	}
-
-	private static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
-		if ( fragment.startsWith( "{" ) ) {
-			fragment = fragment.substring( 1, fragment.lastIndexOf( "}" ) );
-		}
-		String keyString = fragment.substring( 1 );
-		keyString = keyString.substring( 0, keyString.indexOf( '"' ) );
-		ApplicationProperty key = ApplicationProperty.getPropertyForString( keyString );
-		String value = fragment.substring( fragment.indexOf( ":" ) + 1 ).replaceAll( "\\\\", "" ); // strip escape characters
-		if ( key.getType().equals( "string" ) ) {
-			result.put( key, value.substring( 1, value.lastIndexOf( '"' ) ) );
-		} else {
-			if ( value.equals( "1" ) ) {
-				result.put( key, "true" );
-			} else {
-				result.put( key, "false" );
-			}
-		}
-	}
-
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException {
 		return feed_publishTemplatizedAction( titleTemplate, null );
 	}
@@ -1575,40 +1339,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return callMethod( FacebookMethod.FRIENDS_GET_LISTS );
 	}
 
-	/**
-	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
-	 * not required to use this method.
-	 * 
-	 * @param properties
-	 *            an ApplicationPropertySet that is translated into a single JSON String.
-	 * @return a boolean indicating whether the properties were successfully set
-	 */
-	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException {
-		if ( _isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
-		}
-		if ( null == properties || properties.isEmpty() ) {
-			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
-		}
-		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", properties.toJsonString() ) ) );
-	}
-
-	/**
-	 * Gets property values previously set for an application on either the Facebook Developer application or the with the <code>admin.setAppProperties</code> call. A
-	 * session is not required to use this method.
-	 * 
-	 * @param properties
-	 *            an enumeration of the properties to get
-	 * @return an ApplicationPropertySet
-	 * @see ApplicationProperty
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties"> Developers Wiki: Admin.getAppProperties</a>
-	 */
-	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException {
-		String propJson = admin_getAppPropertiesAsString( properties );
-		return new ApplicationPropertySet( propJson );
-	}
-
 	public void beginBatch() {
 		batchMode = true;
 		queries = new ArrayList<BatchQuery>();
@@ -1658,48 +1388,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException {
 		return application_getPublicInfo( null, null, applicationCanvas );
-	}
-
-	public int admin_getAllocation( String allocationType ) throws FacebookException {
-		return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, newPair( "integration_point_name", allocationType ) ) );
-	}
-
-	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException {
-		return admin_getAllocation( allocationType.getName() );
-	}
-
-	@Deprecated
-	public int admin_getNotificationAllocation() throws FacebookException {
-		return admin_getAllocation( "notifications_per_day" );
-	}
-
-	@Deprecated
-	public int admin_getRequestAllocation() throws FacebookException {
-		return admin_getAllocation( "requests_per_day" );
-	}
-
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException {
-		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
-	}
-
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException {
-		int size = 2 + ( ( metrics != null ) ? metrics.size() : 0 );
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( size );
-		if ( metrics != null ) {
-			metrics.remove( Metric.ACTIVE_USERS );
-			if ( !metrics.isEmpty() ) {
-				JSONArray metricsJson = new JSONArray();
-				for ( Metric metric : metrics ) {
-					metricsJson.put( metric.getName() );
-				}
-				params.add( newPair( "metrics", metricsJson ) );
-			}
-		}
-		params.add( newPair( "start_date", ( start / 1000 ) ) );
-		params.add( newPair( "end_date", ( end / 1000 ) ) );
-		return callMethod( FacebookMethod.ADMIN_GET_DAILY_METRICS, params );
 	}
 
 	public T permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException {
@@ -2009,25 +1697,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, newPair( "recipient", recipient ), newPair( "event_name", eventName ), newPair( "message",
 				message ) ) );
-	}
-
-	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
-		return admin_getMetrics( metrics, start.getTime(), end.getTime(), period );
-	}
-
-	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		if ( metrics != null && !metrics.isEmpty() ) {
-			JSONArray metricsJson = new JSONArray();
-			for ( Metric metric : metrics ) {
-				metricsJson.put( metric.getName() );
-			}
-			addParam( "metrics", metricsJson, params );
-		}
-		addParam( "start_time", start / 1000, params );
-		addParam( "end_time", end / 1000, params );
-		addParam( "period", period, params );
-		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
 
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException {
@@ -2830,6 +2499,194 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 		return extractBoolean( callMethod( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, newPair( "listing_id", listingId ), newPair( "status", status.getName() ),
 				newPair( "uid", userId ) ) );
+	}
+
+
+
+	// ========== ADMIN ==========
+
+	public int admin_getAllocation( String allocationType ) throws FacebookException {
+		return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, newPair( "integration_point_name", allocationType ) ) );
+	}
+
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException {
+		return admin_getAllocation( allocationType.getName() );
+	}
+
+	public JSONObject admin_getAppProperties( Iterable<ApplicationProperty> properties ) throws FacebookException {
+		String json = admin_getAppPropertiesAsString( properties );
+		if ( json == null ) {
+			return null;
+		}
+		try {
+			if ( json.matches( "\\{.*\\}" ) ) {
+				return new JSONObject( json );
+			} else {
+				JSONArray temp = new JSONArray( json );
+				JSONObject result = new JSONObject();
+				for ( int count = 0; count < temp.length(); count++ ) {
+					JSONObject obj = (JSONObject) temp.get( count );
+					Iterator it = obj.keys();
+					while ( it.hasNext() ) {
+						String next = (String) it.next();
+						result.put( next, obj.get( next ) );
+					}
+				}
+				return result;
+			}
+		}
+		catch ( Exception e ) {
+			throw new FacebookException( ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json );
+		}
+	}
+
+	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Iterable<ApplicationProperty> properties ) throws FacebookException {
+		ApplicationPropertySet set = admin_getAppPropertiesAsSet( properties );
+		Map<ApplicationProperty,String> out = new TreeMap<ApplicationProperty,String>();
+		for ( ApplicationProperty prop : properties ) {
+			if ( prop.isBooleanProperty() ) {
+				Boolean value = set.getBoolProperty( prop );
+				if ( value != null ) {
+					out.put( prop, String.valueOf( value ) );
+				}
+			}
+			if ( prop.isStringProperty() ) {
+				CharSequence value = set.getStringProperty( prop );
+				if ( value != null ) {
+					out.put( prop, String.valueOf( value ) );
+				}
+			}
+		}
+		return out;
+	}
+
+	public ApplicationPropertySet admin_getAppPropertiesAsSet( Iterable<ApplicationProperty> properties ) throws FacebookException {
+		String propJson = admin_getAppPropertiesAsString( properties );
+		return new ApplicationPropertySet( propJson );
+	}
+
+	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		if ( metrics != null && !metrics.isEmpty() ) {
+			JSONArray metricsJson = new JSONArray();
+			for ( Metric metric : metrics ) {
+				metricsJson.put( metric.getName() );
+			}
+			addParam( "metrics", metricsJson, params );
+		}
+		addParamSecondsIfNotBlank( "start_time", start, params );
+		addParamSecondsIfNotBlank( "end_time", end, params );
+		addParam( "period", period, params );
+		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
+	}
+
+	@Deprecated
+	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException {
+		return admin_getMetrics( metrics, new Date( start ), new Date( end ), period );
+	}
+
+	public String admin_getRestrictionInfo() throws FacebookException {
+		return extractString( callMethod( FacebookMethod.ADMIN_GET_RESTRICTION_INFO ) );
+	}
+
+	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException {
+		if ( ( properties == null ) || ( properties.isEmpty() ) ) {
+			// nothing to do
+			return true;
+		}
+
+		// Facebook is nonspecific about how they want the parameters encoded in JSON, so we make two attempts
+		JSONObject encoding1 = new JSONObject();
+		JSONArray encoding2 = new JSONArray();
+		for ( ApplicationProperty property : properties.keySet() ) {
+			JSONObject temp = new JSONObject();
+			if ( property.getType().equals( "string" ) ) {
+				// simple case, just treat it as a literal string
+				try {
+					encoding1.put( property.getName(), properties.get( property ) );
+					temp.put( property.getName(), properties.get( property ) );
+					encoding2.put( temp );
+				}
+				catch ( JSONException ex ) {
+					throw runtimeException( ex );
+				}
+			} else {
+				// we need to parse a boolean value
+				String val = properties.get( property );
+				if ( ( val == null ) || ( val.equals( "" ) ) || ( val.equalsIgnoreCase( "false" ) ) || ( val.equals( "0" ) ) ) {
+					// false
+					val = "0";
+				} else {
+					// true
+					val = "1";
+				}
+				try {
+					encoding1.put( property.getName(), val );
+					temp.put( property.getName(), val );
+					encoding2.put( temp );
+				}
+				catch ( JSONException ex ) {
+					throw runtimeException( ex );
+				}
+			}
+		}
+
+		// now we've built our JSON-encoded parameter, so attempt to set the properties
+		try {
+			// first assume that Facebook is sensible enough to be able to undestand an associative array
+			T d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding1 ) );
+			return extractBoolean( d );
+		}
+		catch ( FacebookException e ) {
+			// if that didn't work, try the more convoluted encoding (which matches what they send back in response to admin_getAppProperties calls)
+			T d = callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", encoding2 ) );
+			return extractBoolean( d );
+		}
+	}
+
+	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException {
+		if ( null == properties || properties.isEmpty() ) {
+			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
+		}
+		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, newPair( "properties", properties.toJsonString() ) ) );
+	}
+
+	public boolean admin_setRestrictionInfo( String restrictionStr ) throws FacebookException {
+		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_RESTRICTION_INFO, newPair( "restriction_str", restrictionStr ) ) );
+	}
+
+	@Deprecated
+	public int admin_getNotificationAllocation() throws FacebookException {
+		return admin_getAllocation( "notifications_per_day" );
+	}
+
+	@Deprecated
+	public int admin_getRequestAllocation() throws FacebookException {
+		return admin_getAllocation( "requests_per_day" );
+	}
+
+	@Deprecated
+	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException {
+		return admin_getDailyMetrics( metrics, start.getTime(), end.getTime() );
+	}
+
+	@Deprecated
+	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException {
+		int size = 2 + ( ( metrics != null ) ? metrics.size() : 0 );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( size );
+		if ( metrics != null ) {
+			metrics.remove( Metric.ACTIVE_USERS );
+			if ( !metrics.isEmpty() ) {
+				JSONArray metricsJson = new JSONArray();
+				for ( Metric metric : metrics ) {
+					metricsJson.put( metric.getName() );
+				}
+				params.add( newPair( "metrics", metricsJson ) );
+			}
+		}
+		params.add( newPair( "start_date", ( start / 1000 ) ) );
+		params.add( newPair( "end_date", ( end / 1000 ) ) );
+		return callMethod( FacebookMethod.ADMIN_GET_DAILY_METRICS, params );
 	}
 
 }

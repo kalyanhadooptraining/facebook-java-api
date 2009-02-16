@@ -1729,68 +1729,6 @@ public interface IFacebookRestClient<T> {
 	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException;
 
 	/**
-	 * Set application properties. The properties are used by Facebook to describe the configuration of your application.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            a Map containing the properties to set.
-	 * 
-	 * @return true if the properties are set successfully false otherwise
-	 * 
-	 * @throws FacebookException
-	 */
-	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException;
-
-	/**
-	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            a collection indicating the properties you are interested in retrieving.
-	 * 
-	 * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
-	 * 
-	 * @throws FacebookException
-	 * 
-	 * @deprecated use admin_getAppPropertiesMap() instead
-	 */
-	@Deprecated
-	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            a collection indicating the properties you are interested in retrieving.
-	 * 
-	 * @return a mapping of ApplicationProperty's to the corresponding values that are set for those properties. Properties are represented as strings, so properties that
-	 *         are of boolean type will have a value of "true" when true, and "false" when false. The properties returned will never be null, an unset property is
-	 *         represented by an empty string.
-	 * 
-	 * @throws FacebookException
-	 */
-	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            a collection indicating the properties you are interested in retrieving.
-	 * 
-	 * @return a JSON-encoded string containing the properties. It is your responsibility to parse the string. Details can be found at
-	 *         http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * 
-	 * @throws FacebookException
-	 */
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
 	 * Get all cookies for the currently logged-in user.
 	 * 
 	 * @return all cookies for the current user.
@@ -2141,33 +2079,6 @@ public interface IFacebookRestClient<T> {
 	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException;
 
 	/**
-	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
-	 * not required to use this method.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            an ApplicationPropertySet that is translated into a single JSON String.
-	 * @return a boolean indicating whether the properties were successfully set
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
-	 */
-	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException;
-
-	/**
-	 * Gets property values previously set for an application on either the Facebook Developer application or the with the <code>admin.setAppProperties</code> call. A
-	 * session is not required to use this method.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            an enumeration of the properties to get
-	 * @return an ApplicationPropertySet
-	 * @see ApplicationProperty
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 */
-	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
 	 * Starts a batch of queries. Any API calls made after invoking 'beginBatch' will be deferred until the next time you call 'executeBatch', at which time they will be
 	 * processed as a batch query. All API calls made in the interim will return null as their result.
 	 */
@@ -2253,124 +2164,6 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException;
-
-	/**
-	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
-	 * 
-	 * @param allocationType
-	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
-	 *            "email_disable_message_location"
-	 * 
-	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	public int admin_getAllocation( String allocationType ) throws FacebookException;
-
-	/**
-	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
-	 * 
-	 * @param allocationType
-	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
-	 *            "email_disable_message_location"
-	 * 
-	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
-
-	/**
-	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
-	 * 
-	 * @return the number of invites/requests that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	@Deprecated
-	public int admin_getRequestAllocation() throws FacebookException;
-
-	/**
-	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
-	 * 
-	 * @return the number of notifications that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	@Deprecated
-	public int admin_getNotificationAllocation() throws FacebookException;
-
-	/**
-	 * Retrieve the daily metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days)
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days)
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
-	 */
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
-
-	/**
-	 * Retrieve metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days)
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days)
-	 * @param period
-	 *            a number specifying the desired period to group the metrics by, in seconds, Facebook currently only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and
-	 *            Metric.PERIOD_MONTH
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
-	 */
-	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
-
-	/**
-	 * Retrieve the daily metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
-	 */
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
-
-	/**
-	 * Retrieve the daily metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * @param period
-	 *            a number specifying the desired period to group the metrics by, in seconds, Facebook currently only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and
-	 *            Metric.PERIOD_MONTH
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
-	 */
-	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
 
 	/**
 	 * Grant permission to an external app to make API calls on behalf of the current application.
@@ -3405,5 +3198,214 @@ public interface IFacebookRestClient<T> {
 	 */
 	@Deprecated
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
+
+
+
+
+
+	// ========== ADMIN ==========
+
+	/**
+	 * @see #admin_getAllocation(AllocationType)
+	 */
+	public int admin_getAllocation( String allocationType ) throws FacebookException;
+
+	/**
+	 * Returns the current allocation limits for your application for the specified integration points. Allocation limits are determined daily. Integration points
+	 * include:
+	 * 
+	 * <ul>
+	 * <li>notifications_per_day - The number of notifications your application can send on behalf of a user per day. These are user-to-user notifications.</li>
+	 * <li>announcement_notifications_per_week - The number of notifications your application can send to a user per week. These are application-to-user notifications.</li>
+	 * <li>requests_per_day - The number of requests your application can send on behalf of a user per day.</li>
+	 * <li>emails_per_day - The number of email messages your application can send to a user per day.</li>
+	 * <li>email_disable_message_location - The location of the disable message within emails sent by your application. '1' is the bottom of the message and '2' is the
+	 * top of the message.</li>
+	 * </ul>
+	 * 
+	 * These limits also appear on the Allocations tab on the Insights dashboard (click on "Stats") for your application in the Facebook Developer application.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
+
+	/**
+	 * Gets property values previously set for an application on either the Facebook Developer application or the with the admin.setAppProperties call.
+	 * 
+	 * @param properties
+	 *            a collection indicating the properties you are interested in retrieving.
+	 * 
+	 * @return a JSON-encoded string containing the properties. It is your responsibility to parse the string. Details can be found at
+	 *         http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * Gets property values previously set for an application on either the Facebook Developer application or the with the admin.setAppProperties call.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            a collection indicating the properties you are interested in retrieving.
+	 * 
+	 * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public JSONObject admin_getAppProperties( Iterable<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * @see #admin_getAppProperties(Iterable)
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Iterable<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * @see #admin_getAppProperties(Iterable)
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public ApplicationPropertySet admin_getAppPropertiesAsSet( Iterable<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * Returns values for the application metrics displayed on the Usage and HTTP Request tabs of the application's Insights page.
+	 * 
+	 * You can view the metrics in 1-day, 7-day, and 30-day increments over a given date range, which cannot exceed 30 days. This way, you can review metrics for all of
+	 * the 1-day, 7-day, and 30-day periods that end within the given date range.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            start of the range (inclusive)
+	 * @param end
+	 *            end of the range (inclusive). The end_time cannot be more than 30 days after the start_time.
+	 * @param period
+	 *            The length of the period, in seconds, during which the metrics were collected. Currently, the only supported periods are 86400 (1 day), 604800 (7-days),
+	 *            and 2592000 (30 days). {@link Metric#PERIOD_DAY}, {@link Metric#PERIOD_WEEK}, {@link Metric#PERIOD_MONTH}
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
+	 */
+	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
+
+	/**
+	 * @deprecated use admin_getMetrics(Set, Date, Date, long);
+	 * @see #admin_getMetrics(Set, Date, Date, long);
+	 */
+	@Deprecated
+	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
+
+	/**
+	 * Returns the demographic restrictions for the application.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getRestrictionInfo
+	 * @see http://wiki.developers.facebook.com/index.php/Demographic_Restrictions
+	 */
+	public String admin_getRestrictionInfo() throws FacebookException;
+
+	/**
+	 * Sets (several) property values for an application. These values previously were only accessible through the Facebook Developer application.
+	 * 
+	 * @param properties
+	 *            a Map containing the properties to set.
+	 * 
+	 * @return true if the properties are set successfully false otherwise
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException;
+
+	/**
+	 * @see #admin_setAppProperties(Map)
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
+	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
+	 */
+	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException;
+
+	/**
+	 * Sets the demographic restrictions for the application. This call lets you restrict users at the application level. If you want to restrict only a portion of your
+	 * application's content, use the fb:restricted-to tag instead.
+	 * 
+	 * If the user doesn't match the age and location requirements, then the user cannot see the application at all. If the user's age is hidden for privacy reasons,
+	 * Facebook still determines whether or not the application is visible to the user.
+	 * 
+	 * @param restrictionStr
+	 *            <div> A JSON-encoded string of the restricting attributes. Restrictions include age, location, age_distribution, and type. If you use the Facebook PHP
+	 *            client library, you can actually pass an associative array and Facebook automatically handles the JSON encoding. For example:
+	 *            {"age_distribution":"{\"CA,US\":\"16-25\",\"IN\":\"15-20,30+\"}"}.
+	 * 
+	 * When specifying the age or age_distribution, you can use plus (+) and minus (-) to restrict content to that age or older/younger (like 21+ for 21 and older or 18-
+	 * for younger than 19). You can also specify a range of ages, like 18-35 so anyone between the ages of 18 and 35 (inclusive) can see the content. You can also
+	 * specify multiple age ranges (like 19-,30+ -- if you want to exclude people in their 20s, for example). Every specified age must be an integer.
+	 * 
+	 * When specifying the location, specify the country or countries (using a comma-separated list) from the ISO 3166 alpha 2 code list. This list is not necessarily the
+	 * same as the IANA ccTLD (country code top level domain) list. For example, the ISO 3166 entry for England is .gb, while the IANA entry is .uk.
+	 * 
+	 * Specifying a type allows you to target users based on age and location for custom made categories like alcohol (currently the only type available). Before
+	 * rendering your FBML, we run a check against the type on Facebook, and if the user meets the age and location requirements, we'll render the content. </div>
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.setRestrictionInfo
+	 * @see http://wiki.developers.facebook.com/index.php/Demographic_Restrictions
+	 */
+	public boolean admin_setRestrictionInfo( String restrictionStr ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
+	 * 
+	 * @return the number of invites/requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	@Deprecated
+	public int admin_getRequestAllocation() throws FacebookException;
+
+	/**
+	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
+	 * 
+	 * @return the number of notifications that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	@Deprecated
+	public int admin_getNotificationAllocation() throws FacebookException;
+
+	/**
+	 * Retrieve the daily metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days)
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days)
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
+	 */
+	@Deprecated
+	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
+
+	/**
+	 * Retrieve the daily metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
+	 */
+	@Deprecated
+	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
 
 }

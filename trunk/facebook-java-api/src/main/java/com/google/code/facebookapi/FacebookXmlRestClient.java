@@ -40,7 +40,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -185,7 +184,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
-		List<Pair<String, CharSequence>> params = new ArrayList<Pair<String, CharSequence>>();
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "auth_token", authToken ) );
 		if ( this._isDesktop ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
@@ -312,11 +311,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		if ( this._isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
-		}
+	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException {
 		JSONArray props = new JSONArray();
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
@@ -381,10 +376,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 						}
 					}
 				}
-				//End for loop
-				
-				if( buffer.size() == BATCH_LIMIT ) {
-					log.debug("Clearing buffer for the next run.");
+				// End for loop
+
+				if ( buffer.size() == BATCH_LIMIT ) {
+					log.debug( "Clearing buffer for the next run." );
 					buffer.clear();
 				} else {
 					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
@@ -455,10 +450,11 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
 			StringWriter rawResponseStringWriter = new StringWriter();
-			t.transform( new DOMSource (cacheFriendsList), new StreamResult(rawResponseStringWriter) );
+			t.transform( new DOMSource( cacheFriendsList ), new StreamResult( rawResponseStringWriter ) );
 			rawResponse = rawResponseStringWriter.toString();
-		} catch(TransformerException ex) {
-			throw new RuntimeException("Error replaying cached friends list into rawResponse");
+		}
+		catch ( TransformerException ex ) {
+			throw new RuntimeException( "Error replaying cached friends list into rawResponse" );
 		}
 		return cacheFriendsList;
 	}

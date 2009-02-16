@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -443,11 +442,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		return resp.getListing();
 	}
 
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		if ( this._isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
-		}
+	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException {
 		JSONArray props = new JSONArray();
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
@@ -530,10 +525,10 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 						}
 					}
 				}
-				//End for loop
-				
-				if( buffer.size() == BATCH_LIMIT ) {
-					log.debug("Clearing buffer for the next run.");
+				// End for loop
+
+				if ( buffer.size() == BATCH_LIMIT ) {
+					log.debug( "Clearing buffer for the next run." );
 					buffer.clear();
 				} else {
 					log.trace( "No need to clear buffer, this is the final iteration of the batch" );

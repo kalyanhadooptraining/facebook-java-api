@@ -30,7 +30,7 @@ public enum ApplicationProperty {
 	 * @deprecated
 	 */
 	@Deprecated
-	DEFAULT_ACTION_URL("default_fbml", "string"),
+	DEFAULT_ACTION_URL("default_action_fbml", "string"),
 	/** Indicates whether your application appears in the wide (1) or narrow (0) column of a user's Facebook profile. (Default value is 1.) */
 	DEFAULT_COLUMN("default_column", "bool"),
 	/** The default FBML code that appears in the user's profile box when he or she adds your application. */
