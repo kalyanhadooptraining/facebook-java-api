@@ -8,12 +8,14 @@ I am encouraging people to use the maven repository, through Maven, Ivy or any o
 
 We currently have 2 releases available under our [http://code.google.com/p/facebook-java-api/downloads/list Downloads] page.  I'll explain the differences here:
 
-  * 2.0.4
+  * 2.0.5
     * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
-  * 2.0.3
+  * 2.0.4
     * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
 
 === Deprecated ===
+  * 2.0.3
+    * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
   * 2.0.2
     * Just basic bug fixes and api enhancements, since Facebook keeps changing their apis.
   * 2.0.1

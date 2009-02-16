@@ -14,7 +14,7 @@ All of our releases will be deployed to the Maven Central Repository, starting w
     <dependency>
       <groupId>com.google.code.facebookapi</groupId>
       <artifactId>facebook-java-api</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
     </dependency>
 }}}
 
@@ -43,6 +43,6 @@ Then you have access to this dependency:
     <dependency>
       <groupId>com.google.code.facebookapi</groupId>
       <artifactId>facebook-java-api</artifactId>
-      <version>2.0.5-SNAPSHOT</version>
+      <version>2.0.6-SNAPSHOT</version>
     </dependency>
 }}}
