@@ -545,7 +545,6 @@
     <xsd:element name="pic_small" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="political" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="profile_update_time" type="time" minOccurs="0" nillable="true" />
-    <xsd:element name="profile_url" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="quotes" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="relationship_status" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="religion" type="xsd:string" minOccurs="0" nillable="true" />
