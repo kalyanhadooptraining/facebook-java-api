@@ -1,0 +1,45 @@
+SUMMARY:
+
+A) Maven deploy
+
+mvn release:prepare
+ - it will ask what the release version is (3 times) (should use default)
+ - it will ask what the tag directory name for release will be, it should be release-#####
+   (this will create a directory under /tags/release-#####)
+ - it will ask what the next development version is (3 times) (should use default)
+
+mvn release:perform
+ - it will do a full build and deploy into repository
+   - this will include jar files, source files and javadoc files (but not distribution file)
+   - will have to have proper ssh identities setup so as to not force password or failure
+
+B) Make up distribution zip file
+
+cd /tags/release-#####
+mvn clean install site deploy
+ - do another clean install
+ - build the site (for dist)
+ - do another deploy
+
+cd facebook-java-api
+mvn assembly:assembly
+ - build the assembly (zip distribution file)
+
+ - DONE, you should see a message near the end like so:
+   [INFO] Building zip: /local/fern/work/facebook-java-api/tags/release-#####/facebook-java-api/target/facebook-java-api-#####-bin.zip
+
+C) Upload to Google Code
+ - upload to: http://code.google.com/p/facebook-java-api/downloads/list
+  - set as Featured (to show up on project homepage)
+  - un feature old release (to remove from project homepage)
+ - maybe mark a really old release as deprecated ( so it will not show up by default )
+
+
+D) Update front page
+ - update: http://code.google.com/p/facebook-java-api/admin
+  - to say we have new release..
+
+
+E) Update wiki
+ - easier to do this through svn.
+ - simply search for the previous version, and edit it as appropriate, then checkin all changes.
