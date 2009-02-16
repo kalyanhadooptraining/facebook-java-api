@@ -19,9 +19,9 @@
     <url>http://code.google.com/p/facebook-java-api/issues/list</url>
   </issueManagement>
   <scm>
-    <url>https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</url>
-    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</connection>
-    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</developerConnection>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</developerConnection>
   </scm>
   <modules>
     <module>facebook-java-api-schema</module>
@@ -104,13 +104,11 @@
       <id>mrepo-happyfern-snapshot</id>
       <url>scp://mrepo@mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
     </snapshotRepository>
-    <!--
-	<site>
-	  <id>mrepo-happyfern-sites-facebookjavaapi</id>
-	  <name>Mojo Website</name>
-	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
-	</site>
-	-->
+    <site>
+      <id>mrepo-happyfern-sites-facebookjavaapi</id>
+      <name>FacebookJavaApi Website</name>
+      <url>scp://mrepo@mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
+    </site>
   </distributionManagement>
   
   <dependencies>
