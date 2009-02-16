@@ -33,7 +33,6 @@ package com.google.code.facebookapi;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.json.JSONObject;
@@ -44,7 +43,7 @@ import org.json.JSONObject;
 public class ApplicationPropertySet implements Serializable {
 
 	private Map<ApplicationProperty,Boolean> _attributesBool;
-	private Map<ApplicationProperty,CharSequence> _attributesString;
+	private Map<ApplicationProperty,String> _attributesString;
 
 	public ApplicationPropertySet() {
 		// empty
@@ -59,9 +58,8 @@ public class ApplicationPropertySet implements Serializable {
 	 *             if the JSON-encoded mapping doesn't conform to expectations
 	 */
 	public ApplicationPropertySet( String jsonString ) throws ClassCastException {
-		Map<ApplicationProperty,String> mappings = ExtensibleClient.parseProperties( jsonString );
-		Set<Map.Entry<ApplicationProperty,String>> entries = mappings.entrySet();
-		for ( Map.Entry<ApplicationProperty,String> entry : entries ) {
+		Map<ApplicationProperty,String> mappings = parseProperties( jsonString );
+		for ( Map.Entry<ApplicationProperty,String> entry : mappings.entrySet() ) {
 			ApplicationProperty prop = entry.getKey();
 			String value = entry.getValue();
 			if ( prop.isBooleanProperty() ) {
@@ -113,12 +111,12 @@ public class ApplicationPropertySet implements Serializable {
 	 * @param value
 	 *            the value to set.
 	 */
-	public void setStringProperty( ApplicationProperty prop, CharSequence value ) {
+	public void setStringProperty( ApplicationProperty prop, String value ) {
 		if ( null == prop || !prop.isStringProperty() ) {
 			throw new IllegalArgumentException( "String property expected" );
 		}
 		if ( null == _attributesString ) {
-			_attributesString = new TreeMap<ApplicationProperty,CharSequence>();
+			_attributesString = new TreeMap<ApplicationProperty,String>();
 		}
 		_attributesString.put( prop, value );
 	}
@@ -131,7 +129,7 @@ public class ApplicationPropertySet implements Serializable {
 	 * 
 	 * @return the value of the property.
 	 */
-	public CharSequence getStringProperty( ApplicationProperty prop ) {
+	public String getStringProperty( ApplicationProperty prop ) {
 		if ( null == prop || !prop.isStringProperty() ) {
 			throw new IllegalArgumentException( "String property expected" );
 		}
@@ -167,7 +165,7 @@ public class ApplicationPropertySet implements Serializable {
 	public JSONObject jsonify() {
 		JSONObject ret = new JSONObject();
 		if ( null != _attributesString ) {
-			for ( Map.Entry<ApplicationProperty,CharSequence> entry : _attributesString.entrySet() ) {
+			for ( Map.Entry<ApplicationProperty,String> entry : _attributesString.entrySet() ) {
 				try {
 					ret.put( entry.getKey().propertyName(), entry.getValue().toString() );
 				}
@@ -196,6 +194,42 @@ public class ApplicationPropertySet implements Serializable {
 	 */
 	public String toJsonString() {
 		return jsonify().toString();
+	}
+
+	public static Map<ApplicationProperty,String> parseProperties( String json ) {
+		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
+		if ( json == null ) {
+			return result;
+		}
+		if ( json.matches( "\\{.*\\}" ) ) {
+			json = json.substring( 1, json.lastIndexOf( "}" ) );
+		} else {
+			json = json.substring( 1, json.lastIndexOf( "]" ) );
+		}
+		String[] parts = json.split( "\\," );
+		for ( String part : parts ) {
+			parseFragment( part, result );
+		}
+		return result;
+	}
+
+	private static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
+		if ( fragment.startsWith( "{" ) ) {
+			fragment = fragment.substring( 1, fragment.lastIndexOf( "}" ) );
+		}
+		String keyString = fragment.substring( 1 );
+		keyString = keyString.substring( 0, keyString.indexOf( '"' ) );
+		ApplicationProperty key = ApplicationProperty.getPropertyForString( keyString );
+		String value = fragment.substring( fragment.indexOf( ":" ) + 1 ).replaceAll( "\\\\", "" ); // strip escape characters
+		if ( key.getType().equals( "string" ) ) {
+			result.put( key, value.substring( 1, value.lastIndexOf( '"' ) ) );
+		} else {
+			if ( value.equals( "1" ) ) {
+				result.put( key, "true" );
+			} else {
+				result.put( key, "false" );
+			}
+		}
 	}
 
 }

@@ -181,7 +181,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences"),
 	DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference"),
 	DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences"),
-	
+
 	DATA_CREATE_OBJECT_TYPE("facebook.data.createObjectType"),
 	DATA_DROP_OBJECT_TYPE("facebook.data.dropObjectType"),
 	DATA_RENAME_OBJECT_TYPE("facebook.data.renameObjectType"),
@@ -203,13 +203,13 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_REMOVE_ASSOCIATION("facebook.data.removeAssociation"),
 	DATA_REMOVE_ASSOCIATED_OBJECTS("facebook.data.removeAssociatedObjects"),
 	DATA_GET_ASSOCIATED_OBJECT_COUNT("facebook.data.getAssociatedObjectCount"),
-	
+
 	DATA_DEFINE_ASSOCIATION("facebook.data.defineAssociation"),
 	DATA_UNDEFINE_ASSOCIATION("facebook.data.undefineAssociation"),
 	DATA_RENAME_ASSOCIATION("facebook.data.renameAssociation"),
 	DATA_GET_ASSOCIATION_DEFINITION("facebook.data.getAssociationDefinition"),
-	DATA_GET_ASSOCIATION_DEFINITIONS("facebook.data.getAssociationDefinitions"),	
-	
+	DATA_GET_ASSOCIATION_DEFINITIONS("facebook.data.getAssociationDefinitions"),
+
 
 	// SMS - Mobile
 	SMS_CAN_SEND("facebook.sms.canSend"),
@@ -233,6 +233,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	@Deprecated
 	ADMIN_GET_DAILY_METRICS("facebook.admin.getDailyMetrics"),
 	ADMIN_GET_METRICS("facebook.admin.getMetrics"),
+	ADMIN_GET_RESTRICTION_INFO("facebook.admin.getRestrictionInfo"),
+	ADMIN_SET_RESTRICTION_INFO("facebook.admin.setRestrictionInfo"),
 
 	// Permissions
 	PERM_GRANT_API_ACCESS("facebook.permissions.grantApiAccess"),
