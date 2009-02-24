@@ -80,7 +80,7 @@ public class Issue140FriendsGetJSONTest {
 	@Test
 	public void testGetAppUsers() throws Exception {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
-		FacebookXmlRestClient.initJaxbSupport();
+		ExtensibleClient.initJaxbSupport();
 
 		client.friends_getAppUsers();
 		FriendsGetAppUsersResponse fbResponse = (FriendsGetAppUsersResponse) client.getResponsePOJO();

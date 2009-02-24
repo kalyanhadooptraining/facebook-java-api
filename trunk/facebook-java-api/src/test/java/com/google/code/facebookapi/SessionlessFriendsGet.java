@@ -1,6 +1,7 @@
 package com.google.code.facebookapi;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 import org.json.JSONArray;
 import org.junit.Ignore;
