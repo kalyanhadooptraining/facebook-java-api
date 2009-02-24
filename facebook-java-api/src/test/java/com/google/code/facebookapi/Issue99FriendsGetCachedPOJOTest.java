@@ -24,7 +24,7 @@ public class Issue99FriendsGetCachedPOJOTest {
 
 		// Get friends list
 		client.friends_get();
-		FacebookXmlRestClient.initJaxbSupport();
+		ExtensibleClient.initJaxbSupport();
 		FriendsGetResponse response = (FriendsGetResponse) client.getResponsePOJO();
 		List<Long> friends = response.getUid();
 
