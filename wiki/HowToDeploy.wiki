@@ -1,4 +1,4 @@
-SUMMARY: Deploying SNAPSHOT and release builds to Maven repositories and creating .zip packages to be posted onto this site as featured downloads.
+#summary Deploying SNAPSHOT and release builds to Maven repositories and creating .zip packages to be posted onto this site as featured downloads.
 
 =Getting SNAPSHOT releases=
 
@@ -47,9 +47,41 @@ Then, in your dependencies just name the specific snapshot release that you want
 
 =Deploying SNAPSHOT releases=
 
+Once you've got source code that you've managed to clean (to ensure that all the build steps are working) and install into your local repository, you're ready to upload a snapshot release.
+
+It's neighbourly to also post a jar of your current source code onto the snapshot repository along with your .jar binaries. Snapshot releases change quite frequently so users will probably want to use Eclipse's `Right Click --> Maven --> Download Sources` so that when debugging they can see exactly what code was posted up most recently.
+
+Ensure that the following version numbers are consistent and have -SNAPSHOT on them. It's the -SNAPSHOT which will allow Maven to decide that it wants to deploy to the snapshot repository:
+  * Parent pom.xml
+  * facebook-java-api pom.xml (version and parent version reference)
+  * facebook-java-api-schema pom.xml (version and parent version reference)
+
+Run the following command to deploy the snapshot:
+
 `mvn clean install source:jar deploy`
 
+==Permissions to upload to happyfern.com==
 
+We use SFTP (SSH) to copy files up to the snapshot repository. A public / private keypair to authenticate you. If you wish to upload files, your public key must be registered at happyfern.com. Post a message on the Java Facebook API group requesting access to the snapshot repository and include your public key as an attached file (obviously, don't include your private key); an administrator will approve you and add your credentials to the list of authorised users.
+
+===Generating a keypair===
+
+PuttyGen from http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html is a good tool for creating a keypair. When using this tool, select:
+Type of key to generate: SSH-2 DSA
+
+Save your public key ready to send off for approval and save your private key somewhere safe. Then, use the _Conversions_ menu to _Export OpenSSH key_. You'll need to save this as file ~/.ssh/id_dsa (where ~ is your home directory). Copy your public key to ~/.ssh/id_dsa.pub
+
+[note: Windows Explorer won't let you create a directory called ".ssh". Go to the command prompt and use mkdir to create it]
+
+[note: You are prompted to put a pass phrase on your private key. Do that, but if you have any problems in later steps then it may be worth trying things without a pass phrase just to eliminate that as a possible cause of problems]
+
+If you're running Linux or similar, you should already have ssh installed and should be able to test whether you can ssh to mrepo.happyfern.com. If you're running on Windows, it's best to download this version of OpenSSH for Windows http://sshwindows.sourceforge.net/download/ and use that to try to ssh to mrepo.happyfern.com. Using putty doesn't help. Putty maintains all it's known_hosts and certificates in the Windows registry. The Maven Wagon SSH implementation uses the ~/.ssh configuration and that's what you need to setup with the OpenSSH tools.
+
+Once you can connect with OpenSSH, you'll hopefully be ready to go with Maven.
+
+=Creating release .zip files to post on this site=
+
+`mvn clean install assembly:assembly` or just simply `mvn assembly:assembly` if you're sure the release is already clean will build the .zip file.
 
 =Releasing to production Maven repository=
 
