@@ -71,9 +71,9 @@ Type of key to generate: SSH-2 DSA
 
 Save your public key ready to send off for approval and save your private key somewhere safe. Then, use the _Conversions_ menu to _Export OpenSSH key_. You'll need to save this as file ~/.ssh/id_dsa (where ~ is your home directory). Copy your public key to ~/.ssh/id_dsa.pub
 
-[note: Windows Explorer won't let you create a directory called ".ssh". Go to the command prompt and use mkdir to create it]
+_note: Windows Explorer won't let you create a directory called ".ssh". Go to the command prompt and use mkdir to create it_
 
-[note: You are prompted to put a pass phrase on your private key. Do that, but if you have any problems in later steps then it may be worth trying things without a pass phrase just to eliminate that as a possible cause of problems]
+_note: You are prompted to put a pass phrase on your private key. Do that, but if you have any problems in later steps then it may be worth trying things without a pass phrase just to eliminate that as a possible cause of problems_
 
 If you're running Linux or similar, you should already have ssh installed and should be able to test whether you can ssh to mrepo.happyfern.com. If you're running on Windows, it's best to download this version of OpenSSH for Windows http://sshwindows.sourceforge.net/download/ and use that to try to ssh to mrepo.happyfern.com. Using putty doesn't help. Putty maintains all it's known_hosts and certificates in the Windows registry. The Maven Wagon SSH implementation uses the ~/.ssh configuration and that's what you need to setup with the OpenSSH tools.
 
