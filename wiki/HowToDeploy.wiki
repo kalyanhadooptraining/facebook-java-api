@@ -6,7 +6,7 @@ While a handful of developers may want to post snapshot releases, a larger numbe
 
 ==What's a snapshot Maven release==
 
-Snapshot releases are identified clearly with version numbers ending in _-SNAPSHOT_. Version 3.0.0-SNAPSHOT means "this version is a candidate to eventually become version 3.0.0". Your Maven client handles snapshot releases differently to full releases; it tries to download a new version by default every day (this can be controlled by the `<snapshots><updatePolicy/></snapshots>` flag.
+Snapshot releases are identified clearly with version numbers ending in _-SNAPSHOT_. Version 3.0.0-SNAPSHOT means "this version is a candidate to eventually become version 3.0.0". Your Maven client handles snapshot releases differently to full releases; it tries to download a new version by default every day (this can be controlled by the `<snapshots><updatePolicy/></snapshots>` flag).
 
 ==Why would I want to use a snapshot release==
 
