@@ -2053,7 +2053,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException {
-		return callMethod( FacebookMethod.CONNECT_UNREGISTER_USERS, newPair( "accounts", toJsonListOfStrings( email_hashes ) ) );
+		return callMethod( FacebookMethod.CONNECT_UNREGISTER_USERS, newPair( "email_hashes", toJsonListOfStrings( email_hashes ) ) );
 	}
 
 	public int connect_getUnconnectedFriendsCount() throws FacebookException {
