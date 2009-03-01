@@ -1,5 +1,6 @@
 package com.google.code.facebookapi;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class Issue152UserLogoutTest {
 			fail("Session is expired, getSession should fail");
 		} catch( FacebookException ex ) {
 			//Success
+			assertEquals(ErrorCode.SESSION_INVALID, ex.getCode());
 			System.out.println("Logout success, FacebookException thrown");
 		}
 		
