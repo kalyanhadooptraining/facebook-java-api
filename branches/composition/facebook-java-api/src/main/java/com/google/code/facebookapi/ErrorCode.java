@@ -61,6 +61,11 @@ public class ErrorCode {
      * A specified API parameter was invalid, or a required parameter was missing
      */
     public static final Integer GEN_INVALID_PARAMETER = 100;
+    /** 
+     * Session key invalid. This could be because the session key has an 
+     * incorrect format, or because the user has revoked this session  
+     */
+    public static final int SESSION_INVALID = 102;
     /**
      * Specified user not valid
      */
@@ -165,11 +170,6 @@ public class ErrorCode {
      * Session key specified cannot be used to call this method 
      */
     public static final int SESSION_METHOD_NOT_ALLOWED = 451;
-    /** 
-     * Session key invalid. This could be because the session key has an 
-     * incorrect format, or because the user has revoked this session  
-     */
-    public static final int SESSION_INVALID = 452;
     /** 
      * A session key is required for calling this method 
      */
