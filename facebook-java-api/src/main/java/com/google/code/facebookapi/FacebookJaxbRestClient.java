@@ -323,7 +323,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
-		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, newPair( "auth_token", authToken ) );
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+		params.add( newPair( "auth_token", authToken ) );
+		if ( this._isDesktop ) {
+			params.add( newPair( "generate_session_secret", "true" ) );
+		}
+		
+		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		SessionInfo d = (SessionInfo) obj.getValue();
 		this.cacheSessionKey = d.getSessionKey();
 		this.cacheUserId = d.getUid();
