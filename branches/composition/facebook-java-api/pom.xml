@@ -68,11 +68,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>apt-maven-plugin</artifactId>
-        <!--
         <configuration>
           <factory>com.google.code.facebookapi.apt.FacebookReturnTypeProcessorFactory5</factory>
+          <fork>true</fork>
+          <executable>${java.home}/../bin/apt</executable>       
         </configuration>
-        -->
         <executions>
             <execution>
                 <goals>
