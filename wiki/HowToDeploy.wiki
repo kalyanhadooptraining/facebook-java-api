@@ -2,48 +2,9 @@
 
 =Getting SNAPSHOT releases=
 
-While a handful of developers may want to post snapshot releases, a larger number of users may want to get hold of a particular snapshot release. This section explains what, why and how.
+While a handful of developers may want to post snapshot releases, a larger number of users may want to get hold of a particular snapshot release. 
 
-==What's a snapshot Maven release==
-
-Snapshot releases are identified clearly with version numbers ending in _-SNAPSHOT_. Version 3.0.0-SNAPSHOT means "this version is a candidate to eventually become version 3.0.0". Your Maven client handles snapshot releases differently to full releases; it tries to download a new version by default every day (this can be controlled by the `<snapshots><updatePolicy/></snapshots>` flag).
-
-==Why would I want to use a snapshot release==
-
-If a bug that you've reported has just been fixed by a developer, the developer may have pushed a snapshot release to the snapshot repository. By switching from your full release to the snapshot, you'll be able to take advantage of the bug fix or new feature before a full release is cut.
-
-Furthermore, you're being a good citizen and helping to identify and issues that may have crept into the codebase due to recent code changes. Hopefully the JUnit tests will catch any "regressions", but then hopefully I'll win £1million this week in the lottery.
-
-==OK, how do I get at snapshot releases==
-
-Add the following snippet to your repository's pom.xml. It points to the /maven-snapshot file store that Fernando hosts at his happyfern.com site.
-
-{{{
-<repositories>
-    ...
-    ...
-
-    <repository>
-        <id>facebook-api-snapshot</id>
-        <name>Facebook API Snapshot repository</name>
-        <url>http://mrepo.happyfern.com/maven2-snapshot/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-
-</repositories>
-}}}
-
-Then, in your dependencies just name the specific snapshot release that you want. For example:
-
-{{{
-    <dependency>
-        <groupId>com.google.code.facebookapi</groupId>
-        <artifactId>facebook-java-api</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-    </dependency>
-}}}
+Read the MavenSupport page to find out what, why and how.
 
 =Deploying SNAPSHOT releases=
 
