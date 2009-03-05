@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -2282,7 +2283,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	// ========== SEND EMAIL ==========
 
-	public T notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence text, CharSequence fbml ) throws FacebookException {
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence text, CharSequence fbml ) throws FacebookException {
 		// this method requires a session only if we're dealing with a desktop app
 		FacebookMethod method = isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL_NOSESSION;
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
@@ -2290,32 +2291,36 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParam( "subject", subject, params );
 		addParamIfNotBlank( "text", text, params );
 		addParamIfNotBlank( "fbml", fbml, params );
-		return callMethod( method, params );
+		return new TreeSet( Arrays.asList( extractString( callMethod( method, params ) ).split( "," ) ) );
 	}
 
-	public T notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
+	@Deprecated
+	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
 		return notifications_sendEmail( recipients, subject, null, fbml );
 	}
 
-	public T notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
+	@Deprecated
+	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
 		return notifications_sendEmail( recipients, subject, email, null );
 	}
 
-	public T notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
+	public Collection<String> notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
 		return notifications_sendEmail( Arrays.asList( users_getLoggedInUser() ), subject, email, fbml );
 	}
 
-	public T notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
+	@Deprecated
+	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
 		return notifications_sendEmailToCurrentUser( subject, null, fbml );
 	}
 
-	public T notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
+	@Deprecated
+	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
 		return notifications_sendEmailToCurrentUser( subject, email, null );
 	}
 
 	@Deprecated
 	public String notifications_sendEmailStr( Collection<Long> recipients, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException {
-		return extractString( notifications_sendEmail( recipients, subject, text, fbml ) );
+		return delimit( notifications_sendEmail( recipients, subject, text, fbml ) ).toString();
 	}
 
 	@Deprecated

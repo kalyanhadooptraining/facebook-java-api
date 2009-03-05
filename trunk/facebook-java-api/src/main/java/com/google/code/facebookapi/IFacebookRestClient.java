@@ -1565,7 +1565,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1588,7 +1588,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as plaintext, and can contain a limited subset of HTML tags (specifically, only tags
@@ -1604,7 +1604,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
+	@Deprecated
+	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1622,7 +1623,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
+	@Deprecated
+	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as fbml, and can contain a limited subset of FBML tags (specifically, only tags that
@@ -1639,7 +1641,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
+	@Deprecated
+	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1658,7 +1661,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public T notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
+	@Deprecated
+	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send a notification message to the logged-in user.
