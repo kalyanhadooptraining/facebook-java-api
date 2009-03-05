@@ -1019,14 +1019,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, params ) );
 	}
 
-	/**
-	 * Send a notification message to the logged-in user.
-	 * 
-	 * @param notification
-	 *            the FBML to be displayed on the notifications page; only a stripped-down set of FBML tags that result in text and links is allowed
-	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.sendEmail"> Developers Wiki: notifications.send</a>
-	 */
 	public void notifications_send( CharSequence notification ) throws FacebookException {
 		Long currentUser = users_getLoggedInUser();
 		Collection<Long> coll = new ArrayList<Long>();
@@ -1717,16 +1709,17 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, newPair( "template_bundle_id", bundleId ) ) );
 	}
 
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
-		if ( null == notification || "".equals( notification ) ) {
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "You cannot send an empty notification!" );
+	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
+		FacebookMethod method = FacebookMethod.NOTIFICATIONS_SEND;
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
+		addParam( "type", isAppToUser ? "app_to_user" : "user_to_user", params );
+		addParam( "notification", notification, params );
+		addParamDelimitIfNotBlankEmpty( "to_ids", recipientIds, params );
+		String outString = extractString( callMethod( method, params ) );
+		if ( outString.trim().length() == 0 ) {
+			return Collections.emptySet();
 		}
-		Pair<String,CharSequence> type = newPair( "type", isAppToUser ? "app_to_user" : "user_to_user" );
-		if ( ( recipientIds != null ) && ( !recipientIds.isEmpty() ) ) {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "to_ids", delimit( recipientIds ) ), newPair( "notification", notification ), type );
-		} else {
-			callMethod( FacebookMethod.NOTIFICATIONS_SEND, newPair( "notification", notification ), type );
-		}
+		return new TreeSet( Arrays.asList( outString.split( "," ) ) );
 	}
 
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,

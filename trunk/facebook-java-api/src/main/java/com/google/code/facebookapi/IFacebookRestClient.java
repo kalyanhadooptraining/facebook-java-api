@@ -2552,7 +2552,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see http://wiki.developers.facebook.com/index.php/Notifications.send
 	 */
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException;
+	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException;
 
 	/**
 	 * Deactivates the specified template bundle.
