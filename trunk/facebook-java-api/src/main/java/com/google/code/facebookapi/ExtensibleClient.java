@@ -911,6 +911,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
+	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException {
+		return auth_revokeExtendedPermission( perm, null );
+	}
+
 	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException {
 		if ( userId != null ) {
 			return extractBoolean( callMethod( FacebookMethod.AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", userId ) ) );
