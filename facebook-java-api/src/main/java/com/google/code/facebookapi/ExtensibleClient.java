@@ -911,6 +911,14 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		}
 	}
 
+	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException {
+		if ( userId != null ) {
+			return extractBoolean( callMethod( FacebookMethod.AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION, newPair( "ext_perm", perm.getName() ), newPair( "uid", userId ) ) );
+		} else {
+			return extractBoolean( callMethod( FacebookMethod.AUTH_REVOKE_EXTENDED_PERMISSION, newPair( "ext_perm", perm.getName() ) ) );
+		}
+	}
+
 
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException {
 		return users_setStatus( newStatus, clear, false );
@@ -2521,6 +2529,18 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException {
 		return admin_getAllocation( allocationType.getName() );
+	}
+
+	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException {
+		if ( userId == null ) {
+			return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, newPair( "integration_point_name", allocationType ) ) );
+		} else {
+			return extractInt( callMethod( FacebookMethod.ADMIN_GET_ALLOCATION, newPair( "integration_point_name", allocationType ), newPair( "user", userId ) ) );
+		}
+	}
+
+	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException {
+		return admin_getAllocation( allocationType.getName(), userId );
 	}
 
 	public JSONObject admin_getAppProperties( Iterable<ApplicationProperty> properties ) throws FacebookException {
