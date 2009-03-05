@@ -1001,8 +1001,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	}
 
-	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
-		notifications_send( recipientIds, notification.toString(), false );
+	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
+		return notifications_send( recipientIds, notification.toString(), false );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb ) throws FacebookException {
@@ -1019,8 +1019,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS, params ) );
 	}
 
-	public void notifications_send( CharSequence notification ) throws FacebookException {
-		notifications_send( Arrays.asList( users_getLoggedInUser() ), notification );
+	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException {
+		return notifications_send( Arrays.asList( users_getLoggedInUser() ), notification );
 	}
 
 	public T data_getCookies() throws FacebookException {
