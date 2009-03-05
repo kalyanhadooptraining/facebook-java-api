@@ -1020,10 +1020,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public void notifications_send( CharSequence notification ) throws FacebookException {
-		Long currentUser = users_getLoggedInUser();
-		Collection<Long> coll = new ArrayList<Long>();
-		coll.add( currentUser );
-		notifications_send( coll, notification );
+		notifications_send( Arrays.asList( users_getLoggedInUser() ), notification );
 	}
 
 	public T data_getCookies() throws FacebookException {
