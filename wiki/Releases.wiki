@@ -13,6 +13,16 @@ We currently have 2 releases available under our [http://code.google.com/p/faceb
   * 2.0.4
     * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
 
+=== Composition Branch ===
+
+Under branch/composition and branch/facebook-api-annotation-processor you'll find the implementation of the idea described in this document: http://groups.google.com/group/facebook-java/web/proposed-adapter-pattern?hl=en
+
+This is currently posted to the snapshot repository as:
+
+   * 3.0.0-SNAPSHOT
+
+You'll find information on how to get at this release through the Maven snapshot repository at MavenSupport.
+
 === Deprecated ===
   * 2.0.3
     * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
