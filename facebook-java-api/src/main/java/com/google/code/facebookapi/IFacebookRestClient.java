@@ -1106,7 +1106,7 @@ public interface IFacebookRestClient<T> {
 	 * @param notification
 	 *            the FBML to display on the notifications page.
 	 */
-	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
+	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
@@ -1690,7 +1690,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send"> Developers Wiki: notifications.send</a>
 	 */
-	public void notifications_send( CharSequence notification ) throws FacebookException;
+	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Sends a notification email to the specified users, who must have added your application. You can send five (5) emails to a user per day. Requires a session key for
