@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -2291,7 +2292,11 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParam( "subject", subject, params );
 		addParamIfNotBlank( "text", text, params );
 		addParamIfNotBlank( "fbml", fbml, params );
-		return new TreeSet( Arrays.asList( extractString( callMethod( method, params ) ).split( "," ) ) );
+		String outString = extractString( callMethod( method, params ) );
+		if ( outString.trim().length() == 0 ) {
+			return Collections.emptySet();
+		}
+		return new TreeSet( Arrays.asList( outString.split( "," ) ) );
 	}
 
 	@Deprecated
