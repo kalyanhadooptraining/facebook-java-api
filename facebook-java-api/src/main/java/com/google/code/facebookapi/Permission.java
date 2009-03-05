@@ -41,7 +41,14 @@ public enum Permission {
 	/** This permission allows an app to RSVP to an event on behalf of a user via the events.rsvp method. */
 	RSVP_EVENT("rsvp_event"),
 	/** This permissions allows a mobile application to send messages to the user and respond to messages from the user via text message. */
-	SMS_SEND("sms"),
+	SMS("sms"),
+	/** This permission allows an application to provide the mechanism for a user to upload videos to their profile. */
+	VIDEO_UPLOAD("video_upload"),
+	/** This permission allows an application to provide the mechanism for a user to write, edit, and delete notes on their profile. */
+	CREATE_NOTE("create_note"),
+	/** This permission allows an application to provide the mechanism for a user to post links to their profile. */
+	SHARE_ITEM("share_item"),
+
 	/**
 	 * @deprecated {@link #CREATE_LISTING}
 	 */
