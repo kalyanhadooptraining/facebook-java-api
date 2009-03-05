@@ -1329,7 +1329,7 @@ public interface IFacebookRestClient<T> {
 
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
+	 * @see http://wiki.developers.facebook.com/index.php/Users.hasAppPermission
 	 */
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException;
 
@@ -1343,12 +1343,29 @@ public interface IFacebookRestClient<T> {
 	 *            The user ID of the user whose permissions you are checking. If this parameter is not specified, then it defaults to the session user. Note: This
 	 *            parameter applies only to Web applications and is required by them only if the session_key is not specified. Facebook ignores this parameter if it is
 	 *            passed by a desktop application.
-	 * 
-	 * @return true if the user has granted the application the specified permission false otherwise
-	 * 
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
+	 * @return true if has permission
+	 * @see http://wiki.developers.facebook.com/index.php/Users.hasAppPermission
 	 */
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException;
+
+	/**
+	 * @see #auth_revokeExtendedPermission(Permission, Long)
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException;
+
+	/**
+	 * Revokes the specified extended permission for the selected user. If no user is specified, then the user of the current session is used.
+	 * 
+	 * @param perm
+	 *            The extended permission to revoke.
+	 * @param userId
+	 *            The user ID of the user whose extended permission you want to revoke. If you don't specify this parameter, then you must have a valid session for the
+	 *            current user, and that session's user will have the specified permission revoked.
+	 * @return This method returns true upon success.
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException;
 
 	/**
 	 * Publishes a templatized action for the current user. The action will appear in their minifeed, and may appear in their friends' newsfeeds depending upon a number
@@ -1588,7 +1605,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml )
+			throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as plaintext, and can contain a limited subset of HTML tags (specifically, only tags
@@ -3210,28 +3228,41 @@ public interface IFacebookRestClient<T> {
 	// ========== ADMIN ==========
 
 	/**
-	 * @see #admin_getAllocation(AllocationType)
+	 * @see #admin_getAllocation(AllocationType,Long)
 	 */
 	public int admin_getAllocation( String allocationType ) throws FacebookException;
+
+	/**
+	 * @see #admin_getAllocation(AllocationType,Long)
+	 */
+	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException;
+
+	/**
+	 * @see #admin_getAllocation(AllocationType,Long)
+	 */
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
 
 	/**
 	 * Returns the current allocation limits for your application for the specified integration points. Allocation limits are determined daily. Integration points
 	 * include:
 	 * 
-	 * <ul>
-	 * <li>notifications_per_day - The number of notifications your application can send on behalf of a user per day. These are user-to-user notifications.</li>
-	 * <li>announcement_notifications_per_week - The number of notifications your application can send to a user per week. These are application-to-user notifications.</li>
-	 * <li>requests_per_day - The number of requests your application can send on behalf of a user per day.</li>
-	 * <li>emails_per_day - The number of email messages your application can send to a user per day.</li>
-	 * <li>email_disable_message_location - The location of the disable message within emails sent by your application. '1' is the bottom of the message and '2' is the
-	 * top of the message.</li>
-	 * </ul>
-	 * 
-	 * These limits also appear on the Allocations tab on the Insights dashboard (click on "Stats") for your application in the Facebook Developer application.
+	 * @param allocationType
+	 *            <ul>
+	 *            <li>notifications_per_day - The number of notifications your application can send on behalf of a user per day. These are user-to-user notifications.</li>
+	 *            <li>announcement_notifications_per_week - The number of notifications your application can send to a user per week. These are application-to-user
+	 *            notifications.</li>
+	 *            <li>requests_per_day - The number of requests your application can send on behalf of a user per day.</li>
+	 *            <li>emails_per_day - The number of email messages your application can send to a user per day.</li>
+	 *            <li>email_disable_message_location - The location of the disable message within emails sent by your application. '1' is the bottom of the message and
+	 *            '2' is the top of the message.</li>
+	 *            </ul>
+	 *            These limits also appear on the Allocations tab on the Insights dashboard (click on "Stats") for your application in the Facebook Developer application.
+	 * @parm userId The user ID for the specific user whose allocations you want to to check. Specifying a user ID is relevant only with respect to the emails_per_day
+	 *       integration point for users who granted the email permission prior to the 2008 profile design update, per the note on notifications.sendEmail.
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
-	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
+	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException;
 
 	/**
 	 * Gets property values previously set for an application on either the Facebook Developer application or the with the admin.setAppProperties call.
