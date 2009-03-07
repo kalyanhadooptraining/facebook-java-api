@@ -1701,6 +1701,10 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, newPair( "recipient", recipient ), newPair( "event_name", eventName ), newPair( "message",
 				message ) ) );
 	}
+	
+	public Long links_post( Long userId, String url, String comment ) throws FacebookException {
+		return extractLong( callMethod( FacebookMethod.LINKS_POST, newPair( "uid", userId ), newPair( "url", url ), newPair( "comment", comment ) ) );
+	}
 
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, newPair( "template_bundle_id", bundleId ) ) );
