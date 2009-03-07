@@ -49,10 +49,11 @@ Once you can connect with OpenSSH, you'll hopefully be ready to go with Maven.
 A) Maven deploy
 
 mvn release:prepare
- - it will ask what the release version is (3 times) (should use default)
- - it will ask what the tag directory name for release will be, it should be release-#####
-   (this will create a directory under /tags/release-#####)
- - it will ask what the next development version is (3 times) (should use default)
+  * it will ask what the release version is (3 times) (should use default)
+  * it will ask what the tag directory name for release will be, it should be release-#####
+    * this will create a directory under /tags/release-#####
+    * You can see all the [http://code.google.com/p/facebook-java-api/source/browse/tags existing tags here].
+  * it will ask what the next development version is (3 times) (should use default)
 
 mvn release:perform
  - it will do a full build and deploy into repository
