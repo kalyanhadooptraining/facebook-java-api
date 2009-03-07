@@ -1340,7 +1340,7 @@
 <xsd:element name="users_getStandardInfo_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="user" type="user" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="standard_user_info" type="user" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
