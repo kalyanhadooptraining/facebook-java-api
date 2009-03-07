@@ -4,6 +4,12 @@
 
 The schema.xsd file used to generate the Java XML Bindings (JAXB) differs slightly from what Facebook makes available in facebook.xsd. The differences between the files are maintained in facebook.xsd.diff and this file should be updated whenever either facebook.xsd or schema.xsd is updated.
 
+= Comparing our schema.xsd with facebook.xsd =
+
+We can use the tools provided by google code to compare the latest version of our schema.xsd with the facebook.xsd that was downloaded from facebook.com and put in our source repository:
+
+  * [http://code.google.com/p/facebook-java-api/source/diff?spec=svn607&r=541&format=side&path=/trunk/facebook-java-api-schema/src/main/resources/schema.xsd&old_path=/trunk/facebook-java-api-schema/facebook.xsd&old=404# Compare files]
+
 = Details =
 
 A Maven plugin is used to generate the Java bindings. The details are in facebook-api/facebook-java-api-schema/pom.xml.
