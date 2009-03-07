@@ -30,15 +30,15 @@
   <build>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-source-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -50,23 +50,23 @@
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-	<configuration>
-	  <tagBase>https://facebook-java-api.googlecode.com/svn/tags/</tagBase>
-	</configuration>
+        <configuration>
+          <tagBase>https://facebook-java-api.googlecode.com/svn/tags/</tagBase>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-eclipse-plugin</artifactId>
-	<configuration>
-	  <downloadSources>true</downloadSources>
-	  <downloadJavadocs>true</downloadJavadocs>
-	</configuration>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-	  <skip>${test.skip}</skip>
+          <skip>${test.skip}</skip>
           <systemProperties>
             <property>
               <name>APIKEY</name>
@@ -96,8 +96,8 @@
       <id>mrepo-happyfern</id>
       <url>scp://mrepo@mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
       <!--
-	  "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
-	-->
+          "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
+        -->
     </repository>
     <snapshotRepository>
       <uniqueVersion>true</uniqueVersion>
