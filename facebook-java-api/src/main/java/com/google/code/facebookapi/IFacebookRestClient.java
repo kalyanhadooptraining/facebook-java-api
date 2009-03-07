@@ -2591,6 +2591,20 @@ public interface IFacebookRestClient<T> {
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException;
 
+	// ========== LINKS ===========
+
+	/**
+	 * Posts a link to the specified user's Wall.  The user must have previously given the calling application the "share_item" extended permission.
+	 * 
+	 * @param userId the user ID
+	 * @param url the URL to link to
+	 * @param comment the user-generated comment about the URL
+	 * 
+	 * @return the unique ID of the newly posted link entity
+	 * 
+	 * @throws FacebookException
+	 */
+	public Long links_post( Long userId, String url, String comment ) throws FacebookException;
 
 	// ========== EVENTS ==========
 

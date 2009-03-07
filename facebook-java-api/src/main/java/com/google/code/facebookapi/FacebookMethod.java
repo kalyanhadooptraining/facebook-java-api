@@ -251,7 +251,9 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	LIVEMESSAGE_SEND("facebook.livemessage.send"),
 
 	// Batch
-	BATCH_RUN("facebook.batch.run");
+	BATCH_RUN("facebook.batch.run"), 
+	
+	LINKS_POST("facebook.links.post");
 
 	private static final EnumSet<FacebookMethod> listSessionNone;
 	private static final EnumSet<FacebookMethod> listTakesFile;
