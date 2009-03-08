@@ -46,6 +46,12 @@ Once you can connect with OpenSSH, you'll hopefully be ready to go with Maven.
 
 =Releasing to production Maven repository=
 
+==Releasing a BETA version==
+
+The [http://repo2.maven.org/maven2/com/google/code/facebookapi/facebook-java-api/maven-metadata.xml Maven Metadata file for facebook-java-api] controls which version of the Facebook Java API a user gets if they don't specify a version number or if they specify RELEASE as the version.
+
+This section will contain information here about how you can perform a release that does not become the LATEST or RELEASE version in Maven. For example, if you want to produce a Beta release to be made available in the main repository but don't want users to be automatically upgraded if they're asking for the latest release.
+
 ==A) Maven deploy==
 
 *Please note, you'll want to run all these commands from the command line rather than through Eclipse.* Eclipse seems to run mvn in a non-interactive mode and accepts all defaults without prompting the user. You'll see below that we want to use a specific release tag, so it's not appropriate to accept the default.
@@ -98,9 +104,13 @@ mvn release:perform
 
 You'll now be able to see that your release has been uploaded to the [http://mrepo.happyfern.com/maven2/com/google/code/facebookapi/facebook-java-api/ happyfern Maven release repository].
 
-*Point of clarification: how does it get loaded onto repo1.maven.org? I guess it's a sync job... details please.*
+===Getting the release onto repo1.maven.org (central repository)===
 
-NOTE: Include information here about how you can perform a release that does not become the LATEST or RELEASE version in Maven. For example, if you want to produce a Beta release to be made available in the main repository but don't want users to be automatically upgraded if they're asking for the latest release.
+Fern has [http://jira.codehaus.org/browse/MAVENUPLOAD-2224 setup an automatic sync] between happyfern.com and the central repository.
+
+So, there's nothing to do. But anyway, here's the [http://maven.apache.org/guides/mini/guide-central-repository-upload.html central repository upload guide] in case you have any questions.
+
+Your new release should be available on the central repository within a day.
 
 ==B) Make up distribution zip file==
 
