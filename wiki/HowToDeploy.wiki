@@ -85,7 +85,7 @@ mvn release:prepare
 
 ===If something is wrong===
 
-The [http://maven.apache.org/plugins/maven-release-plugin/index.html maven-release-plugin documentation] describes the release:rollback goal. The release:prepare goal kept backups of your old pom.xml files. The release:rollback goal checks these backups in over the top of the ones that were checked in to move onto the next development version. So, the trunk of source control ends up like it was before. However, the tag that you've created will still be there. 
+The [http://maven.apache.org/plugins/maven-release-plugin/index.html maven-release-plugin documentation] describes the *release:rollback* goal. The release:prepare goal kept backups of your old pom.xml files. The release:rollback goal checks these backups in over the top of the ones that were checked in to move onto the next development version. So, the trunk of source control ends up like it was before. However, the tag that you've created will still be there unless you were just doing a dry run. You may also find the release:clean goal useful if you want to start afresh.
 
 ===release:perform===
 
