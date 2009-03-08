@@ -1,5 +1,4 @@
 #summary Deploying SNAPSHOT and release builds to Maven repositories and creating .zip packages to be posted onto this site as featured downloads.
-#sidebar TableOfContents
 
 =Getting SNAPSHOT releases=
 
