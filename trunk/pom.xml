@@ -52,7 +52,6 @@
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
           <tagBase>https://facebook-java-api.googlecode.com/svn/tags/</tagBase>
-          <tag>release-${releaseVersion}</tag>
         </configuration>
       </plugin>
       <plugin>
