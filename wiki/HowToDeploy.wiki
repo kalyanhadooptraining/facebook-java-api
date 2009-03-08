@@ -48,6 +48,8 @@ Once you can connect with OpenSSH, you'll hopefully be ready to go with Maven.
 
 ==A) Maven deploy==
 
+*Please note, you'll want to run all these commands from the command line rather than through Eclipse.* Eclipse seems to run mvn in a non-interactive mode and accepts all defaults without prompting the user. You'll see below that we want to use a specific release tag, so it's not appropriate to accept the default.
+
 ===release:prepare===
 
 From the parent directory (with the parent pom.xml in it) issue the command:
@@ -67,6 +69,12 @@ What is SCM release tag or label for "Facebook Java Library - Parent Pom"? (com.
 What is the new development version for "Facebook Java Library - Parent Pom"? (com.google.code.facebookapi:parent-pom) 2.0.7-SNAPSHOT: :
 What is the new development version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api-schema) 2.0.7-SNAPSHOT: :
 What is the new development version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api) 2.0.7-SNAPSHOT: :
+}}}
+
+Note that I've tried adding the following to the parent pom.xml so that it prompts with the correct default release tag. Unfortunately, the ${releaseVersion} resolves to "null" so you end up with "release-null". Hopefully this will be fixed (or maybe there's another way of doing it) so that this document can be simplified to just "accept all the defaults".
+{{{
+          <!-- Doesn't work. ${releaseVersion} resolves to "null"-->
+          <tag>release-${releaseVersion}</tag>
 }}}
 
 This "dry run" should have boosted your confidence that the process is going to go well. So, now do the release preparation for real:
