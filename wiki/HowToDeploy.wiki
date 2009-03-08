@@ -96,23 +96,29 @@ mvn release:perform
    - this will include jar files, source files and javadoc files (but not distribution file)
    - will have to have proper ssh identities setup so as to not force password or failure
 
+You'll now be able to see that your release has been uploaded to the [http://mrepo.happyfern.com/maven2/com/google/code/facebookapi/facebook-java-api/ happyfern Maven release repository].
+
+*Point of clarification: how does it get loaded onto repo1.maven.org? I guess it's a sync job... details please.*
 
 NOTE: Include information here about how you can perform a release that does not become the LATEST or RELEASE version in Maven. For example, if you want to produce a Beta release to be made available in the main repository but don't want users to be automatically upgraded if they're asking for the latest release.
 
 ==B) Make up distribution zip file==
 
-cd /tags/release-#####
-mvn clean install site deploy
-  * do another clean install
-  * build the site (for dist)
-  * do another deploy
+   * Check out a clean copy from SVN of your tag. This will have a release tag specified in the pom.xml not a -SNAPSHOT tag. The HEAD code is now on the new -SNAPSHOT tag so we can't work with that any further.
 
-cd facebook-java-api
-mvn assembly:assembly
-  * build the assembly (zip distribution file)
+  * cd /tags/release-#####
+  * mvn clean install site site:deploy
+    * do another clean install
+    * build the site (for dist)
+    * deploy the site
+
+  * cd facebook-java-api
+  * mvn assembly:assembly
+    * build the assembly (zip distribution file)
+    * don't worry, all the schema-generated files get pulled in because the main facebook-java-api module declares a dependency on the facebook-java-api-schema module.
 
   * DONE, you should see a message near the end like so:
-    * [INFO] Building zip: /local/fern/work/facebook-java-api/tags/release-#####/facebook-java-api/target/facebook-java-api-#####-bin.zip
+    * [INFO] Building zip: ######/facebook-java-api/tags/release-#####/facebook-java-api/target/facebook-java-api-#####-bin.zip
 
 ==C) Upload to Google Code==
   * upload to: http://code.google.com/p/facebook-java-api/downloads/list
@@ -120,11 +126,9 @@ mvn assembly:assembly
   * un feature old release (to remove from project homepage)
   * maybe mark a really old release as deprecated ( so it will not show up by default )
 
-
 ==D) Update front page==
   * update: http://code.google.com/p/facebook-java-api/admin
     * to say we have new release..
-
 
 ==E) Update wiki==
   * easier to do this through svn.
