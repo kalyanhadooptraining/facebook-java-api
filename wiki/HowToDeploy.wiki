@@ -141,5 +141,4 @@ Your new release should be available on the central repository within a day.
     * to say we have new release..
 
 ==E) Update wiki==
-  * easier to do this through svn.
-  * simply search for the previous version, and edit it as appropriate, then checkin all changes.
+  * update: http://code.google.com/p/facebook-java-api/w/edit/Releases
