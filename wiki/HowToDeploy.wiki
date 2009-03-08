@@ -60,6 +60,13 @@ This "dry run" should have boosted your confidence that the process is going to 
 
 mvn release:prepare
   * this will actually create a directory in source control under /tags/release-#####
+  * it will check in new versions of all your pom.xml files specifying their versions as what you said was your "next development version" with -SNAPSHOT appended.
+
+===If something is wrong===
+
+The [http://maven.apache.org/plugins/maven-release-plugin/index.html maven-release-plugin documentation] describes the release:rollback goal. The release:prepare goal kept backups of your old pom.xml files. The release:rollback goal checks these backups in over the top of the ones that were checked in to move onto the next development version. So, the trunk of source control ends up like it was before. However, the tag that you've created will still be there. 
+
+
 
 mvn release:perform
  - it will do a full build and deploy into repository
