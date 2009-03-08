@@ -48,17 +48,26 @@ Once you can connect with OpenSSH, you'll hopefully be ready to go with Maven.
 
 A) Maven deploy
 
-mvn release:prepare
+From the parent directory (with the parent pom.xml in it) issue the command:
+
+mvn release:prepare -DdryRun=true
   * it will ask what the release version is (3 times) (should use default)
   * it will ask what the tag directory name for release will be, it should be release-#####
-    * this will create a directory under /tags/release-#####
-    * You can see all the [http://code.google.com/p/facebook-java-api/source/browse/tags existing tags here].
+    * You can see all the [http://code.google.com/p/facebook-java-api/source/browse/tags existing tags here] so you can be sure that you're following the naming convention for releases.
   * it will ask what the next development version is (3 times) (should use default)
+
+This "dry run" should have boosted your confidence that the process is going to go well. So, now do the release preparation for real:
+
+mvn release:prepare
+  * this will actually create a directory in source control under /tags/release-#####
 
 mvn release:perform
  - it will do a full build and deploy into repository
    - this will include jar files, source files and javadoc files (but not distribution file)
    - will have to have proper ssh identities setup so as to not force password or failure
+
+
+NOTE: Include information here about how you can perform a release that does not become the LATEST or RELEASE version in Maven. For example, if you want to produce a Beta release to be made available in the main repository but don't want users to be automatically upgraded if they're asking for the latest release.
 
 B) Make up distribution zip file
 
