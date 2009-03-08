@@ -58,6 +58,17 @@ mvn release:prepare -DdryRun=true
     * You can see all the [http://code.google.com/p/facebook-java-api/source/browse/tags existing tags here] so you can be sure that you're following the naming convention for releases.
   * it will ask what the next development version is (3 times) (should use default)
 
+Here's an example of what was prompted when releasing version 2.0.6:
+{{{
+What is the release version for "Facebook Java Library - Parent Pom"? (com.google.code.facebookapi:parent-pom) 2.0.6: :
+What is the release version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api-schema) 2.0.6: :
+What is the release version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api) 2.0.6: :
+What is SCM release tag or label for "Facebook Java Library - Parent Pom"? (com.google.code.facebookapi:parent-pom) parent-pom-2.0.6: : release-2.0.6
+What is the new development version for "Facebook Java Library - Parent Pom"? (com.google.code.facebookapi:parent-pom) 2.0.7-SNAPSHOT: :
+What is the new development version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api-schema) 2.0.7-SNAPSHOT: :
+What is the new development version for "Facebook Java Library"? (com.google.code.facebookapi:facebook-java-api) 2.0.7-SNAPSHOT: :
+}}}
+
 This "dry run" should have boosted your confidence that the process is going to go well. So, now do the release preparation for real:
 
 mvn release:prepare
