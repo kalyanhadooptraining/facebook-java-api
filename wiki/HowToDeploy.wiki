@@ -92,9 +92,9 @@ The [http://maven.apache.org/plugins/maven-release-plugin/index.html maven-relea
 ===release:perform===
 
 mvn release:perform
- - it will do a full build and deploy into repository
-   - this will include jar files, source files and javadoc files (but not distribution file)
-   - will have to have proper ssh identities setup so as to not force password or failure
+  * it will do a full build and deploy into repository
+    * this will include jar files, source files and javadoc files (but not distribution file)
+    * will have to have proper ssh identities setup so as to not force password or failure
 
 You'll now be able to see that your release has been uploaded to the [http://mrepo.happyfern.com/maven2/com/google/code/facebookapi/facebook-java-api/ happyfern Maven release repository].
 
