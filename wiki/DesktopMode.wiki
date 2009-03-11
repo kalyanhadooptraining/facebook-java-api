@@ -48,7 +48,7 @@ The user's local Java downloads the client code and starts executing it. When th
 
 = What does this mean for the Facebook Java API? =
 
-ExtensibleClient currently has a method called setIsDesktop(boolean) which is used to signify that we want to run in Desktop mode. When auth_getSession(token) gets called, the _isDesktop boolean is consulted to work out whether we want to add the generate_session_secret parameter and get a TEMPORARY SECRET value. Assuming that _isDesktop has been set, the cacheSessionSecret ends up getting set to the value of the TEMPORARY SECRET.
+ExtensibleClient currently has a method called setIsDesktop(boolean) which is used to signify that we want to run in Desktop mode. When auth_getSession(token) gets called, the `_`isDesktop boolean is consulted to work out whether we want to add the generate_session_secret parameter and get a TEMPORARY SECRET value. Assuming that `_`isDesktop has been set, the cacheSessionSecret ends up getting set to the value of the TEMPORARY SECRET.
 
 This cacheSessionSecret variable is never used for anything. That's absolutely the correct behaviour. The client continues to generate signatures using the _secret value which was used to setup the client in the first place.
 
