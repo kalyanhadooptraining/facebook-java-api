@@ -28,10 +28,10 @@ What the Facebook Wiki assumes is obvious (it really isn't) is that you'll need 
   * Your website creates a connection to facebook using:
     * API_KEY
     * SECRET - You're on the website, remember, so you can keep this properly secret.
-  * Your website generates an auth token using http://wiki.developers.facebook.com/index.php/Auth.createToken
+  * Your website generates an auth token using [http://wiki.developers.facebook.com/index.php/Auth.createToken Auth.createToken]
   * Your website forwards the user to the Facebook login page to ensure that the user is logged in
   * Facebook redirects the user back to your website after they've logged in
-  * Now that the auth token is verified, your website generates a session token using http://wiki.developers.facebook.com/index.php/Auth.getSession passing the auth token as a parameter.
+  * Now that the auth token is verified, your website generates a session token using [http://wiki.developers.facebook.com/index.php/Auth.getSession Auth.getSession] passing the auth token as a parameter.
     * Crucially, the generate_session_secret parameter is set
   * Your website receives a response which contains:
     * SESSION KEY
