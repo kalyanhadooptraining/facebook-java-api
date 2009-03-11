@@ -18,7 +18,9 @@ Big problem with a Desktop client. If you're going to connect directly from the 
 
 Facebook came up with the concept of a TEMPORARY SECRET which has limited rights and you can distribute safely to a Desktop client to solve this issue.
 
-*Note:* Add details of what you can't do with a TEMPORARY SECRET that you can with a normal SECRET.
+== What can't you do with a TEMPORARY SECRET? ==
+
+Having been allocated a TEMPORARY SECRET, a user cannot call methods such as [http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle Fbml.setRefHandle]. Any method that configures the application itself is out of bounds. The user retains access to the full range of methods to query or update their Facebook information.
 
 == Producing your TEMPORARY SECRET on your server ==
 
@@ -32,7 +34,7 @@ What the Facebook Wiki assumes is obvious (it really isn't) is that you'll need 
   * Your website forwards the user to the Facebook login page to ensure that the user is logged in
   * Facebook redirects the user back to your website after they've logged in
   * Now that the auth token is verified, your website generates a session token using [http://wiki.developers.facebook.com/index.php/Auth.getSession Auth.getSession] passing the auth token as a parameter.
-    * Crucially, the generate_session_secret parameter is set
+    * Crucially, the *generate_session_secret parameter* is set
   * Your website receives a response which contains:
     * SESSION KEY
     * TEMPORARY SECRET - This is what you're going to deliver to the Desktop client
@@ -43,3 +45,25 @@ Then your website dynamically produces a .jnlp file and puts in properties of:
   * TEMPORARY SECRET - The user will never see your real SECRET
 
 The user's local Java downloads the client code and starts executing it. When the user wants to query information from Facebook it uses the API_KEY and TEMPORARY SECRET to get hold of the data.
+
+= What does this mean for the Facebook Java API? =
+
+ExtensibleClient currently has a method called setIsDesktop(boolean) which is used to signify that we want to run in Desktop mode. When auth_getSession(token) gets called, the _isDesktop boolean is consulted to work out whether we want to add the generate_session_secret parameter and get a TEMPORARY SECRET value. Assuming that _isDesktop has been set, the cacheSessionSecret ends up getting set to the value of the TEMPORARY SECRET.
+
+This cacheSessionSecret variable is never used for anything. That's absolutely the correct behaviour. The client continues to generate signatures using the _secret value which was used to setup the client in the first place.
+
+As described above, the server code can use getCacheSessionSecret() to get hold of this value and ultimately give it to the client application.
+
+== Should the Facebook Java API be changed? ==
+
+The ExtensibleClient class currently confuses the use case outlined in this document. There are 2 completely separate use cases:
+
+  * Server calls auth_getSession to get hold of a TEMPORARY SECRET.
+    * The server is in no way "in desktop mode".
+  * Desktop Client instantiates Facebook Java API using the TEMPORARY SECRET.
+    * The Desktop Client is restricted as to which methods it can call.
+    * It's "in desktop mode" and should call setIsDesktop(true) so that its Facebook calls are handled in the best way possible.
+
+== Does the Facebook Java API need to know which methods are out of bounds for TEMPORARY SECRETs? ==
+
+Yes. Some of the methods, for example setFBML, must be called differently if we're using a TEMPORARY SECRET. For those that are not allowed whatsoever, it's perfectly acceptable to have no special code for Desktop mode and let the Facebook server deny access and provide a suitable error message. We don't want to uselessly "optimise" things to avoid a call to the Facebook server in this situation. Calling a function that you're not allowed to call from a Desktop client is a programmer error that will never make it into a production-quality Desktop client.
