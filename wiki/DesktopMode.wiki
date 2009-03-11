@@ -66,7 +66,7 @@ The ExtensibleClient class currently confuses the use case outlined in this docu
 
 Dave Boden's suggested change is to create an overloaded version of auth_getSession with a boolean createTemporarySecret parameter. The method would return a tuple of the SESSION_KEY and the TEMPORARY SECRET. That would allow us to get rid of the cacheSessionSecret which shouldn't be a member variable of ExtensibleClient, it should be short lived. The server should be able to use the same ExtensibleClient object to generate thousands of authentication tokens and session keys; the generated TEMPORARY SECRET doesn't need to be linked to the ExtensibleClient that created it.
 
-The meaning of setIsDesktop(true) would then be clarified in that it means "a TEMPORARY SECRET has been used when creating this Facebook Client; please call Facebook Server methods accordingly. If we could ascertain whether a SECRET was temporary or not, we could happily remove the setIsDesktop() method and derive whether or not to behave like a desktop application.
+The meaning of setIsDesktop(true) would then be clarified in that it means "a TEMPORARY SECRET has been used when creating this Facebook Client; please call Facebook Server methods accordingly". If we could ascertain whether a SECRET was temporary or not, we could happily remove the setIsDesktop() method and derive whether or not to behave like a desktop application.
 
 == Does the Facebook Java API need to know which methods are out of bounds for TEMPORARY SECRETs? ==
 
