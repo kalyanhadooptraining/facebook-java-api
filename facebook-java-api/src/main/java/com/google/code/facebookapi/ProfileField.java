@@ -36,103 +36,133 @@ package com.google.code.facebookapi;
  * Enum for specifying profile-field names. When making API calls, you can generally just pass a set of literal strings specifying field-names if your prefer.
  */
 public enum ProfileField {
-	UID("uid"), // The user ID corresponding to the user info returned. This is always returned, whether included in fields or not, 
-				// and always as the first subelement.
-	ABOUT_ME("about_me"), // Text element corresponding to Facebook 'About Me' profile section. May be blank
-	ACTIVITIES("activities"), // User-entered "Activities" profile field. No guaranteed formatting.
-	AFFILIATIONS("affiliations"), // list of network affiliations, as affiliations_elt elements, each of which contain year, type, status, name, and key child elements.
-									// If no affiliations are returned, this element will be blank. The user's primary network will be listed first.
-	/*
-	 * Notes on each of the children: o type takes the following values: + 1: college network + 2: high school network + 3: work network + 4: geography network o year may
-	 * be blank, depending on the network type o name is the name of the network o key is a unique identifier for the network. The user-to-network relation may be stored.
+	/** The user ID of the user being queried. */
+	UID("uid"),
+	/** The first name of the user being queried. */
+	FIRST_NAME("first_name"),
+	/** The last name of the user being queried. */
+	LAST_NAME("last_name"),
+	/** The full name of the user being queried. */
+	NAME("name"),
+	/**
+	 * The URL to the small-sized profile picture for the user being queried. The image can have a maximum width of 50px and a maximum height of 150px. This URL may be
+	 * blank.
 	 */
-	BIRTHDAY("birthday"), // User-entered "Birthday" profile field. No guaranteed formatting.
-	BOOKS("books"), // User-entered "Favorite Books" profile field. No guaranteed formatting.
-	CURRENT_LOCATION("current_location"), // User-entered "Current Location" profile fields. Contains three children, city, state_or_region, and country.
-	/*
-	 * Notes on each of the children: o city is user-entered, and may be blank o state_or_region is a well-defind two-letter American state or Canadian province
-	 * abbreviation, and may be blank o country is well-defined, and may be blank.
+	PIC_SMALL("pic_small"),
+	/**
+	 * The URL to the largest-sized profile picture for the user being queried. The image can have a maximum width of 200px and a maximum height of 600px. This URL may be
+	 * blank.
 	 */
-	EDUCATION_HISTORY("education_history"), // From the user-entered Education Info profile fields. List of school information, as school_info_elt elements, each of which
-											// contain name, year, and key child elements. If no school information is returned, this element will be blank.
-	EMAIL_HASHES("email_hashes"), // An array containing a set of confirmed email hashes for the user. Emails are registered via the connect.registerUsers API call
-									// and are only confirmed when the user adds your application. The format of each email hash is the crc32 and md5 hashes 
-									// of the email address combined with an underscore (_).
-	/*
-	 * Notes on each of the children: o year is a four-digit year, and may be blank o name is the name of the school, and is user-specified o key is a unique identifier
-	 * for the school network. The user-to-network relation may be stored. This may be blank also.
+	PIC_BIG("pic_big"),
+	/** The URL to the square profile picture for the user being queried. The image can have a maximum width and height of 50px. This URL may be blank. */
+	PIC_SQUARE("pic_square"),
+	/**
+	 * The URL to the medium-sized profile picture for the user being queried. The image can have a maximum width of 100px and a maximum height of 300px. This URL may be
+	 * blank.
 	 */
-	FIRST_NAME("first_name"), // Generated from the user-entered "Name" profile field.
-	HAS_ADDED_APP("has_added_app"), // Indicates whether the user has added the calling application to his Facebook account.
-	HOMETOWN_LOCATION("hometown_location"), // User-entered "Hometown" profile fields. Contains three children, city, state_or_region, and country.
-	/*
-	 * Notes on each of the children: o city is user-entered, and may be blank o state_or_region is a well-defind two-letter American state or Canadian province
-	 * abbreviation, and may be blank o country is well-defined, and may be blank
+	PIC("pic"),
+	/** The networks to which the user being queried belongs. */
+	AFFILIATIONS("affiliations"),
+	/** The time the profile of the user being queried was most recently updated. If the user's profile has not been updated in the past three days, this value will be 0. */
+	PROFILE_UPDATE_TIME("profile_update_time"),
+	/** The time zone where the user being queried is located. */
+	TIMEZONE("timezone"),
+	/** The religion of the user being queried. */
+	RELIGION("religion"),
+	/** The birthday of the user being queried. */
+	BIRTHDAY("birthday"),
+	/** The sex of the user being queried. */
+	SEX("sex"),
+	/** The home town (and state) of the user being queried. */
+	HOMETOWN_LOCATION("hometown_location"),
+	/** The sex of the person the user being queried wants to meet. */
+	MEETING_SEX("meeting_sex"),
+	/** The reason the user being queried wants to meet someone. */
+	MEETING_FOR("meeting_for"),
+	/** The type of relationship for the user being queried. */
+	RELATIONSHIP_STATUS("relationship_status"),
+	/** The user ID of the partner (for example, husband, wife, boyfriend, girlfriend) of the user being queried. */
+	SIGNIFICANT_OTHER_ID("significant_other_id"),
+	/** The political views of the user being queried. */
+	POLITICAL("political"),
+	/** The current location of the user being queried. */
+	CURRENT_LOCATION("current_location"),
+	/** The activities of the user being queried. */
+	ACTIVITIES("activities"),
+	/** The interests of the user being queried. */
+	INTERESTS("interests"),
+	/** Indicates whether the user being queried has logged in to the current application. */
+	IS_APP_USER("is_app_user"),
+	/** The favorite music of the user being queried. */
+	MUSIC("music"),
+	/** The favorite television shows of the user being queried. */
+	TV("tv"),
+	/** The favorite movies of the user being queried. */
+	MOVIES("movies"),
+	/** The favorite books of the user being queried. */
+	BOOKS("books"),
+	/** The favorite quotes of the user being queried. */
+	QUOTES("quotes"),
+	/** More information about the user being queried. */
+	ABOUT_ME("about_me"),
+	/** Information about high school of the user being queried. */
+	HS_INFO("hs_info"),
+	/** Post-high school information for the user being queried. */
+	EDUCATION_HISTORY("education_history"),
+	/** The work history of the user being queried. */
+	WORK_HISTORY("work_history"),
+	/** The number of notes from the user being queried. */
+	NOTES_COUNT("notes_count"),
+	/** The number of wall posts for the user being queried. */
+	WALL_COUNT("wall_count"),
+	/** The current status of the user being queried. */
+	STATUS("status"),
+	/** [Deprecated] This value is now equivalent to is_app_user. */
+	@Deprecated
+	HAS_ADDED_APP("has_added_app"),
+	/**
+	 * The user's Facebook Chat status. Returns a string, one of active, idle, offline, or error (when Facebook can't determine presence information on the server side).
+	 * The query does not return the user's Facebook Chat status when that information is restricted for privacy reasons.
 	 */
-	HS_INFO("hs_info"), // User-entered high school information. Contains five children, hs1_name, hs2_name, grad_year, hs1_key, and hs2_key.
-	/*
-	 * Notes on each of the children: o hs1_name is well-defined, and may be left blank o hs2_name is well-defined, and may be left blank, though may not have information
-	 * if is blank. o year is a four-digit year, or may be blank o hs1_key is a unique key representing that school, and is not blank if and only if hs1_name is not
-	 * blank. o hs2_key is a unique key representing that school, and is not blank if and only if hs2_name is not blank.
+	ONLINE_PRESENCE("online_presence"),
+	/** The two-letter country code for the user's locale. Codes used are the ISO 3166 alpha 2 code list. */
+	LOCALE("locale"),
+	/** The proxied wrapper for a user's email address. */
+	PROXIED_EMAIL("proxied_email"),
+	/** The URL to a user's profile. */
+	PROFILE_URL("profile_url"),
+	/**
+	 * An array containing a set of confirmed email hashes for the user. Emails are registered via the connect.registerUsers API call and are only confirmed when the user
+	 * adds your application. The format of each email hash is the crc32 and md5 hashes of the email address combined with an underscore (_).
 	 */
-	INTERESTS("interests"), // User-entered "Interests" profile field. No guaranteed formatting.
-	IS_APP_USER("is_app_user"), // Indicates whether the user has used the calling application.
-	LAST_NAME("last_name"), // is generated from the user-entered "Name" profile field.
-	LOCALE("locale"), // This is the current locale code in which the user has chosen to browse Facebook. The basic format is LL_CC, where LL is a two-letter 
-						// language code, and CC is a two-letter country code. For instance, 'en_US' represents US English.
-	MEETING_FOR("meeting_for"), // list of desired relationship types corresponding to the "Looking For" profile element. If no relationship typed are specified, the
-								// meeting_for element will be empty. Otherwise represented as a list of meeting_for_elt child text elements, which may each contain one
-								// of the following strings: Friendship, A Relationship, Dating, Random Play, Whatever I can get
-	MEETING_SEX("meeting_sex"), // list of desired relationship genders corresponding to the "Interested In" profile element. If no relationship genders are specified,
-								// the meeting_sex element will be empty. Otherwise represented as a list of meeting_sex_elt child text elements, which may each contain
-								// one of the following strings: Male, Female
-	MOVIES("movies"), // User-entered "Favorite Movies" profile field. No guaranteed formatting.
-	MUSIC("music"), // User-entered "Favorite Music" profile field. No guaranteed formatting.
-	NAME("name"), // User-entered "Name" profile field. May not be blank.
-	NOTES_COUNT("notes_count"), // Total number of notes written by the user.
-	PIC("pic"), // URL of user profile picture, with max width 100px and max height 300px. May be blank.
-	PIC_WITH_LOGO("pic_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 100px and max height 300px. May be blank.
-	PIC_BIG("pic_big"), // URL of user profile picture, with max width 200px and max height 600px. May be blank.
-	PIC_BIG_WITH_LOGO("pic_big_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 200px and max height 600px. May be blank.
-	PIC_SMALL("pic_small"), // URL of user profile picture, with max width 50px and max height 150px. May be blank.
-	PIC_SMALL_WITH_LOGO("pic_small_with_logo"), // URL of user profile picture with a Facebook logo overlaid, with max width 50px and max height 150px. May be blank.
-	PIC_SQUARE("pic_square"), // URL of a square section of the user profile picture, with width 50px and height 50px. May be blank.
-	PIC_SQUARE_WITH_LOGO("pic_square_with_logo"), // URL of a square section of the user profile picture with a Facebook logo overlaid, with width 50px and height 50px. May be blank.	
-	POLITICAL("political"), // User-entered "Political View" profile field. Is either blank or one of the following strings: Very Liberal, Liberal, Moderate,
-							// Conservative, Very Conservative, Apathetic, Liberation, Other
-	PROFILE_UPDATE_TIME("profile_update_time"), // Time (in seconds since epoch) that the user's profile was last updated.
-	PROFILE_URL("profile_url"), // URL of the Facebook profile of the user.
-	PROXIED_EMAIL("proxied_email"), // A proxied wrapper alternative for contacting the user through email, instead of directly calling notifications.sendEmail.
-	QUOTES("quotes"), // User-entered "Favorite Quotes" profile field. No guaranteed formatting.
-	RELATIONSHIP_STATUS("relationship_status"), // User-entered "Relationship Status" profile field. Is either blank or one of the following strings: Single, In a
-												// Relationship, In an Open Relationship, Engaged, Married, It's Complicated
-	RELIGION("religion"), // User-entered "Religious Views" profile field. No guaranteed formatting.
-	SIGNIFICANT_OTHER_ID("significant_other_id"), // the id of the person the user is in a relationship with. Only shown if both people in the relationship are users of
-													// the application making the request.
-	SEX("sex"), // User-entered "Sex" profile file. Either "Male", "Female", or left blank.
-	STATUS("status"), // Contains a "message" child with user-entered status information, as well as a "time" child with the time (in seconds since epoch) at which the
-						// status message was set.
-	TIMEZONE("timezone"), // offset from GMT (e.g. California is -8).
-	TV("tv"), // User-entered "Favorite TV Shows" profile field. No guaranteed formatting.
-	WALL_COUNT("wall_count"), // Total number of posts to the user's wall.
-	WORK_HISTORY("work_history"), // list of work history information, as work_info elements, each of which contain location, company_name, position, description,
-									// start_date and end_date child elements. If no work history information is returned, this element will be blank.
-	/*
-	 * Notes on each of the children: o location is user-entered, and has a similar format to current_location and hometown_location above o company_name is user-entered,
-	 * and does not necessarily correspond to a Facebook work network o description is user-entered, and may be blank o position is user-entered, and may be blank o
-	 * start_date is of the form YYYY-MM, YYYY, or MM. It may be blank o end_date is of the form YYYY-MM, YYYY, or MM. It may be blank.
+	EMAIL_HASHES("email_hashes"),
+	/**
+	 * The URL to the small-sized profile picture for the user being queried. The image can have a maximum width of 50px and a maximum height of 150px, and is overlaid
+	 * with the Facebook favicon. This URL may be blank.
 	 */
+	PIC_SMALL_WITH_LOGO("pic_small_with_logo"),
+	/**
+	 * The URL to the largest-sized profile picture for the user being queried. The image can have a maximum width of 200px and a maximum height of 600px, and is overlaid
+	 * with the Facebook favicon. This URL may be blank.
+	 */
+	PIC_BIG_WITH_LOGO("pic_big_with_logo"),
+	/**
+	 * The URL to the square profile picture for the user being queried. The image can have a maximum width and height of 50px, and is overlaid with the Facebook favicon.
+	 * This URL may be blank.
+	 */
+	PIC_SQUARE_WITH_LOGO("pic_square_with_logo"),
+	/**
+	 * The URL to the medium-sized profile picture for the user being queried. The image can have a maximum width of 100px and a maximum height of 300px, and is overlaid
+	 * with the Facebook favicon. This URL may be blank.
+	 */
+	PIC_WITH_LOGO("pic_with_logo"),
+	/** A comma delimited list of Demographic Restrictions types a user is allowed to access. Currently, alcohol is the only type that can get returned. */
+	ALLOWED_RESTRICTIONS("allowed_restrictions"),
+	/** Indicates whether or not Facebook has verified the user. */
+	VERIFIED("verified")
+
 	;
-	/*
-	 * Privacy note: For any user submitted to this method, the following user fields will be visible to an application only if that user has signed up for that
-	 * application:
-	 * 
-	 * "meeting_for" "meeting_sex" "religion" "significant_other_id"
-	 * 
-	 * Additionally, the significant_other_id field is only shown if the user contained in that field has signed up for that application.
-	 * 
-	 * The other fields are limited only by the user's privacy settings on the Facebook site.
-	 */
+
 	private String fieldName;
 
 	ProfileField( String name ) {
@@ -159,4 +189,5 @@ public enum ProfileField {
 	public boolean isName( String name ) {
 		return toString().equals( name );
 	}
+
 }
