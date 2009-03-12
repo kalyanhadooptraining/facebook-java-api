@@ -3,7 +3,7 @@
 
 = Introduction =
 
-The Desktop Authentication information on the official Facebook Wiki really doesn't explain what it means to authenticate a desktop application and why there's a slightly different process in place.
+The [http://wiki.developers.facebook.com/index.php/Login_Desktop_App Desktop Authentication information on the official Facebook Wiki] really doesn't explain what it means to authenticate a desktop application and why there's a slightly different process in place.
 
 = Share your API_KEY but not your SECRET =
 
