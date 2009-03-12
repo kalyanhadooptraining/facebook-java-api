@@ -242,13 +242,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			if ( val instanceof JSONArray ) {
 				try {
 					// sometimes facebook will wrap its primitive types in JSON markup
-					return (String) ( (JSONArray) val ).get( 0 );
+					return extractString( ( (JSONArray) val ).get( 0 ) );
 				}
 				catch ( Exception e ) {
 					log.error( "Exception: " + e.getMessage(), e );
 				}
 			}
-			return (String) val;
+			return String.valueOf( val );
 		}
 		catch ( ClassCastException cce ) {
 			log.error( "Exception: " + cce.getMessage(), cce );
@@ -271,7 +271,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( this._isDesktop ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
-		
+
 		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		try {
 			this.cacheSessionKey = d.getString( "session_key" );
