@@ -64,7 +64,9 @@ The ExtensibleClient class currently confuses the use case outlined in this docu
     * The Desktop Client is restricted as to which methods it can call.
     * It's "in desktop mode" and should call setIsDesktop(true) so that its Facebook calls are handled in the best way possible.
 
-Dave Boden's suggested change is to create an overloaded version of auth_getSession with a boolean createTemporarySecret parameter. The method would return a tuple of the SESSION_KEY and the TEMPORARY SECRET. That would allow us to get rid of the cacheSessionSecret which shouldn't be a member variable of ExtensibleClient, it should be short lived. The server should be able to use the same ExtensibleClient object to generate thousands of authentication tokens and session keys; the generated TEMPORARY SECRET doesn't need to be linked to the ExtensibleClient that created it.
+Dave Boden's suggested change is raised in [http://code.google.com/p/facebook-java-api/issues/detail?id=179 issue 179].
+
+We could go further, to create an overloaded version of auth_getSession with a boolean createTemporarySecret parameter. The method would return a tuple of the SESSION_KEY and the TEMPORARY SECRET. That would allow us to get rid of the cacheSessionSecret which shouldn't really be a member variable of ExtensibleClient, it should be short lived. The server should be able to use the same ExtensibleClient object to generate thousands of authentication tokens and session keys; the generated TEMPORARY SECRET doesn't need to be linked to the ExtensibleClient that created it. However, this is too much change for now and doesn't fit with the way that auth_getSession() already caches the user ID that Facebook provides.
 
 The meaning of setIsDesktop(true) would then be clarified in that it means "a TEMPORARY SECRET has been used when creating this Facebook Client; please call Facebook Server methods accordingly". If we could ascertain whether a SECRET was temporary or not, we could happily remove the setIsDesktop() method and derive whether or not to behave like a desktop application.
 
