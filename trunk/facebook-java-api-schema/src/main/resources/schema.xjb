@@ -8,5 +8,10 @@
     <bindings node="//xs:element[@name='batch_run_response']/xs:complexType/xs:sequence">
         <property name="results"/>
     </bindings>
+    <!--
+    <bindings node="//xs:complexType[@name='custom_tag']/xs:sequence/xs:element[@name='parameter']">
+        <property name="param"/>
+    </bindings>
+    -->
 </bindings>
 
