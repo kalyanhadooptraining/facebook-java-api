@@ -1,48 +1,32 @@
 package com.google.code.facebookapi;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
 
 public class Issue118AppGetInfoTest {
 
 	private static final String stuffAPIKEY_ExistsInDirectory = "16cce4f13025b2bb4517b3890c4f68b9";
 	private static final String stuffDevAPIKEY_NotInDirectory = "985c882028dc9bd8438fc349792fdc6b";
 
-	@Test
-	public void testAppInfo() throws Exception {
-
-		IFacebookRestClient<Object> client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
-
-		// Stuff application
-		Object response = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
-
-		ApplicationGetPublicInfoResponse appInfo = (ApplicationGetPublicInfoResponse) response;
-
-		assertNotNull( appInfo.getAppId() );
-		assertNotNull( appInfo.getApiKey() );
-		assertNotNull( appInfo.getCanvasName() );
-		assertNotNull( appInfo.getCompanyName() );
-		assertNotNull( appInfo.getIconUrl() );
-		assertNotNull( appInfo.getLogoUrl() );
-		assertNotNull( appInfo.getDescription() );
-		assertTrue( appInfo.getDailyActivePercentage() > -1 );
-		assertTrue( appInfo.getDailyActiveUsers() > -1 );
-		assertTrue( appInfo.getWeeklyActiveUsers() > -1 );
-		assertTrue( appInfo.getMonthlyActiveUsers() > -1 );
-
-		// Now lookup by application id
-		response = client.application_getPublicInfoById( appInfo.getAppId() );
-
-		appInfo = (ApplicationGetPublicInfoResponse) response;
-		assertEquals( stuffAPIKEY_ExistsInDirectory, appInfo.getApiKey() );
-	}
+	/*
+	 * @Test public void testAppInfo() throws Exception {
+	 * 
+	 * IFacebookRestClient<Object> client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
+	 *  // Stuff application Object response = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
+	 * 
+	 * ApplicationGetPublicInfoResponse appInfo = (ApplicationGetPublicInfoResponse) response;
+	 * 
+	 * assertNotNull( appInfo.getAppId() ); assertNotNull( appInfo.getApiKey() ); assertNotNull( appInfo.getCanvasName() ); assertNotNull( appInfo.getCompanyName() );
+	 * assertNotNull( appInfo.getIconUrl() ); assertNotNull( appInfo.getLogoUrl() ); assertNotNull( appInfo.getDescription() ); assertTrue(
+	 * appInfo.getDailyActivePercentage() > -1 ); assertTrue( appInfo.getDailyActiveUsers() > -1 ); assertTrue( appInfo.getWeeklyActiveUsers() > -1 ); assertTrue(
+	 * appInfo.getMonthlyActiveUsers() > -1 );
+	 *  // Now lookup by application id response = client.application_getPublicInfoById( appInfo.getAppId() );
+	 * 
+	 * appInfo = (ApplicationGetPublicInfoResponse) response; assertEquals( stuffAPIKEY_ExistsInDirectory, appInfo.getApiKey() ); }
+	 */
 
 	/**
 	 * This test tries to get the public info for an application that exists in facebook but isn't published in the application directory. We expect a failure
