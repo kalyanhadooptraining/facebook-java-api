@@ -8,7 +8,7 @@ The schema.xsd file used to generate the Java XML Bindings (JAXB) differs slight
 
 We can use the tools provided by google code to compare the latest version of our schema.xsd with the facebook.xsd that was downloaded from facebook.com and put in our source repository:
 
-  * [http://code.google.com/p/facebook-java-api/source/diff?spec=svn607&r=541&format=side&path=/trunk/facebook-java-api-schema/src/main/resources/schema.xsd&old_path=/trunk/facebook-java-api-schema/facebook.xsd&old=404# Compare files]
+  * [http://code.google.com/p/facebook-java-api/source/diff?spec=svn673&r=673&format=side&path=/trunk/facebook-java-api-schema/src/main/resources/schema.xsd&old_path=/trunk/facebook-java-api-schema/facebook.xsd&old=673# Compare files]
 
 = Details =
 
