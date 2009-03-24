@@ -1151,7 +1151,7 @@
     <xsd:element name="type" type="xsd:int" />
     <xsd:element name="summary" type="xsd:string" />
     <xsd:element name="description" type="xsd:string" />
-    <xsd:element name="param">
+    <xsd:element name="parameter">
       <xsd:complexType>
         <xsd:sequence minOccurs="0" maxOccurs="unbounded">
           <xsd:element name="custom_tag_parameter" type="custom_tag_parameter" minOccurs="0" maxOccurs="unbounded" />
