@@ -950,6 +950,7 @@
     <xsd:element name="daily_active_users" type="xsd:int" />
     <xsd:element name="weekly_active_users" type="xsd:int" />
     <xsd:element name="monthly_active_users" type="xsd:int" />
+    <xsd:element name="daily_active_percentage" type="xsd:int" />
   </xsd:sequence>
 </xsd:complexType>
 
