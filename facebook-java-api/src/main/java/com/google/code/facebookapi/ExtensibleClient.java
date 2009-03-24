@@ -2029,7 +2029,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	public boolean sms_canSend( Long userId ) throws FacebookException {
-		return extractBoolean( callMethod( FacebookMethod.SMS_CAN_SEND, newPair( "uid", userId ) ) );
+		int out = extractInt( callMethod( FacebookMethod.SMS_CAN_SEND, newPair( "uid", userId ) ) );
+		return out == 0;
 	}
 
 	public Integer sms_send( String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException {
