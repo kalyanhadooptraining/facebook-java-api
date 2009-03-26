@@ -5,6 +5,12 @@
 
 The [http://wiki.developers.facebook.com/index.php/Login_Desktop_App Desktop Authentication information on the official Facebook Wiki] really doesn't explain what it means to authenticate a desktop application and why there's a slightly different process in place.
 
+= Is your application set to Desktop? =
+
+It's very important that your application is set to the correct mode. If it isn't set to desktop mode, the Facebook server won't understand when you try to pass a Session Secret. You'll get an "Invalid Signature" error because Facebook is not expecting a Session Secret. Conversely, if you're passing a normal SECRET through and your application is set to Desktop, you'll see errors.
+
+[http://facebook-java-api.googlecode.com/svn/wiki/images/DesktopModeSettings.png]
+
 = Share your API_KEY but not your SECRET =
 
 Imagine you have a desktop application written in Java Swing (the same principles apply to C# and other clients, but this is a page on the Facebook Java API Wiki, after all) which you want to connect to the Facebook API. If you want to retrieve information using even the sessionless methods, you'll still need to provide your Java Facebook Client with:
