@@ -323,9 +323,13 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
+		return auth_getSession( authToken, false );
+	}
+	
+	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "auth_token", authToken ) );
-		if ( this._isDesktop ) {
+		if ( generateSessionSecret ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
 		
@@ -334,7 +338,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		this.cacheSessionKey = d.getSessionKey();
 		this.cacheUserId = d.getUid();
 		this.cacheSessionExpires = (long) d.getExpires();
-		if ( this._isDesktop ) {
+		if ( generateSessionSecret ) {
 			this.cacheSessionSecret = d.getSecret();
 		}
 		return this.cacheSessionKey;

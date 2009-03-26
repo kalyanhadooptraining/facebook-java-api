@@ -144,6 +144,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this.cacheSessionKey = sessionKey;
 		this._apiKey = apiKey;
 		this._secret = secret;
+		if(secret.endsWith( "__" )) {
+			_isDesktop = true;
+		}
 		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
 		this._timeout = -1;
 		this._readTimeout = -1;
@@ -424,7 +427,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	private String generateSignature( List<String> params, boolean requiresSession ) {
-		// String secret = ( isDesktop() && requiresSession ) ? cacheSessionSecret : _secret;
 		String secret = _secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
@@ -524,8 +526,8 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			return null;
 		}
 
-		boolean doHttps = isDesktop() && FacebookMethod.AUTH_GET_SESSION.equals( method );
-		boolean doEncode = true;
+		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) &&
+		                  "true".equals( params.get( "generate_session_secret" ) );
 		try {
 			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return parseCallResult( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ), method );
@@ -785,10 +787,6 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		catch ( MalformedURLException ex ) {
 			throw runtimeException( ex );
 		}
-	}
-
-	public void setIsDesktop( boolean isDesktop ) {
-		this._isDesktop = isDesktop;
 	}
 
 	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {

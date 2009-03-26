@@ -44,7 +44,6 @@ public class Issue161FriendsGetSessionless {
 		
 
 		FacebookJsonRestClient client = new FacebookJsonRestClient( FB_APP_API_KEY, FB_APP_SECRET );
-		client.setIsDesktop( true );
 
 		String token = client.auth_createToken();
 		System.out.println( "Token: " + token );

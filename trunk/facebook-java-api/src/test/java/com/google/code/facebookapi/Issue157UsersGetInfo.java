@@ -16,7 +16,6 @@ public class Issue157UsersGetInfo {
 	@Test
 	public void testUsersGetInfo() throws FacebookException, IOException {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
-		client.setIsDesktop( true );
 
 		long logged = client.users_getLoggedInUser();
 		List<Long> list_u = Collections.singletonList( logged );
