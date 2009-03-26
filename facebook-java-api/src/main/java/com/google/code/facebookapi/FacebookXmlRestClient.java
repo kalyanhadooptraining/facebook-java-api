@@ -184,9 +184,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 *            the token returned by auth_createToken or passed back to your callback_url.
 	 */
 	public String auth_getSession( String authToken ) throws FacebookException {
+		return auth_getSession( authToken, false );
+	}
+	
+	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "auth_token", authToken ) );
-		if ( this._isDesktop ) {
+		if ( generateSessionSecret ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
@@ -194,10 +198,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
-		if ( this._isDesktop ) {
+		if ( generateSessionSecret ) {
 			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
-		return this.cacheSessionKey;
+		return this.cacheSessionKey;		
 	}
 
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {

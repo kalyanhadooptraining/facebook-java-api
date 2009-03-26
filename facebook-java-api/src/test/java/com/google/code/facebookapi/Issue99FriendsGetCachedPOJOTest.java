@@ -16,7 +16,6 @@ public class Issue99FriendsGetCachedPOJOTest {
 	@Test
 	public void testFriendsGetCachedReturnsPOJO() throws Exception {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
-		client.setIsDesktop( true );
 
 		// keep track of the logged in user id
 		Long userId = client.users_getLoggedInUser();
