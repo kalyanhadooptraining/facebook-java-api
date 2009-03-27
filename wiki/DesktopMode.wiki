@@ -70,7 +70,7 @@ The ExtensibleClient class currently confuses the use case outlined in this docu
     * The client can auto-dectect that it is in desktop mode because the TEMPORARY SECRET conveniently is a different length (24 chars) to the normal secret (32 chars) and always ends with 2 underscores __
     * The Desktop Client is restricted as to which methods it can call.
 
-The meaning of *get*IsDesktop() is now clarified in that it means "a TEMPORARY SECRET has been used when creating this Facebook Client; please call Facebook Server methods accordingly". We don't need setIsDesktop() any more so it has ben removed.
+The meaning of getIsDesktop() is now clarified in that it means "a TEMPORARY SECRET has been used when creating this Facebook Client; please call Facebook Server methods accordingly". We don't need setIsDesktop() any more so it has ben removed.
 
 Dave Boden's suggested change is raised in [http://code.google.com/p/facebook-java-api/issues/detail?id=179 issue 179].
 
