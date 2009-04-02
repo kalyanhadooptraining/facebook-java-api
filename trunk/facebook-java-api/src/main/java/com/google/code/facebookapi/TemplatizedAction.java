@@ -56,10 +56,6 @@ public class TemplatizedAction {
 
 	public static final String UID_TOKEN = "http://UID/";
 
-	private TemplatizedAction() {
-		// empty constructor not allowed, at a minimum the titleTemplate parameter is needed
-	}
-
 	/**
 	 * Constructor
 	 * 
@@ -201,13 +197,13 @@ public class TemplatizedAction {
 	 * @param pics
 	 *            the pictures to set.
 	 */
-	public void setPictures( List<? extends IPair<Object,URL>> pics ) {
+	public void setPictures( List<IPair<Object,URL>> pics ) {
 		if ( ( pics == null ) || ( pics.isEmpty() ) ) {
 			this.pictures = null;
 			return;
 		}
 		if ( pics.size() <= 4 ) {
-			this.pictures = (List<IPair<Object,URL>>) pics;
+			this.pictures = pics;
 		}
 		if ( pics.size() > 4 ) {
 			int count = 0;

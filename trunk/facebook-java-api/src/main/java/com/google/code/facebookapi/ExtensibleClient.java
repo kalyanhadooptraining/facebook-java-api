@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
  * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/> For continually updated
  * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
+@SuppressWarnings("unchecked") //To stop all the warnings caused by varargs in callMethod(...)
 public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
@@ -209,7 +210,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		cacheSessionSecret = key;
 	}
 
-	private static CharSequence delimit( Iterable iterable ) {
+	private static CharSequence delimit( Iterable<?> iterable ) {
 		if ( iterable == null ) {
 			return null;
 		}
@@ -863,7 +864,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 	}
 
 	protected boolean templatizedFeedHandler( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
-			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds, Long pageId ) throws FacebookException {
+			Collection<? extends IPair<?,URL>> pictures, String targetIds, Long pageId ) throws FacebookException {
 		assert ( pictures == null || pictures.size() <= 4 );
 
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 15 );
@@ -880,7 +881,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParamIfNotBlank( "body_general", bodyGeneral, params );
 		if ( pictures != null ) {
 			int count = 1;
-			for ( IPair picture : pictures ) {
+			for ( IPair<?, URL> picture : pictures ) {
 				String url = picture.getFirst().toString();
 				if ( url.startsWith( TemplatizedAction.UID_TOKEN ) ) {
 					url = url.substring( TemplatizedAction.UID_TOKEN.length() );
@@ -1897,7 +1898,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return false;
 	}
 
-	protected static boolean addParamDelimitIfNotBlankEmpty( String name, Iterable value, Collection<Pair<String,CharSequence>> params ) {
+	protected static boolean addParamDelimitIfNotBlankEmpty( String name, Iterable<?> value, Collection<Pair<String,CharSequence>> params ) {
 		return addParamIfNotBlank( name, delimit( value ), params );
 	}
 
@@ -2394,7 +2395,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			}
 		} else {
 			JSONObject j = (JSONObject) temp;
-			Iterator it = j.keys();
+			Iterator<?> it = j.keys();
 			while ( it.hasNext() ) {
 				try {
 					results.add( j.get( (String) it.next() ).toString() );

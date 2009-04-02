@@ -333,7 +333,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
 		
-		JAXBElement obj = (JAXBElement) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
+		JAXBElement<?> obj = (JAXBElement<?>) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		SessionInfo d = (SessionInfo) obj.getValue();
 		this.cacheSessionKey = d.getSessionKey();
 		this.cacheUserId = d.getUid();
@@ -366,7 +366,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 			String message = error.getErrorMsg();
 			throw new FacebookException( errorCode, message );
 		} else if ( res instanceof JAXBElement ) {
-			JAXBElement jbe = (JAXBElement) res;
+			JAXBElement<?> jbe = (JAXBElement<?>) res;
 			if ( FacebookApiException.class.equals( jbe.getDeclaredType() ) ) {
 				FacebookApiException error = (FacebookApiException) jbe.getValue();
 				int errorCode = error.getErrorCode();
@@ -452,6 +452,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		return resp.getListing();
 	}
 
+	@SuppressWarnings("unchecked")
 	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException {
 		JSONArray props = new JSONArray();
 		for ( ApplicationProperty property : properties ) {

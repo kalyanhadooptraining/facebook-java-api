@@ -38,6 +38,7 @@ import java.net.URL;
  * 
  * @see IFacebookRestClient
  */
+@SuppressWarnings("serial")
 public class FeedImage extends Pair<Object,URL> implements IFeedImage {
 
 	/**
