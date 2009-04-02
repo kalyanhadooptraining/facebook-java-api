@@ -40,6 +40,7 @@ import org.json.JSONObject;
 /**
  * This utility represents a set of application properties for use in the facebook.admin_setApplicatoinProperty API call.
  */
+@SuppressWarnings("serial")
 public class ApplicationPropertySet implements Serializable {
 
 	private Map<ApplicationProperty,Boolean> _attributesBool;

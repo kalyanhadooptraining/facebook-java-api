@@ -37,6 +37,7 @@ import java.io.Serializable;
  * @param <V>
  *            second element in the pair.
  */
+@SuppressWarnings("serial")
 public class Pair<N,V> implements IPair<N,V>, Serializable {
 
 	/**

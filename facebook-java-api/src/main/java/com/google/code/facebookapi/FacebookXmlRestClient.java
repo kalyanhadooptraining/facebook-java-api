@@ -315,6 +315,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 				+ "Please use an instance of FacebookJaxbRestClient instead." );
 	}
 
+	@SuppressWarnings("unchecked")
 	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException {
 		JSONArray props = new JSONArray();
 		for ( ApplicationProperty property : properties ) {

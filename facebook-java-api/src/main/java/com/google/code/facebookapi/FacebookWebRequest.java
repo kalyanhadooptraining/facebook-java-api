@@ -46,6 +46,7 @@ public class FacebookWebRequest<T> {
 		return new FacebookWebRequest<Object>( request, apiKey, secret, new FacebookJaxbRestClient( apiKey, secret ) );
 	}
 
+	@SuppressWarnings("unchecked")
 	protected FacebookWebRequest( HttpServletRequest request, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.request = request;
 		this.apiKey = apiKey;

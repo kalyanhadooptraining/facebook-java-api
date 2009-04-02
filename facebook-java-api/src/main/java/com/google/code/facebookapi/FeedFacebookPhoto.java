@@ -9,6 +9,7 @@ import java.net.URL;
  * @see IFacebookRestClient#photos_get
  * @see FacebookRestClient#handleFeedImages
  */
+@SuppressWarnings("serial")
 public class FeedFacebookPhoto extends Pair<Object,URL> implements IFeedImage {
 
 	/**

@@ -47,6 +47,7 @@ public class FacebookWebappHelper<T> {
 	private static String FACEBOOK_URL_PATTERN = "^https?://([^/]*\\.)?facebook\\.com(:\\d+)?/.*";
 
 	/** @deprecated please use different constructor, or factory methods */
+	@SuppressWarnings("unchecked")
 	@Deprecated
 	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret ) {
 		this( request, response, apiKey, secret, (IFacebookRestClient<T>) new FacebookXmlRestClient( apiKey, secret ) );
@@ -335,19 +336,6 @@ public class FacebookWebappHelper<T> {
 	}
 
 	/**
-	 * Returns the url of the currently requested page
-	 */
-	private String currentUrl() {
-		String url = request.getScheme() + "://" + request.getServerName();
-		int port = request.getServerPort();
-		if ( port != 80 ) {
-			url += ":" + port;
-		}
-		url += request.getRequestURI();
-		return url;
-	}
-
-	/**
 	 * Forces the user to log in to this application. If the user hasn't logged in yet, this method issues a url redirect.
 	 * 
 	 * @param next
@@ -479,6 +467,7 @@ public class FacebookWebappHelper<T> {
 	/**
 	 * returns a String->String map of the request parameters. It doesn't matter if the request method is GET or POST.
 	 */
+	@SuppressWarnings("unchecked")
 	private Map<String,String> _getRequestParams() {
 		Map<String,String> results = new HashMap<String,String>();
 		Map<String,String[]> map = request.getParameterMap();
