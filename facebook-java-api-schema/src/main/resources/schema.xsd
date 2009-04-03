@@ -621,8 +621,11 @@
     <xsd:element name="name" type="xsd:string" minOccurs="0" />
     <xsd:element name="notes_count" type="xsd:int" minOccurs="0" nillable="true" />
     <xsd:element name="pic" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="pic_big" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_big_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="pic_small" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_small_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="political" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="profile_update_time" type="time" minOccurs="0" nillable="true" />
     <xsd:element name="profile_url" type="xsd:string" minOccurs="0" nillable="true" />
@@ -645,6 +648,7 @@
       </xsd:complexType>
     </xsd:element>
     <xsd:element name="pic_square" type="xsd:string" minOccurs="0" nillable="true" />
+    <xsd:element name="pic_square_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
     <xsd:element name="has_added_app" type="xsd:boolean" minOccurs="0" nillable="true" />
     <xsd:element name="email_hashes" minOccurs="0" nillable="true">
       <xsd:complexType>
