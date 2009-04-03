@@ -233,7 +233,7 @@ public class FacebookWebappHelper<T> {
 		if ( age > 0 ) {
 			cookie.setMaxAge( age );
 		}
-		cookie.setPath( request.getContextPath() );
+		cookie.setPath( request.getContextPath() + "/" );
 		response.addCookie( cookie );
 	}
 
