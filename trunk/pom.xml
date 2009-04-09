@@ -67,16 +67,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>${test.skip}</skip>
-          <systemProperties>
-            <property>
-              <name>APIKEY</name>
-              <value>${APIKEY}</value>
-            </property>
-            <property>
-              <name>SECRET</name>
-              <value>${SECRET}</value>
-            </property>
-          </systemProperties>
         </configuration>
       </plugin>
     </plugins>
