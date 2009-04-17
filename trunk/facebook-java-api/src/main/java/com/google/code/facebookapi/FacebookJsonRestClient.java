@@ -275,7 +275,6 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 		if ( generateSessionSecret ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
-
 		JSONObject d = (JSONObject) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		try {
 			this.cacheSessionKey = d.getString( "session_key" );
@@ -286,7 +285,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			}
 		}
 		catch ( Exception ex ) {
-			ex.printStackTrace();
+			log.error( "Exception: auth_getSession", ex );
 		}
 		return this.cacheSessionKey;
 	}
@@ -323,7 +322,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				}
 			}
 			catch ( Exception ignored ) {
-				ignored.printStackTrace();
+				// ignored.printStackTrace();
 			}
 		} else {
 			if ( this.rawResponse.startsWith( "\"" ) ) {
@@ -583,7 +582,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 						}
 					}
 					catch ( Exception ignored ) {
-						ignored.printStackTrace();
+						// ignored.printStackTrace();
 						if ( result.size() < count + 1 ) {
 							result.add( null );
 						}
