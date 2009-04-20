@@ -34,6 +34,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -48,7 +49,8 @@ import org.w3c.dom.NodeList;
  * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/> For continually updated
  * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
-@SuppressWarnings("unchecked") //To stop all the warnings caused by varargs in callMethod(...)
+@SuppressWarnings("unchecked")
+// To stop all the warnings caused by varargs in callMethod(...)
 public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
@@ -145,7 +147,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		this.cacheSessionKey = sessionKey;
 		this._apiKey = apiKey;
 		this._secret = secret;
-		if(secret.endsWith( "__" )) {
+		if ( secret.endsWith( "__" ) ) {
 			_isDesktop = true;
 		}
 		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
@@ -527,8 +529,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 			return null;
 		}
 
-		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) &&
-		                  "true".equals( params.get( "generate_session_secret" ) );
+		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
 			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return parseCallResult( new ByteArrayInputStream( rawResponse.getBytes( "UTF-8" ) ), method );
@@ -881,7 +882,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		addParamIfNotBlank( "body_general", bodyGeneral, params );
 		if ( pictures != null ) {
 			int count = 1;
-			for ( IPair<?, URL> picture : pictures ) {
+			for ( IPair<?,URL> picture : pictures ) {
 				String url = picture.getFirst().toString();
 				if ( url.startsWith( TemplatizedAction.UID_TOKEN ) ) {
 					url = url.substring( TemplatizedAction.UID_TOKEN.length() );
@@ -1700,7 +1701,7 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.LIVEMESSAGE_SEND, newPair( "recipient", recipient ), newPair( "event_name", eventName ), newPair( "message",
 				message ) ) );
 	}
-	
+
 	public Long links_post( Long userId, String url, String comment ) throws FacebookException {
 		return extractLong( callMethod( FacebookMethod.LINKS_POST, newPair( "uid", userId ), newPair( "url", url ), newPair( "comment", comment ) ) );
 	}
@@ -2715,6 +2716,24 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		params.add( newPair( "start_date", ( start / 1000 ) ) );
 		params.add( newPair( "end_date", ( end / 1000 ) ) );
 		return callMethod( FacebookMethod.ADMIN_GET_DAILY_METRICS, params );
+	}
+
+	// CUSTOM TAGS
+
+	public T fbml_deleteCustomTags( Collection<String> names ) throws FacebookException {
+		return callMethod( FacebookMethod.FBML_DELETE_CUSTOM_TAGS, newPair( "names", toJsonListOfStrings( names ) ) );
+	}
+
+	public T fbml_getCustomTags( String appId ) throws FacebookException {
+		if ( StringUtils.isBlank( appId ) ) {
+			return callMethod( FacebookMethod.FBML_GET_CUSTOM_TAGS );
+		} else {
+			return callMethod( FacebookMethod.FBML_GET_CUSTOM_TAGS, newPair( "app_id", appId ) );
+		}
+	}
+
+	public T fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException {
+		return callMethod( FacebookMethod.FBML_REGISTER_CUSTOM_TAGS, newPair( "tags", new JSONArray( tags ) ) );
 	}
 
 }

@@ -1129,7 +1129,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Auth.getSession
 	 */
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException;
-	
+
 	/**
 	 * Call this function to get the user ID.
 	 * 
@@ -2599,11 +2599,14 @@ public interface IFacebookRestClient<T> {
 	// ========== LINKS ===========
 
 	/**
-	 * Posts a link to the specified user's Wall.  The user must have previously given the calling application the "share_item" extended permission.
+	 * Posts a link to the specified user's Wall. The user must have previously given the calling application the "share_item" extended permission.
 	 * 
-	 * @param userId the user ID
-	 * @param url the URL to link to
-	 * @param comment the user-generated comment about the URL
+	 * @param userId
+	 *            the user ID
+	 * @param url
+	 *            the URL to link to
+	 * @param comment
+	 *            the user-generated comment about the URL
 	 * 
 	 * @return the unique ID of the newly posted link entity
 	 * 
@@ -3461,5 +3464,83 @@ public interface IFacebookRestClient<T> {
 	 */
 	@Deprecated
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
+
+	// CUSTOM TAGS
+
+	/**
+	 * Deletes one or more custom tags you previously registered for the calling application with fbml.registerCustomTags.
+	 * 
+	 * Important! Use this method with extreme care, especially with public tags. Don't delete tags that may be in use, especially by other applications! This will break
+	 * FBML pages that use those tags.
+	 * 
+	 * @param names
+	 *            A JSON-encoded array of strings containing the names of the tags you want to delete. If this attribute is missing, all the application's custom tags
+	 *            will be deleted.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.deleteCustomTags
+	 */
+	public T fbml_deleteCustomTags( Collection<String> names ) throws FacebookException;
+
+	/**
+	 * Returns the custom tag definitions for tags that were previously defined using fbml.registerCustomTags.
+	 * 
+	 * @param appId
+	 *            The ID of the application whose custom tags you want to get. If the ID is the calling application's ID, all the application's custom tags are returned.
+	 *            Otherwise, only the application's public custom tags are returned. (Default value is the calling application's ID.).
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.getCustomTags
+	 */
+	public T fbml_getCustomTags( String appId ) throws FacebookException;
+
+	/**
+	 * Registers custom tags you can include in your that applications' FBML markup. Custom tags consist of FBML snippets that are rendered during parse time on the
+	 * containing page that references the custom tag.
+	 * 
+	 * Custom tags can be either private or public. For more information, see Custom Tags. When you register public custom tags, you should add the source code for the
+	 * tags to the Custom Tags Directory.
+	 * 
+	 * To use these custom tags in an FBML snippet, you must define a namespace with the fb:fbml tag. This imports an application's custom tags into an FBML namespace.
+	 * See fb:fbml for more information on how to use custom tags.
+	 * 
+	 * Please go to the Facebook Wiki Page for full documentation!!: http://wiki.developers.facebook.com/index.php/Fbml.registerCustomTags
+	 * 
+	 * @param tags
+	 *            a JSON-encoded list of tag objects. Each tag object is an object with the following properties:
+	 *            <ul>
+	 *            <li>name (required) (string): the name of the tag. The name must be a string up to 30 characters. Only letters, numbers, underscores ('_') and hyphens
+	 *            ('-') are allowed.</li>
+	 *            <li>type (optional) (string): Specify either leaf or container. Leaf tags can't contain any other tags (similar to <fb:name/>). Container tags may
+	 *            contain children between their open and close tags (like <fb:editor></fb:editor>). (Default value is leaf.).</li>
+	 *            <li>description (optional) (string): A full description of the tag's functionality. This is used for documentation only, and is especially useful for
+	 *            public tags.</li>
+	 *            <li>is_public (optional) (string): Specify either true or false. Specifying true indicates that other applications can use this tag. You can have a mix
+	 *            of public and private tags within the same array. (Default value is false.).</li>
+	 *            <li>attributes (optional) (mixed): A list of attribute objects. Attributes are used to add dynamic elements to tags. The values of those attributes are
+	 *            substituted into the tag's FBML before it's parsed. Each attribute has the following fields:
+	 *            <ul>
+	 *            <li>o name (required) (string): The attribute's name. The name must be a string up to 30 characters in length. Only letters, numbers, underscores ('_')
+	 *            and hyphens ('-') are allowed.</li>
+	 *            <li>o description (optional) (string): The attribute's description. This is used for documentation only, and is especially useful for public tags.</li>
+	 *            <li>o default_value (optional) (string): The value to use when the attribute is missing. If an attribute doesn't have a default value, it is considered
+	 *            to be required and the developer will see an error message if the attribute is missing.</li>
+	 *            </ul>
+	 *            </li>
+	 *            <li>fbml (required) (string): The FBML markup to substitute into the page where the tag is encountered. This property is required only for leaf tags.</li>
+	 *            <li>open_tag_fbml (required) (string): The FBML markup to substitute into the page where the open tag appears. This property is required for container
+	 *            tags only.</li>
+	 *            <li>close_tag_fbml (required) (string): The FBML markup to substitute into the page where the close tag appears. This property is required for
+	 *            container tags only. Note: Facebook recommends you do not include <script> tags in this FBML snippet.</li>
+	 *            <li>header_fbml: An FBML snippet that is rendered once on the page before the first tag that defined it. If multiple tags define the same value for
+	 *            header_fbml, and more than one of them appear on a page, then header_fbml is rendered only once. You should only use this for including CSS and
+	 *            initializing any JavaScript variables, not for rendering visible content. Facebook recommends you avoid including heavy JavaScript libraries and
+	 *            performing expensive JavaScript operations in header_fbml for performance reasons. Instead, use footer_fbml.</li>
+	 *            <li>footer_fbml: Similar to header_fbml, it's an FBML snippet that gets rendered after all custom tags are rendered. Facebook recommends you include
+	 *            heavy JavaScript libraries and perform any expensive JavaScript operations in footer_fbml, and avoid them in fbml, open_tag_fbml, close_tag_fbml, and
+	 *            header_fbml.</li>
+	 *            </ul>
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.registerCustomTags
+	 */
+	public T fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
 }

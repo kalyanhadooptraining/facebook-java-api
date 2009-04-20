@@ -121,6 +121,10 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl"),
 	FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc"),
 	FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle"),
+
+	FBML_DELETE_CUSTOM_TAGS("facebook.fbml.deleteCustomTags"),
+	FBML_GET_CUSTOM_TAGS("facebook.fbml.getCustomTags"),
+	FBML_REGISTER_CUSTOM_TAGS("facebook.fbml.registerCustomTags"),
 	// Feed
 	FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction"),
 	FEED_REGISTER_TEMPLATE("facebook.feed.registerTemplateBundle"),
@@ -251,8 +255,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	LIVEMESSAGE_SEND("facebook.livemessage.send"),
 
 	// Batch
-	BATCH_RUN("facebook.batch.run"), 
-	
+	BATCH_RUN("facebook.batch.run"),
+
 	LINKS_POST("facebook.links.post");
 
 	private static final EnumSet<FacebookMethod> listSessionNone;
@@ -263,7 +267,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 				USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION,
 				PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION, PAGES_GET_INFO_NOSESSION, SMS_SEND, SMS_SEND_MESSAGE, FBML_REFRESH_IMG_SRC,
 				FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE, CONNECT_REGISTER_USERS, CONNECT_UNREGISTER_USERS, AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION,
-				NOTIFICATIONS_SEND_EMAIL_NOSESSION );
+				NOTIFICATIONS_SEND_EMAIL_NOSESSION, FBML_DELETE_CUSTOM_TAGS, FBML_GET_CUSTOM_TAGS, FBML_REGISTER_CUSTOM_TAGS );
 		listTakesFile = EnumSet.of( PHOTOS_UPLOAD, PHOTOS_UPLOAD_NOSESSION );
 	}
 
