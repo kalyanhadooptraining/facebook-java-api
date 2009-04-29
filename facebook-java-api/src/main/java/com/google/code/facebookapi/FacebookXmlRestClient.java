@@ -186,7 +186,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	public String auth_getSession( String authToken ) throws FacebookException {
 		return auth_getSession( authToken, false );
 	}
-	
+
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "auth_token", authToken ) );
@@ -194,14 +194,13 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
 		Document d = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
-		XMLTestUtils.print( d );
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
 		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
 		if ( generateSessionSecret ) {
 			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
 		}
-		return this.cacheSessionKey;		
+		return this.cacheSessionKey;
 	}
 
 	protected Document parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException, IOException {
@@ -215,7 +214,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
-				XMLTestUtils.print( doc );
+				XMLTestUtils.error( "parseCallResult: ", doc );
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				throw new FacebookException( errorCode, message );

@@ -14,14 +14,11 @@ public class Issue147FQL_JAXBTest {
 	@Test
 	public void testFQLJAXB() throws Exception {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
-
 		FqlQueryResponse fqr = (FqlQueryResponse) client.fql_query( "select first_name, last_name from user where uid = " + client.users_getLoggedInUser() );
-
 		List<Object> results = fqr.getResults();
-
 		assertEquals( 1, results.size() );
-
 		Element result0 = (Element) results.get( 0 );
-		XMLTestUtils.print( result0 );
+		XMLTestUtils.debug( "Issue147FQL_JAXBTest: ", result0 );
 	}
+
 }
