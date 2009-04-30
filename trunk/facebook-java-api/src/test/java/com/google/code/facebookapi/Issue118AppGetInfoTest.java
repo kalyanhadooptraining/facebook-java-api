@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.code.facebookapi.schema.AppInfo;
+import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
 
 public class Issue118AppGetInfoTest {
 
@@ -23,7 +23,7 @@ public class Issue118AppGetInfoTest {
 		// Stuff application
 		Object response = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
 
-		AppInfo appInfo = (AppInfo) response;
+		ApplicationGetPublicInfoResponse appInfo = (ApplicationGetPublicInfoResponse) response;
 
 		assertNotNull( appInfo.getAppId() );
 		assertNotNull( appInfo.getApiKey() );
@@ -40,7 +40,7 @@ public class Issue118AppGetInfoTest {
 		// Now lookup by application id
 		response = client.application_getPublicInfoById( appInfo.getAppId() );
 
-		appInfo = (AppInfo) response;
+		appInfo = (ApplicationGetPublicInfoResponse) response;
 		assertEquals( stuffAPIKEY_ExistsInDirectory, appInfo.getApiKey() );
 	}
 
