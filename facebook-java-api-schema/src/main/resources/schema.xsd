@@ -1390,8 +1390,9 @@
 <xsd:element name="batch_run_response">
   <xsd:complexType>
     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:any/>
+      <xsd:element name="batch_run_response_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
 </xsd:element>
 
