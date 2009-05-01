@@ -84,6 +84,10 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 					// possible types are Document, String, Boolean, Integer, Long, void
 					if ( typeName.indexOf( "object" ) != -1 ) {
 						RETURN_TYPES.put( method, "default" );
+					} else if ( typeName.indexOf( "friendsgetresponse" ) != -1 ) {
+						//TODO: Issue158 Remove hack for specific Object return type.
+						//This was added to get Issue140FriendsGetJSONTest.java JUnit test to work.
+						RETURN_TYPES.put( method, "default" );
 					} else if ( typeName.indexOf( "string" ) != -1 ) {
 						RETURN_TYPES.put( method, "string" );
 					} else if ( typeName.indexOf( "bool" ) != -1 ) {
