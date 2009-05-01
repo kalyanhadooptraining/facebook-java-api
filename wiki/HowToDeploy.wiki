@@ -19,7 +19,7 @@ Ensure that the following version numbers are consistent and have -SNAPSHOT on t
 
 Run the following command to deploy the snapshot:
 
-`mvn clean install source:jar deploy`
+`mvn clean install deploy`
 
 ==Permissions to upload to happyfern.com==
 
