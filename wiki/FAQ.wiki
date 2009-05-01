@@ -2,3 +2,6 @@
 
   * When requesting an XML document from Facebook, I get nothing back. I see *`[#document: null]`* in my debugger.
     * `[#document: null]` isn't nothing! The .toString() method on the Document object is trying to communicate that the Document's root element's "node value" is not defined. Unfortunatly, it chooses to represent that as `[#document: null]` which is just plain confusing. Use the com.google.code.facebookapi.XMLTestUtils.print(Node dom); utility method which is checked into the facebook-java-api source tree to pretty-print your Document and see what's really in there.
+
+  * I'm seeing: com.google.code.facebookapi.FacebookException?: *Invalid parameter*
+    * Check whether your Desktop Mode setting is what you expect it to be. If in doubt, you probably want Web. The [DesktopMode Desktop Mode discussion document] has plenty of details about this potential problem. 
