@@ -89,7 +89,7 @@ mvn release:prepare -Dresume=false
   * this will actually create a directory in source control under /tags/release-#####
   * it will check in new versions of all your pom.xml files specifying their versions as what you said was your "next development version" with -SNAPSHOT appended.
 
-If you get any errors about "file already exists" then you may be suffering from [http://jira.codehaus.org/browse/MRELEASE-409 bug MRELEASE-409]. You can solve the problem by issuing an _svn update_ before retrying the release:prepare.
+If you get any errors about "file already exists" then you may be suffering from [http://jira.codehaus.org/browse/MRELEASE-409 bug MRELEASE-409]. You can solve the problem by issuing an _svn update_ and then retry the release:prepare command.
 
 ===If something is wrong===
 
