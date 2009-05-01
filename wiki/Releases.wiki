@@ -8,10 +8,11 @@ I am encouraging people to use the maven repository, through Maven, Ivy or any o
 
 We currently have 2 releases available under our [http://code.google.com/p/facebook-java-api/downloads/list Downloads] page.  I'll explain the differences here:
 
+  * 2.1.1
+    * Additional bug fixes, focus on solving desktop mode vs. web mode issues.
+    * Merge with new facebook.xsd provided by Facebook for the JAXB side of things.
   * 2.1.0
     * Additional bug fixes and coverage of new API items.
-  * 2.0.5
-    * Many bug bug fixes and api enhancements, since Facebook keeps changing their apis.
 
 === Composition Branch ===
 
