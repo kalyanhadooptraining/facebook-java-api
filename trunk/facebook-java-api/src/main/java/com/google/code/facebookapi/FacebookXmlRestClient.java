@@ -214,7 +214,7 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 			printDom( doc, method.methodName() + "| " );
 			NodeList errors = doc.getElementsByTagName( ERROR_TAG );
 			if ( errors.getLength() > 0 ) {
-				XMLTestUtils.error( "parseCallResult: ", doc );
+				// XMLTestUtils.error( "parseCallResult: ", doc );
 				int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
 				String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
 				throw new FacebookException( errorCode, message );
