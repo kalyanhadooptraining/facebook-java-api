@@ -74,8 +74,10 @@ public enum ApplicationProperty {
 	MESSAGE_URL("message_url", "string"),
 	/** The URL where a user gets redirected after authorizing your application. If not set, the user will continue on to the page that they were originally going to. */
 	POST_AUTHORIZE_REDIRECT_URL("post_authorize_redirect_url", "string"),
-	/** The URL where a user gets redirected after installing your application on a Facebook Page. The post-install URL cannot be longer than 100 characters. */
-	POST_INSTALL_URL("post_install_url", "string"),
+	
+	/** Issue194 post_install_url is no longer accepted by Facebook.com. Use POST_AUTHORIZE_REDIRECT_URL instead. */
+	//POST_INSTALL_URL("post_install_url", "string"),
+	
 	/** A preloaded FQL query. */
 	PRELOAD_FQL("preload_fql", "string"),
 	/** The URL to your application's privacy terms. */
