@@ -123,7 +123,7 @@ public class FacebookUserFilter implements Filter {
 }}}
 
 
-*Getting a User's Friends:*
+=Getting a User's Friends=
 
 You select the FacebookXXXRestClient replacing XXX with either Json, Xml or Jaxb depending on how you want the results to be returned to you:
   * Json - Strings, primative types, JSONArray and JSONObject. This is what most users will need.
