@@ -5,3 +5,6 @@
 
   * I'm seeing: com.google.code.facebookapi.FacebookException?: *Invalid parameter*
     * Check whether your Desktop Mode setting is what you expect it to be. If in doubt, you probably want Web. The [DesktopMode Desktop Mode discussion document] has plenty of details about this potential problem. 
+
+  * I want to contribute. How do I get my hands on the code for this project and build it in Eclipse?
+    * The process has been documented on the [http://groups.google.com/group/facebook-java/web/build-code-in-eclipse build-code-in-eclipse] page.
