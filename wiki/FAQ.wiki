@@ -1,6 +1,6 @@
 #summary Frequently Asked Questions
 
-  * How do I switch on debug logging so that I can see what's going on more clearly
+  * How do I switch on debug logging so that I can see what's going on more clearly?
     * javax.util.logging is far more difficult to get to grips with than log4j. Firstly, declare a dependency on log4j:log4j:1.2.15 or later in your project. Then, place a [http://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api/src/test/resources/log4j.xml log4j.xml file like this one] in your classpath. Once that's done, you'll be able to control the root logger and set everything to debug level. Alternatively, you can add other loggers and only debug certain packages or classes. There's loads of information on how to configure log4j on the web.
 
   * When requesting an XML document from Facebook, I get nothing back. I see *`[#document: null]`* in my debugger.
