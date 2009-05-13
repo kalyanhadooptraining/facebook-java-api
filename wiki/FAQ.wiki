@@ -1,7 +1,15 @@
 #summary Frequently Asked Questions
 
   * How do I switch on *debug logging* so that I can see what's going on more clearly?
-    * javax.util.logging is far more difficult to get to grips with than log4j, so let's do this with log4j. Firstly, declare a dependency on log4j:log4j:1.2.15 or later in your project by adding a <dependency/> to your pom.xml file. Then, place a [http://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api/src/test/resources/log4j.xml log4j.xml file like this one] in your classpath. Once that's done, you'll be able to control the root logger and set everything to debug level. Alternatively, you can add other loggers and only debug certain packages or classes. There's loads of information on how to configure log4j on the web.
+    * javax.util.logging is far more difficult to get to grips with than log4j, so let's do this with log4j. Firstly, declare a dependency on log4j:log4j:1.2.15 or later in your project by adding a dependency in your pom.xml file. Then, place a [http://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api/src/test/resources/log4j.xml log4j.xml file like this one] in your classpath. Once that's done, you'll be able to control the root logger and set everything to debug level. Alternatively, you can add other loggers and only debug certain packages or classes. There's loads of information on how to configure log4j on the web.
+
+{{{
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.15</version>
+    </dependency>
+}}}
 
   * When requesting an XML document from Facebook, I get nothing back. I see *`[#document: null]`* in my debugger.
     * `[#document: null]` isn't nothing! The .toString() method on the Document object is trying to communicate that the Document's root element's "node value" is not defined. Unfortunatly, it chooses to represent that as `[#document: null]` which is just plain confusing. Use the com.google.code.facebookapi.XMLTestUtils.print(Node dom); utility method which is checked into the facebook-java-api source tree to pretty-print your Document and see what's really in there.
