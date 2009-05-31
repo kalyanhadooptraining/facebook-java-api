@@ -35,7 +35,7 @@ package com.google.code.facebookapi;
 import java.util.EnumSet;
 
 /**
- * Enumaration that maps API method names to the (maximal) number of parameters that each method will send.
+ * Enumeration that maps API method names to the (maximal) number of parameters that each method will send.
  * 
  * There are arguably better ways to do this.
  */
@@ -68,7 +68,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	// Friends
 	FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
 	@Deprecated
-	FRIENDS_GET_REQUESTS("facebook.friends.getRequests"), // deprectaed/unofficial
+	FRIENDS_GET_REQUESTS("facebook.friends.getRequests"), // deprecated/unofficial
 	FRIENDS_ARE_FRIENDS("facebook.friends.areFriends"),
 	FRIENDS_GET("facebook.friends.get"),
 	FRIENDS_GET_NOSESSION("facebook.friends.get"),
@@ -257,7 +257,19 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	// Batch
 	BATCH_RUN("facebook.batch.run"),
 
-	LINKS_POST("facebook.links.post");
+	LINKS_POST("facebook.links.post"),
+
+	// Stream
+	STREAM_ADD_COMMENT("facebook.stream.addComment"),
+	STREAM_ADD_LIKE("facebook.stream.addLike"),
+	STREAM_GET("facebook.stream.get"),
+	STREAM_GET_COMMENTS("facebook.stream.getComments"),
+	STREAM_GET_FILTERS("facebook.stream.getFilters"),
+	STREAM_PUBLISH("facebook.stream.publish"),
+	STREAM_REMOVE("facebook.stream.remove"),
+	STREAM_REMOVE_COMMENT("facebook.stream.removeComment"),
+	STREAM_REMOVE_LIKE("facebook.stream.removeLike");
+
 
 	private static final EnumSet<FacebookMethod> listSessionNone;
 	private static final EnumSet<FacebookMethod> listTakesFile;

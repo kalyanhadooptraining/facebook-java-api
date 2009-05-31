@@ -46,8 +46,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
- * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/> For continually updated
- * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
+ * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/>
+ * For continually updated documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
 @SuppressWarnings("unchecked")
 // To stop all the warnings caused by varargs in callMethod(...)
@@ -1793,6 +1793,205 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		return extractBoolean( callMethod( FacebookMethod.FEED_PUBLISH_USER_ACTION, params ) );
 	}
 
+	public T stream_get( final Long viewerId, final List<Long> sourceIds, final Date start, final Date end, final Integer limit, final String filterKey,
+			final List<String> metadata ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( viewerId != null ) {
+			params.add( newPair( "viewer_id", viewerId ) );
+		}
+
+		if ( sourceIds != null && !sourceIds.isEmpty() ) {
+			params.add( newPair( "source_ids", delimit( sourceIds ) ) );
+		}
+
+		if ( start != null ) {
+			params.add( newPair( "start_time", ( start.getTime() / 1000 ) ) );
+		}
+
+		if ( end != null ) {
+			params.add( newPair( "end_time", ( end.getTime() / 1000 ) ) );
+		}
+
+		if ( limit != null ) {
+			params.add( newPair( "limit", limit ) );
+		}
+
+		if ( !StringUtils.isEmpty( filterKey ) ) {
+			params.add( newPair( "filter_key", filterKey ) );
+		}
+
+		// A JSON-encoded array in which you can specify one or more of 'albums', 'profiles', and 'photo_tags'
+		JSONArray jsonMetadata = new JSONArray();
+		if ( metadata != null && !metadata.isEmpty() ) {
+			for ( String key : metadata ) {
+				jsonMetadata.put( key );
+			}
+		}
+
+		// associate to param
+		if ( jsonMetadata.length() > 0 ) {
+			params.add( newPair( "metadata", jsonMetadata ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_GET, params );
+	}
+
+	public T stream_publish( final String message, final Attachment attachment, final List<BundleActionLink> actionLinks, final Long targetId, final Long userId )
+			throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		if ( !StringUtils.isEmpty( message ) ) {
+			params.add( newPair( "message", message ) );
+		}
+
+		// A JSON-encoded object containing the text of the post, relevant links, a media type (image, video, mp3, flash), as well as any other key/value pairs you may
+		// want to add.
+		if ( attachment != null ) {
+			params.add( newPair( "attachment", attachment.toJson() ) );
+		}
+
+		// An array of action link objects, containing the link text and a hyperlink.
+		JSONArray jsonActionLinks = new JSONArray();
+		if ( actionLinks != null && !actionLinks.isEmpty() ) {
+			for ( BundleActionLink actionLink : actionLinks ) {
+				jsonActionLinks.put( actionLink.toJson() );
+			}
+		}
+
+		// associate to param
+		if ( jsonActionLinks.length() > 0 ) {
+			params.add( newPair( "action_links", jsonActionLinks ) );
+		}
+
+		if ( targetId != null ) {
+			params.add( newPair( "target_id", targetId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_PUBLISH, params );
+	}
+
+	public T stream_remove( final String postId, final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		if ( !StringUtils.isEmpty( postId ) ) {
+			params.add( newPair( "post_id", postId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_REMOVE, params );
+	}
+
+	public T stream_getComments( final String postId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( !StringUtils.isEmpty( postId ) ) {
+			params.add( newPair( "post_id", postId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_GET_COMMENTS, params );
+	}
+
+	public T stream_addComment( final String postId, final String comment, final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( !StringUtils.isEmpty( postId ) ) {
+			params.add( newPair( "post_id", postId ) );
+		}
+
+		if ( !StringUtils.isEmpty( comment ) ) {
+			params.add( newPair( "comment", comment ) );
+		}
+
+		if ( userId != null ) {
+			params.add( newPair( "uid", userId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_ADD_COMMENT, params );
+	}
+
+	public T stream_removeComment( final String commentId, final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		if ( !StringUtils.isEmpty( commentId ) ) {
+			params.add( newPair( "comment_id", commentId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_REMOVE_COMMENT, params );
+	}
+
+	public T stream_addLike( final String postId, final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		if ( !StringUtils.isEmpty( postId ) ) {
+			params.add( newPair( "post_id", postId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_ADD_LIKE, params );
+	}
+
+	public T stream_removeLike( final String postId, final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		if ( !StringUtils.isEmpty( postId ) ) {
+			params.add( newPair( "post_id", postId ) );
+		}
+
+		return callMethod( FacebookMethod.STREAM_REMOVE_LIKE, params );
+	}
+
+	public T stream_getFilters( final Long userId ) throws FacebookException {
+		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
+
+		if ( isDesktop() ) {
+			params.add( newPair( "session_key", getCacheSessionKey() ) );
+		} else {
+			if ( userId != null ) {
+				params.add( newPair( "uid", userId ) );
+			}
+		}
+
+		return callMethod( FacebookMethod.STREAM_GET_FILTERS, params );
+	}
 
 	// ========== HELPERS ==========
 
