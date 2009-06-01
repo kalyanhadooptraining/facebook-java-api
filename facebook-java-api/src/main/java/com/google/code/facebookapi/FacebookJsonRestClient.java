@@ -27,7 +27,7 @@ import com.google.code.facebookapi.schema.Listing;
  */
 public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 
-	protected static Log log = LogFactory.getLog( FacebookJsonRestClient.class );
+	protected static Log clientLog = LogFactory.getLog( FacebookJsonRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
@@ -245,13 +245,13 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					return extractString( ( (JSONArray) val ).get( 0 ) );
 				}
 				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
+					clientLog.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			return String.valueOf( val );
 		}
 		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
+			clientLog.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}
@@ -285,7 +285,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			}
 		}
 		catch ( Exception ex ) {
-			log.error( "Exception: auth_getSession", ex );
+			clientLog.error( "Exception: auth_getSession", ex );
 		}
 		return this.cacheSessionKey;
 	}
@@ -340,7 +340,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				json = this.rawResponse;
 			}
 		}
-		log.debug( method.methodName() + ": " + json );
+		clientLog.debug( method.methodName() + ": " + json );
 
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
@@ -380,7 +380,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				return new URL( (String) ( (JSONArray) url ).get( 0 ) );
 			}
 			catch ( Exception e ) {
-				log.error( "Exception: " + e.getMessage(), e );
+				clientLog.error( "Exception: " + e.getMessage(), e );
 			}
 		}
 		return null;
@@ -408,7 +408,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					}
 				}
 				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
+					clientLog.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -422,7 +422,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Integer) val;
 		}
 		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
+			clientLog.error( "Exception: " + cce.getMessage(), cce );
 			return 0;
 		}
 	}
@@ -444,7 +444,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					val = ( (JSONArray) val ).get( 0 );
 				}
 				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
+					clientLog.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -459,7 +459,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return ( (Long) val == 1l );
 		}
 		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
+			clientLog.error( "Exception: " + cce.getMessage(), cce );
 		}
 		return false;
 	}
@@ -486,7 +486,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 					}
 				}
 				catch ( Exception e ) {
-					log.error( "Exception: " + e.getMessage(), e );
+					clientLog.error( "Exception: " + e.getMessage(), e );
 				}
 			}
 			if ( val instanceof String ) {
@@ -496,7 +496,7 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 			return (Long) val;
 		}
 		catch ( ClassCastException cce ) {
-			log.error( "Exception: " + cce.getMessage(), cce );
+			clientLog.error( "Exception: " + cce.getMessage(), cce );
 			return null;
 		}
 	}
@@ -591,10 +591,10 @@ public class FacebookJsonRestClient extends ExtensibleClient<Object> {
 				// End for loop
 
 				if ( buffer.size() == BATCH_LIMIT ) {
-					log.debug( "Clearing buffer for the next run." );
+					clientLog.debug( "Clearing buffer for the next run." );
 					buffer.clear();
 				} else {
-					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+					clientLog.trace( "No need to clear buffer, this is the final iteration of the batch" );
 				}
 			}
 		}
