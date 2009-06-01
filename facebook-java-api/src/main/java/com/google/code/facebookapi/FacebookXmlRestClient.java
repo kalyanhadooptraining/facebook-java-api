@@ -71,7 +71,7 @@ import com.google.code.facebookapi.schema.Listing;
  */
 public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 
-	protected static Log log = LogFactory.getLog( FacebookXmlRestClient.class );
+	protected static Log clientLog = LogFactory.getLog( FacebookXmlRestClient.class );
 
 	protected boolean namespaceAware = true;
 
@@ -292,10 +292,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 	 * Prints out the DOM tree.
 	 */
 	public void printDom( Node n, String prefix ) {
-		if ( log.isDebugEnabled() ) {
+		if ( clientLog.isDebugEnabled() ) {
 			StringBuilder sb = new StringBuilder( "\n" );
 			ExtensibleClient.printDom( n, prefix, sb );
-			log.debug( sb.toString() );
+			clientLog.debug( sb.toString() );
 		}
 	}
 
@@ -383,10 +383,10 @@ public class FacebookXmlRestClient extends ExtensibleClient<Document> {
 				// End for loop
 
 				if ( buffer.size() == BATCH_LIMIT ) {
-					log.debug( "Clearing buffer for the next run." );
+					clientLog.debug( "Clearing buffer for the next run." );
 					buffer.clear();
 				} else {
-					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+					clientLog.trace( "No need to clear buffer, this is the final iteration of the batch" );
 				}
 			}
 		}
