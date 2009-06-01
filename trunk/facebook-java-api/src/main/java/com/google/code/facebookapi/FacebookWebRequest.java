@@ -14,8 +14,10 @@ public class FacebookWebRequest<T> {
 
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
+	@SuppressWarnings("unused")
 	private HttpServletRequest request;
 	private String apiKey;
+	@SuppressWarnings("unused")
 	private String secret;
 	private IFacebookRestClient<T> apiClient;
 	private boolean valid;
