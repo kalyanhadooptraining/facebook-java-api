@@ -179,8 +179,8 @@ public enum ApplicationProperty {
 	/**
 	 * Returns true if this field has a particular name.
 	 */
-	public boolean isName( String name ) {
-		return toString().equals( name );
+	public boolean isName( String propertyName ) {
+		return toString().equals( propertyName );
 	}
 
 }
