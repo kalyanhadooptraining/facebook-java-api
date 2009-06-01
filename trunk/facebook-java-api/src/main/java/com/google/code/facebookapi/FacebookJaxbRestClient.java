@@ -66,7 +66,7 @@ import com.google.code.facebookapi.schema.SessionInfo;
  */
 public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 
-	protected static Log log = LogFactory.getLog( FacebookJaxbRestClient.class );
+	protected static Log clientLog = LogFactory.getLog( FacebookJaxbRestClient.class );
 
 	// used so that executeBatch can return the correct types in its list, without killing efficiency.
 	private static final Map<FacebookMethod,String> RETURN_TYPES;
@@ -362,7 +362,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *             if <code>data</code> is not readable
 	 */
 	protected Object parseCallResult( InputStream data, IFacebookMethod method ) throws FacebookException {
-		log.debug( "Facebook response:  " + rawResponse );
+		clientLog.debug( "Facebook response:  " + rawResponse );
 		Object res = getResponsePOJO();
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
@@ -543,10 +543,10 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 				// End for loop
 
 				if ( buffer.size() == BATCH_LIMIT ) {
-					log.debug( "Clearing buffer for the next run." );
+					clientLog.debug( "Clearing buffer for the next run." );
 					buffer.clear();
 				} else {
-					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+					clientLog.trace( "No need to clear buffer, this is the final iteration of the batch" );
 				}
 			}
 		}
