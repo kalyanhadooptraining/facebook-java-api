@@ -1347,9 +1347,9 @@ public abstract class ExtensibleClient<T> implements IFacebookRestClient<T> {
 		queries = new ArrayList<BatchQuery>();
 	}
 
-	protected String encodeMethods( List<BatchQuery> queries ) throws FacebookException {
+	protected String encodeMethods( List<BatchQuery> queryList ) throws FacebookException {
 		JSONArray result = new JSONArray();
-		for ( BatchQuery query : queries ) {
+		for ( BatchQuery query : queryList ) {
 			if ( query.getMethod().takesFile() ) {
 				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "File upload API calls cannot be batched:  " + query.getMethod().methodName() );
 			}
