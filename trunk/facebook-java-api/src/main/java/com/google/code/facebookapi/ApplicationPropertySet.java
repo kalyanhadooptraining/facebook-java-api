@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 /**
@@ -214,16 +215,31 @@ public class ApplicationPropertySet implements Serializable {
 		return result;
 	}
 
-	private static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
-		if ( fragment.startsWith( "{" ) ) {
-			fragment = fragment.substring( 1, fragment.lastIndexOf( "}" ) );
+	private static void parseFragment( final String fragment, Map<ApplicationProperty,String> result ) {
+		if ( StringUtils.isEmpty( fragment ) ) {
+			return;
 		}
-		String keyString = fragment.substring( 1 );
+		String cleanFragment = fragment;
+		if ( cleanFragment.startsWith( "{" ) ) {
+			cleanFragment = cleanFragment.substring( 1, cleanFragment.lastIndexOf( "}" ) );
+		}
+
+		String keyString = cleanFragment.substring( 1 );
 		keyString = keyString.substring( 0, keyString.indexOf( '"' ) );
 		ApplicationProperty key = ApplicationProperty.getPropertyForString( keyString );
-		String value = fragment.substring( fragment.indexOf( ":" ) + 1 ).replaceAll( "\\\\", "" ); // strip escape characters
+		if ( key == null ) {
+			return;
+		}
+		String value = cleanFragment.substring( cleanFragment.indexOf( ":" ) + 1 ).replaceAll( "\\\\", "" ); // strip escape characters
+		if ( value == null ) {
+			return;
+		}
 		if ( key.getType().equals( "string" ) ) {
-			result.put( key, value.substring( 1, value.lastIndexOf( '"' ) ) );
+			int lastQuote = value.lastIndexOf( '"' );
+			if ( lastQuote >= 0 ) {
+				value = value.substring( 1, lastQuote );
+			}
+			result.put( key, value );
 		} else {
 			if ( value.equals( "1" ) ) {
 				result.put( key, "true" );
@@ -232,5 +248,4 @@ public class ApplicationPropertySet implements Serializable {
 			}
 		}
 	}
-
 }

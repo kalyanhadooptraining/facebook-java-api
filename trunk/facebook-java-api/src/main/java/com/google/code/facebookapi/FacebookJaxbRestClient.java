@@ -39,6 +39,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
@@ -85,8 +86,8 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 					if ( typeName.indexOf( "object" ) != -1 ) {
 						RETURN_TYPES.put( method, "default" );
 					} else if ( typeName.indexOf( "friendsgetresponse" ) != -1 ) {
-						//TODO: Issue158 Remove hack for specific Object return type.
-						//This was added to get Issue140FriendsGetJSONTest.java JUnit test to work.
+						// TODO: Issue158 Remove hack for specific Object return type.
+						// This was added to get Issue140FriendsGetJSONTest.java JUnit test to work.
 						RETURN_TYPES.put( method, "default" );
 					} else if ( typeName.indexOf( "string" ) != -1 ) {
 						RETURN_TYPES.put( method, "string" );
@@ -279,7 +280,8 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 		}
 		xml = xml.substring( 0, xml.indexOf( "</" ) );
 		xml = xml.substring( xml.lastIndexOf( ">" ) + 1 );
-		return xml;
+
+		return Pattern.compile( "&quot;" ).matcher( xml ).replaceAll( "\"" );
 	}
 
 	/**
@@ -329,14 +331,14 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	public String auth_getSession( String authToken ) throws FacebookException {
 		return auth_getSession( authToken, false );
 	}
-	
+
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( newPair( "auth_token", authToken ) );
 		if ( generateSessionSecret ) {
 			params.add( newPair( "generate_session_secret", "true" ) );
 		}
-		
+
 		JAXBElement<?> obj = (JAXBElement<?>) callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 		SessionInfo d = (SessionInfo) obj.getValue();
 		this.cacheSessionKey = d.getSessionKey();
@@ -479,7 +481,7 @@ public class FacebookJaxbRestClient extends ExtensibleClient<Object> {
 	 *         normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a batch will place a Long in the list, and calling friends_get
 	 *         will place a Document in the list, etc.).
 	 * 
-	 * The list may be empty, it will never be null.
+	 *         The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
