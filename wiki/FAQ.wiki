@@ -26,5 +26,5 @@
   * Why does the Facebook API only works for my account, not with anyone else's username and password?
     * You've most probably got your application settings as set to "Sandbox" which only allows developers that you name to have access using your API_KEY. Check your application settings.
 
-  * Where are the Snapshot .jar files held. I just want to get the files and use them rather than using Maven to get them for me?
+  * Where are the latest snapshot .jar files held? I just want to get the files and use them rather than using Maven to get them for me.
     * You'd be better off using Maven ;o), but the files are kept on the *[http://mrepo.happyfern.com/maven2-snapshot/com/google/code/facebookapi/ snapshot repository]*.
