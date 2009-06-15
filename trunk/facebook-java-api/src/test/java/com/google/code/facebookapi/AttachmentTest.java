@@ -1,6 +1,8 @@
 package com.google.code.facebookapi;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,11 +18,13 @@ public class AttachmentTest {
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
 
-		attachment.setProperties( createPropertiesMap() );
+		attachment.setProperties( createPropertiesList() );
 
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	@Test
@@ -35,6 +39,8 @@ public class AttachmentTest {
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	@Test
@@ -49,6 +55,8 @@ public class AttachmentTest {
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	@Test
@@ -63,6 +71,8 @@ public class AttachmentTest {
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	@Test
@@ -77,6 +87,8 @@ public class AttachmentTest {
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	@Test
@@ -91,6 +103,8 @@ public class AttachmentTest {
 		Object result = client.stream_publish( message, attachment, null, null, null );
 
 		Assert.assertNotNull( result );
+
+		streamRemove( result.toString() );
 	}
 
 	private Attachment createAttachment() {
@@ -103,14 +117,14 @@ public class AttachmentTest {
 		return attachment;
 	}
 
-	private Map<String,String> createPropertiesMap() {
-		Map<String,String> map = new TreeMap<String,String>();
+	private List<AttachmentProperty> createPropertiesList() {
+		List<AttachmentProperty> properties = new ArrayList<AttachmentProperty>();
 
-		map.put( "blog", "http://www.abdinoor.com" );
-		map.put( "twitter", "http://twitter.com/abdinoor" );
-		map.put( "linkedin", "http://www.linkedin.com/pub/dan-abdinoor/3/3b5/708" );
+		properties.add( new AttachmentProperty( "my website", "abdinoor.com", "http://www.abdinoor.com" ) );
+		properties.add( new AttachmentProperty( "twitter", "twitter/abdinoor", "http://twitter.com/abdinoor" ) );
+		properties.add( new AttachmentProperty( "linkedin", "linkedin.com", "http://www.linkedin.com/pub/dan-abdinoor/3/3b5/708" ) );
 
-		return map;
+		return properties;
 	}
 
 	private Map<String,String> createAdditionalInfoMap() {
@@ -151,5 +165,17 @@ public class AttachmentTest {
 				"http://icanhascheezburger.com" );
 
 		return mediaVideo;
+	}
+
+	/** Used by various unit tests to remove stream item. */
+	private void streamRemove( final String postId ) throws IOException, FacebookException {
+		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+
+		Object result = client.stream_remove( postId, null );
+
+		Assert.assertNotNull( result );
+		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
+
+		System.out.println( result );
 	}
 }

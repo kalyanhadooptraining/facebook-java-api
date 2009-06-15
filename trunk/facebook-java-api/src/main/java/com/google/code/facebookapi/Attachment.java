@@ -1,9 +1,10 @@
 package com.google.code.facebookapi;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,7 +19,7 @@ public class Attachment implements Serializable {
 	private String href;
 	private String caption;
 	private String description;
-	private Map<String,String> properties;
+	private List<AttachmentProperty> properties;
 	private AttachmentMedia media;
 	private Map<String,String> additionalInfo;
 	private JSONObject jsonAttachment;
@@ -66,18 +67,16 @@ public class Attachment implements Serializable {
 			return;
 		}
 
-		JSONArray jsonProperties = new JSONArray();
-		for ( String key : properties.keySet() ) {
-			JSONObject property = new JSONObject();
+		JSONObject jsonProperties = new JSONObject();
+		for ( AttachmentProperty link : properties ) {
 			try {
-				property.put( "text", key );
-				property.put( "href", properties.get( key ) );
+				if ( !StringUtils.isEmpty( link.getCaption() ) ) {
+					jsonProperties.put( link.getCaption(), link.toJson() );
+				}
 			}
 			catch ( JSONException exception ) {
 				throw ExtensibleClient.runtimeException( exception );
 			}
-
-			jsonProperties.put( property );
 		}
 
 		putJsonObject( "properties", jsonProperties );
@@ -172,7 +171,7 @@ public class Attachment implements Serializable {
 	/**
 	 * @return the properties
 	 */
-	public Map<String,String> getProperties() {
+	public List<AttachmentProperty> getProperties() {
 		return properties;
 	}
 
@@ -181,11 +180,9 @@ public class Attachment implements Serializable {
 	 * @param properties
 	 *            the properties to set
 	 */
-	public void setProperties( Map<String,String> properties ) {
+	public void setProperties( List<AttachmentProperty> properties ) {
 		this.properties = properties;
 	}
-
-
 
 	/**
 	 * @return the additionalInfo
