@@ -71,7 +71,11 @@ public class Attachment implements Serializable {
 		for ( AttachmentProperty link : properties ) {
 			try {
 				if ( !StringUtils.isEmpty( link.getCaption() ) ) {
-					jsonProperties.put( link.getCaption(), link.toJson() );
+					if ( !StringUtils.isEmpty( link.getText() ) && !StringUtils.isEmpty( link.getHref() ) ) {
+						jsonProperties.put( link.getCaption(), link.toJson() );
+					} else if ( !StringUtils.isEmpty( link.getText() ) ) {
+						jsonProperties.put( link.getCaption(), link.getText() );
+					}
 				}
 			}
 			catch ( JSONException exception ) {

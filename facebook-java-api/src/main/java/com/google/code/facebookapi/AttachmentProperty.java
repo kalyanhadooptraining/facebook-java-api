@@ -10,9 +10,9 @@ import org.json.JSONObject;
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public class AttachmentProperty {
-	protected String caption;
-	protected String href;
-	protected String text;
+	private String caption;
+	private String href;
+	private String text;
 
 	/**
 	 * Constructor.
