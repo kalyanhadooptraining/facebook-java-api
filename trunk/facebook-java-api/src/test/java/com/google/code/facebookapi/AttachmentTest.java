@@ -24,7 +24,7 @@ public class AttachmentTest {
 
 		Assert.assertNotNull( result );
 
-		streamRemove( result.toString() );
+		//streamRemove( result.toString() );
 	}
 
 	@Test
@@ -120,9 +120,10 @@ public class AttachmentTest {
 	private List<AttachmentProperty> createPropertiesList() {
 		List<AttachmentProperty> properties = new ArrayList<AttachmentProperty>();
 
-		properties.add( new AttachmentProperty( "my website", "abdinoor.com", "http://www.abdinoor.com" ) );
+		properties.add( new AttachmentProperty( "my website", "abdinoor.com", null ) );
 		properties.add( new AttachmentProperty( "twitter", "twitter/abdinoor", "http://twitter.com/abdinoor" ) );
 		properties.add( new AttachmentProperty( "linkedin", "linkedin.com", "http://www.linkedin.com/pub/dan-abdinoor/3/3b5/708" ) );
+		properties.add( new AttachmentProperty( "facebook", null, "http://www.facebook.com/abdinoor" ) );
 
 		return properties;
 	}
