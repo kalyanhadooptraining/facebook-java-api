@@ -12,6 +12,8 @@ If you have hundreds of users (and you don't want to provide your SECRET) then y
   * Your server generates a session secret for the user and passes it back to the desktop application.
   * The desktop application uses this "session secret" to connect directly to Facebook.com. It never gets to know your real SECRET.
 
+*If you're not worried about giving your SECRET away then don't bother using desktop mode!*
+
 = Is your application set to Desktop? =
 
 It's very important that your application is set to the correct mode. If it isn't set to desktop mode, the Facebook server won't understand when you try to pass a Session Secret. You'll get an "Invalid Signature" error because Facebook is not expecting a Session Secret. Conversely, if you're passing a normal SECRET through and your application is set to Desktop, you'll see errors.
