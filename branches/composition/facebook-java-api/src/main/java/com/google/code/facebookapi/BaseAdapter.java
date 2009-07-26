@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 /**
  * Covers all the void return type methods where we don't care which return type we're asking Facebook to provide.
  * 
@@ -26,7 +28,7 @@ public abstract class BaseAdapter {
 	public String getApiKey() {
 		return getClient().getApiKey();
 	}
-	
+
 	public String getSecret() {
 		return getClient().getSecret();
 	}
@@ -137,19 +139,14 @@ public abstract class BaseAdapter {
 		getClient().endPermissionsMode();
 	}
 
-	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
+	public void fbml_deleteCustomTags( Collection<String> names ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		getClient().notifications_send( recipientIds, notification );
+		getClient().fbml_deleteCustomTags( names );
 	}
 
-	public void notifications_send( CharSequence notification ) throws FacebookException {
+	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
-		getClient().notifications_send( notification );
-	}
-
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
-		getClient().setResponseFormat( responseFormat );
-		getClient().notifications_send( recipientIds, notification, isAppToUser );
+		getClient().fbml_registerCustomTags( tags );
 	}
 
 	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException {
@@ -166,7 +163,7 @@ public abstract class BaseAdapter {
 		getClient().setResponseFormat( responseFormat );
 		getClient().setCacheFriendsList( ids );
 	}
-	
+
 	@Deprecated
 	public void setCacheAppAdded( Boolean appAdded ) {
 		getClient().setResponseFormat( responseFormat );

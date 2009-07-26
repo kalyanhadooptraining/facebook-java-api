@@ -55,8 +55,9 @@ public interface IFacebookRestClient<T> {
 	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
 	public String getApiKey();
+
 	public String getSecret();
-	
+
 	/**
 	 * Check to see if the client is running in desktop-app mode
 	 * 
@@ -72,7 +73,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void setIsDesktop( boolean isDesktop );
 
-	@FacebookReturnType(JAXB=FriendsGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
 	public T getCacheFriendsList() throws FacebookException;
 
 	public void setCacheFriendsList( List<Long> friendIds );
@@ -277,7 +278,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML() throws FacebookException;
 
 	/**
@@ -289,7 +290,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( Long userId ) throws FacebookException;
 
 	/**
@@ -301,7 +302,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( int type ) throws FacebookException;
 
 	/**
@@ -315,7 +316,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( int type, Long userId ) throws FacebookException;
 
 	/**
@@ -472,7 +473,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userId2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
-	@FacebookReturnType(JAXB=FriendsAreFriendsResponse.class)
+	@FacebookReturnType(JAXB = FriendsAreFriendsResponse.class)
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException;
 
 	/**
@@ -483,7 +484,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userIds2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
-	@FacebookReturnType(JAXB=FriendsAreFriendsResponse.class)
+	@FacebookReturnType(JAXB = FriendsAreFriendsResponse.class)
 	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException;
 
 	/**
@@ -525,7 +526,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return array of friends
 	 */
-	@FacebookReturnType(JAXB=FriendsGetAppUsersResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = FriendsGetAppUsersResponse.class, JSON = JSONArray.class)
 	public T friends_getAppUsers() throws FacebookException;
 
 	/**
@@ -538,8 +539,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	@FacebookReturnType(JAXB=UsersGetInfoResponse.class, JSON=JSONArray.class)
-	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
+	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
+	public T users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -551,8 +552,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
-	@FacebookReturnType(JAXB=UsersGetInfoResponse.class, JSON=JSONArray.class)
-	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
+	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
+	public T users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -565,8 +566,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	@FacebookReturnType(JAXB=UsersGetStandardInfoResponse.class, JSON=JSONArray.class)
-	public T users_getStandardInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
+	@FacebookReturnType(JAXB = UsersGetStandardInfoResponse.class, JSON = JSONArray.class)
+	public T users_getStandardInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -579,8 +580,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
-	@FacebookReturnType(JAXB=UsersGetStandardInfoResponse.class, JSON=JSONArray.class)
-	public T users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
+	@FacebookReturnType(JAXB = UsersGetStandardInfoResponse.class, JSON = JSONArray.class)
+	public T users_getStandardInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the user ID of the user logged in to this API session
@@ -749,7 +750,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return an T of photo objects.
 	 */
-	@FacebookReturnType(JAXB=PhotosGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
@@ -763,7 +764,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
@@ -777,7 +778,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId, Long albumId ) throws FacebookException;
 
 	/**
@@ -789,7 +790,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
@@ -801,7 +802,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId ) throws FacebookException;
 
 	/**
@@ -814,7 +815,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetAlbumsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
 	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException;
 
 	/**
@@ -825,7 +826,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetAlbumsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
 	public T photos_getAlbums( Long userId ) throws FacebookException;
 
 	/**
@@ -836,7 +837,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	@FacebookReturnType(JAXB=PhotosGetAlbumsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
 	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException;
 
 	/**
@@ -846,7 +847,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	@FacebookReturnType(JAXB=PhotosGetTagsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetTagsResponse.class, JSON = JSONArray.class)
 	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
@@ -910,7 +911,7 @@ public interface IFacebookRestClient<T> {
 	 *            A list of PhotoTags.
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	@FacebookReturnType(JAXBList=Boolean.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXBList = Boolean.class, JSON = JSONArray.class)
 	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException;
 
 	/**
@@ -985,7 +986,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo ) throws FacebookException;
 
 	/**
@@ -998,7 +999,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, String caption ) throws FacebookException;
 
 	/**
@@ -1011,7 +1012,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, Long albumId ) throws FacebookException;
 
 	/**
@@ -1026,7 +1027,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
@@ -1039,7 +1040,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo ) throws FacebookException;
 
 	/**
@@ -1054,7 +1055,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException;
 
 	/**
@@ -1069,7 +1070,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException;
 
 	/**
@@ -1086,7 +1087,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
@@ -1104,7 +1105,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
-	@FacebookReturnType(JAXB=Photo.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException;
 
 	/**
@@ -1116,7 +1117,7 @@ public interface IFacebookRestClient<T> {
 	 *            Optional: group ids to query. A null parameter will get all groups for the user.
 	 * @return array of groups
 	 */
-	@FacebookReturnType(JAXB=GroupsGetResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = GroupsGetResponse.class, JSON = JSONArray.class)
 	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException;
 
 	/**
@@ -1126,7 +1127,7 @@ public interface IFacebookRestClient<T> {
 	 *            the group id
 	 * @return a T containing four membership lists of 'members', 'admins', 'officers', and 'not_replied'
 	 */
-	@FacebookReturnType(JSON=JSONArray.class)
+	@FacebookReturnType(JSON = JSONArray.class)
 	public T groups_getMembers( Number groupId ) throws FacebookException;
 
 	/**
@@ -1138,43 +1139,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	@FacebookReturnType
 	public T fql_query( CharSequence query ) throws FacebookException;
-
-	/**
-	 * Retrieves the outstanding notifications for the session user.
-	 * 
-	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
-	 *         list of 'event_invites'
-	 */
-	@FacebookReturnType(JSON=JSONObject.class)
-	public T notifications_get() throws FacebookException;
-
-	/**
-	 * Send a notification message to the specified users.
-	 * 
-	 * @param recipientIds
-	 *            the user ids to which the message is to be sent
-	 * @param notification
-	 *            the FBML to display on the notifications page
-	 * @param email
-	 *            the FBML to send to the specified users via email, or null if no email should be sent
-	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
-	 * 
-	 * @deprecated notifications.send can no longer be used for sending e-mails, use notifications.sendEmail intead when sending e-mail, or the alternate version of
-	 *             notifications.send if all you want to send is a notification.
-	 */
-	@Deprecated
-	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException;
-
-	/**
-	 * Send a notification message to the specified users.
-	 * 
-	 * @param recipientIds
-	 *            the user ids to which the message is to be sent.
-	 * @param notification
-	 *            the FBML to display on the notifications page.
-	 */
-	public void notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
-
+	
 	/**
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
 	 * 
@@ -1294,7 +1259,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
 	 */
 	@Deprecated
-	@FacebookReturnType(JAXB=MarketplaceGetSubCategoriesResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = MarketplaceGetSubCategoriesResponse.class, JSON = JSONArray.class)
 	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
 
 	/**
@@ -1308,7 +1273,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
 	 */
 	@Deprecated
-	@FacebookReturnType(JAXB=MarketplaceGetListingsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = MarketplaceGetListingsResponse.class, JSON = JSONArray.class)
 	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
 
 	/**
@@ -1326,7 +1291,7 @@ public interface IFacebookRestClient<T> {
 	 * @deprecated provided for legacy support only. Please use the alternate version instead.
 	 */
 	@Deprecated
-	@FacebookReturnType(JAXB=MarketplaceSearchResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = MarketplaceSearchResponse.class, JSON = JSONArray.class)
 	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
 
 	/**
@@ -1340,7 +1305,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXBList=Photo.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
 	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
@@ -1352,7 +1317,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXBList=Photo.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
 	public T photos_getByAlbum( Long albumId ) throws FacebookException;
 
 	/**
@@ -1495,38 +1460,43 @@ public interface IFacebookRestClient<T> {
 	 *             if an error happens when executing the API call.
 	 */
 	public void data_setUserPreferences( Map<Integer,String> values, boolean replace ) throws FacebookException;
-	
+
 	/**
-	 * An object type is like a "table" in SQL terminology, or a "class" in object-oriented programming concepts.
-	 * Each object type has a unique human-readable "name" that will be used to identify itself throughout the API.
-	 * Each object type also has a list of properties that one has to define individually. Each property is like a
+	 * An object type is like a "table" in SQL terminology, or a "class" in object-oriented programming concepts. Each object type has a unique human-readable "name" that
+	 * will be used to identify itself throughout the API. Each object type also has a list of properties that one has to define individually. Each property is like a
 	 * "column" in an SQL table, or a "data member" in an object class.
-	 *  
+	 * 
 	 * @param name
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.createObjectType</a>
 	 */
 	public void data_createObjectType( String name ) throws FacebookException;
-	
+
 	/**
-	 * Remove a previously defined object type. This will also delete ALL objects of this type. This deletion is NOT reversible. 
+	 * Remove a previously defined object type. This will also delete ALL objects of this type. This deletion is NOT reversible.
 	 * 
 	 * @param objectType
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.createObjectType"> Developers Wiki: Data.dropObjectType</a>
 	 */
-	public void data_dropObjectType( String objectType )  throws FacebookException;
+	public void data_dropObjectType( String objectType ) throws FacebookException;
+
 	public void data_renameObjectType( String name, String newName ) throws FacebookException;
-	public void data_defineObjectProperty ( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException;
-	public void data_undefineObjectProperty ( String objectType, String propertyName ) throws FacebookException;
-	public void data_renameObjectProperty ( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
-	@FacebookReturnType(JAXB=DataGetObjectTypesResponse.class, JSON=JSONArray.class)
+
+	public void data_defineObjectProperty( String objectType, String propertyName, PropertyType propertyType ) throws FacebookException;
+
+	public void data_undefineObjectProperty( String objectType, String propertyName ) throws FacebookException;
+
+	public void data_renameObjectProperty( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = DataGetObjectTypesResponse.class, JSON = JSONArray.class)
 	public T data_getObjectTypes() throws FacebookException;
-	@FacebookReturnType(JAXB=DataGetObjectTypeResponse.class, JSON=JSONObject.class)
+
+	@FacebookReturnType(JAXB = DataGetObjectTypeResponse.class, JSON = JSONObject.class)
 	public T data_getObjectType( String objectType ) throws FacebookException;
-	
-	
-	
+
+
+
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
@@ -1816,7 +1786,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	@FacebookReturnType(JAXB=PagesGetInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
@@ -1830,7 +1800,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	@FacebookReturnType(JAXB=PagesGetInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -1843,7 +1813,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	@FacebookReturnType(JAXB=PagesGetInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
@@ -1856,7 +1826,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
-	@FacebookReturnType(JAXB=PagesGetInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -1902,6 +1872,42 @@ public interface IFacebookRestClient<T> {
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException;
 
 	/**
+	 * Retrieves the outstanding notifications for the session user.
+	 * 
+	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
+	 *         list of 'event_invites'
+	 */
+	@FacebookReturnType(JSON = JSONObject.class)
+	public T notifications_get() throws FacebookException;
+
+	/**
+	 * Send a notification message to the specified users.
+	 * 
+	 * @param recipientIds
+	 *            the user ids to which the message is to be sent
+	 * @param notification
+	 *            the FBML to display on the notifications page
+	 * @param email
+	 *            the FBML to send to the specified users via email, or null if no email should be sent
+	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
+	 * 
+	 * @deprecated notifications.send can no longer be used for sending e-mails, use notifications.sendEmail intead when sending e-mail, or the alternate version of
+	 *             notifications.send if all you want to send is a notification.
+	 */
+	@Deprecated
+	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException;
+
+	/**
+	 * Send a notification message to the specified users.
+	 * 
+	 * @param recipientIds
+	 *            the user ids to which the message is to be sent.
+	 * @param notification
+	 *            the FBML to display on the notifications page.
+	 */
+	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
+
+	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail content can be specified as either plaintext or FBML. In either case, only a limited subset of markup is
 	 * supported (only tags that result in text and links are allowed).
 	 * 
@@ -1920,8 +1926,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1944,8 +1949,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as plaintext, and can contain a limited subset of HTML tags (specifically, only tags
@@ -1961,8 +1965,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
+	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -1980,8 +1983,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
+	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as fbml, and can contain a limited subset of FBML tags (specifically, only tags that
@@ -1998,8 +2000,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
+	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to a set of app-users. You can only e-mail users who have already added your application. The e-mail content can be specified as either plaintext or
@@ -2018,8 +2019,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@FacebookReturnType(JAXBList=Long.class, JSON=JSONArray.class)
-	public T notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
+	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
 
 	/**
 	 * Send a notification message to the logged-in user.
@@ -2029,7 +2029,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Notifications.send"> Developers Wiki: notifications.send</a>
 	 */
-	public void notifications_send( CharSequence notification ) throws FacebookException;
+	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Sends a notification email to the specified users, who must have added your application. You can send five (5) emails to a user per day. Requires a session key for
@@ -2158,7 +2158,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
-	@FacebookReturnType(JAXB=DataGetCookiesResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies() throws FacebookException;
 
 	/**
@@ -2171,7 +2171,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
-	@FacebookReturnType(JAXB=DataGetCookiesResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( Long userId ) throws FacebookException;
 
 	/**
@@ -2184,7 +2184,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
-	@FacebookReturnType(JAXB=DataGetCookiesResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( String name ) throws FacebookException;
 
 	/**
@@ -2199,7 +2199,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
-	@FacebookReturnType(JAXB=DataGetCookiesResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( Long userId, CharSequence name ) throws FacebookException;
 
 	/**
@@ -2389,42 +2389,37 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.deleteObjects"> Developers Wiki: Data.deleteObjects</a>
 	 */
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException;
-	
-	@FacebookReturnType(JSON=JSONObject.class)
-	public T data_getObject ( long objectId ) throws FacebookException;
-	@FacebookReturnType(JAXB=DataGetObjectsResponse.class, JSON=JSONArray.class)
-	public T data_getObjects ( Collection<Long> objectIds ) throws FacebookException;
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
-	public T data_getObjectProperty ( long objectId, String propertyName ) throws FacebookException;
-	public void data_setObjectProperty ( long objectId, String propertyName, String value ) throws FacebookException;
-	
+
+	@FacebookReturnType(JSON = JSONObject.class)
+	public T data_getObject( long objectId ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = DataGetObjectsResponse.class, JSON = JSONArray.class)
+	public T data_getObjects( Collection<Long> objectIds ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
+	public T data_getObjectProperty( long objectId, String propertyName ) throws FacebookException;
+
+	public void data_setObjectProperty( long objectId, String propertyName, String value ) throws FacebookException;
+
 	/**
 	 * 
 	 * @param associationName
-	 *            Name of forward association to create. This name needs to be
-	 *            unique among all object types and associations defined for
-	 *            this application. This name also needs to be a valid
-	 *            identifier, which is no longer than 32 characters, starting
-	 *            with a letter (a-z) and consisting of only small letters
-	 *            (a-z), numbers (0-9) and/or underscores.
+	 *            Name of forward association to create. This name needs to be unique among all object types and associations defined for this application. This name also
+	 *            needs to be a valid identifier, which is no longer than 32 characters, starting with a letter (a-z) and consisting of only small letters (a-z), numbers
+	 *            (0-9) and/or underscores.
 	 * @param associationType
 	 * @param associationInfo1
 	 * @param associationInfo2
 	 * @param inverseName
-	 *            Optional - name of backward association, if it is two-way
-	 *            asymmetric. This name needs to be unique among all object
-	 *            types and associations defined for this application. This name
-	 *            also needs to be a valid identifier, which is no longer than
-	 *            32 characters, starting with a letter (a-z) and consisting of
+	 *            Optional - name of backward association, if it is two-way asymmetric. This name needs to be unique among all object types and associations defined for
+	 *            this application. This name also needs to be a valid identifier, which is no longer than 32 characters, starting with a letter (a-z) and consisting of
 	 *            only small letters (a-z), numbers (0-9) and/or underscores.
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.defineAssociation"> Developers Wiki: Data.defineAssociation</a>
 	 */
-	public void data_defineAssociation(String associationName,
-			AssociationType associationType, AssociationInfo associationInfo1,
-			AssociationInfo associationInfo2, String inverseName)
-			throws FacebookException;
-	
+	public void data_defineAssociation( String associationName, AssociationType associationType, AssociationInfo associationInfo1, AssociationInfo associationInfo2,
+			String inverseName ) throws FacebookException;
+
 	/**
 	 * Remove a previously defined association. This will also delete this type of associations established between objects. This deletion is not reversible.
 	 * 
@@ -2446,12 +2441,14 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Data.renameAssociation"> Developers Wiki: Data.renameAssociation</a>
 	 */
-	public void data_renameAssociation ( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
-	@FacebookReturnType(JAXB=AssociationInfo.class, JSON=JSONObject.class)
-	public T data_getAssociationDefinition ( String associationName ) throws FacebookException;
-	@FacebookReturnType(JAXB=DataGetAssociationDefinitionsResponse.class, JSON=JSONArray.class)
-	public T data_getAssociationDefinitions () throws FacebookException;
-	
+	public void data_renameAssociation( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = AssociationInfo.class, JSON = JSONObject.class)
+	public T data_getAssociationDefinition( String associationName ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = DataGetAssociationDefinitionsResponse.class, JSON = JSONArray.class)
+	public T data_getAssociationDefinitions() throws FacebookException;
+
 
 	/**
 	 * Create an association between two objects
@@ -2558,7 +2555,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a result containing the response to each individual query in the batch.
 	 */
-	@FacebookReturnType(JAXB=BatchRunResponse.class)
+	@FacebookReturnType(JAXB = BatchRunResponse.class)
 	public T batch_run( String methods, boolean serial ) throws FacebookException;
 
 	/**
@@ -2593,7 +2590,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB=ApplicationGetPublicInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException;
 
 	/**
@@ -2605,7 +2602,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB=ApplicationGetPublicInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException;
 
 	/**
@@ -2617,7 +2614,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB=ApplicationGetPublicInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException;
 
 	/**
@@ -2629,7 +2626,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB=ApplicationGetPublicInfoResponse.class, JSON=JSONObject.class)
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException;
 
 	/**
@@ -2655,6 +2652,30 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
 	 */
 	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException;
 
 	/**
 	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
@@ -2690,7 +2711,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	@Deprecated
-	@FacebookReturnType(JAXB=AdminGetMetricsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
 	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
 
 	/**
@@ -2711,7 +2732,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
-	@FacebookReturnType(JAXB=AdminGetMetricsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
 	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
 
 	/**
@@ -2730,7 +2751,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
 	 */
 	@Deprecated
-	@FacebookReturnType(JAXB=AdminGetMetricsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
 	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
 
 	/**
@@ -2751,7 +2772,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
 	 */
-	@FacebookReturnType(JAXB=AdminGetMetricsResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
 	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
 
 	/**
@@ -2789,7 +2810,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
-	@FacebookReturnType(JAXBList=String.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXBList = String.class, JSON = JSONArray.class)
 	public T permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException;
 
 	/**
@@ -2815,7 +2836,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
-	@FacebookReturnType(JAXBList=String.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXBList = String.class, JSON = JSONArray.class)
 	public T permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException;
 
 	/**
@@ -2836,6 +2857,25 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 */
 	public boolean auth_revokeAuthorization() throws FacebookException;
+
+	/**
+	 * @see #auth_revokeExtendedPermission(Permission, Long)
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException;
+
+	/**
+	 * Revokes the specified extended permission for the selected user. If no user is specified, then the user of the current session is used.
+	 * 
+	 * @param perm
+	 *            The extended permission to revoke.
+	 * @param userId
+	 *            The user ID of the user whose extended permission you want to revoke. If you don't specify this parameter, then you must have a valid session for the
+	 *            current user, and that session's user will have the specified permission revoked.
+	 * @return This method returns true upon success.
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException;
 
 	/**
 	 * Begins permissions mode, and allows the current application to begin making requests on behalf of the application associated with the specified API key.
@@ -3130,7 +3170,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 * @see http://wiki.developers.facebook.com/index.php/Notifications.send
 	 */
-	public void notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException;
+	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException;
 
 	/**
 	 * Deactivates the specified template bundle.
@@ -3439,7 +3479,7 @@ public interface IFacebookRestClient<T> {
 	 *         them again later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.registerUsers
 	 */
-	@FacebookReturnType(JAXB=ConnectRegisterUsersResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = ConnectRegisterUsersResponse.class, JSON = JSONArray.class)
 	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException;
 
 	/**
@@ -3452,7 +3492,7 @@ public interface IFacebookRestClient<T> {
 	 *         later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.unregisterUsers
 	 */
-	@FacebookReturnType(JAXB=ConnectUnregisterUsersResponse.class, JSON=JSONArray.class)
+	@FacebookReturnType(JAXB = ConnectUnregisterUsersResponse.class, JSON = JSONArray.class)
 	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException;
 
 	/**
@@ -3464,5 +3504,85 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.getUnconnectedFriendsCount
 	 */
 	public int connect_getUnconnectedFriendsCount() throws FacebookException;
+
+
+	// CUSTOM TAGS
+
+	/**
+	 * Deletes one or more custom tags you previously registered for the calling application with fbml.registerCustomTags.
+	 * 
+	 * Important! Use this method with extreme care, especially with public tags. Don't delete tags that may be in use, especially by other applications! This will break
+	 * FBML pages that use those tags.
+	 * 
+	 * @param names
+	 *            A JSON-encoded array of strings containing the names of the tags you want to delete. If this attribute is missing, all the application's custom tags
+	 *            will be deleted.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.deleteCustomTags
+	 */
+	public void fbml_deleteCustomTags( Collection<String> names ) throws FacebookException;
+
+	/**
+	 * Returns the custom tag definitions for tags that were previously defined using fbml.registerCustomTags.
+	 * 
+	 * @param appId
+	 *            The ID of the application whose custom tags you want to get. If the ID is the calling application's ID, all the application's custom tags are returned.
+	 *            Otherwise, only the application's public custom tags are returned. (Default value is the calling application's ID.).
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.getCustomTags
+	 */
+	@FacebookReturnType()
+	public T fbml_getCustomTags( String appId ) throws FacebookException;
+
+	/**
+	 * Registers custom tags you can include in your that applications' FBML markup. Custom tags consist of FBML snippets that are rendered during parse time on the
+	 * containing page that references the custom tag.
+	 * 
+	 * Custom tags can be either private or public. For more information, see Custom Tags. When you register public custom tags, you should add the source code for the
+	 * tags to the Custom Tags Directory.
+	 * 
+	 * To use these custom tags in an FBML snippet, you must define a namespace with the fb:fbml tag. This imports an application's custom tags into an FBML namespace.
+	 * See fb:fbml for more information on how to use custom tags.
+	 * 
+	 * Please go to the Facebook Wiki Page for full documentation!!: http://wiki.developers.facebook.com/index.php/Fbml.registerCustomTags
+	 * 
+	 * @param tags
+	 *            a JSON-encoded list of tag objects. Each tag object is an object with the following properties:
+	 *            <ul>
+	 *            <li>name (required) (string): the name of the tag. The name must be a string up to 30 characters. Only letters, numbers, underscores ('_') and hyphens
+	 *            ('-') are allowed.</li>
+	 *            <li>type (optional) (string): Specify either leaf or container. Leaf tags can't contain any other tags (similar to <fb:name/>). Container tags may
+	 *            contain children between their open and close tags (like <fb:editor></fb:editor>). (Default value is leaf.).</li>
+	 *            <li>description (optional) (string): A full description of the tag's functionality. This is used for documentation only, and is especially useful for
+	 *            public tags.</li>
+	 *            <li>is_public (optional) (string): Specify either true or false. Specifying true indicates that other applications can use this tag. You can have a mix
+	 *            of public and private tags within the same array. (Default value is false.).</li>
+	 *            <li>attributes (optional) (mixed): A list of attribute objects. Attributes are used to add dynamic elements to tags. The values of those attributes are
+	 *            substituted into the tag's FBML before it's parsed. Each attribute has the following fields:
+	 *            <ul>
+	 *            <li>o name (required) (string): The attribute's name. The name must be a string up to 30 characters in length. Only letters, numbers, underscores ('_')
+	 *            and hyphens ('-') are allowed.</li>
+	 *            <li>o description (optional) (string): The attribute's description. This is used for documentation only, and is especially useful for public tags.</li>
+	 *            <li>o default_value (optional) (string): The value to use when the attribute is missing. If an attribute doesn't have a default value, it is considered
+	 *            to be required and the developer will see an error message if the attribute is missing.</li>
+	 *            </ul>
+	 *            </li>
+	 *            <li>fbml (required) (string): The FBML markup to substitute into the page where the tag is encountered. This property is required only for leaf tags.</li>
+	 *            <li>open_tag_fbml (required) (string): The FBML markup to substitute into the page where the open tag appears. This property is required for container
+	 *            tags only.</li>
+	 *            <li>close_tag_fbml (required) (string): The FBML markup to substitute into the page where the close tag appears. This property is required for
+	 *            container tags only. Note: Facebook recommends you do not include <script> tags in this FBML snippet.</li>
+	 *            <li>header_fbml: An FBML snippet that is rendered once on the page before the first tag that defined it. If multiple tags define the same value for
+	 *            header_fbml, and more than one of them appear on a page, then header_fbml is rendered only once. You should only use this for including CSS and
+	 *            initializing any JavaScript variables, not for rendering visible content. Facebook recommends you avoid including heavy JavaScript libraries and
+	 *            performing expensive JavaScript operations in header_fbml for performance reasons. Instead, use footer_fbml.</li>
+	 *            <li>footer_fbml: Similar to header_fbml, it's an FBML snippet that gets rendered after all custom tags are rendered. Facebook recommends you include
+	 *            heavy JavaScript libraries and perform any expensive JavaScript operations in footer_fbml, and avoid them in fbml, open_tag_fbml, close_tag_fbml, and
+	 *            header_fbml.</li>
+	 *            </ul>
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Fbml.registerCustomTags
+	 */
+	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
 }

@@ -34,6 +34,16 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().admin_getAllocation( allocationType );
 	}
 
+	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().admin_getAllocation( allocationType, userId );
+	}
+
+	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().admin_getAllocation( allocationType, userId );
+	}
+
 	@Deprecated
 	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
@@ -96,6 +106,16 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public boolean auth_revokeAuthorization() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_revokeAuthorization();
+	}
+
+	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().auth_revokeExtendedPermission( perm );
+	}
+
+	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().auth_revokeExtendedPermission( perm, userId );
 	}
 
 	public int connect_getUnconnectedFriendsCount() throws FacebookException {
@@ -426,6 +446,52 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().marketplace_removeListing( listingId, status, userId );
+	}
+
+	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_send( recipientIds, notification );
+	}
+
+	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_send( notification );
+	}
+
+	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_send( recipientIds, notification, isAppToUser );
+	}
+
+	public Collection<String> notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendEmailToCurrentUser( subject, email, fbml );
+	}
+
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml )
+			throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendEmail( recipients, subject, email, fbml );
+	}
+
+	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendTextEmailToCurrentUser( subject, email );
+	}
+
+	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendTextEmail( recipients, subject, email );
+	}
+
+	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendFbmlEmailToCurrentUser( subject, fbml );
+	}
+
+	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().notifications_sendFbmlEmail( recipients, subject, fbml );
 	}
 
 	@Deprecated

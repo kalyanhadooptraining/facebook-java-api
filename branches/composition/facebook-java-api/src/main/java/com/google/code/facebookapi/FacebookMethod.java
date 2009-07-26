@@ -35,7 +35,7 @@ package com.google.code.facebookapi;
 import java.util.EnumSet;
 
 /**
- * Enumaration that maps API method names to the (maximal) number of parameters that each method will send.
+ * Enumeration that maps API method names to the (maximal) number of parameters that each method will send.
  * 
  * There are arguably better ways to do this.
  */
@@ -47,6 +47,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	AUTH_EXPIRE_SESSION("facebook.auth.expireSession"),
 	AUTH_REVOKE_AUTHORIZATION("facebook.auth.revokeAuthorization"),
 	AUTH_PROMOTE_SESSION("facebook.auth.promoteSession"),
+	AUTH_REVOKE_EXTENDED_PERMISSION("facebook.auth.revokeExtendedPermission"),
+	AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION("facebook.auth.revokeExtendedPermission"),
 
 	CONNECT_REGISTER_USERS("facebook.connect.registerUsers"),
 	CONNECT_UNREGISTER_USERS("facebook.connect.unregisterUsers"),
@@ -66,7 +68,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	// Friends
 	FRIENDS_GET_APP_USERS("facebook.friends.getAppUsers"),
 	@Deprecated
-	FRIENDS_GET_REQUESTS("facebook.friends.getRequests"), // deprectaed/unofficial
+	FRIENDS_GET_REQUESTS("facebook.friends.getRequests"), // deprecated/unofficial
 	FRIENDS_ARE_FRIENDS("facebook.friends.areFriends"),
 	FRIENDS_GET("facebook.friends.get"),
 	FRIENDS_GET_NOSESSION("facebook.friends.get"),
@@ -119,6 +121,10 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl"),
 	FBML_REFRESH_IMG_SRC("facebook.fbml.refreshImgSrc"),
 	FBML_SET_REF_HANDLE("facebook.fbml.setRefHandle"),
+
+	FBML_DELETE_CUSTOM_TAGS("facebook.fbml.deleteCustomTags"),
+	FBML_GET_CUSTOM_TAGS("facebook.fbml.getCustomTags"),
+	FBML_REGISTER_CUSTOM_TAGS("facebook.fbml.registerCustomTags"),
 	// Feed
 	FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction"),
 	FEED_REGISTER_TEMPLATE("facebook.feed.registerTemplateBundle"),
@@ -127,13 +133,21 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction"),
 	FEED_DEACTIVATE_TEMPLATE_BUNDLE("facebook.feed.deactivateTemplateBundleByID"),
 	// Marketplace
+	@Deprecated
 	MARKET_CREATE_LISTING("facebook.marketplace.createListing"),
+	@Deprecated
 	MARKET_CREATE_LISTING_NOSESSION("facebook.marketplace.createListing"),
+	@Deprecated
 	MARKET_GET_CATEGORIES("facebook.marketplace.getCategories"),
+	@Deprecated
 	MARKET_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories"),
+	@Deprecated
 	MARKET_GET_LISTINGS("facebook.marketplace.getListings"),
+	@Deprecated
 	MARKET_REMOVE_LISTING("facebook.marketplace.removeListing"),
+	@Deprecated
 	MARKET_REMOVE_LISTING_NOSESSION("facebook.marketplace.removeListing"),
+	@Deprecated
 	MARKET_SEARCH("facebook.marketplace.search"),
 	/**
 	 * @deprecated provided for legacy support only. Please use MARKET_GET_CATEGORIES instead.
@@ -173,7 +187,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_SET_USER_PREFERENCES("facebook.data.setUserPreferences"),
 	DATA_GET_USER_PREFERENCE("facebook.data.getUserPreference"),
 	DATA_GET_USER_PREFERENCES("facebook.data.getUserPreferences"),
-	
+
 	DATA_CREATE_OBJECT_TYPE("facebook.data.createObjectType"),
 	DATA_DROP_OBJECT_TYPE("facebook.data.dropObjectType"),
 	DATA_RENAME_OBJECT_TYPE("facebook.data.renameObjectType"),
@@ -195,13 +209,13 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DATA_REMOVE_ASSOCIATION("facebook.data.removeAssociation"),
 	DATA_REMOVE_ASSOCIATED_OBJECTS("facebook.data.removeAssociatedObjects"),
 	DATA_GET_ASSOCIATED_OBJECT_COUNT("facebook.data.getAssociatedObjectCount"),
-	
+
 	DATA_DEFINE_ASSOCIATION("facebook.data.defineAssociation"),
 	DATA_UNDEFINE_ASSOCIATION("facebook.data.undefineAssociation"),
 	DATA_RENAME_ASSOCIATION("facebook.data.renameAssociation"),
 	DATA_GET_ASSOCIATION_DEFINITION("facebook.data.getAssociationDefinition"),
-	DATA_GET_ASSOCIATION_DEFINITIONS("facebook.data.getAssociationDefinitions"),	
-	
+	DATA_GET_ASSOCIATION_DEFINITIONS("facebook.data.getAssociationDefinitions"),
+
 
 	// SMS - Mobile
 	SMS_CAN_SEND("facebook.sms.canSend"),
@@ -225,6 +239,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	@Deprecated
 	ADMIN_GET_DAILY_METRICS("facebook.admin.getDailyMetrics"),
 	ADMIN_GET_METRICS("facebook.admin.getMetrics"),
+	ADMIN_GET_RESTRICTION_INFO("facebook.admin.getRestrictionInfo"),
+	ADMIN_SET_RESTRICTION_INFO("facebook.admin.setRestrictionInfo"),
 
 	// Permissions
 	PERM_GRANT_API_ACCESS("facebook.permissions.grantApiAccess"),
@@ -239,7 +255,21 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	LIVEMESSAGE_SEND("facebook.livemessage.send"),
 
 	// Batch
-	BATCH_RUN("facebook.batch.run");
+	BATCH_RUN("facebook.batch.run"),
+
+	LINKS_POST("facebook.links.post"),
+
+	// Stream
+	STREAM_ADD_COMMENT("facebook.stream.addComment"),
+	STREAM_ADD_LIKE("facebook.stream.addLike"),
+	STREAM_GET("facebook.stream.get"),
+	STREAM_GET_COMMENTS("facebook.stream.getComments"),
+	STREAM_GET_FILTERS("facebook.stream.getFilters"),
+	STREAM_PUBLISH("facebook.stream.publish"),
+	STREAM_REMOVE("facebook.stream.remove"),
+	STREAM_REMOVE_COMMENT("facebook.stream.removeComment"),
+	STREAM_REMOVE_LIKE("facebook.stream.removeLike");
+
 
 	private static final EnumSet<FacebookMethod> listSessionNone;
 	private static final EnumSet<FacebookMethod> listTakesFile;
@@ -248,8 +278,8 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 		listSessionNone = EnumSet.of( USERS_IS_APP_ADDED_NOSESSION, USERS_IS_APP_USER_NOSESSION, PROFILE_SET_FBML_NOSESSION, PROFILE_GET_FBML_NOSESSION,
 				USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION,
 				PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION, PAGES_GET_INFO_NOSESSION, SMS_SEND, SMS_SEND_MESSAGE, FBML_REFRESH_IMG_SRC,
-				FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE, CONNECT_REGISTER_USERS, CONNECT_UNREGISTER_USERS,
-				NOTIFICATIONS_SEND_EMAIL_NOSESSION );
+				FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE, CONNECT_REGISTER_USERS, CONNECT_UNREGISTER_USERS, AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION,
+				NOTIFICATIONS_SEND_EMAIL_NOSESSION, FBML_DELETE_CUSTOM_TAGS, FBML_GET_CUSTOM_TAGS, FBML_REGISTER_CUSTOM_TAGS );
 		listTakesFile = EnumSet.of( PHOTOS_UPLOAD, PHOTOS_UPLOAD_NOSESSION );
 	}
 

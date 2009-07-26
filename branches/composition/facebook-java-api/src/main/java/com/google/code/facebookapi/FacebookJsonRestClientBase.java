@@ -22,12 +22,14 @@ import org.json.JSONObject;
 public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapter implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( FacebookJsonRestClientBase.class );
-	
+
 	protected ExtensibleClient client;
+
 	public ExtensibleClient getClient() {
 		return client;
 	}
-	public void setClient(ExtensibleClient client) {
+
+	public void setClient( ExtensibleClient client ) {
 		this.client = client;
 	}
 
@@ -208,7 +210,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public String auth_getSession( String authToken ) throws FacebookException {
 		return client.auth_getSession( authToken );
 	}
-	
+
 
 	/**
 	 * Parses the result of an API call from JSON into Java Objects.
@@ -225,12 +227,12 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @see JSONObject
 	 */
 	static Object parseCallResult( Object rawResponse ) throws FacebookException {
-		if( rawResponse == null ) {
+		if ( rawResponse == null ) {
 			return null;
 		}
-		String jsonResp = (String)rawResponse;
+		String jsonResp = (String) rawResponse;
 		Object json = jsonToJavaValue( jsonResp );
-		
+
 		if ( json instanceof JSONObject ) {
 			JSONObject jsonObj = (JSONObject) json;
 			try {
@@ -271,17 +273,18 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
 		client.setResponseFormat( "json" );
 		List<String> clientResults = client.executeBatch( serial );
-		
+
 		List<Object> result = new ArrayList<Object>();
 
-		for(String clientResult : clientResults) {
+		for ( String clientResult : clientResults ) {
 			JSONArray doc;
 			try {
-				//Must ensure that JSONArray(String) constructor
-				//is called. JSONArray(Object) behaves differently.
-				doc = new JSONArray(clientResult);
-			} catch(JSONException ex) {
-				throw new RuntimeException("Error parsing client result", ex);
+				// Must ensure that JSONArray(String) constructor
+				// is called. JSONArray(Object) behaves differently.
+				doc = new JSONArray( clientResult );
+			}
+			catch ( JSONException ex ) {
+				throw new RuntimeException( "Error parsing client result", ex );
 			}
 			for ( int count = 0; count < doc.length(); count++ ) {
 				try {
@@ -297,10 +300,10 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		return result;
 	}
 
-	
+
 	@Deprecated
 	public Object getResponsePOJO() {
-		throw new RuntimeException("XML is required to convert the Facebook data to Java Objects via JAXB. JSON not supported.");
+		throw new RuntimeException( "XML is required to convert the Facebook data to Java Objects via JAXB. JSON not supported." );
 	}
 
 	public String getRawResponse() {
@@ -312,111 +315,118 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	@Deprecated
 	public JAXBContext getJaxbContext() {
-		return FacebookJaxbRestClient.JAXB_CONTEXT;
+		return FacebookJaxbRestClientBase.JAXB_CONTEXT;
 	}
-	
+
 	/**
 	 * @Deprecated Use FacebookJaxbRestClient.setJaxbContext(context) instead
 	 */
 	@Deprecated
 	public void setJaxbContext( JAXBContext context ) {
-		FacebookJaxbRestClient.JAXB_CONTEXT = context;
+		FacebookJaxbRestClientBase.JAXB_CONTEXT = context;
 	}
-	
-	
-	
+
+
+
 	/**
-	 * Determines the correct datatype for a json string and converts it.
-	 * The json.org library really should have a method to do this.
+	 * Determines the correct datatype for a json string and converts it. The json.org library really should have a method to do this.
 	 */
-	public static Object jsonToJavaValue(String s) {
-		try {
-			return new JSONArray(s);
-		} catch(JSONException ex) {		
+	public static Object jsonToJavaValue( String s ) {
+		if ( s.startsWith( "[" ) ) {
+			try {
+				return new JSONArray( s );
+			}
+			catch ( JSONException ex ) {
+				// ignore
+			}
 		}
-		
-		try {
-			return new JSONObject(s);
-		} catch(JSONException ex) {
+
+		if ( s.startsWith( "{" ) ) {
+			try {
+				return new JSONObject( s );
+			}
+			catch ( JSONException ex ) {
+				// ignore
+			}
 		}
-		
+
 		Object returnMe = stringToValue( s );
-		//If we have a string, strip off the quotes
-		if(returnMe instanceof String) {
-			String strValue = (String)returnMe;
-			if(strValue.length() > 1) {
+		// If we have a string, strip off the quotes
+		if ( returnMe instanceof String ) {
+			String strValue = (String) returnMe;
+			if ( strValue.length() > 1 ) {
 				returnMe = strValue.trim().substring( 1, strValue.length() - 1 );
 			}
 		}
-			
+
 		return returnMe;
-		
 	}
-	
-	
-    /**
-     * COPIED FROM LATEST JSON.ORG SOURCE CODE FOR JSONObject
-     * 
-     * Try to convert a string into a number, boolean, or null. If the string
-     * can't be converted, return the string.
-     * @param s A String.
-     * @return A simple JSON value.
-     */
-    static public Object stringToValue(String s) {
-        if (s.equals("")) {
-            return s;
-        }
-        if (s.equalsIgnoreCase("true")) {
-            return Boolean.TRUE;
-        }
-        if (s.equalsIgnoreCase("false")) {
-            return Boolean.FALSE;
-        }
-        if (s.equalsIgnoreCase("null")) {
-            return JSONObject.NULL;
-        }
 
-        /*
-         * If it might be a number, try converting it. We support the 0- and 0x-
-         * conventions. If a number cannot be produced, then the value will just
-         * be a string. Note that the 0-, 0x-, plus, and implied string
-         * conventions are non-standard. A JSON parser is free to accept
-         * non-JSON forms as long as it accepts all correct JSON forms.
-         */
+	/**
+	 * COPIED FROM LATEST JSON.ORG SOURCE CODE FOR JSONObject
+	 * 
+	 * Try to convert a string into a number, boolean, or null. If the string can't be converted, return the string.
+	 * 
+	 * @param s
+	 *            A String.
+	 * @return A simple JSON value.
+	 */
+	static public Object stringToValue( String s ) {
+		if ( s.equals( "" ) ) {
+			return s;
+		}
+		if ( s.equalsIgnoreCase( "true" ) ) {
+			return Boolean.TRUE;
+		}
+		if ( s.equalsIgnoreCase( "false" ) ) {
+			return Boolean.FALSE;
+		}
+		if ( s.equalsIgnoreCase( "null" ) ) {
+			return JSONObject.NULL;
+		}
 
-        char b = s.charAt(0);
-        if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
-            if (b == '0') {
-                if (s.length() > 2 &&
-                        (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
-                    try {
-                        return new Integer(Integer.parseInt(s.substring(2),
-                                16));
-                    } catch (Exception e) {
-                        /* Ignore the error */
-                    }
-                } else {
-                    try {
-                        return new Integer(Integer.parseInt(s, 8));
-                    } catch (Exception e) {
-                        /* Ignore the error */
-                    }
-                }
-            }
-            try {
-                return new Integer(s);
-            } catch (Exception e) {
-                try {
-                    return new Long(s);
-                } catch (Exception f) {
-                    try {
-                        return new Double(s);
-                    }  catch (Exception g) {
-                    	/* Ignore the error */
-                    }
-                }
-            }
-        }
-        return s;
-    }
+		/*
+		 * If it might be a number, try converting it. We support the 0- and 0x- conventions. If a number cannot be produced, then the value will just be a string. Note
+		 * that the 0-, 0x-, plus, and implied string conventions are non-standard. A JSON parser is free to accept non-JSON forms as long as it accepts all correct JSON
+		 * forms.
+		 */
+
+		char b = s.charAt( 0 );
+		if ( ( b >= '0' && b <= '9' ) || b == '.' || b == '-' || b == '+' ) {
+			if ( b == '0' ) {
+				if ( s.length() > 2 && ( s.charAt( 1 ) == 'x' || s.charAt( 1 ) == 'X' ) ) {
+					try {
+						return new Integer( Integer.parseInt( s.substring( 2 ), 16 ) );
+					}
+					catch ( Exception e ) {
+						/* Ignore the error */
+					}
+				} else {
+					try {
+						return new Integer( Integer.parseInt( s, 8 ) );
+					}
+					catch ( Exception e ) {
+						/* Ignore the error */
+					}
+				}
+			}
+			try {
+				return new Integer( s );
+			}
+			catch ( Exception e ) {
+				try {
+					return new Long( s );
+				}
+				catch ( Exception f ) {
+					try {
+						return new Double( s );
+					}
+					catch ( Exception g ) {
+						/* Ignore the error */
+					}
+				}
+			}
+		}
+		return s;
+	}
 }
