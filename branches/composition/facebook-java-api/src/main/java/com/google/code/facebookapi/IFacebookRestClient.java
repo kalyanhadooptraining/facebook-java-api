@@ -1137,7 +1137,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	@FacebookReturnType
 	public T fql_query( CharSequence query ) throws FacebookException;
-	
+
 	/**
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
 	 * 
@@ -1947,7 +1947,8 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml ) throws FacebookException;
+	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml )
+			throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail must be specified as plaintext, and can contain a limited subset of HTML tags (specifically, only tags

@@ -37,7 +37,6 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -87,75 +86,39 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( apiKey, secret );
+		this( new ExtensibleClient( apiKey, secret ) );
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, int connectionTimeout ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
+		this( new ExtensibleClient( apiKey, secret, connectionTimeout ) );
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( apiKey, secret, sessionKey );
+		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
 	}
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "xml" );
-		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
+		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey ) );
 	}
 
 	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		super( "xml" );
-		factory.setNamespaceAware( true );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
-	}
-
-	/**
-	 * The response format in which results to FacebookMethod calls are returned
-	 * 
-	 * @return the format: either XML, JSON, or null (API default)
-	 */
-	public String getResponseFormat() {
-		return "xml";
-	}
-
-	/**
-	 * Call this function to retrieve the session information after your user has logged in.
-	 * 
-	 * @param authToken
-	 *            the token returned by auth_createToken or passed back to your callback_url.
-	 */
-	public String auth_getSession( String authToken ) throws FacebookException {
-		return client.auth_getSession( authToken );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {
@@ -225,10 +188,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			ExtensibleClient.printDom( n, prefix, sb );
 			log.debug( sb.toString() );
 		}
-	}
-
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		return client.admin_getAppPropertiesAsString( properties );
 	}
 
 	/**

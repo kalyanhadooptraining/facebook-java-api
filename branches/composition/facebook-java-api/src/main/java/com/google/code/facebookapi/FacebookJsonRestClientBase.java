@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -31,6 +30,11 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		this.client = client;
 	}
 
+	public FacebookJsonRestClientBase( ExtensibleClient client ) {
+		super( "json" );
+		this.client = client;
+	}
+
 	/**
 	 * Constructor.
 	 * 
@@ -40,8 +44,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJsonRestClientBase( String apiKey, String secret ) {
-		super( "json" );
-		client = new ExtensibleClient( apiKey, secret );
+		this( new ExtensibleClient( apiKey, secret ) );
 	}
 
 	/**
@@ -55,8 +58,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClientBase( String apiKey, String secret, int connectionTimeout ) {
-		super( "json" );
-		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
+		this( new ExtensibleClient( apiKey, secret, connectionTimeout ) );
 	}
 
 	/**
@@ -70,8 +72,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey ) {
-		super( "json" );
-		client = new ExtensibleClient( apiKey, secret, sessionKey );
+		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -87,8 +88,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "json" );
-		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
+		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 
@@ -108,8 +108,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		super( "json" );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -130,8 +129,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJsonRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		super( "json" );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 
@@ -148,8 +146,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		super( "json" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -167,8 +164,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "json" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
 	}
 
 	/**
@@ -188,27 +184,8 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		super( "json" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
 	}
-
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		return client.admin_getAppPropertiesAsString( properties );
-	}
-
-	/**
-	 * Sets the session information (sessionKey) using the token from auth_createToken.
-	 * 
-	 * @param authToken
-	 *            the token returned by auth_createToken or passed back to your callback_url.
-	 * @return the session key
-	 * @throws FacebookException
-	 * @throws IOException
-	 */
-	public String auth_getSession( String authToken ) throws FacebookException {
-		return client.auth_getSession( authToken );
-	}
-
 
 	/**
 	 * Parses the result of an API call from JSON into Java Objects.

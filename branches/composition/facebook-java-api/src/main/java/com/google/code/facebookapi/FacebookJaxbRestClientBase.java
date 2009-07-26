@@ -32,7 +32,6 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -252,10 +251,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		if ( JAXB_CONTEXT == null ) {
 			return null;
 		}
-		/*
-		 * if ( ( client.getResponseFormat() != null ) && ( !"xml".equalsIgnoreCase( getResponseFormat() ) ) ) { // JAXB will not work with JSON throw new
-		 * RuntimeException( "You can only generate a response POJO when using XML formatted API responses! JSON users go elsewhere!" ); }
-		 */
 		try {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 			return unmarshaller.unmarshal( new StringReader( rawResponse ) );
@@ -290,16 +285,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	public String extractString( Object val ) {
 		return parse( (String) val );
-	}
-
-	/**
-	 * Call this function to retrieve the session information after your user has logged in.
-	 * 
-	 * @param authToken
-	 *            the token returned by auth_createToken or passed back to your callback_url.
-	 */
-	public String auth_getSession( String authToken ) throws FacebookException {
-		return client.auth_getSession( authToken );
 	}
 
 	/**
@@ -394,10 +379,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		catch ( Exception cce ) {
 			return 0l;
 		}
-	}
-
-	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		return client.admin_getAppPropertiesAsString( properties );
 	}
 
 	/**

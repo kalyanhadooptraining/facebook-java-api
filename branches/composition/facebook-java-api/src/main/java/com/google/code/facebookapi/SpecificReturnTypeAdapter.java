@@ -44,6 +44,11 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().admin_getAllocation( allocationType, userId );
 	}
 
+	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().admin_getAppPropertiesAsString( properties );
+	}
+
 	@Deprecated
 	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
@@ -90,6 +95,11 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public boolean auth_expireSession() throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_expireSession();
+	}
+
+	public String auth_getSession( String authToken ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().auth_getSession( authToken );
 	}
 
 	@Deprecated
