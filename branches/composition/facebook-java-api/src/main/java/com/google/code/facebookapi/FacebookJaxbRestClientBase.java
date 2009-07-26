@@ -61,19 +61,21 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	protected static Log log = LogFactory.getLog( FacebookJaxbRestClientBase.class );
 
 	protected ExtensibleClient client;
+
 	public ExtensibleClient getClient() {
 		return client;
 	}
-	public void setClient(ExtensibleClient client) {
+
+	public void setClient( ExtensibleClient client ) {
 		this.client = client;
 	}
-	
+
 	public FacebookJaxbRestClientBase( ExtensibleClient client ) {
 		super( "xml" );
 		this.client = client;
 		initJaxbSupport();
 	}
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -83,9 +85,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            your 'secret' Facebook key
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret ) {
-		super( "xml" );
-		client = new ExtensibleClient( apiKey, secret );
-		initJaxbSupport();
+		this( new ExtensibleClient( apiKey, secret ) );
 	}
 
 	/**
@@ -99,9 +99,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret, int connectionTimeout ) {
-		super( "xml" );
-		client = new ExtensibleClient( apiKey, secret, connectionTimeout );
-		initJaxbSupport();
+		this( new ExtensibleClient( apiKey, secret, connectionTimeout ) );
 	}
 
 	/**
@@ -115,9 +113,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the session-id to use
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey ) {
-		super( "xml" );
-		client = new ExtensibleClient( apiKey, secret, sessionKey );
-		initJaxbSupport();
+		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -133,9 +129,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "xml" );
-		client = new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout );
-		initJaxbSupport();
+		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 
@@ -155,9 +149,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		super( "xml" );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey );
-		initJaxbSupport();
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -178,9 +170,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *             if you specify an invalid URL
 	 */
 	public FacebookJaxbRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		super( "xml" );
-		client = new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout );
-		initJaxbSupport();
+		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	/**
@@ -196,9 +186,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the session-id to use
 	 */
 	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		super( "xml" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey );
-		initJaxbSupport();
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -216,9 +204,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		super( "xml" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 );
-		initJaxbSupport();
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
 	}
 
 	/**
@@ -238,13 +224,19 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
 	 */
 	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		super( "xml" );
-		client = new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout );
-		initJaxbSupport();
+		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
 	}
-	
+
 	protected static JAXBContext JAXB_CONTEXT;
-	
+
+	public JAXBContext getJaxbContext() {
+		return JAXB_CONTEXT;
+	}
+
+	public void setJaxbContext( JAXBContext context ) {
+		JAXB_CONTEXT = context;
+	}
+
 	public static void initJaxbSupport() {
 		if ( JAXB_CONTEXT == null ) {
 			try {
@@ -255,17 +247,15 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			}
 		}
 	}
-	
+
 	public Object getResponsePOJO( String rawResponse ) {
 		if ( JAXB_CONTEXT == null ) {
 			return null;
 		}
 		/*
-		if ( ( client.getResponseFormat() != null ) && ( !"xml".equalsIgnoreCase( getResponseFormat() ) ) ) {
-			// JAXB will not work with JSON
-			throw new RuntimeException( "You can only generate a response POJO when using XML formatted API responses! JSON users go elsewhere!" );
-		}
-		*/
+		 * if ( ( client.getResponseFormat() != null ) && ( !"xml".equalsIgnoreCase( getResponseFormat() ) ) ) { // JAXB will not work with JSON throw new
+		 * RuntimeException( "You can only generate a response POJO when using XML formatted API responses! JSON users go elsewhere!" ); }
+		 */
 		try {
 			Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 			return unmarshaller.unmarshal( new StringReader( rawResponse ) );
@@ -274,16 +264,12 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			throw new RuntimeException( ex );
 		}
 	}
-	
+
 	public String getRawResponse() {
 		return client.getRawResponse();
 	}
-	
-	public JAXBContext getJaxbContext() {
-		return JAXB_CONTEXT;
-	}
 
-	private String parse(String val) {
+	private String parse( String val ) {
 		String xml = val;
 		if ( ( xml == null ) || ( "".equals( xml ) ) ) {
 			return null;
@@ -303,7 +289,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @return the String
 	 */
 	public String extractString( Object val ) {
-		return parse((String)val);
+		return parse( (String) val );
 	}
 
 	/**
@@ -330,11 +316,11 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *             if <code>data</code> is not readable
 	 */
 	protected Object parseCallResult( Object rawResponse ) throws FacebookException {
-		if( rawResponse == null ) {
+		if ( rawResponse == null ) {
 			return null;
 		}
 		log.debug( "Facebook response:  " + rawResponse );
-		Object res = getResponsePOJO( (String)rawResponse );
+		Object res = getResponsePOJO( (String) rawResponse );
 		if ( res instanceof FacebookApiException ) {
 			FacebookApiException error = (FacebookApiException) res;
 			int errorCode = error.getErrorCode();
@@ -359,7 +345,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @return the URL
 	 */
 	protected URL extractURL( Object url ) throws IOException {
-		String result = parse((String)url);
+		String result = parse( (String) url );
 		if ( result != null ) {
 			return new URL( result );
 		}
@@ -374,7 +360,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	protected int extractInt( Object val ) {
 		try {
-			return Integer.parseInt( parse((String)val) );
+			return Integer.parseInt( parse( (String) val ) );
 		}
 		catch ( Exception cce ) {
 			return 0;
@@ -388,7 +374,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @return the Boolean
 	 */
 	protected boolean extractBoolean( Object val ) {
-		String result = parse((String)val);
+		String result = parse( (String) val );
 		if ( ( "1".equals( result ) ) || ( "true".equalsIgnoreCase( result ) ) ) {
 			return true;
 		}
@@ -403,7 +389,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	protected Long extractLong( Object val ) {
 		try {
-			return Long.parseLong( parse((String)val) );
+			return Long.parseLong( parse( (String) val ) );
 		}
 		catch ( Exception cce ) {
 			return 0l;
@@ -434,15 +420,15 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
 		client.setResponseFormat( "xml" );
-		
+
 		List<String> clientResults = client.executeBatch( serial );
-		
+
 		List<Object> result = new ArrayList<Object>();
-		
+
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			
-			for(String clientResult : clientResults) {
+
+			for ( String clientResult : clientResults ) {
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
@@ -456,14 +442,15 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 					}
 				}
 			}
-		} catch(ParserConfigurationException ex) {
-			throw new RuntimeException("Error parsing batch response", ex);
+		}
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 		catch ( SAXException ex ) {
-			throw new RuntimeException("Error parsing batch response", ex);
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 		catch ( IOException ex ) {
-			throw new RuntimeException("Error parsing batch response", ex);
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 
 		return result;
@@ -477,10 +464,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	}
 
 	public Object getResponsePOJO() {
-		return getResponsePOJO(getRawResponse());
+		return getResponsePOJO( getRawResponse() );
 	}
 
-	public void setJaxbContext( JAXBContext context ) {
-		JAXB_CONTEXT = context;
-	}
 }

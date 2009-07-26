@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -309,24 +307,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	public String getRawResponse() {
 		return client.getRawResponse();
 	}
-
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.getJaxbContext() instead
-	 */
-	@Deprecated
-	public JAXBContext getJaxbContext() {
-		return FacebookJaxbRestClientBase.JAXB_CONTEXT;
-	}
-
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.setJaxbContext(context) instead
-	 */
-	@Deprecated
-	public void setJaxbContext( JAXBContext context ) {
-		FacebookJaxbRestClientBase.JAXB_CONTEXT = context;
-	}
-
-
 
 	/**
 	 * Determines the correct datatype for a json string and converts it. The json.org library really should have a method to do this.

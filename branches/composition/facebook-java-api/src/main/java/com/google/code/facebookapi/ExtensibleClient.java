@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -3114,23 +3113,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public void setCacheFriendsList( List<Long> friendIds ) {
 		this.cacheFriendsList = friendIds;
 	}
-
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.getJaxbContext() instead
-	 */
-	@Deprecated
-	public JAXBContext getJaxbContext() {
-		return FacebookJaxbRestClientBase.JAXB_CONTEXT;
-	}
-
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.setJaxbContext(context) instead
-	 */
-	@Deprecated
-	public void setJaxbContext( JAXBContext context ) {
-		FacebookJaxbRestClientBase.JAXB_CONTEXT = context;
-	}
-
 
 	/**
 	 * Extracts a String from a Document consisting entirely of a String.

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -2892,25 +2890,6 @@ public interface IFacebookRestClient<T> {
 	 * called again.
 	 */
 	public void endPermissionsMode();
-
-	/**
-	 * Get the JAXB context that is being used by the client.
-	 * 
-	 * @return the JAXB context object.
-	 * @deprecated Only the FacebookJaxbRestClient has a Jaxb context
-	 */
-	@Deprecated
-	public JAXBContext getJaxbContext();
-
-	/**
-	 * Set the JAXB context that the client will use.
-	 * 
-	 * @param context
-	 *            the context to use.
-	 * @deprecated Only the FacebookJaxbRestClient has a Jaxb context
-	 */
-	@Deprecated
-	public void setJaxbContext( JAXBContext context );
 
 	/**
 	 * Generate a key for the current session that can be used to authenticate client-side components.

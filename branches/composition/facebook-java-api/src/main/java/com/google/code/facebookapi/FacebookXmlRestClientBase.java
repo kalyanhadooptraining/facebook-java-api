@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,7 +61,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	protected static Log log = LogFactory.getLog( FacebookXmlRestClientBase.class );
 
 	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	
+
 	public boolean isNamespaceAware() {
 		return factory.isNamespaceAware();
 	}
@@ -70,15 +69,17 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	public void setNamespaceAware( boolean v ) {
 		factory.setNamespaceAware( v );
 	}
-	
+
 	protected ExtensibleClient client;
+
 	public ExtensibleClient getClient() {
 		return client;
 	}
-	public void setClient(ExtensibleClient client) {
+
+	public void setClient( ExtensibleClient client ) {
 		this.client = client;
 	}
-	
+
 	public FacebookXmlRestClientBase( ExtensibleClient client ) {
 		super( "xml" );
 		factory.setNamespaceAware( true );
@@ -158,12 +159,12 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {
-		if( rawResponse == null ) {
+		if ( rawResponse == null ) {
 			return null;
 		}
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse( new InputSource(new StringReader((String)rawResponse)));
+			Document doc = builder.parse( new InputSource( new StringReader( (String) rawResponse ) ) );
 			doc.normalizeDocument();
 			stripEmptyTextNodes( doc );
 			return parseCallResult( doc );
@@ -178,11 +179,9 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
 		}
 	}
-	
+
 	/**
-	 * Used in the context of optimisation. If we already have an XML snippet,
-	 * it's not sensible to convert it to a string and then convert it back to
-	 * a document.
+	 * Used in the context of optimisation. If we already have an XML snippet, it's not sensible to convert it to a string and then convert it back to a document.
 	 * 
 	 * @param doc
 	 * @return
@@ -252,15 +251,15 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	 */
 	public List<Document> executeBatch( boolean serial ) throws FacebookException {
 		client.setResponseFormat( "xml" );
-		
+
 		List<String> clientResults = client.executeBatch( serial );
-		
+
 		List<Document> result = new ArrayList<Document>();
 
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			
-			for(String clientResult : clientResults) {
+
+			for ( String clientResult : clientResults ) {
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
@@ -270,21 +269,22 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 					respDoc.appendChild( responseNode );
 					try {
 						respDoc = parseCallResult( respDoc );
-						result.add(  respDoc );
+						result.add( respDoc );
 					}
 					catch ( FacebookException ignored ) {
 						result.add( null );
 					}
 				}
 			}
-		} catch(ParserConfigurationException ex) {
-			throw new RuntimeException("Error parsing batch response", ex);
+		}
+		catch ( ParserConfigurationException ex ) {
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 		catch ( SAXException ex ) {
-			throw new RuntimeException("Error parsing batch response", ex);
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 		catch ( IOException ex ) {
-			throw new RuntimeException("Error parsing batch response", ex);
+			throw new RuntimeException( "Error parsing batch response", ex );
 		}
 
 		return result;
@@ -295,27 +295,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	public Object getResponsePOJO() {
-		return new FacebookJaxbRestClient(client).getResponsePOJO();
-	}
-	
-	public static void initJaxbSupport() {
-		FacebookJaxbRestClient.initJaxbSupport();
-	}
-
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.getJaxbContext() instead
-	 */
-	@Deprecated
-	public JAXBContext getJaxbContext() {
-		return FacebookJaxbRestClient.JAXB_CONTEXT;
-	}
-	
-	/**
-	 * @Deprecated Use FacebookJaxbRestClient.setJaxbContext(context) instead
-	 */
-	@Deprecated
-	public void setJaxbContext( JAXBContext context ) {
-		FacebookJaxbRestClient.JAXB_CONTEXT = context;
+		throw new IllegalStateException( "You must use FacebookJaxbRestClient to get Jaxb/Pojo support." );
 	}
 
 }
