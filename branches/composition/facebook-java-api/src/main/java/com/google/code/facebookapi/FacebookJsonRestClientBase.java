@@ -275,12 +275,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		return result;
 	}
 
-
-	@Deprecated
-	public Object getResponsePOJO() {
-		throw new RuntimeException( "XML is required to convert the Facebook data to Java Objects via JAXB. JSON not supported." );
-	}
-
 	public String getRawResponse() {
 		return client.getRawResponse();
 	}

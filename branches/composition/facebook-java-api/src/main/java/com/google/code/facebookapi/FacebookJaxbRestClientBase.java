@@ -247,6 +247,33 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		}
 	}
 
+	/**
+	 * Returns a JAXB object of the type that corresponds to the last API call made on the client. Each Facebook Platform API call that returns a Document object has a
+	 * JAXB response object associated with it. The naming convention is generally intuitive. For example, if you invoke the 'user_getInfo' API call, the associated JAXB
+	 * response object is 'UsersGetInfoResponse'.<br />
+	 * <br />
+	 * An example of how to use this method:<br />
+	 * <br />
+	 * FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");<br />
+	 * client.friends_get();<br />
+	 * FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();<br />
+	 * List<Long> friends = response.getUid(); <br />
+	 * <br />
+	 * This is particularly useful in the case of API calls that return a Document object, as working with the JAXB response object is generally much simple than trying
+	 * to walk/parse the DOM by hand.<br />
+	 * <br />
+	 * This method can be safely called multiple times, though note that it will only return the response-object corresponding to the most recent Facebook Platform API
+	 * call made.<br />
+	 * <br />
+	 * Note that you must cast the return value of this method to the correct type in order to do anything useful with it.
+	 * 
+	 * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on the client. Note that you must cast this object to its
+	 *         proper type before you will be able to do anything useful with it.
+	 */
+	public Object getResponsePOJO() {
+		return getResponsePOJO( getRawResponse() );
+	}
+
 	public Object getResponsePOJO( String rawResponse ) {
 		if ( JAXB_CONTEXT == null ) {
 			return null;
@@ -442,10 +469,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			return null;
 		}
 		return d.getFirstChild().getTextContent();
-	}
-
-	public Object getResponsePOJO() {
-		return getResponsePOJO( getRawResponse() );
 	}
 
 }

@@ -253,8 +253,4 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		return client.getRawResponse();
 	}
 
-	public Object getResponsePOJO() {
-		throw new IllegalStateException( "You must use FacebookJaxbRestClient to get Jaxb/Pojo support." );
-	}
-
 }

@@ -1118,10 +1118,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return rawResponse;
 	}
 
-	public Object getResponsePOJO() {
-		return new FacebookJaxbRestClient( this ).getResponsePOJO();
-	}
-
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException {
 		return templatizedFeedHandler( action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(),
 				action.getPictures(), action.getTargetIds(), action.getPageActorId() );
