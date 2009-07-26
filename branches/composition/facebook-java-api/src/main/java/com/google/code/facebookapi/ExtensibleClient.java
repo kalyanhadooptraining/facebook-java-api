@@ -2044,7 +2044,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
 	}
 
-	@Deprecated
 	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException {
 		if ( listingId == null ) {
 			listingId = 0l;
@@ -2075,7 +2074,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return marketplace_removeListing( listingId, MarketListingStatus.DEFAULT, userId );
 	}
 
-	@Deprecated
 	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException {
 		if ( status == null ) {
 			status = MarketListingStatus.DEFAULT;
