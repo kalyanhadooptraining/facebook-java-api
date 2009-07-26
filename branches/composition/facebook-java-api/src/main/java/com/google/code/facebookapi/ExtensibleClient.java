@@ -174,7 +174,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this.permissionsApiKey = null;
 	}
 
-	String responseFormat;
+	private String responseFormat;
 
 	/**
 	 * The response format in which results to FacebookMethod calls are returned
@@ -193,7 +193,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			} else {
 				responseFormatDifferent = ! ( this.responseFormat.equals( responseFormat ) );
 			}
-
 			if ( responseFormatDifferent ) {
 				throw new RuntimeException( "Programmer error. It's not possible to switch response format types during a batch. "
 						+ "Do you expect Facebook's servers to return some data in XML format and other bits in JSON format? "
@@ -487,7 +486,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 *             with a description of any errors given to us by the server.
 	 */
 	protected String callMethod( IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException {
-		return callMethod( method, Arrays.asList( paramPairs ), null, null );
+		return callMethod( responseFormat, method, Arrays.asList( paramPairs ), null, null );
 	}
 
 	/**
@@ -501,21 +500,28 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 *             with a description of any errors given to us by the server.
 	 */
 	protected String callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException {
-		return callMethod( method, paramPairs, null, null );
+		return callMethod( responseFormat, method, paramPairs, null, null );
 	}
 
 	protected String callMethod( IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
 			throws FacebookException {
+		return callMethod( responseFormat, method, paramPairs, fileName, fileStream );
+	}
+
+	protected String callMethod( String format, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
+			throws FacebookException {
 		rawResponse = null;
+
 		Map<String,String> params = new TreeMap<String,String>();
+
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
+
 		params.put( "method", method.methodName() );
 		params.put( "api_key", _apiKey );
 		params.put( "v", TARGET_API_VERSION );
 
-		String format = getResponseFormat();
 		if ( null != format ) {
 			params.put( "format", format );
 		}
