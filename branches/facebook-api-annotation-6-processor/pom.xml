@@ -3,12 +3,12 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.google.code.facebookapi</groupId>
-    <artifactId>facebook-api-annotation-processor</artifactId>
+    <artifactId>facebook-api-annotation-6-processor</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<build>
-        <finalName>facebook-api-annotation-processor</finalName>
+        <finalName>facebook-api-annotation-6-processor</finalName>
 		<plugins>
 		    <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
