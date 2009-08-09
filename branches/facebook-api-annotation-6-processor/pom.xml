@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>com.google.code.facebookapi</groupId>
+    <artifactId>facebook-api-annotation-processor</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+	<build>
+        <finalName>facebook-api-annotation-processor</finalName>
+		<plugins>
+		    <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+		    </plugin>
+		</plugins>
+	</build>
+
+    <!-- Don't need tools.jar for a Java 6 annotation -->
+	<profiles>
+		<profile>
+			<activation>
+			    <activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>java</groupId>
+					<artifactId>tools</artifactId>
+					<version>1.5.0</version>
+					<scope>system</scope>
+					<systemPath>${java.home}/../lib/tools.jar</systemPath>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
+</project>
