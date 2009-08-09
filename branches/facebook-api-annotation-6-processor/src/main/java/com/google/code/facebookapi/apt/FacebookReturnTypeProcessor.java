@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -29,55 +28,59 @@ import javax.lang.model.util.ElementScanner6;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_5)
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("com.google.code.facebookapi.FacebookReturnType")
 public class FacebookReturnTypeProcessor extends AbstractProcessor {
     
-    PrintWriter outJAXB;
-    PrintWriter outJSON;
-    PrintWriter outXML;
+    protected PrintWriter outJAXB;
+    protected PrintWriter outJSON;
+    protected PrintWriter outXML;
     
-    @Override
-    public synchronized void init(ProcessingEnvironment processingEnv) {
-        super.init(processingEnv);
-                
+    private void initWritableFiles() {
+        
         DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ");
         String now = isoDateFormat.format(new Date());
         
         try {       	
             Elements eltUtils = processingEnv.getElementUtils();
-            JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClient",
-            		                                                            eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClientBase"));
-            Writer jaxbJavaWriter = jaxbJava.openWriter();
-            outJAXB = new PrintWriter(jaxbJavaWriter);
-            
-            JavaFileObject jsonJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClient",
-                    															eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-                    															eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase"));
-            Writer jsonJavaWriter = jsonJava.openWriter();
-            outJSON = new PrintWriter(jsonJavaWriter);
-            
-            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClient",
-																			   eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
-																			   eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClientBase"));
-            Writer xmlJavaWriter = xmlJava.openWriter();
-            outXML = new PrintWriter(xmlJavaWriter);
-            
-            writeHeader(outJAXB, "Jaxb", now);
-            writeHeader(outJSON, "Json", now);
-            writeHeader(outXML, "Xml", now);
-            
+
             CopyConstructorVisitor copyConstructors = new CopyConstructorVisitor();
             
             TypeElement facebookJaxbRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClientBase");
-            facebookJaxbRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Jaxb", outJAXB));
-
-            TypeElement facebookJsonRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase");
-            facebookJsonRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Json", outJSON));
+            if(facebookJaxbRestClientBase != null) {
+	            JavaFileObject jaxbJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJaxbRestClient",
+	            		                                                            eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+	                                                                                eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJaxbRestClientBase"));
+	            Writer jaxbJavaWriter = jaxbJava.openWriter();
+	            outJAXB = new PrintWriter(jaxbJavaWriter);
+	            
+	            writeHeader(outJAXB, "Jaxb", now);
+	            facebookJaxbRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Jaxb", outJAXB));
+            }
             
+            TypeElement facebookJsonRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase");
+            if(facebookJaxbRestClientBase != null) {
+	            JavaFileObject jsonJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookJsonRestClient",
+	                    															eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+	                    															eltUtils.getTypeElement("com.google.code.facebookapi.FacebookJsonRestClientBase"));
+	            Writer jsonJavaWriter = jsonJava.openWriter();
+	            outJSON = new PrintWriter(jsonJavaWriter);
+	            
+	            writeHeader(outJSON, "Json", now);
+	            facebookJsonRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Json", outJSON));
+            }
+	            
             TypeElement facebookXmlRestClientBase = eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClientBase");
-            facebookXmlRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Xml", outXML));
+            if(facebookXmlRestClientBase != null) {            
+	            JavaFileObject xmlJava = processingEnv.getFiler().createSourceFile("com.google.code.facebookapi.FacebookXmlRestClient",
+																				   eltUtils.getTypeElement("com.google.code.facebookapi.IFacebookRestClient"),
+																				   eltUtils.getTypeElement("com.google.code.facebookapi.FacebookXmlRestClientBase"));
+	            Writer xmlJavaWriter = xmlJava.openWriter();
+	            outXML = new PrintWriter(xmlJavaWriter);
+            
+	            writeHeader(outXML, "Xml", now);
+	            facebookXmlRestClientBase.accept(copyConstructors, new Tuple<String, PrintWriter>("Xml", outXML));
+            }
             
         } catch(IOException ex) {
             throw new RuntimeException(ex);
@@ -201,8 +204,19 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
         out.println();
     }
 	
+    protected boolean initWritableFilesCompleted = false;
+    
 	@Override
-	public boolean process( Set<? extends TypeElement> annotations, RoundEnvironment roundEnv ) {		
+	public boolean process( Set<? extends TypeElement> annotations, RoundEnvironment roundEnv ) {
+		if(!initWritableFilesCompleted) {
+			//Can't do this by overriding init(). That would result in the
+			//files being created during both the source and test compile
+			//phases because init() is called regardless of whether there's
+			//an annotation match.
+			initWritableFiles();
+			initWritableFilesCompleted = true;
+		}
+		
 	    AnnotationVisitor visitor = new AnnotationVisitor();
 	    
 	    for(TypeElement element : annotations) {
@@ -259,17 +273,17 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        for(ExecutableElement key : annotationParams.keySet()) {
 	        	if(key.getSimpleName().contentEquals("JAXBList")) {
 	        		if(annotationParams.get(key) != null) {
-	        			jaxbReturnType = "java.util.List<" + annotationParams.get(key).toString() + ">";
+	        			jaxbReturnType = "java.util.List<" + removeDotClass(annotationParams.get(key).toString()) + ">";
 	        			jaxbAlreadySet = true;
 	        		}	        		
 	        	}
 	            else if(!jaxbAlreadySet && key.getSimpleName().contentEquals("JAXB")) {
 	        		if(annotationParams.get(key) != null) {
-	        			jaxbReturnType = annotationParams.get(key).toString();
+	        			jaxbReturnType = removeDotClass(annotationParams.get(key).toString());
 	        		}
 	        	} else if(key.getSimpleName().contentEquals("JSON")) {
 	        		if(annotationParams.get(key) != null) {
-	        		    jsonReturnType = annotationParams.get(key).toString();
+	        		    jsonReturnType = removeDotClass(annotationParams.get(key).toString());
 	        		}
 	        	}
 	        }
@@ -314,6 +328,14 @@ public class FacebookReturnTypeProcessor extends AbstractProcessor {
 	        
 	        return null;
 	    }
+	}
+	
+	private String removeDotClass(String input) {
+		if(input.endsWith(".class")) {
+			return input.substring(0, input.length() - 6);
+		} else {
+			return input;
+		}
 	}
 
 }
