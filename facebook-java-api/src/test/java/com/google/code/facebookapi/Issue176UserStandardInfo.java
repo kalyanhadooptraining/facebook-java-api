@@ -24,7 +24,7 @@ public class Issue176UserStandardInfo {
 		
 		profileFields.add( ProfileField.NAME );
 		
-		UsersGetStandardInfoResponse response = (UsersGetStandardInfoResponse)client.users_getStandardInfo( userIds, profileFields );
+		UsersGetStandardInfoResponse response = client.users_getStandardInfo( userIds, profileFields );
 		
 		User user = response.getStandardUserInfo().get( 0 );
 		

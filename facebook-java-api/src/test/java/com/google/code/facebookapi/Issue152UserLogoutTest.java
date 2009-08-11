@@ -1,7 +1,7 @@
 package com.google.code.facebookapi;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 

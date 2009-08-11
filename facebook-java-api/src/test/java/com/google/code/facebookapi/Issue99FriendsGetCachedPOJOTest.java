@@ -15,7 +15,8 @@ public class Issue99FriendsGetCachedPOJOTest {
 
 	@Test
 	public void testFriendsGetCachedReturnsPOJO() throws Exception {
-		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
+		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
+		client.setIsDesktop( true );
 
 		// keep track of the logged in user id
 		Long userId = client.users_getLoggedInUser();
@@ -23,7 +24,6 @@ public class Issue99FriendsGetCachedPOJOTest {
 
 		// Get friends list
 		client.friends_get();
-		ExtensibleClient.initJaxbSupport();
 		FriendsGetResponse response = (FriendsGetResponse) client.getResponsePOJO();
 		List<Long> friends = response.getUid();
 

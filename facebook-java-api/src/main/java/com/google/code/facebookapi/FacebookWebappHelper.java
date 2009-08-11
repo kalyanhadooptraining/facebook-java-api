@@ -233,7 +233,7 @@ public class FacebookWebappHelper<T> {
 		if ( age > 0 ) {
 			cookie.setMaxAge( age );
 		}
-		cookie.setPath( request.getContextPath() + "/" );
+		cookie.setPath( request.getContextPath() );
 		response.addCookie( cookie );
 	}
 
@@ -333,6 +333,19 @@ public class FacebookWebappHelper<T> {
 	 */
 	public Long getUser() {
 		return this.user;
+	}
+
+	/**
+	 * Returns the url of the currently requested page
+	 */
+	private String currentUrl() {
+		String url = request.getScheme() + "://" + request.getServerName();
+		int port = request.getServerPort();
+		if ( port != 80 ) {
+			url += ":" + port;
+		}
+		url += request.getRequestURI();
+		return url;
 	}
 
 	/**
@@ -467,7 +480,6 @@ public class FacebookWebappHelper<T> {
 	/**
 	 * returns a String->String map of the request parameters. It doesn't matter if the request method is GET or POST.
 	 */
-	@SuppressWarnings("unchecked")
 	private Map<String,String> _getRequestParams() {
 		Map<String,String> results = new HashMap<String,String>();
 		Map<String,String[]> map = request.getParameterMap();

@@ -1,7 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.io.Serializable;
-
 /**
  * Describes one of two legs of an association. It gives the association a name
  * and optionally specifies its type and uniqueness constraints.
@@ -9,9 +7,7 @@ import java.io.Serializable;
  * @see <a href="http://wiki.developers.facebook.com/index.php/Data.defineAssociation"> Developers Wiki: Data.defineAssociation</a>
  * @author david.j.boden
  */
-
-@SuppressWarnings("serial")
-public class AssociationInfo implements Serializable {
+public class AssociationInfo {
 	private String alias; // specified in constructor
 	private String objectType; // default to null
 	private boolean unique = false; // default to false

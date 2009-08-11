@@ -11,11 +11,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.code.facebookapi.schema.Listing;
+import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
+import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
+import com.google.code.facebookapi.schema.BatchRunResponse;
+import com.google.code.facebookapi.schema.ConnectRegisterUsersResponse;
+import com.google.code.facebookapi.schema.ConnectUnregisterUsersResponse;
+import com.google.code.facebookapi.schema.DataGetAssociationDefinitionsResponse;
+import com.google.code.facebookapi.schema.DataGetCookiesResponse;
+import com.google.code.facebookapi.schema.DataGetObjectTypeResponse;
+import com.google.code.facebookapi.schema.DataGetObjectTypesResponse;
+import com.google.code.facebookapi.schema.DataGetObjectsResponse;
+import com.google.code.facebookapi.schema.FriendsAreFriendsResponse;
+import com.google.code.facebookapi.schema.FriendsGetAppUsersResponse;
+import com.google.code.facebookapi.schema.FriendsGetListsResponse;
+import com.google.code.facebookapi.schema.FriendsGetResponse;
+import com.google.code.facebookapi.schema.GroupsGetResponse;
+import com.google.code.facebookapi.schema.MarketplaceGetListingsResponse;
+import com.google.code.facebookapi.schema.MarketplaceGetSubCategoriesResponse;
+import com.google.code.facebookapi.schema.MarketplaceSearchResponse;
+import com.google.code.facebookapi.schema.PagesGetInfoResponse;
+import com.google.code.facebookapi.schema.Photo;
+import com.google.code.facebookapi.schema.PhotosGetAlbumsResponse;
+import com.google.code.facebookapi.schema.PhotosGetResponse;
+import com.google.code.facebookapi.schema.PhotosGetTagsResponse;
+import com.google.code.facebookapi.schema.UsersGetInfoResponse;
+import com.google.code.facebookapi.schema.UsersGetStandardInfoResponse;
 
 /**
  * Generic interface for a FacebookRestClient, parameterized by output format. For continually updated documentation, please refer to the <a
@@ -40,7 +63,16 @@ public interface IFacebookRestClient<T> {
 	 */
 	public boolean isDesktop();
 
-	public T getCacheFriendsList();
+	/**
+	 * Set the client to run in desktop-app mode.
+	 * 
+	 * @param isDesktop
+	 *            set to true to enable desktop mode set to false to disable desktop mode
+	 */
+	public void setIsDesktop( boolean isDesktop );
+
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
+	public T getCacheFriendsList() throws FacebookException;
 
 	public void setCacheFriendsList( List<Long> friendIds );
 
@@ -244,6 +276,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML() throws FacebookException;
 
 	/**
@@ -255,6 +288,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( Long userId ) throws FacebookException;
 
 	/**
@@ -266,6 +300,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see #profile_getFBML(int, Long)
 	 */
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( int type ) throws FacebookException;
 
 	/**
@@ -279,6 +314,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Profile.getFBML">Profile.getFBML</a>
 	 */
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T profile_getFBML( int type, Long userId ) throws FacebookException;
 
 	/**
@@ -435,6 +471,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userId2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
+	@FacebookReturnType(JAXB = FriendsAreFriendsResponse.class)
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException;
 
 	/**
@@ -445,6 +482,7 @@ public interface IFacebookRestClient<T> {
 	 * @param userIds2
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.areFriends
 	 */
+	@FacebookReturnType(JAXB = FriendsAreFriendsResponse.class)
 	public T friends_areFriends( Collection<Long> userIds1, Collection<Long> userIds2 ) throws FacebookException;
 
 	/**
@@ -452,6 +490,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
 	public T friends_get() throws FacebookException;
 
 	/**
@@ -459,6 +498,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
 	public T friends_get( Long uid ) throws FacebookException;
 
 	/**
@@ -468,6 +508,7 @@ public interface IFacebookRestClient<T> {
 	 *            the friend list for which friends should be fetched. if <code>null</code>, all friends will be retrieved.
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.get
 	 */
+	@FacebookReturnType(JAXB = FriendsGetListsResponse.class, JSON = JSONArray.class)
 	public T friends_getList( Long friendListId ) throws FacebookException;
 
 	/**
@@ -475,6 +516,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Friends.getLists
 	 */
+	@FacebookReturnType(JAXB = FriendsGetListsResponse.class, JSON = JSONArray.class)
 	public T friends_getLists() throws FacebookException;
 
 	/**
@@ -482,6 +524,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return array of friends
 	 */
+	@FacebookReturnType(JAXB = FriendsGetAppUsersResponse.class, JSON = JSONArray.class)
 	public T friends_getAppUsers() throws FacebookException;
 
 	/**
@@ -494,6 +537,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
+	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
 	public T users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
@@ -506,6 +550,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
+	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
 	public T users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -519,6 +564,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
+	@FacebookReturnType(JAXB = UsersGetStandardInfoResponse.class, JSON = JSONArray.class)
 	public T users_getStandardInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
@@ -532,6 +578,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of users, with each user element containing the requested fields.
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getStandardInfo
 	 */
+	@FacebookReturnType(JAXB = UsersGetStandardInfoResponse.class, JSON = JSONArray.class)
 	public T users_getStandardInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -701,7 +748,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return an T of photo objects.
 	 */
-	public T photos_get( Long subjId, Long albumId, Iterable<Long> photoIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
+	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -714,7 +762,8 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Long subjId, Iterable<Long> photoIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
+	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -727,6 +776,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId, Long albumId ) throws FacebookException;
 
 	/**
@@ -738,7 +788,8 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_get( Iterable<Long> photoIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
+	public T photos_get( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -749,6 +800,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Long, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_get( Long subjId ) throws FacebookException;
 
 	/**
@@ -761,7 +813,8 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Long userId, Iterable<Long> albumIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
+	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata for albums owned by a user.
@@ -771,6 +824,7 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
 	public T photos_getAlbums( Long userId ) throws FacebookException;
 
 	/**
@@ -781,7 +835,8 @@ public interface IFacebookRestClient<T> {
 	 * @return album objects
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
-	public T photos_getAlbums( Iterable<Long> albumIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
+	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves the tags for the given set of photos.
@@ -790,7 +845,8 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	public T photos_getTags( Iterable<Long> photoIds ) throws FacebookException;
+	@FacebookReturnType(JAXB = PhotosGetTagsResponse.class, JSON = JSONArray.class)
+	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -799,6 +855,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
+	@FacebookReturnType
 	public T photos_createAlbum( String albumName ) throws FacebookException;
 
 	/**
@@ -812,6 +869,7 @@ public interface IFacebookRestClient<T> {
 	 *            The album description (optional).
 	 * @return an array of photo objects.
 	 */
+	@FacebookReturnType
 	public T photos_createAlbum( String name, String description, String location ) throws FacebookException;
 
 	/**
@@ -823,6 +881,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return the created album
 	 */
+	@FacebookReturnType
 	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException;
 
 	/**
@@ -838,6 +897,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return an array of photo objects.
 	 */
+	@FacebookReturnType
 	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException;
 
 	/**
@@ -849,7 +909,8 @@ public interface IFacebookRestClient<T> {
 	 *            A list of PhotoTags.
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags ) throws FacebookException;
+	@FacebookReturnType(JAXBList = Boolean.class, JSON = JSONArray.class)
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -923,6 +984,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo ) throws FacebookException;
 
 	/**
@@ -935,6 +997,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, String caption ) throws FacebookException;
 
 	/**
@@ -947,6 +1010,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, Long albumId ) throws FacebookException;
 
 	/**
@@ -961,6 +1025,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
@@ -973,6 +1038,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo ) throws FacebookException;
 
 	/**
@@ -987,6 +1053,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException;
 
 	/**
@@ -1001,6 +1068,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException;
 
 	/**
@@ -1017,6 +1085,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException;
 
 	/**
@@ -1034,6 +1103,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T with the standard Facebook photo information
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
+	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
 	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException;
 
 	/**
@@ -1045,6 +1115,7 @@ public interface IFacebookRestClient<T> {
 	 *            Optional: group ids to query. A null parameter will get all groups for the user.
 	 * @return array of groups
 	 */
+	@FacebookReturnType(JAXB = GroupsGetResponse.class, JSON = JSONArray.class)
 	public T groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException;
 
 	/**
@@ -1054,6 +1125,7 @@ public interface IFacebookRestClient<T> {
 	 *            the group id
 	 * @return a T containing four membership lists of 'members', 'admins', 'officers', and 'not_replied'
 	 */
+	@FacebookReturnType(JSON = JSONArray.class)
 	public T groups_getMembers( Number groupId ) throws FacebookException;
 
 	/**
@@ -1063,42 +1135,8 @@ public interface IFacebookRestClient<T> {
 	 *            the FQL query statement
 	 * @return varies depending on the FQL query
 	 */
+	@FacebookReturnType
 	public T fql_query( CharSequence query ) throws FacebookException;
-
-	/**
-	 * Retrieves the outstanding notifications for the session user.
-	 * 
-	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
-	 *         list of 'event_invites'
-	 */
-	public T notifications_get() throws FacebookException;
-
-	/**
-	 * Send a notification message to the specified users.
-	 * 
-	 * @param recipientIds
-	 *            the user ids to which the message is to be sent
-	 * @param notification
-	 *            the FBML to display on the notifications page
-	 * @param email
-	 *            the FBML to send to the specified users via email, or null if no email should be sent
-	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
-	 * 
-	 * @deprecated notifications.send can no longer be used for sending e-mails, use notifications.sendEmail intead when sending e-mail, or the alternate version of
-	 *             notifications.send if all you want to send is a notification.
-	 */
-	@Deprecated
-	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException;
-
-	/**
-	 * Send a notification message to the specified users.
-	 * 
-	 * @param recipientIds
-	 *            the user ids to which the message is to be sent.
-	 * @param notification
-	 *            the FBML to display on the notifications page.
-	 */
-	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Call this function and store the result, using it to generate the appropriate login url and then to retrieve the session information.
@@ -1118,19 +1156,6 @@ public interface IFacebookRestClient<T> {
 	public String auth_getSession( String authToken ) throws FacebookException;
 
 	/**
-	 * Call this function to retrieve the session information after your user has logged in. Settings generateSessionSecret to true results in a temporary "session"
-	 * secret being generated by Facebook which you can pass to a desktop client to be used in place of the real application secret. This prevents the need to reveal your
-	 * application secret to users.
-	 * 
-	 * @param authToken
-	 *            the token returned by auth_createToken or passed back to your callback_url.
-	 * @param generateSessionSecret
-	 *            Create a temporary session secret intended for use by desktop clients
-	 * @see http://wiki.developers.facebook.com/index.php/Auth.getSession
-	 */
-	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException;
-
-	/**
 	 * Call this function to get the user ID.
 	 * 
 	 * @return The ID of the current session's user, or -1 if none.
@@ -1147,6 +1172,127 @@ public interface IFacebookRestClient<T> {
 	public String getCacheSessionSecret();
 
 	/**
+	 * Create a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param showOnProfile
+	 *            whether
+	 * @return the id of the created listing
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
+	 */
+	@Deprecated
+	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
+
+	/**
+	 * Modify a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @return the id of the edited listing
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
+	 */
+	@Deprecated
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 */
+	public boolean marketplace_removeListing( Long listingId ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @param userId
+	 *            the id of the user removing the listing
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 */
+	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException;
+
+	/**
+	 * Remove a marketplace listing. The create_listing extended permission is required.
+	 * 
+	 * @param listingId
+	 *            the listing to be removed
+	 * @param status
+	 *            MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
+	 * @return boolean indicating whether the listing was removed
+	 * @see #users_hasAppPermission
+	 * @see FacebookExtendedPerm#MARKETPLACE
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListingStatus instead.
+	 */
+	@Deprecated
+	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException;
+
+	/**
+	 * Get the categories available in marketplace.
+	 * 
+	 * @return a T listing the marketplace categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
+	 */
+	public List<String> marketplace_getCategories() throws FacebookException;
+
+	/**
+	 * Get the subcategories available for a category.
+	 * 
+	 * @param category
+	 *            a category, e.g. "HOUSING"
+	 * @return a T listing the marketplace sub-categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
+	 */
+	@Deprecated
+	@FacebookReturnType(JAXB = MarketplaceGetSubCategoriesResponse.class, JSON = JSONArray.class)
+	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
+
+	/**
+	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
+	 * 
+	 * @param listingIds
+	 *            listing identifiers (required if uids is null/empty)
+	 * @param userIds
+	 *            posting user identifiers (required if listingIds is null/empty)
+	 * @return a T of marketplace listings
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
+	 */
+	@Deprecated
+	@FacebookReturnType(JAXB = MarketplaceGetListingsResponse.class, JSON = JSONArray.class)
+	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
+
+	/**
+	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
+	 * 
+	 * @param category
+	 *            the category of listings desired (optional except if subcategory is provided)
+	 * @param subCategory
+	 *            the subcategory of listings desired (optional)
+	 * @param query
+	 *            a query string (optional)
+	 * @return a T of marketplace listings
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
+	 * 
+	 * @deprecated provided for legacy support only. Please use the alternate version instead.
+	 */
+	@Deprecated
+	@FacebookReturnType(JAXB = MarketplaceSearchResponse.class, JSON = JSONArray.class)
+	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
+
+	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
 	 * 
 	 * @param albumId
@@ -1157,7 +1303,8 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	public T photos_getByAlbum( Long albumId, Iterable<Long> photoIds ) throws FacebookException;
+	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
+	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -1168,7 +1315,20 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
+	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
 	public T photos_getByAlbum( Long albumId ) throws FacebookException;
+
+	/**
+	 * Get the categories available in marketplace.
+	 * 
+	 * @return a T listing the marketplace categories
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
+	 * 
+	 * @deprecated use the version that returns a List<String> instead.
+	 */
+	@Deprecated
+	@FacebookReturnType
+	public T marketplace_getCategoriesObject() throws FacebookException;
 
 	/**
 	 * Returns a string representation for the last API response recieved from Facebook, exactly as sent by the API server.
@@ -1178,31 +1338,6 @@ public interface IFacebookRestClient<T> {
 	 * @return a String representation of the last API response sent by Facebook
 	 */
 	public String getRawResponse();
-
-	/**
-	 * Returns a JAXB object of the type that corresponds to the last API call made on the client. Each Facebook Platform API call that returns a Document object has a
-	 * JAXB response object associated with it. The naming convention is generally intuitive. For example, if you invoke the 'user_getInfo' API call, the associated JAXB
-	 * response object is 'UsersGetInfoResponse'.<br />
-	 * <br />
-	 * An example of how to use this method:<br />
-	 * <br />
-	 * FacebookRestClient client = new FacebookRestClient("apiKey", "secretKey", "sessionId");<br />
-	 * client.friends_get();<br />
-	 * FriendsGetResponse response = (FriendsGetResponse)client.getResponsePOJO();<br />
-	 * List<Long> friends = response.getUid(); <br />
-	 * <br />
-	 * This is particularly useful in the case of API calls that return a Document object, as working with the JAXB response object is generally much simple than trying
-	 * to walk/parse the DOM by hand.<br />
-	 * <br />
-	 * This method can be safely called multiple times, though note that it will only return the response-object corresponding to the most recent Facebook Platform API
-	 * call made.<br />
-	 * <br />
-	 * Note that you must cast the return value of this method to the correct type in order to do anything useful with it.
-	 * 
-	 * @return a JAXB POJO ("Plain Old Java Object") of the type that corresponds to the last API call made on the client. Note that you must cast this object to its
-	 *         proper type before you will be able to do anything useful with it.
-	 */
-	public Object getResponsePOJO();
 
 	/**
 	 * Publishes a templatized action for the current user. The action will appear in their minifeed, and may appear in their friends' newsfeeds depending upon a number
@@ -1260,6 +1395,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
+	@FacebookReturnType
 	public T data_getUserPreferences() throws FacebookException;
 
 	/**
@@ -1326,15 +1462,17 @@ public interface IFacebookRestClient<T> {
 
 	public void data_renameObjectProperty( String objectType, String propertyName, String newPropertyName ) throws FacebookException;
 
+	@FacebookReturnType(JAXB = DataGetObjectTypesResponse.class, JSON = JSONArray.class)
 	public T data_getObjectTypes() throws FacebookException;
 
+	@FacebookReturnType(JAXB = DataGetObjectTypeResponse.class, JSON = JSONObject.class)
 	public T data_getObjectType( String objectType ) throws FacebookException;
 
 
 
 	/**
 	 * @see #users_hasAppPermission(Permission,Long)
-	 * @see http://wiki.developers.facebook.com/index.php/Users.hasAppPermission
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
 	public boolean users_hasAppPermission( Permission perm ) throws FacebookException;
 
@@ -1348,29 +1486,12 @@ public interface IFacebookRestClient<T> {
 	 *            The user ID of the user whose permissions you are checking. If this parameter is not specified, then it defaults to the session user. Note: This
 	 *            parameter applies only to Web applications and is required by them only if the session_key is not specified. Facebook ignores this parameter if it is
 	 *            passed by a desktop application.
-	 * @return true if has permission
-	 * @see http://wiki.developers.facebook.com/index.php/Users.hasAppPermission
+	 * 
+	 * @return true if the user has granted the application the specified permission false otherwise
+	 * 
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">Users.hasAppPermission</a>
 	 */
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException;
-
-	/**
-	 * @see #auth_revokeExtendedPermission(Permission, Long)
-	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
-	 */
-	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException;
-
-	/**
-	 * Revokes the specified extended permission for the selected user. If no user is specified, then the user of the current session is used.
-	 * 
-	 * @param perm
-	 *            The extended permission to revoke.
-	 * @param userId
-	 *            The user ID of the user whose extended permission you want to revoke. If you don't specify this parameter, then you must have a valid session for the
-	 *            current user, and that session's user will have the specified permission revoked.
-	 * @return This method returns true upon success.
-	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
-	 */
-	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException;
 
 	/**
 	 * Publishes a templatized action for the current user. The action will appear in their minifeed, and may appear in their friends' newsfeeds depending upon a number
@@ -1477,6 +1598,157 @@ public interface IFacebookRestClient<T> {
 			throws FacebookException;
 
 	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+	 * @param attributes
+	 *            JSON-encoded attributes for this listing.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing.
+	 * 
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
+	 * @param attributes
+	 *            JSON-encoded attributes for this listing.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing, or modify an existing one.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
+
+	/**
+	 * Create a new marketplace listing.
+	 * 
+	 * @param showOnProfile
+	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
+	 * @param listing
+	 *            the listing to publish.
+	 * @param userId
+	 *            the id of the user to create the listing for.
+	 * 
+	 * @return the id of the listing created (or modified).
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
+
+	/**
+	 * Remove a listing from the marketplace by id.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to remove.
+	 * @param status
+	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+	 * 
+	 * @return true if the listing was successfully removed false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException;
+
+	/**
+	 * Remove a listing from the marketplace by id.
+	 * 
+	 * @param listingId
+	 *            the id of the listing to remove.
+	 * @param status
+	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
+	 * @param userId
+	 *            the id of the user removing the listing.
+	 * 
+	 * @return true if the listing was successfully removed false otherwise
+	 * 
+	 * @throws FacebookException
+	 *             if an error happens when executing the API call.
+	 */
+	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException;
+
+	/**
+	 * Modify a marketplace listing
+	 * 
+	 * @param listingId
+	 *            identifies the listing to be modified
+	 * @param showOnProfile
+	 *            whether the listing can be shown on the user's profile
+	 * @param attrs
+	 *            the properties of the listing
+	 * @return the id of the edited listing
+	 * @see MarketplaceListing
+	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
+	 */
+	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
+
+	/**
 	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
 	 * without establishing a session.
 	 * 
@@ -1487,6 +1759,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Collection<Long> pageIds, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
@@ -1500,6 +1773,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Collection<Long> pageIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -1512,6 +1786,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Long userId, EnumSet<PageProfileField> fields ) throws FacebookException;
 
 	/**
@@ -1524,6 +1799,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a T consisting of a list of pages, with each page element containing the requested fields.
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.getInfo"> Developers Wiki: Pages.getInfo</a>
 	 */
+	@FacebookReturnType(JAXB = PagesGetInfoResponse.class, JSON = JSONObject.class)
 	public T pages_getInfo( Long userId, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
@@ -1567,6 +1843,42 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Pages.isAdmin"> Developers Wiki: Pages.isAdmin</a>
 	 */
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException;
+
+	/**
+	 * Retrieves the outstanding notifications for the session user.
+	 * 
+	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
+	 *         list of 'event_invites'
+	 */
+	@FacebookReturnType(JSON = JSONObject.class)
+	public T notifications_get() throws FacebookException;
+
+	/**
+	 * Send a notification message to the specified users.
+	 * 
+	 * @param recipientIds
+	 *            the user ids to which the message is to be sent
+	 * @param notification
+	 *            the FBML to display on the notifications page
+	 * @param email
+	 *            the FBML to send to the specified users via email, or null if no email should be sent
+	 * @return a URL, possibly null, to which the user should be redirected to finalize the sending of the email
+	 * 
+	 * @deprecated notifications.send can no longer be used for sending e-mails, use notifications.sendEmail intead when sending e-mail, or the alternate version of
+	 *             notifications.send if all you want to send is a notification.
+	 */
+	@Deprecated
+	public URL notifications_send( Collection<Long> recipientIds, CharSequence notification, CharSequence email ) throws FacebookException;
+
+	/**
+	 * Send a notification message to the specified users.
+	 * 
+	 * @param recipientIds
+	 *            the user ids to which the message is to be sent.
+	 * @param notification
+	 *            the FBML to display on the notifications page.
+	 */
+	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException;
 
 	/**
 	 * Send an e-mail to the currently logged-in user. The e-mail content can be specified as either plaintext or FBML. In either case, only a limited subset of markup is
@@ -1627,7 +1939,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
 
 	/**
@@ -1646,7 +1957,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
 
 	/**
@@ -1664,7 +1974,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
 
 	/**
@@ -1684,7 +1993,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
 
 	/**
@@ -1756,12 +2064,75 @@ public interface IFacebookRestClient<T> {
 	public String notifications_sendEmailStr( Collection<Long> recipientIds, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException;
 
 	/**
+	 * Set application properties. The properties are used by Facebook to describe the configuration of your application.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            a Map containing the properties to set.
+	 * 
+	 * @return true if the properties are set successfully false otherwise
+	 * 
+	 * @throws FacebookException
+	 */
+	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException;
+
+	/**
+	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            a collection indicating the properties you are interested in retrieving.
+	 * 
+	 * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
+	 * 
+	 * @throws FacebookException
+	 * 
+	 * @deprecated use admin_getAppPropertiesMap() instead
+	 */
+	@Deprecated
+	public JSONObject admin_getAppProperties( Collection<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            a collection indicating the properties you are interested in retrieving.
+	 * 
+	 * @return a mapping of ApplicationProperty's to the corresponding values that are set for those properties. Properties are represented as strings, so properties that
+	 *         are of boolean type will have a value of "true" when true, and "false" when false. The properties returned will never be null, an unset property is
+	 *         represented by an empty string.
+	 * 
+	 * @throws FacebookException
+	 */
+	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
+	 * Retrieve application properties. The properties are used by Facebook to describe the configuration of your application.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            a collection indicating the properties you are interested in retrieving.
+	 * 
+	 * @return a JSON-encoded string containing the properties. It is your responsibility to parse the string. Details can be found at
+	 *         http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 * 
+	 * @throws FacebookException
+	 */
+	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
 	 * Get all cookies for the currently logged-in user.
 	 * 
 	 * @return all cookies for the current user.
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies() throws FacebookException;
 
 	/**
@@ -1774,6 +2145,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( Long userId ) throws FacebookException;
 
 	/**
@@ -1786,6 +2158,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( String name ) throws FacebookException;
 
 	/**
@@ -1800,6 +2173,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType(JAXB = DataGetCookiesResponse.class, JSON = JSONArray.class)
 	public T data_getCookies( Long userId, CharSequence name ) throws FacebookException;
 
 	/**
@@ -1990,10 +2364,13 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException;
 
+	@FacebookReturnType(JSON = JSONObject.class)
 	public T data_getObject( long objectId ) throws FacebookException;
 
+	@FacebookReturnType(JAXB = DataGetObjectsResponse.class, JSON = JSONArray.class)
 	public T data_getObjects( Collection<Long> objectIds ) throws FacebookException;
 
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T data_getObjectProperty( long objectId, String propertyName ) throws FacebookException;
 
 	public void data_setObjectProperty( long objectId, String propertyName, String value ) throws FacebookException;
@@ -2040,8 +2417,10 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void data_renameAssociation( String name, String newName, String newAlias1, String newAlias2 ) throws FacebookException;
 
+	@FacebookReturnType(JAXB = AssociationInfo.class, JSON = JSONObject.class)
 	public T data_getAssociationDefinition( String associationName ) throws FacebookException;
 
+	@FacebookReturnType(JAXB = DataGetAssociationDefinitionsResponse.class, JSON = JSONArray.class)
 	public T data_getAssociationDefinitions() throws FacebookException;
 
 
@@ -2106,6 +2485,33 @@ public interface IFacebookRestClient<T> {
 	public long data_getAssociatedObjectCount( String associationName, long objectId ) throws FacebookException;
 
 	/**
+	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
+	 * not required to use this method.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            an ApplicationPropertySet that is translated into a single JSON String.
+	 * @return a boolean indicating whether the properties were successfully set
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
+	 */
+	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException;
+
+	/**
+	 * Gets property values previously set for an application on either the Facebook Developer application or the with the <code>admin.setAppProperties</code> call. A
+	 * session is not required to use this method.
+	 * 
+	 * This method cannot be called by desktop apps.
+	 * 
+	 * @param properties
+	 *            an enumeration of the properties to get
+	 * @return an ApplicationPropertySet
+	 * @see ApplicationProperty
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
+	 */
+	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException;
+
+	/**
 	 * Starts a batch of queries. Any API calls made after invoking 'beginBatch' will be deferred until the next time you call 'executeBatch', at which time they will be
 	 * processed as a batch query. All API calls made in the interim will return null as their result.
 	 */
@@ -2123,6 +2529,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a result containing the response to each individual query in the batch.
 	 */
+	@FacebookReturnType(JAXB = BatchRunResponse.class)
 	public T batch_run( String methods, boolean serial ) throws FacebookException;
 
 	/**
@@ -2157,6 +2564,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException;
 
 	/**
@@ -2168,6 +2576,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException;
 
 	/**
@@ -2179,6 +2588,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException;
 
 	/**
@@ -2190,7 +2600,154 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
+	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( String allocationType ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation of the specified type of request (i.e. the number of requests that it is currently allowed to send per user per day).
+	 * 
+	 * @param allocationType
+	 *            the type of request to check the allocation for. Currently: "notifications_per_day" and "requests_per_day", "emails_per_day",
+	 *            "email_disable_message_location"
+	 * 
+	 * @return the number of the specified type of requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException;
+
+	/**
+	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
+	 * 
+	 * @return the number of invites/requests that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	@Deprecated
+	public int admin_getRequestAllocation() throws FacebookException;
+
+	/**
+	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
+	 * 
+	 * @return the number of notifications that the application is permitted to send per user per day.
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
+	 */
+	@Deprecated
+	public int admin_getNotificationAllocation() throws FacebookException;
+
+	/**
+	 * Retrieve the daily metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days)
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days)
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
+	 */
+	@Deprecated
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
+	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
+
+	/**
+	 * Retrieve metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days)
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days)
+	 * @param period
+	 *            a number specifying the desired period to group the metrics by, in seconds, Facebook currently only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and
+	 *            Metric.PERIOD_MONTH
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
+	 */
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
+	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
+
+	/**
+	 * Retrieve the daily metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
+	 */
+	@Deprecated
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
+	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
+
+	/**
+	 * Retrieve the daily metrics for the current application.
+	 * 
+	 * @param metrics
+	 *            a set specifying the specific metrics to retrieve
+	 * @param start
+	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * @param end
+	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
+	 * @param period
+	 *            a number specifying the desired period to group the metrics by, in seconds, Facebook currently only supports Metric.PERIOD_DAY, Metric.PERIOD_WEEK, and
+	 *            Metric.PERIOD_MONTH
+	 * 
+	 * @return daily metrics for your app, for each day in the specified range
+	 * 
+	 * @throws FacebookException
+	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
+	 */
+	@FacebookReturnType(JAXB = AdminGetMetricsResponse.class, JSON = JSONArray.class)
+	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
 
 	/**
 	 * Grant permission to an external app to make API calls on behalf of the current application.
@@ -2227,6 +2784,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
+	@FacebookReturnType(JAXBList = String.class, JSON = JSONArray.class)
 	public T permissions_checkAvailableApiAccess( String apiKey ) throws FacebookException;
 
 	/**
@@ -2252,6 +2810,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of all API methods that the specified application has permission to use.
 	 */
+	@FacebookReturnType(JAXBList = String.class, JSON = JSONArray.class)
 	public T permissions_checkGrantedApiAccess( String apiKey ) throws FacebookException;
 
 	/**
@@ -2274,6 +2833,25 @@ public interface IFacebookRestClient<T> {
 	public boolean auth_revokeAuthorization() throws FacebookException;
 
 	/**
+	 * @see #auth_revokeExtendedPermission(Permission, Long)
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm ) throws FacebookException;
+
+	/**
+	 * Revokes the specified extended permission for the selected user. If no user is specified, then the user of the current session is used.
+	 * 
+	 * @param perm
+	 *            The extended permission to revoke.
+	 * @param userId
+	 *            The user ID of the user whose extended permission you want to revoke. If you don't specify this parameter, then you must have a valid session for the
+	 *            current user, and that session's user will have the specified permission revoked.
+	 * @return This method returns true upon success.
+	 * @see http://wiki.developers.facebook.com/index.php/Auth.revokeExtendedPermission
+	 */
+	public boolean auth_revokeExtendedPermission( Permission perm, Long userId ) throws FacebookException;
+
+	/**
 	 * Begins permissions mode, and allows the current application to begin making requests on behalf of the application associated with the specified API key.
 	 * 
 	 * This method must be invoked prior to making an API request on behalf of another application. When you are done, be sure to call endPermissionsMode().
@@ -2288,21 +2866,6 @@ public interface IFacebookRestClient<T> {
 	 * called again.
 	 */
 	public void endPermissionsMode();
-
-	/**
-	 * Get the JAXB context that is being used by the client.
-	 * 
-	 * @return the JAXB context object.
-	 */
-	public JAXBContext getJaxbContext();
-
-	/**
-	 * Set the JAXB context that the client will use.
-	 * 
-	 * @param context
-	 *            the context to use.
-	 */
-	public void setJaxbContext( JAXBContext context );
 
 	/**
 	 * Generate a key for the current session that can be used to authenticate client-side components.
@@ -2398,6 +2961,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType
 	public T feed_getRegisteredTemplateBundles() throws FacebookException;
 
 	/**
@@ -2409,6 +2973,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the specified template bundle definition.
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType
 	public T feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException;
 
 	/**
@@ -2455,6 +3020,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType
 	public T profile_getInfo( Long userId ) throws FacebookException;
 
 	/**
@@ -2467,6 +3033,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
+	@FacebookReturnType
 	public T profile_getInfoOptions( String field ) throws FacebookException;
 
 	/**
@@ -2511,7 +3078,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
-	public T photos_addTags( Long photoId, Iterable<PhotoTag> tags, Long userId ) throws FacebookException;
+	@FacebookReturnType
+	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
 
 	/**
 	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
@@ -2596,23 +3164,6 @@ public interface IFacebookRestClient<T> {
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException;
 
-	// ========== LINKS ===========
-
-	/**
-	 * Posts a link to the specified user's Wall. The user must have previously given the calling application the "share_item" extended permission.
-	 * 
-	 * @param userId
-	 *            the user ID
-	 * @param url
-	 *            the URL to link to
-	 * @param comment
-	 *            the user-generated comment about the URL
-	 * 
-	 * @return the unique ID of the newly posted link entity
-	 * 
-	 * @throws FacebookException
-	 */
-	public Long links_post( Long userId, String url, String comment ) throws FacebookException;
 
 	// ========== EVENTS ==========
 
@@ -2630,6 +3181,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
+	@FacebookReturnType
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException;
 
 	/**
@@ -2648,6 +3200,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
+	@FacebookReturnType
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException;
 
 	/**
@@ -2658,6 +3211,7 @@ public interface IFacebookRestClient<T> {
 	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
 	 * @see http://wiki.developers.facebook.com/index.php/Events.getMembers
 	 */
+	@FacebookReturnType
 	public T events_getMembers( Long eventId ) throws FacebookException;
 
 	/**
@@ -2880,6 +3434,7 @@ public interface IFacebookRestClient<T> {
 	 *         them again later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.registerUsers
 	 */
+	@FacebookReturnType(JAXB = ConnectRegisterUsersResponse.class, JSON = JSONArray.class)
 	public T connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException;
 
 	/**
@@ -2892,6 +3447,7 @@ public interface IFacebookRestClient<T> {
 	 *         later.
 	 * @see http://wiki.developers.facebook.com/index.php/Connect.unregisterUsers
 	 */
+	@FacebookReturnType(JAXB = ConnectUnregisterUsersResponse.class, JSON = JSONArray.class)
 	public T connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException;
 
 	/**
@@ -2904,566 +3460,6 @@ public interface IFacebookRestClient<T> {
 	 */
 	public int connect_getUnconnectedFriendsCount() throws FacebookException;
 
-	// ========== MARKET ==========
-
-	/**
-	 * Create a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param showOnProfile
-	 *            whether
-	 * @return the id of the created listing
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
-
-	/**
-	 * Modify a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @return the id of the edited listing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListing instead.
-	 */
-	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @param userId
-	 *            the id of the user removing the listing
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException;
-
-	/**
-	 * Remove a marketplace listing. The create_listing extended permission is required.
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @param status
-	 *            MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
-	 * @return boolean indicating whether the listing was removed
-	 * @see #users_hasAppPermission
-	 * @see FacebookExtendedPerm#MARKETPLACE
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the version that takes a MarketListingStatus instead.
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException;
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 */
-	@Deprecated
-	public List<String> marketplace_getCategories() throws FacebookException;
-
-	/**
-	 * Get the subcategories available for a category.
-	 * 
-	 * @param category
-	 *            a category, e.g. "HOUSING"
-	 * @return a T listing the marketplace sub-categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
-	 */
-	@Deprecated
-	public T marketplace_getSubCategories( CharSequence category ) throws FacebookException;
-
-	/**
-	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
-	 * 
-	 * @param listingIds
-	 *            listing identifiers (required if uids is null/empty)
-	 * @param userIds
-	 *            posting user identifiers (required if listingIds is null/empty)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
-	 */
-	@Deprecated
-	public T marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException;
-
-	/**
-	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
-	 * 
-	 * @param category
-	 *            the category of listings desired (optional except if subcategory is provided)
-	 * @param subCategory
-	 *            the subcategory of listings desired (optional)
-	 * @param query
-	 *            a query string (optional)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
-	 * 
-	 * @deprecated provided for legacy support only. Please use the alternate version instead.
-	 */
-	@Deprecated
-	public T marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException;
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 * 
-	 * @deprecated use the version that returns a List<String> instead.
-	 */
-	@Deprecated
-	public T marketplace_getCategoriesObject() throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
-	 * @param attributes
-	 *            JSON-encoded attributes for this listing.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing.
-	 * 
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile (Facebook appears to ignore this setting).
-	 * @param attributes
-	 *            JSON-encoded attributes for this listing.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing, or modify an existing one.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to modify, set to 0 (or null) to create a new listing.
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
-
-	/**
-	 * Create a new marketplace listing.
-	 * 
-	 * @param showOnProfile
-	 *            set to true to show the listing on the user's profile, set to false to prevent the listing from being shown on the profile.
-	 * @param listing
-	 *            the listing to publish.
-	 * @param userId
-	 *            the id of the user to create the listing for.
-	 * 
-	 * @return the id of the listing created (or modified).
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException;
-
-	/**
-	 * Return a list of all valid Marketplace subcategories.
-	 * 
-	 * @return a list of marketplace subcategories allowed by Facebook.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public List<String> marketplace_getSubCategories() throws FacebookException;
-
-	/**
-	 * Retrieve listings from the marketplace. The listings can be filtered by listing-id or user-id (or both).
-	 * 
-	 * @param listingIds
-	 *            the ids of listings to filter by, only listings matching the specified ids will be returned.
-	 * @param uids
-	 *            the ids of users to filter by, only listings submitted by those users will be returned.
-	 * 
-	 * @return A list of marketplace listings that meet the specified filter criteria.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public List<Listing> marketplace_getListings( List<Long> listingIds, List<Long> uids ) throws FacebookException;
-
-	/**
-	 * Search the marketplace listings by category, subcategory, and keyword.
-	 * 
-	 * @param category
-	 *            the category to search in, optional (unless subcategory is specified).
-	 * @param subcategory
-	 *            the subcategory to search in, optional.
-	 * @param searchTerm
-	 *            the keyword to search for, optional.
-	 * 
-	 * @return a list of marketplace entries that match the specified search parameters.
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public List<Listing> marketplace_search( MarketListingCategory category, MarketListingSubcategory subcategory, String searchTerm ) throws FacebookException;
-
-	/**
-	 * Remove a listing from the marketplace by id.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to remove.
-	 * @param status
-	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
-	 * 
-	 * @return true if the listing was successfully removed false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException;
-
-	/**
-	 * Remove a listing from the marketplace by id.
-	 * 
-	 * @param listingId
-	 *            the id of the listing to remove.
-	 * @param status
-	 *            the status to apply when removing the listing. Should be one of MarketListingStatus.SUCCESS or MarketListingStatus.NOT_SUCCESS.
-	 * @param userId
-	 *            the id of the user removing the listing.
-	 * 
-	 * @return true if the listing was successfully removed false otherwise
-	 * 
-	 * @throws FacebookException
-	 *             if an error happens when executing the API call.
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException;
-
-	/**
-	 * Modify a marketplace listing
-	 * 
-	 * @param listingId
-	 *            identifies the listing to be modified
-	 * @param showOnProfile
-	 *            whether the listing can be shown on the user's profile
-	 * @param attrs
-	 *            the properties of the listing
-	 * @return the id of the edited listing
-	 * @see MarketplaceListing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 */
-	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
-
-
-
-
-
-	// ========== ADMIN ==========
-
-	/**
-	 * @see #admin_getAllocation(AllocationType,Long)
-	 */
-	public int admin_getAllocation( String allocationType ) throws FacebookException;
-
-	/**
-	 * @see #admin_getAllocation(AllocationType,Long)
-	 */
-	public int admin_getAllocation( String allocationType, Long userId ) throws FacebookException;
-
-	/**
-	 * @see #admin_getAllocation(AllocationType,Long)
-	 */
-	public int admin_getAllocation( AllocationType allocationType ) throws FacebookException;
-
-	/**
-	 * Returns the current allocation limits for your application for the specified integration points. Allocation limits are determined daily. Integration points
-	 * include:
-	 * 
-	 * @param allocationType
-	 *            <ul>
-	 *            <li>notifications_per_day - The number of notifications your application can send on behalf of a user per day. These are user-to-user notifications.</li>
-	 *            <li>announcement_notifications_per_week - The number of notifications your application can send to a user per week. These are application-to-user
-	 *            notifications.</li>
-	 *            <li>requests_per_day - The number of requests your application can send on behalf of a user per day.</li>
-	 *            <li>emails_per_day - The number of email messages your application can send to a user per day.</li>
-	 *            <li>email_disable_message_location - The location of the disable message within emails sent by your application. '1' is the bottom of the message and
-	 *            '2' is the top of the message.</li>
-	 *            </ul>
-	 *            These limits also appear on the Allocations tab on the Insights dashboard (click on "Stats") for your application in the Facebook Developer application.
-	 * @parm userId The user ID for the specific user whose allocations you want to to check. Specifying a user ID is relevant only with respect to the emails_per_day
-	 *       integration point for users who granted the email permission prior to the 2008 profile design update, per the note on notifications.sendEmail.
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	public int admin_getAllocation( AllocationType allocationType, Long userId ) throws FacebookException;
-
-	/**
-	 * Gets property values previously set for an application on either the Facebook Developer application or the with the admin.setAppProperties call.
-	 * 
-	 * @param properties
-	 *            a collection indicating the properties you are interested in retrieving.
-	 * 
-	 * @return a JSON-encoded string containing the properties. It is your responsibility to parse the string. Details can be found at
-	 *         http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public String admin_getAppPropertiesAsString( Iterable<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * Gets property values previously set for an application on either the Facebook Developer application or the with the admin.setAppProperties call.
-	 * 
-	 * This method cannot be called by desktop apps.
-	 * 
-	 * @param properties
-	 *            a collection indicating the properties you are interested in retrieving.
-	 * 
-	 * @return a JSONObject that maps ApplicationProperty names to their corresponding values.
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public JSONObject admin_getAppProperties( Iterable<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * @see #admin_getAppProperties(Iterable)
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Iterable<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * @see #admin_getAppProperties(Iterable)
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public ApplicationPropertySet admin_getAppPropertiesAsSet( Iterable<ApplicationProperty> properties ) throws FacebookException;
-
-	/**
-	 * Returns values for the application metrics displayed on the Usage and HTTP Request tabs of the application's Insights page.
-	 * 
-	 * You can view the metrics in 1-day, 7-day, and 30-day increments over a given date range, which cannot exceed 30 days. This way, you can review metrics for all of
-	 * the 1-day, 7-day, and 30-day periods that end within the given date range.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            start of the range (inclusive)
-	 * @param end
-	 *            end of the range (inclusive). The end_time cannot be more than 30 days after the start_time.
-	 * @param period
-	 *            The length of the period, in seconds, during which the metrics were collected. Currently, the only supported periods are 86400 (1 day), 604800 (7-days),
-	 *            and 2592000 (30 days). {@link Metric#PERIOD_DAY}, {@link Metric#PERIOD_WEEK}, {@link Metric#PERIOD_MONTH}
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getMetrics
-	 */
-	public T admin_getMetrics( Set<Metric> metrics, Date start, Date end, long period ) throws FacebookException;
-
-	/**
-	 * @deprecated use admin_getMetrics(Set, Date, Date, long);
-	 * @see #admin_getMetrics(Set, Date, Date, long);
-	 */
-	@Deprecated
-	public T admin_getMetrics( Set<Metric> metrics, long start, long end, long period ) throws FacebookException;
-
-	/**
-	 * Returns the demographic restrictions for the application.
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getRestrictionInfo
-	 * @see http://wiki.developers.facebook.com/index.php/Demographic_Restrictions
-	 */
-	public String admin_getRestrictionInfo() throws FacebookException;
-
-	/**
-	 * Sets (several) property values for an application. These values previously were only accessible through the Facebook Developer application.
-	 * 
-	 * @param properties
-	 *            a Map containing the properties to set.
-	 * 
-	 * @return true if the properties are set successfully false otherwise
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException;
-
-	/**
-	 * @see #admin_setAppProperties(Map)
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.setAppProperties
-	 * @see http://wiki.developers.facebook.com/index.php/ApplicationProperties
-	 */
-	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException;
-
-	/**
-	 * Sets the demographic restrictions for the application. This call lets you restrict users at the application level. If you want to restrict only a portion of your
-	 * application's content, use the fb:restricted-to tag instead.
-	 * 
-	 * If the user doesn't match the age and location requirements, then the user cannot see the application at all. If the user's age is hidden for privacy reasons,
-	 * Facebook still determines whether or not the application is visible to the user.
-	 * 
-	 * @param restrictionStr
-	 *            <div> A JSON-encoded string of the restricting attributes. Restrictions include age, location, age_distribution, and type. If you use the Facebook PHP
-	 *            client library, you can actually pass an associative array and Facebook automatically handles the JSON encoding. For example:
-	 *            {"age_distribution":"{\"CA,US\":\"16-25\",\"IN\":\"15-20,30+\"}"}.
-	 * 
-	 * When specifying the age or age_distribution, you can use plus (+) and minus (-) to restrict content to that age or older/younger (like 21+ for 21 and older or 18-
-	 * for younger than 19). You can also specify a range of ages, like 18-35 so anyone between the ages of 18 and 35 (inclusive) can see the content. You can also
-	 * specify multiple age ranges (like 19-,30+ -- if you want to exclude people in their 20s, for example). Every specified age must be an integer.
-	 * 
-	 * When specifying the location, specify the country or countries (using a comma-separated list) from the ISO 3166 alpha 2 code list. This list is not necessarily the
-	 * same as the IANA ccTLD (country code top level domain) list. For example, the ISO 3166 entry for England is .gb, while the IANA entry is .uk.
-	 * 
-	 * Specifying a type allows you to target users based on age and location for custom made categories like alcohol (currently the only type available). Before
-	 * rendering your FBML, we run a check against the type on Facebook, and if the user meets the age and location requirements, we'll render the content. </div>
-	 * 
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.setRestrictionInfo
-	 * @see http://wiki.developers.facebook.com/index.php/Demographic_Restrictions
-	 */
-	public boolean admin_setRestrictionInfo( String restrictionStr ) throws FacebookException;
-
-	/**
-	 * Get your application's current allocation for invites/requests (i.e. the total number of invites/requests that it is allowed to send per user, per day).
-	 * 
-	 * @return the number of invites/requests that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	@Deprecated
-	public int admin_getRequestAllocation() throws FacebookException;
-
-	/**
-	 * Get your application's current allocation for notifications (i.e. the total number of notifications that it is allowed to send per user, per day).
-	 * 
-	 * @return the number of notifications that the application is permitted to send per user per day.
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getAllocation
-	 */
-	@Deprecated
-	public int admin_getNotificationAllocation() throws FacebookException;
-
-	/**
-	 * Retrieve the daily metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days)
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days)
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
-	 */
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, Date start, Date end ) throws FacebookException;
-
-	/**
-	 * Retrieve the daily metrics for the current application.
-	 * 
-	 * @param metrics
-	 *            a set specifying the specific metrics to retrieve
-	 * @param start
-	 *            the starting date to retrieve data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * @param end
-	 *            the ending to to retrive data for (range must not exceed 30 days), the accepted unit of time is milliseconds, NOT seconds
-	 * 
-	 * @return daily metrics for your app, for each day in the specified range
-	 * 
-	 * @throws FacebookException
-	 * @see http://wiki.developers.facebook.com/index.php/Admin.getDailyMetrics
-	 */
-	@Deprecated
-	public T admin_getDailyMetrics( Set<Metric> metrics, long start, long end ) throws FacebookException;
 
 	// CUSTOM TAGS
 
@@ -3479,7 +3475,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Fbml.deleteCustomTags
 	 */
-	public T fbml_deleteCustomTags( Collection<String> names ) throws FacebookException;
+	public void fbml_deleteCustomTags( Collection<String> names ) throws FacebookException;
 
 	/**
 	 * Returns the custom tag definitions for tags that were previously defined using fbml.registerCustomTags.
@@ -3490,6 +3486,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Fbml.getCustomTags
 	 */
+	@FacebookReturnType()
 	public T fbml_getCustomTags( String appId ) throws FacebookException;
 
 	/**
@@ -3541,6 +3538,6 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Fbml.registerCustomTags
 	 */
-	public T fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
+	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
 }

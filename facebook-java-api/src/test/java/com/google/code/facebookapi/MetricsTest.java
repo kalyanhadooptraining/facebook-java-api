@@ -1,5 +1,6 @@
 package com.google.code.facebookapi;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -18,7 +19,7 @@ public class MetricsTest {
 		// empty
 	}
 
-	public static void main( String[] args ) throws FacebookException {
+	public static void main( String[] args ) throws FacebookException, IOException {
 		String key = args[0];
 		String secret = args[1];
 		FacebookJaxbRestClient fb = new FacebookJaxbRestClient( key, secret );
@@ -31,9 +32,8 @@ public class MetricsTest {
 		Date d = cal.getTime();
 
 		Set<Metric> metrics = EnumSet.allOf( Metric.class );
-		fb.admin_getMetrics( metrics, d, d, Metric.PERIOD_DAY );
+		AdminGetMetricsResponse result = fb.admin_getMetrics( metrics, d, d, Metric.PERIOD_DAY );
 
-		AdminGetMetricsResponse result = (AdminGetMetricsResponse) fb.getResponsePOJO();
 		Metrics r = result.getMetrics().get( 0 );
 
 		System.out.println( "getApiCalls:" + r.getApiCalls() );

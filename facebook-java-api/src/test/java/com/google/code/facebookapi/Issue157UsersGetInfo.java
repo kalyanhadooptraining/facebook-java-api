@@ -16,10 +16,11 @@ public class Issue157UsersGetInfo {
 	@Test
 	public void testUsersGetInfo() throws FacebookException, IOException {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
+		client.setIsDesktop( true );
 
 		long logged = client.users_getLoggedInUser();
 		List<Long> list_u = Collections.singletonList( logged );
-		UsersGetInfoResponse response = (UsersGetInfoResponse) client.users_getInfo( list_u,
+		UsersGetInfoResponse response = client.users_getInfo( list_u,
 				EnumSet.of( ProfileField.NAME,
 						    ProfileField.PIC_SMALL,
 						    ProfileField.STATUS,

@@ -197,13 +197,14 @@ public class TemplatizedAction {
 	 * @param pics
 	 *            the pictures to set.
 	 */
-	public void setPictures( List<IPair<Object,URL>> pics ) {
+	@SuppressWarnings("unchecked")
+	public void setPictures( List<? extends IPair<Object,URL>> pics ) {
 		if ( ( pics == null ) || ( pics.isEmpty() ) ) {
 			this.pictures = null;
 			return;
 		}
 		if ( pics.size() <= 4 ) {
-			this.pictures = pics;
+			this.pictures = (List<IPair<Object,URL>>) pics;
 		}
 		if ( pics.size() > 4 ) {
 			int count = 0;
