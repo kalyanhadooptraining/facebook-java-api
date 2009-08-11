@@ -40,12 +40,9 @@ public class BundleStoryTemplate implements Serializable {
 	 */
 	public JSONObject toJson() {
 		JSONObject result = new JSONObject();
-		if ( ( this.title == null ) || ( this.body == null ) || ( "".equals( this.title ) ) || ( "".equals( this.body ) ) ) {
-			return result;
-		}
 		try {
-			result.put( "template_title", title );
-			result.put( "template_body", body );
+			result.put( "template_title", title == null ? "" : title);
+			result.put( "template_body", body == null ? "" : body );
 		}
 		catch ( Exception ignored ) {
 			// ignore
