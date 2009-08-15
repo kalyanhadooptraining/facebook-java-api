@@ -9,7 +9,9 @@ package com.google.code.facebookapi;
  * You can query to see if the user has granted your application a given permission using the 'users.hasAppPermission' API call.
  * 
  * @see <a
- *      href="http://wiki.developers.facebook.com/index.php/Extended_application_permission">http://wiki.developers.facebook.com/index.php/Extended_application_permission</a>
+ *      href="http://wiki.developers.facebook.com/index.php/Extended_application_permission">http://wiki.developers.facebook.com/index.php/Extended_application_permission
+
+ *      </a>
  * @see <a href=""></a>
  * @see <a href="http://wiki.developers.facebook.com/index.php/Users.hasAppPermission">http://wiki.developers.facebook.com/index.php/Users.hasAppPermission</a>
  */
@@ -46,7 +48,12 @@ public enum Permission {
 	 * @deprecated {@link #CREATE_LISTING}
 	 */
 	@Deprecated
-	MARKETPLACE_CREATE("create_listing");
+	MARKETPLACE_CREATE("create_listing"),
+
+	/** Lets your application or site post content, comments, and likes to a user's profile and in the streams of the user's friends without prompting the user. */
+	PUBLISH_STREAM("publish_stream"),
+	/** Lets your application or site access a user's stream and display it. */
+	READ_STREAM("read_stream");
 
 	/**
 	 * The unchanging part of the URL to use when authorizing permissions.

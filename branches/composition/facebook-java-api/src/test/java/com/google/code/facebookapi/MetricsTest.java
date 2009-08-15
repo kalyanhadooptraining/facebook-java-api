@@ -1,6 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -19,7 +18,7 @@ public class MetricsTest {
 		// empty
 	}
 
-	public static void main( String[] args ) throws FacebookException, IOException {
+	public static void main( String[] args ) throws FacebookException {
 		String key = args[0];
 		String secret = args[1];
 		FacebookJaxbRestClient fb = new FacebookJaxbRestClient( key, secret );

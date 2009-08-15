@@ -185,11 +185,6 @@ public abstract class BaseAdapter {
 		getClient().setDefaultServerUrl( url );
 	}
 
-	public void setIsDesktop( boolean isDesktop ) {
-		getClient().setResponseFormat( responseFormat );
-		getClient().setIsDesktop( isDesktop );
-	}
-
 	public void setServerUrl( String newUrl ) {
 		getClient().setResponseFormat( responseFormat );
 		getClient().setServerUrl( newUrl );

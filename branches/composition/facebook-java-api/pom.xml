@@ -3,13 +3,13 @@
   <parent>
     <groupId>com.google.code.facebookapi</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>com.google.code.facebookapi</groupId>
   <artifactId>facebook-java-api</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
 
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>com.google.code.facebookapi</groupId>
       <artifactId>facebook-java-api-schema</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -55,7 +55,10 @@
     </dependency>
     <!--
         Compile-time Annotation processor shouldn't end
-        up on runtime classpath
+        up on runtime classpath.
+        
+        Java 6 annotation provider ready for when we
+        move exclusively to Java 6.
     -->
     <!--
     <dependency>
@@ -65,6 +68,32 @@
       <scope>provided</scope>
     </dependency>
     -->
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.15</version>
+        <scope>test</scope>
+        <exclusions>
+        	<!-- 
+        	Excluded packages which are not available
+        	on the main Maven repository because otherwise
+        	it's a pain, you have to download them and install
+        	them to your local repository manually.
+        	 -->
+        	<exclusion>
+        		<groupId>javax.jms</groupId>
+        		<artifactId>jms</artifactId>
+        	</exclusion>
+        	<exclusion>
+        		<groupId>com.sun.jdmk</groupId>
+        		<artifactId>jmxtools</artifactId>
+        	</exclusion>
+        	<exclusion>
+        		<groupId>com.sun.jmx</groupId>
+        		<artifactId>jmxri</artifactId>
+        	</exclusion>
+        </exclusions>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -14,7 +14,9 @@ public class FacebookWebRequest<T> {
 
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
+	private HttpServletRequest request;
 	private String apiKey;
+	private String secret;
 	private IFacebookRestClient<T> apiClient;
 	private boolean valid;
 	private Map<String,String> fbParams;

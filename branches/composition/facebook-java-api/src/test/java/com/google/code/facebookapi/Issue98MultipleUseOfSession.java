@@ -18,7 +18,6 @@ public class Issue98MultipleUseOfSession {
 		String PASSWORD = properties.getPASS();
 
 		FacebookJaxbRestClient client = new FacebookJaxbRestClient( APP_KEY, APP_SECRET );
-		client.setIsDesktop( true );
 
 		HttpClient http = new HttpClient();
 
@@ -58,7 +57,6 @@ public class Issue98MultipleUseOfSession {
 		// try 2 with new client constructed with a session ID
 		try {
 			FacebookJaxbRestClient newClient = new FacebookJaxbRestClient( APP_KEY, APP_SECRET, sessionID );
-			newClient.setIsDesktop( true );
 
 			Long uid = newClient.users_getLoggedInUser();
 			System.out.println( "New CLIENT UserID: " + uid );

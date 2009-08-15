@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +54,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		return getClient().admin_getAppProperties( properties );
 	}
 
-	public ApplicationPropertySet admin_getAppPropertiesAsSet( EnumSet<ApplicationProperty> properties ) throws FacebookException {
+	public ApplicationPropertySet admin_getAppPropertiesAsSet( Collection<ApplicationProperty> properties ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().admin_getAppPropertiesAsSet( properties );
 	}
@@ -100,6 +99,11 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public String auth_getSession( String authToken ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_getSession( authToken );
+	}
+	
+	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().auth_getSession( authToken, generateSessionSecret );
 	}
 
 	@Deprecated
@@ -739,6 +743,11 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public boolean users_setStatus( String newStatus, boolean clear, boolean statusIncludesVerb, Long userId ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().users_setStatus( newStatus, clear, statusIncludesVerb, userId );
+	}
+	
+	public Long links_post( Long userId, String url, String comment ) throws FacebookException {
+		getClient().setResponseFormat( responseFormat );
+		return getClient().links_post( userId, url, comment );
 	}
 
 }

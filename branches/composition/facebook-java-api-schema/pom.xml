@@ -3,13 +3,13 @@
   <parent>
     <groupId>com.google.code.facebookapi</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>com.google.code.facebookapi</groupId>
   <artifactId>facebook-java-api-schema</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
   
@@ -44,7 +44,7 @@
   <build>
     <plugins>
       <plugin>
-	<groupId>org.jvnet.jaxb2.maven2</groupId>
+    <groupId>org.jvnet.jaxb2.maven2</groupId>
 	<artifactId>maven-jaxb2-plugin</artifactId>    
     <configuration>
       <generatePackage>com.google.code.facebookapi.schema</generatePackage>
