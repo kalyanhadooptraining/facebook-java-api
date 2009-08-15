@@ -9,7 +9,6 @@ import org.json.JSONObject;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-@SuppressWarnings("serial")
 public class AttachmentMediaVideo extends AttachmentMedia {
 	private String videoSrc;
 	private String previewImg;

@@ -14,9 +14,7 @@ public class FacebookWebRequest<T> {
 
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
-	private HttpServletRequest request;
 	private String apiKey;
-	private String secret;
 	private IFacebookRestClient<T> apiClient;
 	private boolean valid;
 	private Map<String,String> fbParams;
@@ -51,6 +49,7 @@ public class FacebookWebRequest<T> {
 		return (Map<String, String[]>)request.getParameterMap(); 
 	}
 	
+	@SuppressWarnings("deprecation") //Get rid of "app added" flag then remove this suppression
 	protected FacebookWebRequest( HttpServletRequest request, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.apiKey = apiKey;
 		this.apiClient = apiClient;

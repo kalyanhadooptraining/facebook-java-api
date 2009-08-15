@@ -8,7 +8,6 @@ import org.json.JSONArray;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-@SuppressWarnings("serial")
 public abstract class AttachmentMedia {
 	protected String mediaType;
 

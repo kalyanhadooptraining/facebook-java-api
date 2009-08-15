@@ -338,7 +338,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			int errorCode = error.getErrorCode();
 			String message = error.getErrorMsg();
 			throw new FacebookException( errorCode, message );
-		} else if ( res instanceof JAXBElement ) {
+		} else if ( res instanceof JAXBElement<?> ) {
 			JAXBElement<?> jbe = (JAXBElement<?>) res;
 			if ( FacebookApiException.class.equals( jbe.getDeclaredType() ) ) {
 				FacebookApiException error = (FacebookApiException) jbe.getValue();
