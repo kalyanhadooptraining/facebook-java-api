@@ -529,7 +529,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
 	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
-	public T users_getInfo( Collection<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
+	public T users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException;
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
@@ -542,7 +542,7 @@ public interface IFacebookRestClient<T> {
 	 * @see http://wiki.developers.facebook.com/index.php/Users.getInfo
 	 */
 	@FacebookReturnType(JAXB = UsersGetInfoResponse.class, JSON = JSONArray.class)
-	public T users_getInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
+	public T users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException;
 
 	/**
 	 * Returns an array of user-specific information for each user identifier passed, limited by the view of the current user. The information you can get from this call
@@ -3563,32 +3563,30 @@ public interface IFacebookRestClient<T> {
 	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
 	@FacebookReturnType
-	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey,
-			List<String> metadata ) throws FacebookException;
+	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
 
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
-	public T stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId )
-			throws FacebookException;
-	
-	@FacebookReturnType(JAXB=Boolean.class, JSON=Boolean.class)
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
+	public T stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
+
+	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
 	public T stream_remove( String postId, Long userId ) throws FacebookException;
 
 	@FacebookReturnType
 	public T stream_getComments( String postId ) throws FacebookException;
-	
-	@FacebookReturnType(JAXB=String.class, JSON=String.class)
+
+	@FacebookReturnType(JAXB = String.class, JSON = String.class)
 	public T stream_addComment( String postId, String comment, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB=Boolean.class, JSON=Boolean.class)
+	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
 	public T stream_removeComment( String commentId, Long userId ) throws FacebookException;
-	
-	@FacebookReturnType(JAXB=Boolean.class, JSON=Boolean.class)
+
+	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
 	public T stream_addLike( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB=Boolean.class, JSON=Boolean.class)
+	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
 	public T stream_removeLike( String postId, Long userId ) throws FacebookException;
 
 	@FacebookReturnType
 	public T stream_getFilters( Long userId ) throws FacebookException;
-	
+
 }
