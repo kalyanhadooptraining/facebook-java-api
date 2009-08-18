@@ -23,7 +23,10 @@
   * Does the Facebook Java API work on J2ME for mobile devices?
     * No. The Facebook Java API uses Java SE 5 Generics and a significant number of other J2SE features like JAXB which we wouldn't want to be without. Making a library compatible with J2ME involves making significant sacrifices in order to get the benefit of the product working on mobile devices. There are therefore no plans to get the Facebook Java API in its current form working with J2ME. A separate project has been proposed on the forum; please search the forum for more details.
 
-  * Why does the Facebook API only works for my account, not with anyone else's username and password?
+  * Does the Facebook Java API run on Google Android phones?
+    * This is under investigation on the [Android Support] page.
+
+  * Why does the Facebook API only work for my account, not with anyone else's username and password?
     * You've most probably got your application settings as set to "Sandbox" which only allows developers that you name to have access using your API_KEY. Check your application settings.
 
   * Where are the latest snapshot .jar files held? I just want to get the files and use them rather than using Maven to get them for me.
