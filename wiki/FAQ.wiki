@@ -18,7 +18,7 @@
     * Check whether your Desktop Mode setting is what you expect it to be. If in doubt, you probably want Web. The [DesktopMode Desktop Mode discussion document] has plenty of details about this potential problem. 
 
   * I want to contribute. How do I get my hands on the code for this project and build it in Eclipse?
-    * The process has been documented on the [Build Code In Eclipse] page.
+    * The process has been documented on the [BuildCodeInEclipse Build Code In Eclipse] page.
 
   * I want to contribute. How do I get commit rights to SVN so that I can check my changes in?
     * The normal procedure (with pretty much all open source projects) is.
