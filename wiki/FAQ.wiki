@@ -20,6 +20,14 @@
   * I want to contribute. How do I get my hands on the code for this project and build it in Eclipse?
     * The process has been documented on the [http://groups.google.com/group/facebook-java/web/build-code-in-eclipse build-code-in-eclipse] page.
 
+  * I want to contribute. How do I get commit rights to SVN so that I can check my changes in?
+    * The normal procedure (with pretty much all open source projects) is.
+      * Please identify a change you'd like to make, either a bug fix or a new feature.
+      * [[http://code.google.com/p/facebook-java-api/issues/list Post an issue] for it, if one doesn't already exist, and upload a patch file containing your changes.
+      * Alert developers on the mailing list that there's an improvement ready to go in.
+      * One of the existing developers will be happy to apply your changes and, if it's well thought out and high quality, give you commit privileges so that you can do it yourself next time.
+    * Looking forward to having you onboard! :)
+
   * Does the Facebook Java API work on J2ME for mobile devices?
     * No. The Facebook Java API uses Java SE 5 Generics and a significant number of other J2SE features like JAXB which we wouldn't want to be without. Making a library compatible with J2ME involves making significant sacrifices in order to get the benefit of the product working on mobile devices. There are therefore no plans to get the Facebook Java API in its current form working with J2ME. A separate project has been proposed on the forum; please search the forum for more details.
 
