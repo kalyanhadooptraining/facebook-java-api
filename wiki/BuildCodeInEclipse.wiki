@@ -1,4 +1,4 @@
-#How to check out, compile and run JUnit tests for the Java Facebook API.
+#summary How to check out, compile and run JUnit tests for the Java Facebook API.
 
 =Summary=
 
