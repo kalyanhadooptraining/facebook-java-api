@@ -33,7 +33,7 @@ Expand the + sign for this new location and you'll see a few directories:
 Right-click on trunk and select Checkout...
 In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-java-api".
 
-
+http://facebook-java-api.googlecode.com/svn/wiki/images/facebook-java-api-checkout.png
 
 
 You'll now see a new project in your Java perspective Package Explorer view called facebook-java-api. This directory contains two subprojects, one for the main Java source code and the other for the JAXB schema Java code auto generation.
