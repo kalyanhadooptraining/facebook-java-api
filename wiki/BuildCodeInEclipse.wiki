@@ -24,11 +24,11 @@ Right-click and select New --> Repository Location... then enter the following U
 Note: the connection details are maintained at http://code.google.com/p/facebook-java-api/source/checkout should you ever want to lookup how to get a writeable connection rather than just a read-only one.
 
 Expand the + sign for this new location and you'll see a few directories:
-* archive
-* branches
-* tags
-* trunk
-* wiki
+  * archive
+  * branches
+  * tags
+  * trunk
+  * wiki
 
 Right-click on trunk and select Checkout...
 In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-java-api".
