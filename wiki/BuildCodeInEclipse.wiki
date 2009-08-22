@@ -10,8 +10,8 @@ You're going to need tools:
 =Install Eclipse Plugins=
 
 Using Eclipse's Help --> Software Updates... menu, under the "Available Software" tab add locations:
-* http://subclipse.tigris.org/update_1.4.x     (Further instructions are at http://subclipse.tigris.org/install.html)
-* http://m2eclipse.sonatype.org/update/
+  * http://subclipse.tigris.org/update_1.4.x     (Further instructions are at http://subclipse.tigris.org/install.html)
+  * http://m2eclipse.sonatype.org/update/
 
 =Checkout latest source code=
 
