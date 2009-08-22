@@ -57,14 +57,14 @@ In the Package Explorer view, open up the facebook-java-api/src/test/java folder
 
 The tests need a properties file called junit.properties to be located on the classpath. You'll probably want to put it in facebook-java-api/src/test/java. The file must not be checked into SVN (you don't want to give away your secrets). To help with this, junit.properties is checked in as svn:ignore so that by default SVN won't bother you to commit it. The file needs to contain:
 
-<verbatim>
+{{{
 APIKEY=98xxxxxxxxxxxxxxxxxxxxxxxxxxx
 SECRET=60cxxxxxxxxxxxxxxxxxxxxxxxxx
 DESKTOP_APIKEY=32xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 DESKTOP_SECRET=22xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 EMAIL=my@email.com
 PASS=mypassword
-</verbatim>
+}}}
 
 The APIKEY and SECRET values should be yours as found on your http://www.facebook.com/apps/ page. The corresponding DESKTOP_APIKEY AND DESKTOP_SECRET should point to a project setup as a Desktop project to test the Desktop workflow. There are only a couple of tests on Desktop so you may choose to not bother with these ones. Your EMAIL and PASS are required to authenticate as you (not merely as your application) when running the JUnit tests. The tests use Apache HttpClient to imitate a browser and send the required authentication details to facebook.com securely.
 
