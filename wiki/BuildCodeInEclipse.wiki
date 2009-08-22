@@ -19,8 +19,8 @@ Now that you have Subclipse installed, you'll be able to navigate to the "SVN Re
  
 Right-click and select New --> Repository Location... then enter the following URL:
 
-http://facebook-java-api.googlecode.com/svn
- 
+  * http://facebook-java-api.googlecode.com/svn
+
 Note: the connection details are maintained at http://code.google.com/p/facebook-java-api/source/checkout should you ever want to lookup how to get a writeable connection rather than just a read-only one.
 
 Expand the + sign for this new location and you'll see a few directories:
