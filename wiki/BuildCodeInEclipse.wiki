@@ -81,8 +81,10 @@ When creating a branch to try out code ideas, it's important to follow a standar
 Check out the level above trunk to your Eclipse. This will give you the entire directory structure including /trunk and /branches. If you already have this checked out make sure you SVN update so that you're branching from the very latest code. The SVN update command will report the latest version of the repository, and it insures that there's a good consistent version number reported at the level of the whole repository. Make a note of the current repository version.
 
 Then run the following commands to create your branch directory:
+{{{
 svn cp trunk branches/BRANCHNAME
 svn ci -m "CREATE: created branches/BRANCHNAME from trunk@VERSION"
+}}}
 You can see that the SVN commit log now has a record of the VERSION number that you branched from. That'll be useful later...
 
 The svn commands above are simply copying (svn cp) trunk into a new branch directory, then committing (svn ci) the new branch mentioning what version number of trunk we copied over.  That's it.  That way when we do merges from trunk to branch, or collapsing of the branch into trunk, that version number is pivotal to make sure we don't miss anything during the merge.
