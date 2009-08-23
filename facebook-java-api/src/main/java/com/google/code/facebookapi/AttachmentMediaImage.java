@@ -12,7 +12,6 @@ import org.json.JSONObject;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-@SuppressWarnings("serial")
 public class AttachmentMediaImage extends AttachmentMedia {
 	private Map<String,String> images;
 

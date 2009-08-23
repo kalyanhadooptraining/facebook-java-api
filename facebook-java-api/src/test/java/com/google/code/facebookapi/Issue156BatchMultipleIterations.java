@@ -6,6 +6,7 @@ import static junit.framework.Assert.assertNull;
 import java.io.IOException;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.junit.Test;
 
 /**
@@ -23,7 +24,7 @@ public class Issue156BatchMultipleIterations {
 		client.beginBatch();
 
 		for ( int i = 0; i < 30; i++ ) {
-			Object result = client.photos_getAlbums( uid );
+			JSONArray result = client.photos_getAlbums( uid );
 			assertNull( result );
 		}
 

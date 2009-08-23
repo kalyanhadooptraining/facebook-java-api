@@ -18,12 +18,10 @@ public class Issue118AppGetInfoTest {
 	@Test
 	public void testAppInfo() throws Exception {
 
-		IFacebookRestClient<Object> client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
+		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		// Stuff application
-		Object response = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
-
-		ApplicationGetPublicInfoResponse appInfo = (ApplicationGetPublicInfoResponse) response;
+		ApplicationGetPublicInfoResponse appInfo = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
 
 		assertNotNull( appInfo.getAppId() );
 		assertNotNull( appInfo.getApiKey() );
@@ -38,9 +36,8 @@ public class Issue118AppGetInfoTest {
 		assertTrue( appInfo.getMonthlyActiveUsers() > -1 );
 
 		// Now lookup by application id
-		response = client.application_getPublicInfoById( appInfo.getAppId() );
+		appInfo = client.application_getPublicInfoById( appInfo.getAppId() );
 
-		appInfo = (ApplicationGetPublicInfoResponse) response;
 		assertEquals( stuffAPIKEY_ExistsInDirectory, appInfo.getApiKey() );
 	}
 

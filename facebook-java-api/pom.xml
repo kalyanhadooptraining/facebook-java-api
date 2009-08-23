@@ -3,13 +3,13 @@
   <parent>
     <groupId>com.google.code.facebookapi</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>com.google.code.facebookapi</groupId>
   <artifactId>facebook-java-api</artifactId>
   <packaging>jar</packaging>
-  <version>2.1.2-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
 
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>com.google.code.facebookapi</groupId>
       <artifactId>facebook-java-api-schema</artifactId>
-      <version>2.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20070829</version>
+      <version>20080701</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -48,11 +48,26 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
-        <scope>test</scope>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+      <scope>test</scope>
     </dependency>
+    <!--
+        Compile-time Annotation processor shouldn't end
+        up on runtime classpath.
+        
+        Java 6 annotation provider ready for when we
+        move exclusively to Java 6.
+    -->
+    <!--
+    <dependency>
+      <groupId>com.google.code.facebookapi</groupId>
+      <artifactId>facebook-api-annotation-6-processor</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
     <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
@@ -95,11 +110,35 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>LATEST</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/bin.xml</descriptor>
           </descriptors>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>apt-maven-plugin</artifactId>
+        <configuration>
+          <factory>com.google.code.facebookapi.apt.FacebookReturnTypeProcessorFactory5</factory>
+          <fork>true</fork>
+          <executable>${java.home}/../bin/apt</executable>       
+        </configuration>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>process</goal>
+                </goals>
+            </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.google.code.facebookapi</groupId>
+            <artifactId>facebook-api-annotation-processor</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -112,6 +151,7 @@
         <dependency>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-impl</artifactId>
+          <version>2.1.3</version>
         </dependency>
         <!--
             <dependency>

@@ -31,9 +31,8 @@ public class MetricsTest {
 		Date d = cal.getTime();
 
 		Set<Metric> metrics = EnumSet.allOf( Metric.class );
-		fb.admin_getMetrics( metrics, d, d, Metric.PERIOD_DAY );
+		AdminGetMetricsResponse result = fb.admin_getMetrics( metrics, d, d, Metric.PERIOD_DAY );
 
-		AdminGetMetricsResponse result = (AdminGetMetricsResponse) fb.getResponsePOJO();
 		Metrics r = result.getMetrics().get( 0 );
 
 		System.out.println( "getApiCalls:" + r.getApiCalls() );

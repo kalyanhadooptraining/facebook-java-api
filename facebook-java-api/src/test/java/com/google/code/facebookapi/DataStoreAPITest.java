@@ -136,7 +136,7 @@ public class DataStoreAPITest {
 	
 	@Test
 	public void testRenameObjects() throws Exception {
-		IFacebookRestClient<Document> client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
+		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 		//Cleanup from previous run
 		cleanObjectType(client, "testrename_1234");
 		cleanObjectType(client, "testrename_5678");

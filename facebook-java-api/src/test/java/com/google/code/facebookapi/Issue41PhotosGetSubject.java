@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
 public class Issue41PhotosGetSubject {
 	@Test
 	public void testGetPhotosBySubject() throws Exception {
-		IFacebookRestClient<Document> client = FacebookSessionTestUtils
+		FacebookXmlRestClient client = FacebookSessionTestUtils
 				.getValidClient(FacebookXmlRestClient.class);
 
 		long apiUserId = client.users_getLoggedInUser();

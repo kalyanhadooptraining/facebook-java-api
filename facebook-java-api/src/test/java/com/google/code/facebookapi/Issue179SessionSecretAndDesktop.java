@@ -20,7 +20,7 @@ public class Issue179SessionSecretAndDesktop {
 		assertEquals(sessionKey, FacebookSessionTestUtils.lastClientUsed.getCacheSessionKey());
 		
 		//Here's the generated session secret, ready to pass to your desktop app client
-		String sessionSecret = FacebookSessionTestUtils.lastClientUsed.getSessionSecret();
+		String sessionSecret = FacebookSessionTestUtils.lastClientUsed.getCacheSessionSecret();
 		
 		System.out.println(sessionSecret);
 		

@@ -8,7 +8,6 @@ import org.json.JSONObject;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-@SuppressWarnings("serial")
 public class AttachmentMediaFlash extends AttachmentMedia {
 	private String swfsrc;
 	private String imgsrc;

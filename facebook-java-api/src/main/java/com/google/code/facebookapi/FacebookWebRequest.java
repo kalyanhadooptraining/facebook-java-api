@@ -14,11 +14,7 @@ public class FacebookWebRequest<T> {
 
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
-	@SuppressWarnings("unused")
-	private HttpServletRequest request;
 	private String apiKey;
-	@SuppressWarnings("unused")
-	private String secret;
 	private IFacebookRestClient<T> apiClient;
 	private boolean valid;
 	private Map<String,String> fbParams;
@@ -49,12 +45,15 @@ public class FacebookWebRequest<T> {
 	}
 
 	@SuppressWarnings("unchecked")
+	private static Map<String, String[]> getRequestParameterMap(HttpServletRequest request) {
+		return (Map<String, String[]>)request.getParameterMap(); 
+	}
+	
+	@SuppressWarnings("deprecation") //Get rid of "app added" flag then remove this suppression
 	protected FacebookWebRequest( HttpServletRequest request, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
-		this.request = request;
 		this.apiKey = apiKey;
-		this.secret = secret;
 		this.apiClient = apiClient;
-		this.fbParams = FacebookSignatureUtil.pulloutFbSigParams( request.getParameterMap() );
+		this.fbParams = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( request ) );
 		this.valid = FacebookSignatureUtil.verifySignature( fbParams, secret );
 		if ( valid ) {
 			inNewFacebook = getFbParamBoolean( FacebookParam.IN_NEW_FACEBOOK );
