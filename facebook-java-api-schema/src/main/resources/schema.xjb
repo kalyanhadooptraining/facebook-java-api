@@ -1,0 +1,15 @@
+<bindings version="2.0" xmlns="http://java.sun.com/xml/ns/jaxb"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    schemaLocation="schema.xsd" node="/xs:schema">
+    <globalBindings generateElementProperty="false"/>
+    <bindings node="//xs:element[@name='fql_query_response']/xs:complexType/xs:sequence">
+        <property name="results"/>
+    </bindings>
+    <bindings node="//xs:element[@name='batch_run_response']/xs:complexType/xs:sequence">
+        <property name="results"/>
+    </bindings>
+    <bindings node="//xs:complexType[@name='custom_tag_parameter']">
+        <factoryMethod name="CustomTagParam"/>
+    </bindings>
+</bindings>
+
