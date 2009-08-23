@@ -7,6 +7,8 @@ You're going to need tools:
    * Subclipse SVN plugin for Eclipse
    * m2eclipse Maven2 plugin for Eclipse
 
+There are two distinct projects to build, the annotation processor and the main API.
+
 =Install Eclipse Plugins=
 
 Using Eclipse's Help --> Software Updates... menu, under the "Available Software" tab add locations:
@@ -31,29 +33,52 @@ Expand the + sign for this new location and you'll see a few directories:
   * *trunk*
   * wiki
 
+==The annotation processor - facebook-api-annotation-processor project==
+
 Right-click on *facebook-api-annotation-processor* and select Checkout...
 In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-api-annotation-processor".
+
+Now use your command line or Eclipse plugin to run "mvn install" on this project. The reason that this must be done before anything else is that Java 5 annotation processors work using a fully built binary .jar of the annotation processor.
+
+The main API depends on the annotation processor so the annotation processor must be available as a .jar both in the Eclipse workspace and in your local maven repository before doing anything else.
+
+You should see that a file has been produced which contains the annotation processor:
+target/facebook-api-annotation-processor.jar
+
+==The main API - facebook-java-api project==
 
 Right-click on *trunk* and select Checkout...
 In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-java-api".
 
 http://facebook-java-api.googlecode.com/svn/wiki/images/facebook-java-api-checkout.png
 
+==Summary so far==
 
 You'll now see 2 new projects in your Java perspective Package Explorer view called facebook-api-annotation-processor and facebook-java-api. The facebook-java-api directory contains two subprojects, one for the main Java source code and the other for the JAXB schema Java code auto generation.
 
-_Wait! I want a tagged version not the latest code..._
+==Enable Maven==
 
-Instead of navigating to trunk and checking that out as "facebook-java-api", go to tags and check out release-2.0.3 as "facebook-java-api", or any other name like "facebook-java-api-2.0.3". There's nothing to stop you having 5 different versions of the Java Facebook API checked out into differently named projects in your Eclipse environment.
-
-=Enable Maven=
-
-Perform the following steps for the facebook-api-annotation-processor and facebook-java-api projects:
+This is most important for the facebook-java-api project, because that's what you'll be making changes to mainly:
 
   * Right-click on the project and select Maven --> Enable Dependency Management
   * Again, right-click on the project and select Maven -->  Update Project Configuration
+  * You might have to repeat the Update Project Configuration a few times because each step introduces new source folders. Hopefully the Maven plugin will be improved a little to avoid the fact that it misses new items introduced on each step.
 
 You should now have a successfully compiled set of source folders for you to explore.
+
+==facebook-java-api is not building. What can I check?==
+
+If Eclipse is reporting that it can't find class FacebookJaxbRestClient or the Xml or Json versions then the annotation processor isn't doing its job.
+
+You can either rely on Maven to handle the annotation processor code generation for you (there's an "apt" plugin configured in the pom.xml) or, if you want the Eclipse partial compiler to alert you of errors while you type you can choose to configure Eclipse with details of the annotation processor:
+
+http://facebook-java-api.googlecode.com/svn/wiki/images/annotation-processor.png
+
+http://facebook-java-api.googlecode.com/svn/wiki/images/annotation-processor-factorypath.png
+
+==Wait! I want a tagged version not the latest code...==
+
+Instead of navigating to trunk and checking that out as "facebook-java-api", go to tags and check out release-2.0.3 as "facebook-java-api", or any other name like "facebook-java-api-2.0.3". There's nothing to stop you having 5 different versions of the Java Facebook API checked out into differently named projects in your Eclipse environment.
 
 =Run JUnit tests=
 
