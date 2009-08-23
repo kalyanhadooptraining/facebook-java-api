@@ -26,18 +26,21 @@ Note: the connection details are maintained at http://code.google.com/p/facebook
 Expand the + sign for this new location and you'll see a few directories:
   * archive
   * branches
-  * facebook-api-annotation processor
+  * *facebook-api-annotation processor*
   * tags
-  * trunk
+  * *trunk*
   * wiki
 
-Right-click on trunk and select Checkout...
+Right-click on *facebook-api-annotation-processor* and select Checkout...
+In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-api-annotation-processor".
+
+Right-click on *trunk* and select Checkout...
 In the Checkout from SVN dialog box, just check out as a "project in the workspace" and give it the name "facebook-java-api".
 
 http://facebook-java-api.googlecode.com/svn/wiki/images/facebook-java-api-checkout.png
 
 
-You'll now see a new project in your Java perspective Package Explorer view called facebook-java-api. This directory contains two subprojects, one for the main Java source code and the other for the JAXB schema Java code auto generation.
+You'll now see 2 new projects in your Java perspective Package Explorer view called facebook-api-annotation-processor and facebook-java-api. The facebook-java-api directory contains two subprojects, one for the main Java source code and the other for the JAXB schema Java code auto generation.
 
 _Wait! I want a tagged version not the latest code..._
 
@@ -45,10 +48,10 @@ Instead of navigating to trunk and checking that out as "facebook-java-api", go 
 
 =Enable Maven=
 
-Right-click on the facebook-java-api project and select Maven --> Enable Dependency Management
-Again, right-click on the project and select Maven -->  Enable Nested Modules
+Perform the following steps for the facebook-api-annotation-processor and facebook-java-api projects:
 
-Again!, right-click on the project and select Maven --> Update Dependencies
+  * Right-click on the project and select Maven --> Enable Dependency Management
+  * Again, right-click on the project and select Maven -->  Update Project Configuration
 
 You should now have a successfully compiled set of source folders for you to explore.
 
