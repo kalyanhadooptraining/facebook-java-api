@@ -26,6 +26,7 @@ Note: the connection details are maintained at http://code.google.com/p/facebook
 Expand the + sign for this new location and you'll see a few directories:
   * archive
   * branches
+  * facebook-api-annotation processor
   * tags
   * trunk
   * wiki
