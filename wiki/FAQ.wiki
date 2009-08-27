@@ -39,3 +39,16 @@
 
   * Where are the latest snapshot .jar files held? I just want to get the files and use them rather than using Maven to get them for me.
     * You'd be better off using Maven ;o), but the files are kept on the *[http://mrepo.happyfern.com/maven2-snapshot/com/google/code/facebookapi/ snapshot repository]*.
+
+  * I'm having trouble building the facebook-api-annotation-processor module. It's complaining about not finding com.sun.mirror.`*` classes. What's missing?
+    * Java 5 facebook annotation processors depend on you having JDK_DIR/lib/tools.jar on your build classpath. If you take a look in the pom.xml for the facebook-api-annotation-processor module you'll see:
+{{{
+<dependency>
+    <groupId>java</groupId>
+    <artifactId>tools</artifactId>
+    <version>1.5.0</version>
+    <scope>system</scope>
+    <systemPath>${java.home}/../lib/tools.jar</systemPath>
+</dependency>
+}}}
+    * Make sure that your Maven is running using a JDK so that ${java.home} so that the relative link to tools.jar works. If all else fails, just hardcode an absolute path to where you know there's definitely a tools.jar.
