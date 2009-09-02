@@ -52,3 +52,4 @@
 </dependency>
 }}}
     * Make sure that your Maven is running using a JDK so that ${java.home} so that the relative link to tools.jar works. If all else fails, just hardcode an absolute path to where you know there's definitely a tools.jar.
+    * The same sort of hack may be required for allowing the builder to locate apt when building the main project.  Mac OSX users specifically are affected, since Apple decided it needed to totally screw up the way JDKs are installed.
