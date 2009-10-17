@@ -44,7 +44,7 @@ public class XmlHelper {
 	 * 
 	 * @return the String
 	 */
-	public static String extractString( Document d ) {
+	public static String extractString( Node d ) {
 		if ( d == null ) {
 			return null;
 		}
@@ -57,7 +57,7 @@ public class XmlHelper {
 	 * @param doc
 	 * @return the Integer
 	 */
-	public static int extractInt( Document doc ) {
+	public static int extractInt( Node doc ) {
 		if ( doc == null ) {
 			return 0;
 		}
@@ -70,7 +70,7 @@ public class XmlHelper {
 	 * @param doc
 	 * @return the Long
 	 */
-	public static Long extractLong( Document doc ) {
+	public static Long extractLong( Node doc ) {
 		if ( doc == null ) {
 			return 0l;
 		}
@@ -83,7 +83,7 @@ public class XmlHelper {
 	 * @param result
 	 * @return the Boolean
 	 */
-	public static boolean extractBoolean( Document result ) {
+	public static boolean extractBoolean( Node result ) {
 		if ( result == null ) {
 			return false;
 		}

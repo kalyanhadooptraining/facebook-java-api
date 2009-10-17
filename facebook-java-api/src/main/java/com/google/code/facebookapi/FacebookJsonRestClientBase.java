@@ -1,7 +1,6 @@
 package com.google.code.facebookapi;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A FacebookRestClient that uses the JSON result format. This means results from calls to the Facebook API are returned as <a href="http://www.json.org/">JSON</a> and
@@ -80,100 +78,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	}
 
 	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 */
-	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * @param readTimeout
-	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJsonRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
-	}
-
-	/**
-	 * Parses the result of an API call from JSON into Java Objects.
-	 * 
-	 * @param data
-	 *            an InputStream with the results of a request to the Facebook servers
-	 * @param method
-	 *            the method
-	 * @return a Java Object
-	 * @throws FacebookException
-	 *             if <code>data</code> represents an error
-	 * @throws IOException
-	 *             if <code>data</code> is not readable
-	 * @see JSONObject
-	 */
-	static Object parseCallResult( Object rawResponse ) throws FacebookException {
-		if ( rawResponse == null ) {
-			return null;
-		}
-		String jsonResp = (String) rawResponse;
-		Object json = jsonToJavaValue( jsonResp );
-
-		if ( json instanceof JSONObject ) {
-			JSONObject jsonObj = (JSONObject) json;
-			try {
-				if ( jsonObj.has( "error_code" ) ) {
-					int code = jsonObj.getInt( "error_code" );
-					String message = null;
-					if ( jsonObj.has( "error_msg" ) ) {
-						message = jsonObj.getString( "error_msg" );
-					}
-					throw new FacebookException( code, message );
-				}
-			}
-			catch ( JSONException ignored ) {
-				// ignore
-			}
-		}
-		return json;
-	}
-
-	/**
 	 * Executes a batch of queries. You define the queries to execute by calling 'beginBatch' and then invoking the desired API methods that you want to execute as part
 	 * of your batch as normal. Invoking this method will then execute the API calls you made in the interim as a single batch query.
 	 * 
@@ -210,7 +114,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 			for ( int count = 0; count < doc.length(); count++ ) {
 				try {
 					String response = (String) doc.get( count );
-					Object responseObject = parseCallResult( response );
+					Object responseObject = JsonHelper.parseCallResult( response );
 					result.add( responseObject );
 				}
 				catch ( Exception ignored ) {
@@ -221,105 +125,4 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		return result;
 	}
 
-	/**
-	 * Determines the correct datatype for a json string and converts it. The json.org library really should have a method to do this.
-	 */
-	public static Object jsonToJavaValue( String s ) {
-		if ( s.startsWith( "[" ) ) {
-			try {
-				return new JSONArray( s );
-			}
-			catch ( JSONException ex ) {
-				// ignore
-			}
-		}
-
-		if ( s.startsWith( "{" ) ) {
-			try {
-				return new JSONObject( s );
-			}
-			catch ( JSONException ex ) {
-				// ignore
-			}
-		}
-
-		Object returnMe = stringToValue( s );
-		// If we have a string, strip off the quotes
-		if ( returnMe instanceof String ) {
-			String strValue = (String) returnMe;
-			if ( strValue.length() > 1 ) {
-				returnMe = strValue.trim().substring( 1, strValue.length() - 1 );
-			}
-		}
-
-		return returnMe;
-	}
-
-	/**
-	 * COPIED FROM LATEST JSON.ORG SOURCE CODE FOR JSONObject
-	 * 
-	 * Try to convert a string into a number, boolean, or null. If the string can't be converted, return the string.
-	 * 
-	 * @param s
-	 *            A String.
-	 * @return A simple JSON value.
-	 */
-	static public Object stringToValue( String s ) {
-		if ( s.equals( "" ) ) {
-			return s;
-		}
-		if ( s.equalsIgnoreCase( "true" ) ) {
-			return Boolean.TRUE;
-		}
-		if ( s.equalsIgnoreCase( "false" ) ) {
-			return Boolean.FALSE;
-		}
-		if ( s.equalsIgnoreCase( "null" ) ) {
-			return JSONObject.NULL;
-		}
-
-		/*
-		 * If it might be a number, try converting it. We support the 0- and 0x- conventions. If a number cannot be produced, then the value will just be a string. Note
-		 * that the 0-, 0x-, plus, and implied string conventions are non-standard. A JSON parser is free to accept non-JSON forms as long as it accepts all correct JSON
-		 * forms.
-		 */
-
-		char b = s.charAt( 0 );
-		if ( ( b >= '0' && b <= '9' ) || b == '.' || b == '-' || b == '+' ) {
-			if ( b == '0' ) {
-				if ( s.length() > 2 && ( s.charAt( 1 ) == 'x' || s.charAt( 1 ) == 'X' ) ) {
-					try {
-						return new Integer( Integer.parseInt( s.substring( 2 ), 16 ) );
-					}
-					catch ( Exception e ) {
-						/* Ignore the error */
-					}
-				} else {
-					try {
-						return new Integer( Integer.parseInt( s, 8 ) );
-					}
-					catch ( Exception e ) {
-						/* Ignore the error */
-					}
-				}
-			}
-			try {
-				return new Integer( s );
-			}
-			catch ( Exception e ) {
-				try {
-					return new Long( s );
-				}
-				catch ( Exception f ) {
-					try {
-						return new Double( s );
-					}
-					catch ( Exception g ) {
-						/* Ignore the error */
-					}
-				}
-			}
-		}
-		return s;
-	}
 }
