@@ -15,23 +15,12 @@ import org.json.JSONObject;
  * A FacebookRestClient that uses the JSON result format. This means results from calls to the Facebook API are returned as <a href="http://www.json.org/">JSON</a> and
  * transformed into Java <code>Object</code>'s.
  */
-public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapter implements IFacebookRestClient<Object> {
+public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapter<Object> {
 
 	protected static Log log = LogFactory.getLog( FacebookJsonRestClientBase.class );
 
-	protected ExtensibleClient client;
-
-	public ExtensibleClient getClient() {
-		return client;
-	}
-
-	public void setClient( ExtensibleClient client ) {
-		this.client = client;
-	}
-
 	public FacebookJsonRestClientBase( ExtensibleClient client ) {
-		super( "json" );
-		this.client = client;
+		super( "json", client );
 	}
 
 	/**
@@ -197,7 +186,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *         normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a batch will place a Long in the list, and calling friends_get
 	 *         will place a Document in the list, etc.).
 	 * 
-	 * The list may be empty, it will never be null.
+	 *         The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
