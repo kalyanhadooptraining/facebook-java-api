@@ -58,6 +58,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
+	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
 	protected URL _serverUrl;
 	protected int _timeout;
 	protected int _readTimeout;
@@ -333,7 +335,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 
 		// Catch errors and return as FacebookException
-		Document d = new FacebookXmlRestClient( this ).parseCallResult( rawResponse );
+		Document d = XmlHelper.parseCallResult( rawResponse, factory );
 
 		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
 		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
@@ -544,7 +546,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( "json".equals( responseFormat ) ) {
 			FacebookJsonRestClientBase.parseCallResult( rawResponse );
 		} else {
-			new FacebookXmlRestClient( this ).parseCallResult( rawResponse );
+			XmlHelper.parseCallResult( rawResponse, factory );
 		}
 	}
 
@@ -2592,8 +2594,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( "json".equals( responseFormat ) ) {
 			return (Boolean) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
-			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return XmlHelper.extractBoolean( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractBoolean( XmlHelper.parseCallResult( result, factory ) );
 		}
 	}
 
@@ -2607,8 +2608,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( "json".equals( responseFormat ) ) {
 			return (Integer) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
-			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return XmlHelper.extractInt( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractInt( XmlHelper.parseCallResult( result, factory ) );
 		}
 	}
 
@@ -2625,8 +2625,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			Number num = (Number) FacebookJsonRestClientBase.parseCallResult( result );
 			return num.longValue();
 		} else {
-			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return XmlHelper.extractLong( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractLong( XmlHelper.parseCallResult( result, factory ) );
 		}
 	}
 
@@ -2641,8 +2640,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( "json".equals( responseFormat ) ) {
 			return (String) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
-			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return XmlHelper.extractString( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractString( XmlHelper.parseCallResult( result, factory ) );
 		}
 	}
 

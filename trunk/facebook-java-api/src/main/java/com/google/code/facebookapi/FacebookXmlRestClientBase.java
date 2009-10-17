@@ -70,25 +70,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {
-		if ( rawResponse == null ) {
-			return null;
-		}
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse( new InputSource( new StringReader( (String) rawResponse ) ) );
-			doc.normalizeDocument();
-			XmlHelper.stripEmptyTextNodes( doc );
-			return XmlHelper.parseCallResult( doc );
-		}
-		catch ( ParserConfigurationException ex ) {
-			throw new RuntimeException( "Trouble configuring XML Parser", ex );
-		}
-		catch ( SAXException ex ) {
-			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
-		}
-		catch ( IOException ex ) {
-			throw new RuntimeException( "Trouble parsing XML from facebook", ex );
-		}
+		return XmlHelper.parseCallResult( rawResponse, factory );
 	}
 
 	/**
@@ -159,10 +141,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		}
 
 		return result;
-	}
-
-	public String getRawResponse() {
-		return client.getRawResponse();
 	}
 
 }

@@ -34,6 +34,10 @@ public abstract class BaseAdapter {
 		return getClient().getSecret();
 	}
 
+	public String getRawResponse() {
+		return client.getRawResponse();
+	}
+
 	public void beginBatch() {
 		getClient().setResponseFormat( responseFormat );
 		getClient().beginBatch();

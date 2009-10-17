@@ -221,10 +221,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		return result;
 	}
 
-	public String getRawResponse() {
-		return client.getRawResponse();
-	}
-
 	/**
 	 * Determines the correct datatype for a json string and converts it. The json.org library really should have a method to do this.
 	 */
