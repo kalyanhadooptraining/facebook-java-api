@@ -29,8 +29,8 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @param secret
 	 *            your 'secret' Facebook key
 	 */
-	public FacebookJsonRestClientBase( String responseFormat, String apiKey, String secret ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
+	public FacebookJsonRestClientBase( String apiKey, String secret ) {
+		this( new ExtensibleClient( "json", apiKey, secret ) );
 	}
 
 	/**
@@ -43,9 +43,14 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @param sessionKey
 	 *            the session-id to use
 	 */
-	public FacebookJsonRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
+	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( "json", apiKey, secret, sessionKey ) );
 	}
+
+	public Object parseCallResult( Object rawResponse ) throws FacebookException {
+		return JsonHelper.parseCallResult( rawResponse );
+	}
+
 
 	/**
 	 * Executes a batch of queries. You define the queries to execute by calling 'beginBatch' and then invoking the desired API methods that you want to execute as part
