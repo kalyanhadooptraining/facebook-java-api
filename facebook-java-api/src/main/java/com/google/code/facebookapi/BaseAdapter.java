@@ -1,5 +1,6 @@
 package com.google.code.facebookapi;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -185,9 +186,32 @@ public abstract class BaseAdapter {
 		getClient().setCacheSession( cacheSessionKey, cacheUserId, cacheSessionExpires );
 	}
 
-	public void setServerUrl( String newUrl ) {
-		getClient().setResponseFormat( responseFormat );
-		getClient().setServerUrl( newUrl );
+	public URL getServerUrl() {
+		return getClient().getServerUrl();
+	}
+
+	public void setServerUrl( URL url ) {
+		getClient().setServerUrl( url );
+	}
+
+	public void setServerUrl( String url ) {
+		getClient().setServerUrl( url );
+	}
+
+	public int getConnectTimeout() {
+		return getClient().getConnectTimeout();
+	}
+
+	public void setConnectTimeout( int connectTimeout ) {
+		getClient().setConnectTimeout( connectTimeout );
+	}
+
+	public int getReadTimeout() {
+		return getClient().getReadTimeout();
+	}
+
+	public void setReadTimeout( int readTimeout ) {
+		getClient().setReadTimeout( readTimeout );
 	}
 
 	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException {

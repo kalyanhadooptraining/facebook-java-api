@@ -48,9 +48,34 @@ public interface IFacebookRestClient<T> {
 	public static final String TARGET_API_VERSION = "1.0";
 	public static final String ERROR_TAG = "error_response";
 
+
+	public URL getServerUrl();
+
+	/**
+	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
+	 * 
+	 * @param newUrl
+	 *            the new URL to use, for example: "http://api.facebook.com/restserver.php"
+	 * @throws MalformedURLException
+	 */
+	public void setServerUrl( URL newUrl );
+
+	public void setServerUrl( String newUrl );
+
+	public int getConnectTimeout();
+
+	public void setConnectTimeout( int connectTimeout );
+
+	public int getReadTimeout();
+
+	public void setReadTimeout( int readTimeout );
+
+
 	public String getApiKey();
 
 	public String getSecret();
+
+
 
 	/**
 	 * Check to see if the client is running in desktop-app mode
@@ -3081,15 +3106,6 @@ public interface IFacebookRestClient<T> {
 	 */
 	@FacebookReturnType
 	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
-
-	/**
-	 * Override the default Facebook API server used for making requests. Can be used to tell the client to run against the
-	 * 
-	 * @param newUrl
-	 *            the new URL to use, for example: "http://api.facebook.com/restserver.php"
-	 * @throws MalformedURLException
-	 */
-	public void setServerUrl( String newUrl );
 
 	/**
 	 * Sends a message using the LiveMessage API. Note that for the message to be recieved by the recipent, you must set up a FBJS handler function. See

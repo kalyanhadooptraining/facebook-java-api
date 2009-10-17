@@ -40,41 +40,11 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 *            your Facebook API key
 	 * @param secret
 	 *            your 'secret' Facebook key
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJsonRestClientBase( String apiKey, String secret, int connectionTimeout ) {
-		this( new ExtensibleClient( apiKey, secret, connectionTimeout ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
 	 * @param sessionKey
 	 *            the session-id to use
 	 */
 	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey ) {
 		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	/**
