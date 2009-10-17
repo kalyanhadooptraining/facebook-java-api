@@ -69,8 +69,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @param secret
 	 *            your 'secret' Facebook key
 	 */
-	public FacebookJaxbRestClientBase( String apiKey, String secret ) {
-		this( new ExtensibleClient( apiKey, secret ) );
+	public FacebookJaxbRestClientBase( String responseFormat, String apiKey, String secret ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
 	}
 
 	/**
@@ -83,8 +83,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @param sessionKey
 	 *            the session-id to use
 	 */
-	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
+	public FacebookJaxbRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
 	}
 
 	protected static JAXBContext JAXB_CONTEXT;
@@ -203,12 +203,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @throws IOException
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
-		client.setResponseFormat( "xml" );
-
 		List<String> clientResults = client.executeBatch( serial );
-
 		List<Object> result = new ArrayList<Object>();
-
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 

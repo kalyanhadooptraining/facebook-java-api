@@ -70,6 +70,8 @@ public interface IFacebookRestClient<T> {
 
 	public void setReadTimeout( int readTimeout );
 
+	public String getResponseFormat();
+
 
 	public String getApiKey();
 

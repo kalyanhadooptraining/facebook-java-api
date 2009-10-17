@@ -40,12 +40,12 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		factory.setNamespaceAware( true );
 	}
 
-	public FacebookXmlRestClientBase( String apiKey, String secret ) {
-		this( new ExtensibleClient( apiKey, secret ) );
+	public FacebookXmlRestClientBase( String responseFormat, String apiKey, String secret ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
 	}
 
-	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
+	public FacebookXmlRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {
@@ -82,12 +82,8 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	 * @throws IOException
 	 */
 	public List<Document> executeBatch( boolean serial ) throws FacebookException {
-		client.setResponseFormat( "xml" );
-
 		List<String> clientResults = client.executeBatch( serial );
-
 		List<Document> result = new ArrayList<Document>();
-
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 

@@ -29,8 +29,8 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @param secret
 	 *            your 'secret' Facebook key
 	 */
-	public FacebookJsonRestClientBase( String apiKey, String secret ) {
-		this( new ExtensibleClient( apiKey, secret ) );
+	public FacebookJsonRestClientBase( String responseFormat, String apiKey, String secret ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
 	}
 
 	/**
@@ -43,8 +43,8 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @param sessionKey
 	 *            the session-id to use
 	 */
-	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
+	public FacebookJsonRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
 	}
 
 	/**
@@ -66,7 +66,6 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	 * @throws IOException
 	 */
 	public List<? extends Object> executeBatch( boolean serial ) throws FacebookException {
-		client.setResponseFormat( "json" );
 		List<String> clientResults = client.executeBatch( serial );
 
 		List<Object> result = new ArrayList<Object>();
