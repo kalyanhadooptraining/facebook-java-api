@@ -69,8 +69,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @param secret
 	 *            your 'secret' Facebook key
 	 */
-	public FacebookJaxbRestClientBase( String responseFormat, String apiKey, String secret ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
+	public FacebookJaxbRestClientBase( String apiKey, String secret ) {
+		this( new ExtensibleClient( "xml", apiKey, secret ) );
 	}
 
 	/**
@@ -83,8 +83,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 * @param sessionKey
 	 *            the session-id to use
 	 */
-	public FacebookJaxbRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
+	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey ) );
 	}
 
 	protected static JAXBContext JAXB_CONTEXT;

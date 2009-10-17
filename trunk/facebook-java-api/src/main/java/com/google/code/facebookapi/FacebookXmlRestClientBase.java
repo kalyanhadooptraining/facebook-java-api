@@ -40,12 +40,12 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		factory.setNamespaceAware( true );
 	}
 
-	public FacebookXmlRestClientBase( String responseFormat, String apiKey, String secret ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret ) );
+	public FacebookXmlRestClientBase( String apiKey, String secret ) {
+		this( new ExtensibleClient( "xml", apiKey, secret ) );
 	}
 
-	public FacebookXmlRestClientBase( String responseFormat, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( responseFormat, apiKey, secret, sessionKey ) );
+	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey ) {
+		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey ) );
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {

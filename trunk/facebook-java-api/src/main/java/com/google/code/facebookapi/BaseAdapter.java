@@ -190,6 +190,15 @@ public abstract class BaseAdapter {
 		getClient().setReadTimeout( readTimeout );
 	}
 
+	public String getResponseFormat() {
+		return getClient().getResponseFormat();
+	}
+
+	@Deprecated
+	public void setResponseFormat( String val ) {
+		// ignored
+	}
+
 	public void sms_sendMessage( Long userId, CharSequence message ) throws FacebookException {
 		getClient().sms_sendMessage( userId, message );
 	}
