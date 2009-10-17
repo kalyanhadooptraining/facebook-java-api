@@ -56,14 +56,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>${test.skip}</skip>
@@ -80,29 +72,33 @@
     </plugins>
   </reporting>
   <distributionManagement>
-    <downloadUrl>http://mrepo.happyfern.com/maven2/</downloadUrl>
     <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>mrepo-happyfern</id>
-      <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
-      <!--
-          "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",,
-        -->
+      <id>googlecode-releases.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <!-- <url>http://oss.sonatype.org/content/repositories/googlecode-releases</url> -->
     </repository>
     <snapshotRepository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>mrepo-happyfern-snapshot</id>
-      <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
+      <id>googlecode-snapshots.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots</url>
     </snapshotRepository>
-    <!--
-        <site>
-          <id>mrepo-happyfern-sites-facebookjavaapi</id>
-          <name>Mojo Website</name>
-          <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/sites/facebook-java-api/</url>
-        </site>
-        -->
   </distributionManagement>
-  
+  <!-- "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",, -->
+  <!--
+      <distributionManagement>
+	<downloadUrl>http://mrepo.happyfern.com/maven2/</downloadUrl>
+	<repository>
+	  <uniqueVersion>false</uniqueVersion>
+	  <id>mrepo-happyfern</id>
+	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
+	</repository>
+	<snapshotRepository>
+	  <uniqueVersion>true</uniqueVersion>
+	  <id>mrepo-happyfern-snapshot</id>
+	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
+	</snapshotRepository>
+      </distributionManagement>
+      -->
+
   <dependencies>
     <dependency>
         <groupId>com.sun.xml.bind</groupId>
