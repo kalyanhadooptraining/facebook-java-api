@@ -44,16 +44,8 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		this( new ExtensibleClient( apiKey, secret ) );
 	}
 
-	public FacebookXmlRestClientBase( String apiKey, String secret, int connectionTimeout ) {
-		this( new ExtensibleClient( apiKey, secret, connectionTimeout ) );
-	}
-
 	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey ) {
 		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
-	}
-
-	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, int timeout ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey, timeout ) );
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {

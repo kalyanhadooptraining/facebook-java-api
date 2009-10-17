@@ -58,10 +58,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
+	protected static final String CRLF = "\r\n";
+	protected static final String PREF = "--";
+	protected static final int UPLOAD_BUFFER_SIZE = 1024;
+
+	public static final String MARKETPLACE_STATUS_DEFAULT = "DEFAULT";
+	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
+	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
+
+
 	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	protected URL _serverUrl;
-	protected int _timeout;
+	protected int _connectTimeout;
 	protected int _readTimeout;
 
 	protected final String _apiKey;
@@ -90,32 +99,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected String permissionsApiKey = null;
 
 
-	protected static final String CRLF = "\r\n";
-	protected static final String PREF = "--";
-	protected static final int UPLOAD_BUFFER_SIZE = 1024;
-
-
-	public static final String MARKETPLACE_STATUS_DEFAULT = "DEFAULT";
-	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
-	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
-
 	protected ExtensibleClient( String apiKey, String secret ) {
 		this( apiKey, secret, null );
-	}
-
-	protected ExtensibleClient( String apiKey, String secret, int timeout ) {
-		this( apiKey, secret, null, timeout );
-	}
-
-	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int timeout ) {
-		this( apiKey, secret, sessionKey );
-		_timeout = timeout;
-	}
-
-	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int timeout, int readTimeout ) {
-		this( apiKey, secret, sessionKey );
-		_timeout = timeout;
-		_readTimeout = readTimeout;
 	}
 
 	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
@@ -126,10 +111,45 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			_isDesktop = true;
 		}
 		this._serverUrl = FacebookApiUrls.getDefaultServerUrl();
-		this._timeout = -1;
+		this._connectTimeout = -1;
 		this._readTimeout = -1;
 		this.batchMode = false;
 		this.queries = new ArrayList<BatchQuery>();
+	}
+
+
+
+	public URL getServerUrl() {
+		return _serverUrl;
+	}
+
+	public void setServerUrl( URL url ) {
+		_serverUrl = url;
+	}
+
+	public void setServerUrl( String url ) {
+		try {
+			_serverUrl = new URL( url );
+		}
+		catch ( MalformedURLException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+	}
+
+	public int getConnectTimeout() {
+		return _connectTimeout;
+	}
+
+	public void setConnectTimeout( int connectTimeout ) {
+		_connectTimeout = connectTimeout;
+	}
+
+	public int getReadTimeout() {
+		return _readTimeout;
+	}
+
+	public void setReadTimeout( int readTimeout ) {
+		_readTimeout = readTimeout;
 	}
 
 	public String getApiKey() {
@@ -554,8 +574,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		InputStream in = null;
 		try {
 			conn = (HttpURLConnection) serverUrl.openConnection();
-			if ( _timeout != -1 ) {
-				conn.setConnectTimeout( _timeout );
+			if ( _connectTimeout != -1 ) {
+				conn.setConnectTimeout( _connectTimeout );
 			}
 			if ( _readTimeout != -1 ) {
 				conn.setReadTimeout( _readTimeout );
@@ -595,8 +615,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		try {
 			String boundary = Long.toString( System.currentTimeMillis(), 16 );
 			con = (HttpURLConnection) _serverUrl.openConnection();
-			if ( _timeout != -1 ) {
-				con.setConnectTimeout( _timeout );
+			if ( _connectTimeout != -1 ) {
+				con.setConnectTimeout( _connectTimeout );
 			}
 			if ( _readTimeout != -1 ) {
 				con.setReadTimeout( _readTimeout );
@@ -2249,21 +2269,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		Pairs.addParamIfNotBlank( "profile_main", profileMain, params );
 		FacebookMethod method = ( isDesktop() || userId == null ) ? FacebookMethod.PROFILE_SET_FBML : FacebookMethod.PROFILE_SET_FBML_NOSESSION;
 		return extractBoolean( callMethod( method, params ) );
-	}
-
-	public void setServerUrl( String newUrl ) {
-		String base = newUrl;
-		if ( base.startsWith( "http" ) ) {
-			base = base.substring( base.indexOf( "://" ) + 3 );
-		}
-		try {
-			String url = "http://" + base;
-			_serverUrl = new URL( url );
-			// setDefaultServerUrl( _serverUrl );
-		}
-		catch ( MalformedURLException ex ) {
-			throw BasicClientHelper.runtimeException( ex );
-		}
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException {
