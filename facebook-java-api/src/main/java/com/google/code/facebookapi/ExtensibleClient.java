@@ -2670,7 +2670,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (Boolean) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return extractBoolean( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractBoolean( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2685,7 +2685,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (Integer) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return extractInt( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractInt( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2703,7 +2703,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return num.longValue();
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return extractLong( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractLong( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -2719,7 +2719,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return (String) FacebookJsonRestClientBase.parseCallResult( result );
 		} else {
 			FacebookXmlRestClient xmlClient = new FacebookXmlRestClient( this );
-			return extractString( xmlClient.parseCallResult( result ) );
+			return XmlHelper.extractString( xmlClient.parseCallResult( result ) );
 		}
 	}
 
@@ -3185,57 +3185,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public void setCacheFriendsList( List<Long> friendIds ) {
 		this.cacheFriendsList = friendIds;
-	}
-
-	/**
-	 * Extracts a String from a Document consisting entirely of a String.
-	 * 
-	 * @return the String
-	 */
-	private static String extractString( Document d ) {
-		if ( d == null ) {
-			return null;
-		}
-		return d.getFirstChild().getTextContent();
-	}
-
-	/**
-	 * Extracts an Integer from a document that consists of an Integer only.
-	 * 
-	 * @param doc
-	 * @return the Integer
-	 */
-	private static int extractInt( Document doc ) {
-		if ( doc == null ) {
-			return 0;
-		}
-		return Integer.parseInt( doc.getFirstChild().getTextContent() );
-	}
-
-	/**
-	 * Extracts a Long from a document that consists of a Long only.
-	 * 
-	 * @param doc
-	 * @return the Long
-	 */
-	private static Long extractLong( Document doc ) {
-		if ( doc == null ) {
-			return 0l;
-		}
-		return Long.parseLong( doc.getFirstChild().getTextContent() );
-	}
-
-	/**
-	 * Extracts a Boolean from a result that consists of a Boolean only.
-	 * 
-	 * @param result
-	 * @return the Boolean
-	 */
-	private static boolean extractBoolean( Document result ) {
-		if ( result == null ) {
-			return false;
-		}
-		return 1 == extractInt( result );
 	}
 
 	// CUSTOM TAGS
