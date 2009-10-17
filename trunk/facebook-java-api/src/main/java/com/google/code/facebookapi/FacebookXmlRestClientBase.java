@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,20 +52,8 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		this( new ExtensibleClient( apiKey, secret, sessionKey ) );
 	}
 
-	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
-	}
-
-	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
-	}
-
-	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
-	}
-
-	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
+	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, int timeout ) {
+		this( new ExtensibleClient( apiKey, secret, sessionKey, timeout ) );
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {

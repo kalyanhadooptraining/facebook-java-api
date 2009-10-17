@@ -1,6 +1,5 @@
 package com.google.code.facebookapi;
 
-import static com.google.code.facebookapi.FacebookJsonRestClientBase.jsonToJavaValue;
 import static junit.framework.Assert.assertEquals;
 
 import org.json.JSONArray;
@@ -9,19 +8,25 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 public class TestJSON {
-	
-	@SuppressWarnings("unused")
+
 	@Test
 	public void testJSON() throws JSONException {
-		boolean bool = (Boolean)jsonToJavaValue( "true" );
-		int myint = (Integer)jsonToJavaValue( "5" );
-		double mydouble = (Double)jsonToJavaValue( "5.555" );
-		String mystring = (String)jsonToJavaValue( "\"mystring\"" );
-		long mylong = (Long)jsonToJavaValue( Long.toString( Long.MAX_VALUE ) );
-		JSONArray myArray = (JSONArray)jsonToJavaValue( "   [3, 5, 6]  " );
+		boolean bool = (Boolean) JsonHelper.jsonToJavaValue( "true" );
+		assertEquals( true, bool );
+		int myint = (Integer) JsonHelper.jsonToJavaValue( "5" );
+		assertEquals( 5, myint );
+		double mydouble = (Double) JsonHelper.jsonToJavaValue( "5.555" );
+		assertEquals( 5.555, mydouble );
+		String mystring = (String) JsonHelper.jsonToJavaValue( "\"mystring\"" );
+		assertEquals( "mystring", mystring );
+		long mylong = (Long) JsonHelper.jsonToJavaValue( Long.toString( Long.MAX_VALUE ) );
+		assertEquals( mylong, Long.MAX_VALUE );
+		JSONArray myArray = (JSONArray) JsonHelper.jsonToJavaValue( "   [3, 5, 6]  " );
 		assertEquals( 3, myArray.get( 0 ) );
-		JSONObject myObject = (JSONObject)jsonToJavaValue( " {abc:123}" );
+		assertEquals( 5, myArray.get( 1 ) );
+		assertEquals( 6, myArray.get( 2 ) );
+		JSONObject myObject = (JSONObject) JsonHelper.jsonToJavaValue( " {abc:123}" );
 		assertEquals( 123, myObject.get( "abc" ) );
 	}
-	
+
 }

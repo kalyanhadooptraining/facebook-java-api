@@ -100,40 +100,32 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
 
 	protected ExtensibleClient( String apiKey, String secret ) {
-		this( null, apiKey, secret, null );
+		this( apiKey, secret, null );
 	}
 
 	protected ExtensibleClient( String apiKey, String secret, int timeout ) {
-		this( null, apiKey, secret, null, timeout );
+		this( apiKey, secret, null, timeout );
 	}
 
-	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
-		this( null, apiKey, secret, sessionKey );
-	}
-
-	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( null, apiKey, secret, sessionKey, connectionTimeout );
-	}
-
-	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
-		this( serverUrl, apiKey, secret, sessionKey );
+	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int timeout ) {
+		this( apiKey, secret, sessionKey );
 		_timeout = timeout;
 	}
 
-	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout, int readTimeout ) {
-		this( serverUrl, apiKey, secret, sessionKey );
+	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int timeout, int readTimeout ) {
+		this( apiKey, secret, sessionKey );
 		_timeout = timeout;
 		_readTimeout = readTimeout;
 	}
 
-	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
 		this.cacheSessionKey = sessionKey;
 		this._apiKey = apiKey;
 		this._secret = secret;
 		if ( secret.endsWith( "__" ) ) {
 			_isDesktop = true;
 		}
-		this._serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
+		this._serverUrl = FacebookApiUrls.getDefaultServerUrl();
 		this._timeout = -1;
 		this._readTimeout = -1;
 		this.batchMode = false;
@@ -544,7 +536,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	private void validateVoidResponse( String rawResponse ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			FacebookJsonRestClientBase.parseCallResult( rawResponse );
+			JsonHelper.parseCallResult( rawResponse );
 		} else {
 			XmlHelper.parseCallResult( rawResponse, factory );
 		}
@@ -2259,8 +2251,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractBoolean( callMethod( method, params ) );
 	}
 
-
-
 	public void setServerUrl( String newUrl ) {
 		String base = newUrl;
 		if ( base.startsWith( "http" ) ) {
@@ -2592,7 +2582,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected boolean extractBoolean( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (Boolean) FacebookJsonRestClientBase.parseCallResult( result );
+			return (Boolean) JsonHelper.parseCallResult( result );
 		} else {
 			return XmlHelper.extractBoolean( XmlHelper.parseCallResult( result, factory ) );
 		}
@@ -2606,7 +2596,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected int extractInt( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (Integer) FacebookJsonRestClientBase.parseCallResult( result );
+			return (Integer) JsonHelper.parseCallResult( result );
 		} else {
 			return XmlHelper.extractInt( XmlHelper.parseCallResult( result, factory ) );
 		}
@@ -2622,7 +2612,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( "json".equals( responseFormat ) ) {
 			// May be a java.lang.Integer or java.lang.Long returned
 			// We can't cast Integer to Long!
-			Number num = (Number) FacebookJsonRestClientBase.parseCallResult( result );
+			Number num = (Number) JsonHelper.parseCallResult( result );
 			return num.longValue();
 		} else {
 			return XmlHelper.extractLong( XmlHelper.parseCallResult( result, factory ) );
@@ -2638,7 +2628,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected String extractString( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (String) FacebookJsonRestClientBase.parseCallResult( result );
+			return (String) JsonHelper.parseCallResult( result );
 		} else {
 			return XmlHelper.extractString( XmlHelper.parseCallResult( result, factory ) );
 		}

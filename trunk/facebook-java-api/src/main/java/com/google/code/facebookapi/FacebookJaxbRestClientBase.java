@@ -44,7 +44,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -117,60 +116,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 */
-	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, -1 ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverUrl
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * @param readTimeout
-	 *            the read timeout to apply when making API requests to Facebook, in milliseconds
-	 */
-	public FacebookJaxbRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey, int connectionTimeout, int readTimeout ) {
-		this( new ExtensibleClient( serverUrl, apiKey, secret, sessionKey, connectionTimeout, readTimeout ) );
 	}
 
 	protected static JAXBContext JAXB_CONTEXT;
@@ -383,7 +328,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );
 				for ( int count = 0; count < responses.getLength(); count++ ) {
-					String response = extractNodeString( responses.item( count ) );
+					String response = XmlHelper.extractString( responses.item( count ) );
 					try {
 						Object pojo = parseCallResult( response );
 						result.add( pojo );
@@ -405,13 +350,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		}
 
 		return result;
-	}
-
-	public static String extractNodeString( Node d ) {
-		if ( d == null ) {
-			return null;
-		}
-		return d.getFirstChild().getTextContent();
 	}
 
 }
