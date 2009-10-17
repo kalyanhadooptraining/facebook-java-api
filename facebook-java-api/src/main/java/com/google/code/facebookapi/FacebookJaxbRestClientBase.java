@@ -29,7 +29,6 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,31 +144,8 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			return unmarshaller.unmarshal( new StringReader( rawResponse ) );
 		}
 		catch ( Exception ex ) {
-			throw new RuntimeException( ex );
+			throw BasicClientHelper.runtimeException( ex );
 		}
-	}
-
-	private String parse( String val ) {
-		String xml = val;
-		if ( ( xml == null ) || ( "".equals( xml ) ) ) {
-			return null;
-		}
-		if ( !xml.contains( "</" ) ) {
-			return null;
-		}
-		xml = xml.substring( 0, xml.indexOf( "</" ) );
-		xml = xml.substring( xml.lastIndexOf( ">" ) + 1 );
-		return xml;
-	}
-
-	/**
-	 * Extracts a String from a result consisting entirely of a String.
-	 * 
-	 * @param val
-	 * @return the String
-	 */
-	public String extractString( Object val ) {
-		return parse( (String) val );
 	}
 
 	/**
@@ -206,64 +182,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			}
 		}
 		return res;
-	}
-
-	/**
-	 * Extracts a URL from a result that consists of a URL only. For JSON, that result is simply a String.
-	 * 
-	 * @param url
-	 * @return the URL
-	 */
-	protected URL extractURL( Object url ) throws IOException {
-		String result = parse( (String) url );
-		if ( result != null ) {
-			return new URL( result );
-		}
-		return null;
-	}
-
-	/**
-	 * Extracts an Integer from a result that consists of an Integer only.
-	 * 
-	 * @param val
-	 * @return the Integer
-	 */
-	protected int extractInt( Object val ) {
-		try {
-			return Integer.parseInt( parse( (String) val ) );
-		}
-		catch ( Exception cce ) {
-			return 0;
-		}
-	}
-
-	/**
-	 * Extracts a Boolean from a result that consists of a Boolean only.
-	 * 
-	 * @param val
-	 * @return the Boolean
-	 */
-	protected boolean extractBoolean( Object val ) {
-		String result = parse( (String) val );
-		if ( ( "1".equals( result ) ) || ( "true".equalsIgnoreCase( result ) ) ) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Extracts a Long from a result that consists of an Long only.
-	 * 
-	 * @param val
-	 * @return the Integer
-	 */
-	protected Long extractLong( Object val ) {
-		try {
-			return Long.parseLong( parse( (String) val ) );
-		}
-		catch ( Exception cce ) {
-			return 0l;
-		}
 	}
 
 	/**
