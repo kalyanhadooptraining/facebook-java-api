@@ -29,7 +29,6 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,47 +128,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 */
 	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
-	}
-
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverAddr
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * 
-	 * @throws MalformedURLException
-	 *             if you specify an invalid URL
-	 */
-	public FacebookJaxbRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey ) );
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param serverAddr
-	 *            the URL of the Facebook API server to use
-	 * @param apiKey
-	 *            your Facebook API key
-	 * @param secret
-	 *            your 'secret' Facebook key
-	 * @param sessionKey
-	 *            the session-id to use
-	 * @param connectionTimeout
-	 *            the connection timeout to apply when making API requests to Facebook, in milliseconds
-	 * 
-	 * @throws MalformedURLException
-	 *             if you specify an invalid URL
-	 */
-	public FacebookJaxbRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	/**
@@ -421,7 +379,7 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 	 *         normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a batch will place a Long in the list, and calling friends_get
 	 *         will place a Document in the list, etc.).
 	 * 
-	 * The list may be empty, it will never be null.
+	 *         The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException

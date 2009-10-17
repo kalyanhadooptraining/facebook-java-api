@@ -100,7 +100,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_getSession( authToken );
 	}
-	
+
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().auth_getSession( authToken, generateSessionSecret );
@@ -364,11 +364,6 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 	public Long getCacheUserId() {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().getCacheUserId();
-	}
-
-	public URL getDefaultServerUrl() {
-		getClient().setResponseFormat( responseFormat );
-		return getClient().getDefaultServerUrl();
 	}
 
 	public boolean isDesktop() {
@@ -746,7 +741,7 @@ public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().users_setStatus( newStatus, clear, statusIncludesVerb, userId );
 	}
-	
+
 	public Long links_post( Long userId, String url, String comment ) throws FacebookException {
 		getClient().setResponseFormat( responseFormat );
 		return getClient().links_post( userId, url, comment );
