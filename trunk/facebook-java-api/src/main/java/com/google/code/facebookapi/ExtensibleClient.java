@@ -11,11 +11,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -225,28 +223,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		cacheSessionSecret = key;
 	}
 
-	private static CharSequence delimit( Iterable<?> iterable ) {
-		if ( iterable == null ) {
-			return null;
-		}
-		StringBuilder buffer = new StringBuilder();
-		boolean empty = true;
-		boolean notFirst = false;
-		for ( Object item : iterable ) {
-			if ( notFirst ) {
-				buffer.append( "," );
-			} else {
-				empty = false;
-				notFirst = true;
-			}
-			buffer.append( item.toString() );
-		}
-		if ( empty ) {
-			return null;
-		}
-		return buffer;
-	}
-
 	@Deprecated
 	protected Boolean cacheAppAdded; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
@@ -320,7 +296,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			throw new IllegalArgumentException( String.format( "Collections should be same size: got userIds1: %d elts; userIds2: %d elts", userIds1.size(), userIds2
 					.size() ) );
 		}
-		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, Pairs.newPair( "uids1", delimit( userIds1 ) ), Pairs.newPair( "uids2", delimit( userIds2 ) ) );
+		return callMethod( FacebookMethod.FRIENDS_ARE_FRIENDS, Pairs.newPair( "uids1", BasicClientHelper.delimit( userIds1 ) ), Pairs.newPair( "uids2", BasicClientHelper
+				.delimit( userIds2 ) ) );
 	}
 
 	public boolean fbml_refreshRefUrl( String url ) throws FacebookException {
@@ -442,20 +419,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.GROUPS_GET_MEMBERS, Pairs.newPair( "gid", groupId ) );
 	}
 
-	private static String encode( CharSequence target ) {
-		if ( target == null ) {
-			return "";
-		}
-		String result = target.toString();
-		try {
-			result = URLEncoder.encode( result, "UTF8" );
-		}
-		catch ( UnsupportedEncodingException ex ) {
-			throw BasicClientHelper.runtimeException( ex );
-		}
-		return result;
-	}
-
 	public Object friends_getAppUsers() throws FacebookException {
 		return callMethod( FacebookMethod.FRIENDS_GET_APP_USERS );
 	}
@@ -473,10 +436,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Object groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException {
 		boolean hasGroups = ( null != groupIds && !groupIds.isEmpty() );
 		if ( null != userId ) {
-			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, Pairs.newPair( "uid", userId ), Pairs.newPair( "gids", delimit( groupIds ) ) ) : callMethod(
-					FacebookMethod.GROUPS_GET, Pairs.newPair( "uid", userId ) );
+			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, Pairs.newPair( "uid", userId ), Pairs.newPair( "gids", BasicClientHelper.delimit( groupIds ) ) )
+					: callMethod( FacebookMethod.GROUPS_GET, Pairs.newPair( "uid", userId ) );
 		} else {
-			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, Pairs.newPair( "gids", delimit( groupIds ) ) ) : callMethod( FacebookMethod.GROUPS_GET );
+			return hasGroups ? callMethod( FacebookMethod.GROUPS_GET, Pairs.newPair( "gids", BasicClientHelper.delimit( groupIds ) ) )
+					: callMethod( FacebookMethod.GROUPS_GET );
 		}
 	}
 
@@ -606,7 +570,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
-		CharSequence paramString = ( null == params ) ? "" : delimit( params.entrySet(), "&", "=", true );
+		CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
 		}
@@ -734,28 +698,32 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
-		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, Pairs.newPair( "uids", delimit( userIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ), Pairs.newPair( "fields",
+				BasicClientHelper.delimit( fields ) ) );
 	}
 
 	public Object users_getStandardInfo( Collection<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
-		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, Pairs.newPair( "uids", delimit( userIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.USERS_GET_STANDARD_INFO, Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ), Pairs.newPair( "fields",
+				BasicClientHelper.delimit( fields ) ) );
 	}
 
 	public Object users_getInfo( Iterable<Long> userIds, Collection<ProfileField> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
-		return callMethod( FacebookMethod.USERS_GET_INFO, Pairs.newPair( "uids", delimit( userIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.USERS_GET_INFO, Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ), Pairs.newPair( "fields", BasicClientHelper
+				.delimit( fields ) ) );
 	}
 
 	public Object users_getInfo( Iterable<Long> userIds, Set<CharSequence> fields ) throws FacebookException {
 		assert ( userIds != null );
 		assert ( fields != null );
 		assert ( !fields.isEmpty() );
-		return callMethod( FacebookMethod.USERS_GET_INFO, Pairs.newPair( "uids", delimit( userIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.USERS_GET_INFO, Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ), Pairs.newPair( "fields", BasicClientHelper
+				.delimit( fields ) ) );
 	}
 
 	/**
@@ -829,24 +797,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		catch ( MalformedURLException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
 		}
-	}
-
-	protected static CharSequence delimit( Collection<Map.Entry<String,String>> entries, String delimiter, String equals, boolean doEncode ) {
-		if ( entries == null || entries.isEmpty() ) {
-			return null;
-		}
-		StringBuilder buffer = new StringBuilder();
-		boolean notFirst = false;
-		for ( Map.Entry<String,String> entry : entries ) {
-			if ( notFirst ) {
-				buffer.append( delimiter );
-			} else {
-				notFirst = true;
-			}
-			CharSequence value = entry.getValue();
-			buffer.append( entry.getKey() ).append( equals ).append( doEncode ? encode( value ) : value );
-		}
-		return buffer;
 	}
 
 	public boolean fbml_refreshImgSrc( URL imageUrl ) throws FacebookException {
@@ -1072,10 +1022,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Object marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
 		if ( null != listingIds && !listingIds.isEmpty() ) {
-			params.add( Pairs.newPair( "listing_ids", delimit( listingIds ) ) );
+			params.add( Pairs.newPair( "listing_ids", BasicClientHelper.delimit( listingIds ) ) );
 		}
 		if ( null != userIds && !userIds.isEmpty() ) {
-			params.add( Pairs.newPair( "uids", delimit( userIds ) ) );
+			params.add( Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ) );
 		}
 		assert !params.isEmpty() : "Either listingIds or userIds should be provided";
 		return callMethod( FacebookMethod.MARKETPLACE_GET_LISTINGS, params );
@@ -1227,7 +1177,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		IFacebookMethod method = ( null == cacheSessionKey ) ? FacebookMethod.PAGES_GET_INFO_NOSESSION : FacebookMethod.PAGES_GET_INFO;
-		return callMethod( method, Pairs.newPair( "page_ids", delimit( pageIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( method, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 	}
 
 	/**
@@ -1249,7 +1199,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
 		IFacebookMethod method = null == cacheSessionKey ? FacebookMethod.PAGES_GET_INFO_NOSESSION : FacebookMethod.PAGES_GET_INFO;
-		return callMethod( method, Pairs.newPair( "page_ids", delimit( pageIds ) ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( method, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 	}
 
 	/**
@@ -1270,9 +1220,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			userId = cacheUserId;
 		}
 		if ( userId == null ) {
-			return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "fields", delimit( fields ) ) );
+			return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 		}
-		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "uid", userId ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "uid", userId ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 	}
 
 	/**
@@ -1293,9 +1243,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			userId = cacheUserId;
 		}
 		if ( userId == null ) {
-			return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "fields", delimit( fields ) ) );
+			return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 		}
-		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "uid", userId ), Pairs.newPair( "fields", delimit( fields ) ) );
+		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "uid", userId ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
 	}
 
 	/**
@@ -1497,7 +1447,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public void data_deleteObjects( Collection<Long> objectIds ) throws FacebookException {
-		validateVoidResponse( callMethod( FacebookMethod.DATA_DELETE_OBJECTS, Pairs.newPair( "obj_ids", delimit( objectIds ) ) ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_DELETE_OBJECTS, Pairs.newPair( "obj_ids", BasicClientHelper.delimit( objectIds ) ) ) );
 	}
 
 	public Object data_getObject( long objectId ) throws FacebookException {
@@ -1505,7 +1455,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Object data_getObjects( Collection<Long> objectIds ) throws FacebookException {
-		return callMethod( FacebookMethod.DATA_GET_OBJECTS, Pairs.newPair( "obj_ids", delimit( objectIds ) ) );
+		return callMethod( FacebookMethod.DATA_GET_OBJECTS, Pairs.newPair( "obj_ids", BasicClientHelper.delimit( objectIds ) ) );
 	}
 
 	public Object data_getObjectProperty( long objectId, String propertyName ) throws FacebookException {
@@ -1740,7 +1690,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return result;
 	}
 
-	static Map<ApplicationProperty,String> parseProperties( String json ) {
+	@Deprecated
+	protected static Map<ApplicationProperty,String> parseProperties( String json ) {
 		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
 		if ( json == null ) {
 			return null;
@@ -1757,7 +1708,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return result;
 	}
 
-	private static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
+	protected static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
 		if ( fragment.startsWith( "{" ) ) {
 			fragment = fragment.substring( 1, fragment.lastIndexOf( "}" ) );
 		}
@@ -1826,7 +1777,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 
 		if ( null != targetIds && !targetIds.isEmpty() ) {
-			params.add( Pairs.newPair( "target_ids", delimit( targetIds ) ) );
+			params.add( Pairs.newPair( "target_ids", BasicClientHelper.delimit( targetIds ) ) );
 		}
 
 		if ( bodyGeneral != null ) {
@@ -1898,7 +1849,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			if ( query.getMethod().takesFile() ) {
 				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "File upload API calls cannot be batched:  " + query.getMethod().methodName() );
 			}
-			result.put( delimit( query.getParams().entrySet(), "&", "=", true ) );
+			result.put( BasicClientHelper.delimit( query.getParams().entrySet(), "&", "=", true ) );
 		}
 		return result.toString();
 	}
@@ -2395,7 +2346,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		params.add( Pairs.newPair( "template_bundle_id", bundleId ) );
 
 		if ( targetIds != null && !targetIds.isEmpty() ) {
-			params.add( Pairs.newPair( "target_ids", delimit( targetIds ) ) );
+			params.add( Pairs.newPair( "target_ids", BasicClientHelper.delimit( targetIds ) ) );
 		}
 
 		if ( bodyGeneral != null && !"".equals( bodyGeneral ) ) {
@@ -2462,7 +2413,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 
 		if ( sourceIds != null && !sourceIds.isEmpty() ) {
-			params.add( Pairs.newPair( "source_ids", delimit( sourceIds ) ) );
+			params.add( Pairs.newPair( "source_ids", BasicClientHelper.delimit( sourceIds ) ) );
 		}
 
 		if ( start != null ) {
@@ -2656,7 +2607,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	// ========== HELPERS ==========
 
 	protected static String toString( CharSequence cs ) {
-		return cs == null ? null : cs.toString();
+		return BasicClientHelper.toString( cs );
 	}
 
 	/**
@@ -2839,13 +2790,13 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			params.add( Pairs.newPair( "aid", albumId ) );
 		}
 		if ( hasPhotoIds ) {
-			params.add( Pairs.newPair( "pids", delimit( photoIds ) ) );
+			params.add( Pairs.newPair( "pids", BasicClientHelper.delimit( photoIds ) ) );
 		}
 		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
 	public Object photos_getTags( Collection<Long> photoIds ) throws FacebookException {
-		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, Pairs.newPair( "pids", delimit( photoIds ) ) );
+		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, Pairs.newPair( "pids", BasicClientHelper.delimit( photoIds ) ) );
 	}
 
 	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException {
@@ -2912,13 +2863,13 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		boolean hasUserId = null != userId && userId != 0;
 		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
 		if ( hasUserId && hasAlbumIds ) {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, Pairs.newPair( "uid", userId ), Pairs.newPair( "aids", delimit( albumIds ) ) );
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, Pairs.newPair( "uid", userId ), Pairs.newPair( "aids", BasicClientHelper.delimit( albumIds ) ) );
 		}
 		if ( hasUserId ) {
 			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, Pairs.newPair( "uid", userId ) );
 		}
 		if ( hasAlbumIds ) {
-			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, Pairs.newPair( "aids", delimit( albumIds ) ) );
+			return callMethod( FacebookMethod.PHOTOS_GET_ALBUMS, Pairs.newPair( "aids", BasicClientHelper.delimit( albumIds ) ) );
 		}
 		throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Atleast one of userId or albumIds is required." );
 	}
@@ -3088,7 +3039,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		// this method requires a session only if we're dealing with a desktop app
 		FacebookMethod method = isDesktop() ? FacebookMethod.NOTIFICATIONS_SEND_EMAIL_SESSION : FacebookMethod.NOTIFICATIONS_SEND_EMAIL_NOSESSION;
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		Pairs.addParam( "recipients", delimit( recipients ), params );
+		Pairs.addParam( "recipients", BasicClientHelper.delimit( recipients ), params );
 		Pairs.addParam( "subject", subject, params );
 		Pairs.addParamIfNotBlank( "text", text, params );
 		Pairs.addParamIfNotBlank( "fbml", fbml, params );
@@ -3121,7 +3072,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	@Deprecated
 	public String notifications_sendEmailStr( Collection<Long> recipients, CharSequence subject, CharSequence fbml, CharSequence text ) throws FacebookException {
-		return delimit( notifications_sendEmail( recipients, subject, text, fbml ) ).toString();
+		return BasicClientHelper.delimit( notifications_sendEmail( recipients, subject, text, fbml ) ).toString();
 	}
 
 	@Deprecated
