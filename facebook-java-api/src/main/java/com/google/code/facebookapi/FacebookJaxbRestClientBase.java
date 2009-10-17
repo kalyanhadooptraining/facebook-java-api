@@ -234,10 +234,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		}
 	}
 
-	public String getRawResponse() {
-		return client.getRawResponse();
-	}
-
 	private String parse( String val ) {
 		String xml = val;
 		if ( ( xml == null ) || ( "".equals( xml ) ) ) {
