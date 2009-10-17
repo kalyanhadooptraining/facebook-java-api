@@ -72,6 +72,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected URL _serverUrl;
 	protected int _connectTimeout;
 	protected int _readTimeout;
+	private String responseFormat;
 
 	protected final String _apiKey;
 	protected final String _secret;
@@ -99,20 +100,23 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected String permissionsApiKey = null;
 
 
-	protected ExtensibleClient( String apiKey, String secret ) {
-		this( apiKey, secret, null );
+	protected ExtensibleClient( String responseFormat, String apiKey, String secret ) {
+		this( responseFormat, apiKey, secret, null );
 	}
 
-	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
-		this.cacheSessionKey = sessionKey;
-		this._apiKey = apiKey;
-		this._secret = secret;
-		if ( secret.endsWith( "__" ) ) {
-			_isDesktop = true;
-		}
+	protected ExtensibleClient( String responseFormat, String apiKey, String secret, String sessionKey ) {
 		this._serverUrl = FacebookApiUrls.getDefaultServerUrl();
 		this._connectTimeout = -1;
 		this._readTimeout = -1;
+		this.responseFormat = responseFormat;
+
+		this._apiKey = apiKey;
+		this._secret = secret;
+		this.cacheSessionKey = sessionKey;
+		if ( secret.endsWith( "__" ) ) {
+			_isDesktop = true;
+		}
+
 		this.batchMode = false;
 		this.queries = new ArrayList<BatchQuery>();
 	}
@@ -152,6 +156,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		_readTimeout = readTimeout;
 	}
 
+	/**
+	 * The response format in which results to FacebookMethod calls are returned
+	 * 
+	 * @return the format: either XML, JSON, or null (API default)
+	 */
+	public String getResponseFormat() {
+		return responseFormat;
+	}
+
 	public String getApiKey() {
 		return _apiKey;
 	}
@@ -166,34 +179,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public void endPermissionsMode() {
 		this.permissionsApiKey = null;
-	}
-
-	private String responseFormat;
-
-	/**
-	 * The response format in which results to FacebookMethod calls are returned
-	 * 
-	 * @return the format: either XML, JSON, or null (API default)
-	 */
-	public String getResponseFormat() {
-		return responseFormat;
-	}
-
-	public void setResponseFormat( String responseFormat ) {
-		if ( batchMode ) {
-			boolean responseFormatDifferent;
-			if ( this.responseFormat == null ) {
-				responseFormatDifferent = ( responseFormat != null );
-			} else {
-				responseFormatDifferent = ! ( this.responseFormat.equals( responseFormat ) );
-			}
-			if ( responseFormatDifferent ) {
-				throw new RuntimeException( "Programmer error. It's not possible to switch response format types during a batch. "
-						+ "Do you expect Facebook's servers to return some data in XML format and other bits in JSON format? "
-						+ "Please ensure that your code only expects one response format per batch." );
-			}
-		}
-		this.responseFormat = responseFormat;
 	}
 
 	/**
@@ -338,7 +323,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
-		setResponseFormat( "xml" );
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		params.add( Pairs.newPair( "auth_token", authToken ) );
 		if ( generateSessionSecret ) {
@@ -346,14 +330,28 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 
-		// Catch errors and return as FacebookException
-		Document d = XmlHelper.parseCallResult( rawResponse, factory );
-
-		this.cacheSessionKey = d.getElementsByTagName( "session_key" ).item( 0 ).getFirstChild().getTextContent();
-		this.cacheUserId = Long.parseLong( d.getElementsByTagName( "uid" ).item( 0 ).getFirstChild().getTextContent() );
-		this.cacheSessionExpires = Long.parseLong( d.getElementsByTagName( "expires" ).item( 0 ).getFirstChild().getTextContent() );
-		if ( generateSessionSecret ) {
-			this.cacheSessionSecret = d.getElementsByTagName( "secret" ).item( 0 ).getFirstChild().getTextContent();
+		if ( "json".equals( getResponseFormat() ) ) {
+			try {
+				JSONObject json = new JSONObject( rawResponse );
+				this.cacheSessionKey = json.getString( "session_key" );
+				this.cacheUserId = json.getLong( "uid" );
+				this.cacheSessionExpires = json.getLong( "expires" );
+				if ( generateSessionSecret ) {
+					this.cacheSessionSecret = json.getString( "secret" );
+				}
+			}
+			catch ( JSONException ex ) {
+				throw BasicClientHelper.runtimeException( ex );
+			}
+		} else {
+			// Catch errors and return as FacebookException
+			Document d = XmlHelper.parseCallResult( rawResponse, factory );
+			this.cacheSessionKey = XmlHelper.extractString( d.getElementsByTagName( "session_key" ).item( 0 ) );
+			this.cacheUserId = XmlHelper.extractLong( d.getElementsByTagName( "uid" ).item( 0 ) );
+			this.cacheSessionExpires = XmlHelper.extractLong( d.getElementsByTagName( "expires" ).item( 0 ) );
+			if ( generateSessionSecret ) {
+				this.cacheSessionSecret = XmlHelper.extractString( d.getElementsByTagName( "secret" ).item( 0 ) );
+			}
 		}
 		return this.cacheSessionKey;
 	}
@@ -1305,10 +1303,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle"> Developers Wiki: Fbml.setRefHandle</a>
 	 */
 	public boolean fbml_setRefHandle( String handle, String fbmlMarkup ) throws FacebookException {
-		if ( _isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'fbml_setReftHandle'" );
-		}
 		return extractBoolean( callMethod( FacebookMethod.FBML_SET_REF_HANDLE, Pairs.newPair( "handle", handle ), Pairs.newPair( "fbml", fbmlMarkup ) ) );
 
 	}
@@ -1574,11 +1568,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public boolean admin_setAppProperties( Map<ApplicationProperty,String> properties ) throws FacebookException {
-		if ( _isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
-		}
-
 		if ( ( properties == null ) || ( properties.isEmpty() ) ) {
 			// nothing to do
 			return true;
@@ -1807,10 +1796,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return a boolean indicating whether the properties were successfully set
 	 */
 	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException {
-		if ( _isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin_setAppProperties'" );
-		}
 		if ( null == properties || properties.isEmpty() ) {
 			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
 		}
@@ -3051,16 +3036,16 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException {
-		setResponseFormat( "json" ); // JSON will just return a single string and will save us the trouble of parsing anything.
-		if ( this._isDesktop ) {
-			// this method cannot be called from a desktop app
-			throw new FacebookException( ErrorCode.GEN_PERMISSIONS_ERROR, "Desktop applications cannot use 'admin.getAppProperties'" );
-		}
 		JSONArray props = new JSONArray();
 		for ( ApplicationProperty property : properties ) {
 			props.put( property.getName() );
 		}
-		return callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, Pairs.newPair( "properties", props ) );
+		String rawResponse = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, Pairs.newPair( "properties", props ) );
+		if ( "json".equals( getResponseFormat() ) ) {
+			return rawResponse;
+		} else {
+			return XmlHelper.extractString( XmlHelper.parseCallResult( rawResponse, factory ) );
+		}
 	}
 
 	/**

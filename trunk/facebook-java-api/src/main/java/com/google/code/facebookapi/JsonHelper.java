@@ -59,8 +59,8 @@ public class JsonHelper {
 					throw new FacebookException( code, message );
 				}
 			}
-			catch ( JSONException ignored ) {
-				// ignore
+			catch ( JSONException ex ) {
+				throw BasicClientHelper.runtimeException( ex );
 			}
 		}
 		return json;
@@ -75,7 +75,7 @@ public class JsonHelper {
 				return new JSONArray( s );
 			}
 			catch ( JSONException ex ) {
-				// ignore
+				throw BasicClientHelper.runtimeException( ex );
 			}
 		}
 
@@ -84,7 +84,7 @@ public class JsonHelper {
 				return new JSONObject( s );
 			}
 			catch ( JSONException ex ) {
-				// ignore
+				throw BasicClientHelper.runtimeException( ex );
 			}
 		}
 
