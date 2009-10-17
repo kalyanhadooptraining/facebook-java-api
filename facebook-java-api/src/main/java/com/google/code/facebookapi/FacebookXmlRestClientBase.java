@@ -129,8 +129,8 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse( new InputSource( new StringReader( (String) rawResponse ) ) );
 			doc.normalizeDocument();
-			stripEmptyTextNodes( doc );
-			return parseCallResult( doc );
+			XmlHelper.stripEmptyTextNodes( doc );
+			return XmlHelper.parseCallResult( doc );
 		}
 		catch ( ParserConfigurationException ex ) {
 			throw new RuntimeException( "Trouble configuring XML Parser", ex );
@@ -144,48 +144,12 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	/**
-	 * Used in the context of optimisation. If we already have an XML snippet, it's not sensible to convert it to a string and then convert it back to a document.
-	 * 
-	 * @param doc
-	 * @return
-	 * @throws FacebookException
-	 */
-	Document parseCallResult( Document doc ) throws FacebookException {
-		NodeList errors = doc.getElementsByTagName( ERROR_TAG );
-		if ( errors.getLength() > 0 ) {
-			int errorCode = Integer.parseInt( errors.item( 0 ).getFirstChild().getFirstChild().getTextContent() );
-			String message = errors.item( 0 ).getFirstChild().getNextSibling().getTextContent();
-			throw new FacebookException( errorCode, message );
-		}
-		return doc;
-	}
-
-	/**
-	 * Hack...since DOM reads newlines as textnodes we want to strip out those nodes to make it easier to use the tree.
-	 */
-	private static void stripEmptyTextNodes( Node n ) {
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			Node c = children.item( i );
-			if ( !c.hasChildNodes() && c.getNodeType() == Node.TEXT_NODE && c.getTextContent().trim().length() == 0 ) {
-				n.removeChild( c );
-				i-- ;
-				length-- ;
-				children = n.getChildNodes();
-			} else {
-				stripEmptyTextNodes( c );
-			}
-		}
-	}
-
-	/**
 	 * Prints out the DOM tree.
 	 */
 	public void printDom( Node n, String prefix ) {
 		if ( log.isDebugEnabled() ) {
 			StringBuilder sb = new StringBuilder( "\n" );
-			ExtensibleClient.printDom( n, prefix, sb );
+			XmlHelper.printDom( n, prefix, sb );
 			log.debug( sb.toString() );
 		}
 	}
@@ -203,7 +167,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	 *         normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a batch will place a Long in the list, and calling friends_get
 	 *         will place a Document in the list, etc.).
 	 * 
-	 * The list may be empty, it will never be null.
+	 *         The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
 	 * @throws IOException
@@ -227,7 +191,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 					responseNode = respDoc.importNode( responseNode, true );
 					respDoc.appendChild( responseNode );
 					try {
-						respDoc = parseCallResult( respDoc );
+						respDoc = XmlHelper.parseCallResult( respDoc );
 						result.add( respDoc );
 					}
 					catch ( FacebookException ignored ) {

@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,13 +47,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
- * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/> For continually updated
- * documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
+ * Instances of FacebookRestClient should be initialized via calls to {@link #auth_createToken}, followed by {@link #auth_getSession}. <br/>
+ * For continually updated documentation, please refer to the <a href="http://wiki.developers.facebook.com/index.php/API"> Developer Wiki</a>.
  */
 @SuppressWarnings("unchecked")
 // To stop all the warnings caused by varargs in callMethod(...)
@@ -633,9 +631,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return getResponse( method, in );
 		}
 		finally {
-			close( in );
-			close( out );
-			disconnect( conn );
+			BasicClientHelper.close( in );
+			BasicClientHelper.close( out );
+			BasicClientHelper.disconnect( conn );
 		}
 	}
 
@@ -710,9 +708,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return getResponse( method, in );
 		}
 		finally {
-			close( urlOut );
-			close( in );
-			disconnect( con );
+			BasicClientHelper.close( urlOut );
+			BasicClientHelper.close( in );
+			BasicClientHelper.disconnect( con );
 		}
 	}
 
@@ -1210,8 +1208,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
+	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application without
+	 * establishing a session.
 	 * 
 	 * @param pageIds
 	 *            the page IDs
@@ -1232,8 +1230,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
+	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application without
+	 * establishing a session.
 	 * 
 	 * @param pageIds
 	 *            the page IDs
@@ -1354,10 +1352,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * href="http://wiki.developers.facebook.com/index.php/Fb:ref">fb:ref</a> FBML tag. A handle is unique within an application and allows an application to publish
 	 * identical FBML to many user profiles and do subsequent updates without having to republish FBML for each user.
 	 * 
-	 * @param handle -
-	 *            a string, unique within the application, that
-	 * @param fbmlMarkup -
-	 *            refer to the FBML documentation for a description of the markup and its role in various contexts
+	 * @param handle
+	 *            - a string, unique within the application, that
+	 * @param fbmlMarkup
+	 *            - refer to the FBML documentation for a description of the markup and its role in various contexts
 	 * @return a boolean indicating whether the FBML was successfully set
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Fbml.setRefHandle"> Developers Wiki: Fbml.setRefHandle</a>
 	 */
@@ -1484,12 +1482,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
-		return extractLong( callMethod( FacebookMethod.DATA_CREATE_OBJECT, newPair( "obj_type", objectType ), newPair( "properties", toJson( properties ) ) ) );
+		return extractLong( callMethod( FacebookMethod.DATA_CREATE_OBJECT, newPair( "obj_type", objectType ), newPair( "properties", JsonHelper.toJson( properties ) ) ) );
 	}
 
 	public void data_updateObject( long objectId, Map<String,String> properties, boolean replace ) throws FacebookException {
-		validateVoidResponse( callMethod( FacebookMethod.DATA_UPDATE_OBJECT, newPair( "obj_id", String.valueOf( objectId ) ),
-				newPair( "properties", toJson( properties ) ), newPairTF( "replace", replace ) ) );
+		validateVoidResponse( callMethod( FacebookMethod.DATA_UPDATE_OBJECT, newPair( "obj_id", String.valueOf( objectId ) ), newPair( "properties", JsonHelper
+				.toJson( properties ) ), newPairTF( "replace", replace ) ) );
 	}
 
 	public void data_deleteObject( long objectId ) throws FacebookException {
@@ -2653,52 +2651,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	// ========== HELPERS ==========
 
-	protected static void disconnect( HttpURLConnection conn ) {
-		if ( conn != null ) {
-			conn.disconnect();
-		}
-	}
-
-	protected static void close( Closeable c ) {
-		if ( c != null ) {
-			try {
-				c.close();
-			}
-			catch ( IOException ex ) {
-				log.warn( "Trouble closing connection", ex );
-			}
-		}
-	}
-
 	protected static RuntimeException runtimeException( Exception ex ) {
-		if ( ! ( ex instanceof RuntimeException ) ) {
-			return new RuntimeException( ex );
-		}
-		return (RuntimeException) ex;
-	}
-
-	/**
-	 * Prints out the DOM tree.
-	 * 
-	 * @param n
-	 *            the parent node to start printing from
-	 * @param prefix
-	 *            string to append to output, should not be null
-	 */
-	protected static void printDom( Node n, String prefix, StringBuilder sb ) {
-		String outString = prefix;
-		if ( n.getNodeType() == Node.TEXT_NODE ) {
-			outString += "'" + n.getTextContent().trim() + "'";
-		} else {
-			outString += n.getNodeName();
-		}
-		sb.append( outString );
-		sb.append( "\n" );
-		NodeList children = n.getChildNodes();
-		int length = children.getLength();
-		for ( int i = 0; i < length; i++ ) {
-			printDom( children.item( i ), prefix + "  ", sb );
-		}
+		return BasicClientHelper.runtimeException( ex );
 	}
 
 	protected static Pair<String,CharSequence> newPair( String name, Object value ) {
@@ -2780,22 +2734,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static String toString( CharSequence cs ) {
 		return cs == null ? null : cs.toString();
-	}
-
-	protected static JSONObject toJson( Map<String,String> map ) {
-		return new JSONObject( map );
-	}
-
-	protected static JSONArray toJsonListOfStrings( Collection<String> list ) {
-		return new JSONArray( list );
-	}
-
-	protected static JSONArray toJsonListOfMaps( Collection<Map<String,String>> listOfMaps ) {
-		JSONArray out = new JSONArray();
-		for ( Map<String,String> map : listOfMaps ) {
-			out.put( toJson( map ) );
-		}
-		return out;
 	}
 
 	/**
@@ -2933,11 +2871,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	// ========== CONNECT ==========
 
 	public Object connect_registerUsers( Collection<Map<String,String>> accounts ) throws FacebookException {
-		return callMethod( FacebookMethod.CONNECT_REGISTER_USERS, newPair( "accounts", toJsonListOfMaps( accounts ) ) );
+		return callMethod( FacebookMethod.CONNECT_REGISTER_USERS, newPair( "accounts", JsonHelper.toJsonListOfMaps( accounts ) ) );
 	}
 
 	public Object connect_unregisterUsers( Collection<String> email_hashes ) throws FacebookException {
-		return callMethod( FacebookMethod.CONNECT_UNREGISTER_USERS, newPair( "email_hashes", toJsonListOfStrings( email_hashes ) ) );
+		return callMethod( FacebookMethod.CONNECT_UNREGISTER_USERS, newPair( "email_hashes", JsonHelper.toJsonListOfStrings( email_hashes ) ) );
 	}
 
 	public int connect_getUnconnectedFriendsCount() throws FacebookException {
@@ -3166,8 +3104,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				return photos_upload( userId, caption, albumId, photo.getName(), fileStream );
 			}
 			finally {
-				close( fileStream );
-				close( fileInputStream );
+				BasicClientHelper.close( fileStream );
+				BasicClientHelper.close( fileInputStream );
 			}
 		}
 		catch ( IOException ex ) {
@@ -3379,7 +3317,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	// CUSTOM TAGS
 
 	public void fbml_deleteCustomTags( Collection<String> names ) throws FacebookException {
-		validateVoidResponse( callMethod( FacebookMethod.FBML_DELETE_CUSTOM_TAGS, newPair( "names", toJsonListOfStrings( names ) ) ) );
+		validateVoidResponse( callMethod( FacebookMethod.FBML_DELETE_CUSTOM_TAGS, newPair( "names", JsonHelper.toJsonListOfStrings( names ) ) ) );
 	}
 
 	public Object fbml_getCustomTags( String appId ) throws FacebookException {
