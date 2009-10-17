@@ -79,7 +79,7 @@ public class Attachment implements Serializable {
 				}
 			}
 			catch ( JSONException exception ) {
-				throw ExtensibleClient.runtimeException( exception );
+				throw BasicClientHelper.runtimeException( exception );
 			}
 		}
 
