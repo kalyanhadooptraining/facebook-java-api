@@ -1654,6 +1654,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException {
 		Map<ApplicationProperty,String> result = new LinkedHashMap<ApplicationProperty,String>();
 		String json = admin_getAppPropertiesAsString( properties );
+		// FIXME: need to use JSON libraries to properly deal with this.
 		if ( json == null ) {
 			return null;
 		}
