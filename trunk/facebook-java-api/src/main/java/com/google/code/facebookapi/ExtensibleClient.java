@@ -58,18 +58,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
-	public static URL SERVER_URL = null;
-	public static URL HTTPS_SERVER_URL = null;
-	static {
-		try {
-			SERVER_URL = new URL( SERVER_ADDR );
-			HTTPS_SERVER_URL = new URL( HTTPS_SERVER_ADDR );
-		}
-		catch ( MalformedURLException ex ) {
-			log.error( "MalformedURLException: " + ex.getMessage(), ex );
-		}
-	}
-
 	protected URL _serverUrl;
 	protected int _timeout;
 	protected int _readTimeout;
@@ -110,27 +98,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
 
 	protected ExtensibleClient( String apiKey, String secret ) {
-		this( SERVER_URL, apiKey, secret, null );
+		this( null, apiKey, secret, null );
 	}
 
 	protected ExtensibleClient( String apiKey, String secret, int timeout ) {
-		this( SERVER_URL, apiKey, secret, null, timeout );
+		this( null, apiKey, secret, null, timeout );
 	}
 
 	protected ExtensibleClient( String apiKey, String secret, String sessionKey ) {
-		this( SERVER_URL, apiKey, secret, sessionKey );
+		this( null, apiKey, secret, sessionKey );
 	}
 
 	protected ExtensibleClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
-	}
-
-	protected ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey );
-	}
-
-	protected ExtensibleClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+		this( null, apiKey, secret, sessionKey, connectionTimeout );
 	}
 
 	protected ExtensibleClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
@@ -151,7 +131,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( secret.endsWith( "__" ) ) {
 			_isDesktop = true;
 		}
-		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
+		this._serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
 		this._timeout = -1;
 		this._readTimeout = -1;
 		this.batchMode = false;
@@ -569,7 +549,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
-		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
+		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
 		CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
@@ -1690,7 +1670,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return result;
 	}
 
-	@Deprecated
 	protected static Map<ApplicationProperty,String> parseProperties( String json ) {
 		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
 		if ( json == null ) {
@@ -2287,19 +2266,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		try {
 			String url = "http://" + base;
 			_serverUrl = new URL( url );
-			setDefaultServerUrl( _serverUrl );
+			// setDefaultServerUrl( _serverUrl );
 		}
 		catch ( MalformedURLException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
 		}
-	}
-
-	public URL getDefaultServerUrl() {
-		return SERVER_URL;
-	}
-
-	public void setDefaultServerUrl( URL newUrl ) {
-		SERVER_URL = newUrl;
 	}
 
 	public Boolean liveMessage_send( Long recipient, String eventName, JSONObject message ) throws FacebookException {

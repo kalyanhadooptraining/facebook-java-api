@@ -34,7 +34,6 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,14 +98,6 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 
 	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
 		this( new ExtensibleClient( apiKey, secret, sessionKey, connectionTimeout ) );
-	}
-
-	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey ) );
-	}
-
-	public FacebookXmlRestClientBase( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new ExtensibleClient( serverAddr, apiKey, secret, sessionKey, connectionTimeout ) );
 	}
 
 	public FacebookXmlRestClientBase( URL serverUrl, String apiKey, String secret, String sessionKey ) {

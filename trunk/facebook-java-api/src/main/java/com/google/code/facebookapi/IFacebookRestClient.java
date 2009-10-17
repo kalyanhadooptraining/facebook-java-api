@@ -47,9 +47,6 @@ public interface IFacebookRestClient<T> {
 
 	public static final String TARGET_API_VERSION = "1.0";
 	public static final String ERROR_TAG = "error_response";
-	public static final String FB_SERVER = "api.facebook.com/restserver.php";
-	public static final String SERVER_ADDR = "http://" + FB_SERVER;
-	public static final String HTTPS_SERVER_ADDR = "https://" + FB_SERVER;
 
 	public String getApiKey();
 
@@ -222,8 +219,8 @@ public interface IFacebookRestClient<T> {
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException;
 
 	/**
-	 * Sets the FBML for the profile box, profile actions, and mobile devices for the user or page profile with ID <code>profileId</code>. Refer to the FBML
-	 * documentation for a description of the markup and its role in various contexts.
+	 * Sets the FBML for the profile box, profile actions, and mobile devices for the user or page profile with ID <code>profileId</code>. Refer to the FBML documentation
+	 * for a description of the markup and its role in various contexts.
 	 * 
 	 * @param profileFbmlMarkup
 	 *            the FBML for the profile box
@@ -466,8 +463,8 @@ public interface IFacebookRestClient<T> {
 	public T friends_areFriends( long userId1, long userId2 ) throws FacebookException;
 
 	/**
-	 * Retrieves whether pairs of users are friends. Returns whether the first user in <code>userIds1</code> is friends with the first user in <code>userIds2</code>,
-	 * the second user in <code>userIds1</code> is friends with the second user in <code>userIds2</code>, etc.
+	 * Retrieves whether pairs of users are friends. Returns whether the first user in <code>userIds1</code> is friends with the first user in <code>userIds2</code>, the
+	 * second user in <code>userIds1</code> is friends with the second user in <code>userIds2</code>, etc.
 	 * 
 	 * @param userIds1
 	 * @param userIds2
@@ -1122,8 +1119,8 @@ public interface IFacebookRestClient<T> {
 	/**
 	 * Retrieves the results of a Facebook Query Language query
 	 * 
-	 * @param query :
-	 *            the FQL query statement
+	 * @param query
+	 *            : the FQL query statement
 	 * @return varies depending on the FQL query
 	 */
 	@FacebookReturnType
@@ -1753,8 +1750,8 @@ public interface IFacebookRestClient<T> {
 	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException;
 
 	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
+	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application without
+	 * establishing a session.
 	 * 
 	 * @param pageIds
 	 *            the page IDs
@@ -1767,8 +1764,8 @@ public interface IFacebookRestClient<T> {
 	public T pages_getInfo( Collection<Long> pageIds, Collection<PageProfileField> fields ) throws FacebookException;
 
 	/**
-	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application
-	 * without establishing a session.
+	 * Retrieves the requested profile fields for the Facebook Pages with the given <code>pageIds</code>. Can be called for pages that have added the application without
+	 * establishing a session.
 	 * 
 	 * @param pageIds
 	 *            the page IDs
@@ -2549,7 +2546,7 @@ public interface IFacebookRestClient<T> {
 	 *         normally returned by the API call being invoked (so calling users_getLoggedInUser as part of a batch will place a Long in the list, and calling friends_get
 	 *         will place a Document in the list, etc.).
 	 * 
-	 * The list may be empty, it will never be null.
+	 *         The list may be empty, it will never be null.
 	 * 
 	 * @throws FacebookException
 	 */
@@ -3094,10 +3091,6 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void setServerUrl( String newUrl );
 
-	public URL getDefaultServerUrl();
-
-	public void setDefaultServerUrl( URL url );
-
 	/**
 	 * Sends a message using the LiveMessage API. Note that for the message to be recieved by the recipent, you must set up a FBJS handler function. See
 	 * http://wiki.developers.facebook.com/index.php/LiveMessage for details.
@@ -3393,8 +3386,8 @@ public interface IFacebookRestClient<T> {
 	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException;
 
 	/**
-	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required
-	 * for success. The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when the user replies.
+	 * Sends a message via SMS to the user identified by <code>userId</code>, with the expectation that the user will reply. The SMS extended permission is required for
+	 * success. The returned mobile session ID can be stored and used in {@link #sms_sendResponse} when the user replies.
 	 * 
 	 * @param userId
 	 *            a user ID
@@ -3443,12 +3436,12 @@ public interface IFacebookRestClient<T> {
 	 *            <li>Compute the MD5 value for the normalized email address and use the hex representation of this value (using lowercase for A through F).</li>
 	 *            <li>Combine these two value with an underscore.</li>
 	 *            </ol>
-	 *            For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761. </li>
+	 *            For example, the address mary@example.com converts to 4228600737_c96da02bba97aedfd26136e980ae3761.</li>
 	 *            <li>account_id: The user's account ID on the Facebook Connect site. This property is optional. If you specify the account_id property, then you must
 	 *            also set a Connect Preview URL in your application's settings in order to generate a full user URL. The Connect Preview URL contains an account_id
-	 *            parameter, such as http://www.example.com/profile.php?user=account_id. </li>
+	 *            parameter, such as http://www.example.com/profile.php?user=account_id.</li>
 	 *            <li>account_url: The URL to the user's account on the Facebook Connect site. This property is optional. If you specify the account_url property, that
-	 *            URL will be used directly. </li>
+	 *            URL will be used directly.</li>
 	 *            </ul>
 	 *            Facebook recommends that you specify at least one of either the account_id or the account_url properties.
 	 * 
@@ -3547,8 +3540,8 @@ public interface IFacebookRestClient<T> {
 	 *            <li>fbml (required) (string): The FBML markup to substitute into the page where the tag is encountered. This property is required only for leaf tags.</li>
 	 *            <li>open_tag_fbml (required) (string): The FBML markup to substitute into the page where the open tag appears. This property is required for container
 	 *            tags only.</li>
-	 *            <li>close_tag_fbml (required) (string): The FBML markup to substitute into the page where the close tag appears. This property is required for
-	 *            container tags only. Note: Facebook recommends you do not include <script> tags in this FBML snippet.</li>
+	 *            <li>close_tag_fbml (required) (string): The FBML markup to substitute into the page where the close tag appears. This property is required for container
+	 *            tags only. Note: Facebook recommends you do not include <script> tags in this FBML snippet.</li>
 	 *            <li>header_fbml: An FBML snippet that is rendered once on the page before the first tag that defined it. If multiple tags define the same value for
 	 *            header_fbml, and more than one of them appear on a page, then header_fbml is rendered only once. You should only use this for including CSS and
 	 *            initializing any JavaScript variables, not for rendering visible content. Facebook recommends you avoid including heavy JavaScript libraries and

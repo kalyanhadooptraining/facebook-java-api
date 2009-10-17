@@ -1,6 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -178,11 +177,6 @@ public abstract class BaseAdapter {
 	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires ) {
 		getClient().setResponseFormat( responseFormat );
 		getClient().setCacheSession( cacheSessionKey, cacheUserId, cacheSessionExpires );
-	}
-
-	public void setDefaultServerUrl( URL url ) {
-		getClient().setResponseFormat( responseFormat );
-		getClient().setDefaultServerUrl( url );
 	}
 
 	public void setServerUrl( String newUrl ) {
