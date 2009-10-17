@@ -29,18 +29,6 @@ public class BasicClient {
 	protected static final String PREF = "--";
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
 
-	public static URL SERVER_URL = null;
-	public static URL HTTPS_SERVER_URL = null;
-	static {
-		try {
-			SERVER_URL = new URL( IFacebookRestClient.SERVER_ADDR );
-			HTTPS_SERVER_URL = new URL( IFacebookRestClient.HTTPS_SERVER_ADDR );
-		}
-		catch ( MalformedURLException ex ) {
-			log.error( "MalformedURLException: " + ex.getMessage(), ex );
-		}
-	}
-
 	protected URL _serverUrl;
 	protected int _timeout;
 	protected int _readTimeout;
@@ -50,7 +38,6 @@ public class BasicClient {
 	protected boolean _isDesktop;
 
 	protected String cacheSessionKey;
-	protected Long cacheUserId;
 	protected Long cacheSessionExpires;
 
 	/** filled in when session is established only used for desktop apps */
@@ -85,27 +72,19 @@ public class BasicClient {
 
 
 	protected BasicClient( String apiKey, String secret ) {
-		this( SERVER_URL, apiKey, secret, null );
+		this( null, apiKey, secret, null );
 	}
 
 	protected BasicClient( String apiKey, String secret, int timeout ) {
-		this( SERVER_URL, apiKey, secret, null, timeout );
+		this( null, apiKey, secret, null, timeout );
 	}
 
 	protected BasicClient( String apiKey, String secret, String sessionKey ) {
-		this( SERVER_URL, apiKey, secret, sessionKey );
+		this( null, apiKey, secret, sessionKey );
 	}
 
-	protected BasicClient( String apiKey, String secret, String sessionKey, int connectionTimeout ) {
-		this( SERVER_URL, apiKey, secret, sessionKey, connectionTimeout );
-	}
-
-	protected BasicClient( String serverAddr, String apiKey, String secret, String sessionKey ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey );
-	}
-
-	protected BasicClient( String serverAddr, String apiKey, String secret, String sessionKey, int connectionTimeout ) throws MalformedURLException {
-		this( new URL( serverAddr ), apiKey, secret, sessionKey, connectionTimeout );
+	protected BasicClient( String apiKey, String secret, String sessionKey, int timeout ) {
+		this( null, apiKey, secret, sessionKey, timeout );
 	}
 
 	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
@@ -126,7 +105,7 @@ public class BasicClient {
 		if ( secret.endsWith( "__" ) ) {
 			_isDesktop = true;
 		}
-		this._serverUrl = ( null != serverUrl ) ? serverUrl : SERVER_URL;
+		this._serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
 		this._timeout = -1;
 		this._readTimeout = -1;
 		this.batchMode = false;
@@ -170,41 +149,12 @@ public class BasicClient {
 		cacheSessionSecret = key;
 	}
 
-	@Deprecated
-	protected Boolean cacheAppAdded; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
-
-	@Deprecated
-	public Boolean getCacheAppAdded() {
-		return cacheAppAdded;
-	}
-
-	@Deprecated
-	public void setCacheAppAdded( Boolean cacheAppAdded ) {
-		this.cacheAppAdded = cacheAppAdded;
-	}
-
-	protected Boolean cacheAppUser; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
-
-	public Boolean getCacheAppUser() {
-		return cacheAppUser;
-	}
-
-	public void setCacheAppUser( Boolean cacheAppUser ) {
-		this.cacheAppUser = cacheAppUser;
-	}
-
 	public String getCacheSessionSecret() {
 		return cacheSessionSecret;
 	}
 
 	public void setCacheSessionSecret( String cacheSessionSecret ) {
 		this.cacheSessionSecret = cacheSessionSecret;
-	}
-
-	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires ) {
-		setCacheSessionKey( cacheSessionKey );
-		setCacheUserId( cacheUserId );
-		setCacheSessionExpires( cacheSessionExpires );
 	}
 
 	public Long getCacheSessionExpires() {
@@ -221,19 +171,6 @@ public class BasicClient {
 
 	public void setCacheSessionKey( String cacheSessionKey ) {
 		this.cacheSessionKey = cacheSessionKey;
-	}
-
-	public Long getCacheUserId() {
-		return cacheUserId;
-	}
-
-	public void setCacheUserId( Long cacheUserId ) {
-		this.cacheUserId = cacheUserId;
-	}
-
-	private String generateSignature( List<String> params, boolean requiresSession ) {
-		String secret = _secret;
-		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
 
 	/**
@@ -297,7 +234,7 @@ public class BasicClient {
 		}
 
 		assert ( !params.containsKey( "sig" ) );
-		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), includeSession );
+		String signature = FacebookSignatureUtil.generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), _secret );
 		params.put( "sig", signature );
 
 		if ( batchMode ) {
@@ -335,7 +272,7 @@ public class BasicClient {
 	}
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
-		URL serverUrl = ( doHttps ) ? HTTPS_SERVER_URL : _serverUrl;
+		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
 		CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
@@ -449,6 +386,7 @@ public class BasicClient {
 		queries = new ArrayList<BatchQuery>();
 	}
 
+	@SuppressWarnings("unchecked")
 	public String batch_run( String responseFormat, String methods, boolean serial ) throws FacebookException {
 		if ( !serial ) {
 			return callMethod( responseFormat, FacebookMethod.BATCH_RUN, Pairs.newPair( "method_feed", methods ) );
@@ -465,19 +403,12 @@ public class BasicClient {
 		try {
 			String url = "http://" + base;
 			_serverUrl = new URL( url );
-			setDefaultServerUrl( _serverUrl );
+			// do not set default url
+			// setDefaultServerUrl( _serverUrl );
 		}
 		catch ( MalformedURLException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
 		}
-	}
-
-	public URL getDefaultServerUrl() {
-		return SERVER_URL;
-	}
-
-	public void setDefaultServerUrl( URL newUrl ) {
-		SERVER_URL = newUrl;
 	}
 
 	/**
