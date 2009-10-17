@@ -54,23 +54,12 @@ import com.google.code.facebookapi.schema.FacebookApiException;
 /**
  * A FacebookRestClient that JAXB response objects. This means results from calls to the Facebook API are returned as XML and transformed into JAXB Java objects.
  */
-public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapter implements IFacebookRestClient<Object> {
+public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapter<Object> {
 
 	protected static Log log = LogFactory.getLog( FacebookJaxbRestClientBase.class );
 
-	protected ExtensibleClient client;
-
-	public ExtensibleClient getClient() {
-		return client;
-	}
-
-	public void setClient( ExtensibleClient client ) {
-		this.client = client;
-	}
-
 	public FacebookJaxbRestClientBase( ExtensibleClient client ) {
-		super( "xml" );
-		this.client = client;
+		super( "xml", client );
 		initJaxbSupport();
 	}
 

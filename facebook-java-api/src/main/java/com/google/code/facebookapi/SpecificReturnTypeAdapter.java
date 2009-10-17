@@ -11,16 +11,11 @@ import org.json.JSONObject;
 /**
  * Eventually want this to have no methods in it whatsoever. This base adapter covers the cases where we want to do a simple proxy to the ExtensibleClient because the
  * return type on the ExtensibleClient is not Object or void.
- * 
- * @author dboden
  */
-public abstract class SpecificReturnTypeAdapter extends BaseAdapter {
+public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implements IFacebookRestClient<T> {
 
-	private String responseFormat;
-
-	protected SpecificReturnTypeAdapter( String responseFormat ) {
-		super( responseFormat );
-		this.responseFormat = responseFormat;
+	protected SpecificReturnTypeAdapter( String responseFormat, ExtensibleClient client ) {
+		super( responseFormat, client );
 	}
 
 	public int admin_getAllocation( String allocationType ) throws FacebookException {

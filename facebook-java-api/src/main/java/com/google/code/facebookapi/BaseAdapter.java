@@ -11,18 +11,20 @@ import org.json.JSONObject;
  * Covers all the void return type methods where we don't care which return type we're asking Facebook to provide.
  * 
  * All methods in this class must begin "public void". Doing this saves us repeating all the delegation in each of the XML, JSON and JAXB adapters.
- * 
- * @author dboden
  */
 public abstract class BaseAdapter {
 
-	private String responseFormat;
+	protected final String responseFormat;
+	protected final ExtensibleClient client;
 
-	protected BaseAdapter( String responseFormat ) {
+	protected BaseAdapter( String responseFormat, ExtensibleClient client ) {
 		this.responseFormat = responseFormat;
+		this.client = client;
 	}
 
-	protected abstract ExtensibleClient getClient();
+	protected ExtensibleClient getClient() {
+		return client;
+	}
 
 	public String getApiKey() {
 		return getClient().getApiKey();
