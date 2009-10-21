@@ -23,6 +23,16 @@
     <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</connection>
     <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</developerConnection>
   </scm>
+  <developers>
+    <developer>
+      <id>fernman</id>
+      <name>Fernando Padilla</name>
+      <email>fern@alum.mit.edu</email>
+      <organization>Citizen Sports</organization>
+      <organizationUrl>http://www.citizensportsinc.com</organizationUrl>
+      <timezone>-8</timezone>
+    </developer>
+  </developers>
   <modules>
     <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
