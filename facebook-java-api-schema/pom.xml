@@ -10,8 +10,8 @@
   <artifactId>facebook-java-api-schema</artifactId>
   <packaging>jar</packaging>
   <version>3.0.1-SNAPSHOT</version>
-  <name>Facebook Java Library</name>
-  <description>Facebook Java Library</description>
+  <name>Facebook Java Library - JAXB Schema</name>
+  <description>Generated classes from XSD Schema</description>
   
   <dependencies>
     <dependency>

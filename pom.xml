@@ -34,6 +34,7 @@
     </developer>
   </developers>
   <modules>
+    <module>annotation-processor</module>
     <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
   </modules>
@@ -82,7 +83,6 @@
     </plugins>
   </reporting>
   <distributionManagement>
-    <url>http://oss.sonatype.org/content/groups/googlecode/</url>
     <repository>
       <id>googlecode-releases.oss.sonatype.com</id>
       <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
