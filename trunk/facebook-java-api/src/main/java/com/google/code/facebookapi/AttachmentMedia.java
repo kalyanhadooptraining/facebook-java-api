@@ -2,14 +2,18 @@ package com.google.code.facebookapi;
 
 import org.json.JSONArray;
 
-
 /**
  * Abstract class for attachment media types.
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public abstract class AttachmentMedia {
-	protected String mediaType;
+
+	private String mediaType;
+
+	protected AttachmentMedia( String mediaType ) {
+		this.mediaType = mediaType;
+	}
 
 	/**
 	 * @return JSON Array of this media attachment.
@@ -17,16 +21,17 @@ public abstract class AttachmentMedia {
 	public abstract JSONArray toJson();
 
 	/**
-	 * 
 	 * @return String of JSON Array of this media attachment.
 	 */
-	public abstract String toJsonString();
+	public final String toJsonString() {
+		return toJson().toString();
+	}
 
 	/**
-	 * 
 	 * @return Type of this media attachment.
 	 */
 	public String getMediaType() {
 		return mediaType;
 	}
+
 }

@@ -3,13 +3,13 @@ package com.google.code.facebookapi;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * A simple data structure for property link type used by Attachment.
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public class AttachmentProperty {
+
 	private String caption;
 	private String href;
 	private String text;
@@ -54,24 +54,16 @@ public class AttachmentProperty {
 		return this.toJson().toString();
 	}
 
-	/**
-	 * @return the href
-	 */
 	public String getHref() {
 		return href;
 	}
 
-	/**
-	 * @return the text
-	 */
 	public String getText() {
 		return text;
 	}
 
-	/**
-	 * @return the caption
-	 */
 	public String getCaption() {
 		return caption;
 	}
+
 }

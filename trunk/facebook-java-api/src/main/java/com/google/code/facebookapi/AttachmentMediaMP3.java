@@ -10,6 +10,7 @@ import org.json.JSONObject;
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public class AttachmentMediaMP3 extends AttachmentMedia {
+
 	private String src;
 	private String title;
 	private String artist;
@@ -29,7 +30,7 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 	 *            MP3 album. (optional)
 	 */
 	public AttachmentMediaMP3( final String src, final String title, final String artist, final String album ) {
-		this.mediaType = "mp3";
+		super( "mp3" );
 		this.src = src;
 		this.title = title;
 		this.artist = artist;
@@ -40,7 +41,7 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 	 * Construct a MP3 attachment.
 	 */
 	public AttachmentMediaMP3() {
-		this.mediaType = "mp3";
+		super( "mp3" );
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 	@Override
 	public JSONArray toJson() {
 		jsonObject = new JSONObject();
-		putJsonProperty( "type", mediaType );
+		putJsonProperty( "type", getMediaType() );
 		putJsonProperty( "src", src );
 		if ( !StringUtils.isEmpty( title ) ) {
 			putJsonProperty( "title", title );
@@ -78,68 +79,36 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 		return jsonObject;
 	}
 
-	@Override
-	public String toJsonString() {
-		return this.toJson().toString();
-	}
-
-	/**
-	 * @return the src
-	 */
 	public String getSrc() {
 		return src;
 	}
 
-	/**
-	 * @param src
-	 *            the src to set
-	 */
 	public void setSrc( String src ) {
 		this.src = src;
 	}
 
-	/**
-	 * @return the title
-	 */
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
 	public void setTitle( String title ) {
 		this.title = title;
 	}
 
-	/**
-	 * @return the artist
-	 */
 	public String getArtist() {
 		return artist;
 	}
 
-	/**
-	 * @param artist
-	 *            the artist to set
-	 */
 	public void setArtist( String artist ) {
 		this.artist = artist;
 	}
 
-	/**
-	 * @return the album
-	 */
 	public String getAlbum() {
 		return album;
 	}
 
-	/**
-	 * @param album
-	 *            the album to set
-	 */
 	public void setAlbum( String album ) {
 		this.album = album;
 	}
+
 }

@@ -13,13 +13,11 @@ import org.json.JSONObject;
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public class AttachmentMediaImage extends AttachmentMedia {
+
 	private Map<String,String> images;
 
-	/**
-	 * Constructor.
-	 */
 	public AttachmentMediaImage() {
-		this.mediaType = "image";
+		super( "image" );
 		images = new TreeMap<String,String>();
 	}
 
@@ -38,7 +36,6 @@ public class AttachmentMediaImage extends AttachmentMedia {
 		if ( images.size() > 4 ) {
 			return;
 		}
-
 		images.put( src, href );
 	}
 
@@ -52,7 +49,7 @@ public class AttachmentMediaImage extends AttachmentMedia {
 			JSONObject image = new JSONObject();
 
 			try {
-				image.put( "type", mediaType );
+				image.put( "type", getMediaType() );
 			}
 			catch ( Exception ignored ) {
 				// ignore
@@ -78,8 +75,4 @@ public class AttachmentMediaImage extends AttachmentMedia {
 		return jsonArray;
 	}
 
-	@Override
-	public String toJsonString() {
-		return this.toJson().toString();
-	}
 }
