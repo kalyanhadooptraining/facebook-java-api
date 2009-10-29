@@ -2683,9 +2683,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public Integer sms_send( Long userId, String message, Integer smsSessionId, boolean makeNewSession ) throws FacebookException {
 		if ( smsSessionId != null && smsSessionId != 0 ) {
 			return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, Pairs.newPair( "uid", userId ), Pairs.newPair( "message", message ), Pairs.newPair(
-					"session_id", smsSessionId ), Pairs.newPair( "req_session", makeNewSession ) ) );
+					"session_id", smsSessionId ), Pairs.newPair10( "req_session", makeNewSession ) ) );
 		}
-		return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, Pairs.newPair( "uid", userId ), Pairs.newPair( "message", message ), Pairs.newPair(
+		return extractInt( callMethod( FacebookMethod.SMS_SEND_MESSAGE, Pairs.newPair( "uid", userId ), Pairs.newPair( "message", message ), Pairs.newPair10(
 				"req_session", makeNewSession ) ) );
 	}
 
