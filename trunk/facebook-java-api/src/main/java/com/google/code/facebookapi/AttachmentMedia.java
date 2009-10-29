@@ -21,13 +21,6 @@ public abstract class AttachmentMedia {
 	public abstract JSONArray toJson();
 
 	/**
-	 * @return String of JSON Array of this media attachment.
-	 */
-	public final String toJsonString() {
-		return toJson().toString();
-	}
-
-	/**
 	 * @return Type of this media attachment.
 	 */
 	public String getMediaType() {

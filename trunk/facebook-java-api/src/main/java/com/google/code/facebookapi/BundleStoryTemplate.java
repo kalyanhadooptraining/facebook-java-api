@@ -41,20 +41,13 @@ public class BundleStoryTemplate implements Serializable {
 	public JSONObject toJson() {
 		JSONObject result = new JSONObject();
 		try {
-			result.put( "template_title", title == null ? "" : title);
+			result.put( "template_title", title == null ? "" : title );
 			result.put( "template_body", body == null ? "" : body );
 		}
 		catch ( Exception ignored ) {
 			// ignore
 		}
 		return result;
-	}
-
-	/**
-	 * @return a JSON-encoded String representation of this template. The resulting String is appropriate for passing to the Facebook API server.
-	 */
-	public String toJsonString() {
-		return this.toJson().toString();
 	}
 
 	/**

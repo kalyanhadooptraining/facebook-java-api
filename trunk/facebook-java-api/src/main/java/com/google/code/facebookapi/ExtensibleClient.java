@@ -1804,7 +1804,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( null == properties || properties.isEmpty() ) {
 			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
 		}
-		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, Pairs.newPair( "properties", properties.toJsonString() ) ) );
+		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, Pairs.newPair( "properties", properties.toJson() ) ) );
 	}
 
 	/**
@@ -2098,7 +2098,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			params.add( Pairs.newPair( "short_story_templates", shortArray ) );
 		}
 		if ( longTemplate != null ) {
-			params.add( Pairs.newPair( "full_story_template", longTemplate.toJsonString() ) );
+			params.add( Pairs.newPair( "full_story_template", longTemplate.toJson() ) );
 		}
 
 		if ( actionLinks != null && !actionLinks.isEmpty() ) {
