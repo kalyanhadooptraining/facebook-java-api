@@ -44,8 +44,6 @@ public class BundleActionLink implements Serializable {
 		if ( ( text == null ) || ( href == null ) || ( "".equals( text ) ) || ( "".equals( href ) ) ) {
 			return result;
 		}
-
-
 		try {
 			result.put( "text", text );
 			result.put( "href", href );
@@ -54,13 +52,6 @@ public class BundleActionLink implements Serializable {
 			// ignore
 		}
 		return result;
-	}
-
-	/**
-	 * @return a JSON-encoded String representation of this template. The resulting String is appropriate for passing to the Facebook API server.
-	 */
-	public String toJsonString() {
-		return this.toJson().toString();
 	}
 
 	/**

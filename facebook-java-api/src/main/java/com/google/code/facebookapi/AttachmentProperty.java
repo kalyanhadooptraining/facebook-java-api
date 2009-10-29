@@ -46,14 +46,6 @@ public class AttachmentProperty {
 		return link;
 	}
 
-	/**
-	 * 
-	 * @return String of JSON Array of this attachment link.
-	 */
-	public String toJsonString() {
-		return this.toJson().toString();
-	}
-
 	public String getHref() {
 		return href;
 	}

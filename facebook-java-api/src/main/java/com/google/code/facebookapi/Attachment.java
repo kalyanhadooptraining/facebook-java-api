@@ -102,13 +102,6 @@ public class Attachment implements Serializable {
 		}
 	}
 
-	/**
-	 * @return a JSON-encoded String representation of this template. The resulting String is appropriate for passing to the Facebook API server.
-	 */
-	public String toJsonString() {
-		return toJson().toString();
-	}
-
 	public String getName() {
 		return name;
 	}

@@ -8,8 +8,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-
 public class Issue212AdminGetAppPropertiesTest {
+
 	@Test
 	public void testStreamGet() throws IOException, FacebookException {
 		IFacebookRestClient<Object> client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
@@ -23,6 +23,7 @@ public class Issue212AdminGetAppPropertiesTest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result.toJsonString() );
+		System.out.println( result.toJson().toString() );
 	}
+
 }

@@ -161,6 +161,10 @@ public class ApplicationPropertySet implements Serializable {
 		return ( null == _attributesString || _attributesString.isEmpty() ) && ( null == _attributesBool || _attributesBool.isEmpty() );
 	}
 
+	public JSONObject toJson() {
+		return jsonify();
+	}
+
 	/**
 	 * Return a JSON representation of this property set object
 	 * 
@@ -189,15 +193,6 @@ public class ApplicationPropertySet implements Serializable {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Return a JSON string representation of this object
-	 * 
-	 * @return a JSON string
-	 */
-	public String toJsonString() {
-		return jsonify().toString();
 	}
 
 	public static Map<ApplicationProperty,String> parseProperties( String json ) {
