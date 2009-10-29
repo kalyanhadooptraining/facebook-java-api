@@ -604,4 +604,8 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().links_post( userId, url, comment );
 	}
 
+	public int intl_uploadNativeStrings( Map<String,String> native_strings ) throws FacebookException {
+		return getClient().intl_uploadNativeStrings( native_strings );
+	}
+
 }

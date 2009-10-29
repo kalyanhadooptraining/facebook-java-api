@@ -3603,7 +3603,7 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
-	// STREAM
+	// ========== STREAM ==========
 
 	@FacebookReturnType
 	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
@@ -3631,5 +3631,21 @@ public interface IFacebookRestClient<T> {
 
 	@FacebookReturnType
 	public T stream_getFilters( Long userId ) throws FacebookException;
+
+	// ========== INTL ==========
+
+	/**
+	 * Lets you insert text strings in their native language into the Facebook Translations database so they can be translated. See Translating Platform Applications for
+	 * more information about translating your applications.
+	 * 
+	 * @param native_strings
+	 *            A Map, from text to be translated, to their description. It will be converted to what facebook expects: A JSON-encoded array of strings to translate.
+	 *            Each element of the string array is an object, with text storing the actual string, description storing the description of the text.
+	 * 
+	 * @return If successful, this method returns the number of strings uploaded.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Intl.uploadNativeStrings
+	 */
+	public int intl_uploadNativeStrings( Map<String,String> native_strings ) throws FacebookException;
 
 }

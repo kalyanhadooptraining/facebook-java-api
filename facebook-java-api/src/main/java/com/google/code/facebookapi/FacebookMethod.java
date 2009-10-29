@@ -73,6 +73,10 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FRIENDS_GET("facebook.friends.get"),
 	FRIENDS_GET_NOSESSION("facebook.friends.get"),
 	FRIENDS_GET_LISTS("facebook.friends.getLists"),
+
+	// Intl
+	INTL_UPLOAD_NATIVE_STRINGS("intl.uploadNativeStrings"),
+
 	// Users
 	USERS_GET_INFO("facebook.users.getInfo"),
 	USERS_GET_STANDARD_INFO("facebook.users.getStandardInfo"),
@@ -99,23 +103,35 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	PHOTOS_UPLOAD("facebook.photos.upload"),
 	PHOTOS_UPLOAD_NOSESSION("facebook.photos.upload"),
 	// Notifications
+	@Deprecated
 	NOTIFICATIONS_GET("facebook.notifications.get"),
+	@Deprecated
 	NOTIFICATIONS_SEND("facebook.notifications.send"),
 	@Deprecated
 	NOTIFICATIONS_SEND_REQUEST("facebook.notifications.sendRequest"),
+	@Deprecated
 	NOTIFICATIONS_SEND_EMAIL_SESSION("facebook.notifications.sendEmail"),
+	@Deprecated
 	NOTIFICATIONS_SEND_EMAIL_NOSESSION("facebook.notifications.sendEmail"),
 	// Groups
 	GROUPS_GET("facebook.groups.get"),
 	GROUPS_GET_MEMBERS("facebook.groups.getMembers"),
 	// Profile
+	@Deprecated
 	PROFILE_SET_FBML("facebook.profile.setFBML"),
+	@Deprecated
 	PROFILE_SET_FBML_NOSESSION("facebook.profile.setFBML"),
+	@Deprecated
 	PROFILE_GET_FBML("facebook.profile.getFBML"),
+	@Deprecated
 	PROFILE_GET_FBML_NOSESSION("facebook.profile.getFBML"),
+	@Deprecated
 	PROFILE_SET_INFO("facebook.profile.setInfo"),
+	@Deprecated
 	PROFILE_SET_INFO_OPTIONS("facebook.profile.setInfoOptions"),
+	@Deprecated
 	PROFILE_GET_INFO("facebook.profile.getInfo"),
+	@Deprecated
 	PROFILE_GET_INFO_OPTIONS("facebook.profile.getInfoOptions"),
 	// FBML
 	FBML_REFRESH_REF_URL("facebook.fbml.refreshRefUrl"),

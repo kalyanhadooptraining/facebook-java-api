@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -3109,6 +3110,24 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException {
 		validateVoidResponse( callMethod( FacebookMethod.FBML_REGISTER_CUSTOM_TAGS, Pairs.newPair( "tags", new JSONArray( tags ) ) ) );
+	}
+
+	// ========== INTL ==========
+
+	public int intl_uploadNativeStrings( Map<String,String> native_strings ) throws FacebookException {
+		JSONArray array = new JSONArray();
+		try {
+			for ( Entry<String,String> entry : native_strings.entrySet() ) {
+				JSONObject obj = new JSONObject();
+				obj.put( "text", entry.getKey() );
+				obj.put( "description", entry.getValue() );
+				array.put( obj );
+			}
+		}
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+		return extractInt( callMethod( FacebookMethod.INTL_UPLOAD_NATIVE_STRINGS, Pairs.newPair( "native_strings", array ) ) );
 	}
 
 }
