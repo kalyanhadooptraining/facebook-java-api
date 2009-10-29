@@ -3603,6 +3603,8 @@ public interface IFacebookRestClient<T> {
 	 */
 	public void fbml_registerCustomTags( Collection<JSONObject> tags ) throws FacebookException;
 
+	// STREAM
+
 	@FacebookReturnType
 	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
 

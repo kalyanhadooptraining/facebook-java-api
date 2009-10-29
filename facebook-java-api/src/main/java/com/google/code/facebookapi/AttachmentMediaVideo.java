@@ -10,6 +10,7 @@ import org.json.JSONObject;
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 public class AttachmentMediaVideo extends AttachmentMedia {
+
 	private String videoSrc;
 	private String previewImg;
 	private String title;
@@ -32,7 +33,7 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 	 *            Video link, default is value of videoSrc. (optional)
 	 */
 	public AttachmentMediaVideo( final String videoSrc, final String previewImg, final String title, final String type, final String link ) {
-		this.mediaType = "video";
+		super( "video" );
 		this.videoSrc = videoSrc;
 		this.previewImg = previewImg;
 		this.title = title;
@@ -40,11 +41,8 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 		this.link = link;
 	}
 
-	/**
-	 * Construct a video attachment.
-	 */
 	public AttachmentMediaVideo() {
-		this.mediaType = "video";
+		super( "video" );
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 	@Override
 	public JSONArray toJson() {
 		jsonObject = new JSONObject();
-		putJsonProperty( "type", mediaType );
+		putJsonProperty( "type", getMediaType() );
 		putJsonProperty( "video_src", videoSrc );
 		putJsonProperty( "preview_img", previewImg );
 
@@ -84,83 +82,44 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 		return jsonObject;
 	}
 
-	@Override
-	public String toJsonString() {
-		return this.toJson().toString();
-	}
-
-	/**
-	 * @return the videoSrc
-	 */
 	public String getVideoSrc() {
 		return videoSrc;
 	}
 
-	/**
-	 * @param videoSrc
-	 *            the videoSrc to set
-	 */
 	public void setVideoSrc( String videoSrc ) {
 		this.videoSrc = videoSrc;
 	}
 
-	/**
-	 * @return the previewImg
-	 */
 	public String getPreviewImg() {
 		return previewImg;
 	}
 
-	/**
-	 * @param previewImg
-	 *            the previewImg to set
-	 */
 	public void setPreviewImg( String previewImg ) {
 		this.previewImg = previewImg;
 	}
 
-	/**
-	 * @return the title
-	 */
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
 	public void setTitle( String title ) {
 		this.title = title;
 	}
 
-	/**
-	 * @return the type
-	 */
 	public String getType() {
 		return type;
 	}
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
 	public void setType( String type ) {
 		this.type = type;
 	}
 
-	/**
-	 * @return the link
-	 */
 	public String getLink() {
 		return link;
 	}
 
-	/**
-	 * @param link
-	 *            the link to set
-	 */
 	public void setLink( String link ) {
 		this.link = link;
 	}
+
 }
