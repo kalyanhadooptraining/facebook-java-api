@@ -32,6 +32,6 @@ public class Issue199IncorrectSignatureTest {
 	@Test
 	public void testPhotosGetTagsWithZeroPhotoIds() throws FacebookException, IOException {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
-		client.photos_getTags( new ArrayList<Long>() );
+		client.photos_getTags( new ArrayList<String>() );
 	}
 }
