@@ -91,6 +91,7 @@
     <snapshotRepository>
       <id>googlecode-snapshots.oss.sonatype.com</id>
       <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
   </distributionManagement>
   <!-- "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",, -->
