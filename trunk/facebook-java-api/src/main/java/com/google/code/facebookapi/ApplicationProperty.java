@@ -11,30 +11,30 @@ import java.util.Map;
 public enum ApplicationProperty {
 	/** This is the URL to your application's About page. About pages are now Facebook Pages. */
 	ABOUT_URL("about_url", "string"),
+	/** Your application ID. (This is a read-only property that cannot be set.) */
+	APP_ID("app_id", "string"),
 	/** The name of your application. */
 	APPLICATION_NAME("application_name", "string"),
 	/** The URL. Facebook pings after a user authorizes your application. The URL cannot be longer than 100 characters. */
 	AUTHORIZE_URL("authorize_url", "string"),
+	/** The base domain for a Facebook Connect application. See Base Domain. */
+	BASE_DOMAIN("base_domain", "string"),
 	/** Your application's callback URL. The callback URL cannot be longer than 100 characters. */
 	CALLBACK_URL("callback_url", "string"),
 	/** The canvas name of your application. (this is a read-only property that cannot be set) */
 	CANVAS_NAME("canvas_name", "string"),
 	/** The URL to your site's Facebook Connect logo. (this is a read-only property that cannot be set) */
 	CONNECT_LOGO_URL("connect_logo_url", "string"),
+	/** For Facebook Connect sites, the URL you can provide to reclaim an account from a user who deactivated his or her Facebook account. */
+	CONNECT_RECLAIM_URL("connect_reclaim_url", "string"),
+	/** The main URL for a Facebook Connect application. */
+	CONNECT_URL("connect_url", "string"),
+	/** contact_email */
+	CONTACT_EMAIL("contact_email", "string"),
 	/** This is the URL to your application from its bookmark on the Applications menu. */
 	DASHBOARD_URL("dashboard_url", "string"),
-	/**
-	 * The default FBML code that defines what, if anything, appears in the user's profile actions when he or she adds your application. (Deprecated with the new
-	 * profile.)
-	 * 
-	 * @deprecated
-	 */
-	@Deprecated
-	DEFAULT_ACTION_URL("default_fbml", "string"),
 	/** Indicates whether your application appears in the wide (1) or narrow (0) column of a user's Facebook profile. (Default value is 1.) */
 	DEFAULT_COLUMN("default_column", "bool"),
-	/** The default FBML code that appears in the user's profile box when he or she adds your application. */
-	DEFAULT_FBML("default_fbml", "string"),
 	/** The description of your application. */
 	DESCRIPTION("description", "string"),
 	/** Indicates whether your application is Web-based (0) or gets installed on a user's desktop (1). (Default value is 1.) */
@@ -55,6 +55,10 @@ public enum ApplicationProperty {
 	HELP_URL("help_url", "string"),
 	/** The URL to your application's icon. (this is a read-only property that cannot be set) */
 	ICON_URL("icon_url", "string"),
+	/** For iframe applications, indicates whether the iframe is resizable (1) or smartsized (0). (Default value is 1.) */
+	IFRAME_ENABLE_UTIL("iframe_enable_util", "bool"),
+	/** Indicates whether an iframe application or Facebook Connect site can (1) or cannot (0) bypass a server whitelist. (Default value is 1.) */
+	IGNORE_IP_WHITELIST_FOR_SS("ignore_ip_whitelist_for_ss", "bool"),
 	/**
 	 * The URL to ping if a user changes the content of your application info section. Your application can get new content for the section, and set it with
 	 * profile.setInfo.
@@ -74,10 +78,6 @@ public enum ApplicationProperty {
 	MESSAGE_URL("message_url", "string"),
 	/** The URL where a user gets redirected after authorizing your application. If not set, the user will continue on to the page that they were originally going to. */
 	POST_AUTHORIZE_REDIRECT_URL("post_authorize_redirect_url", "string"),
-	
-	/** Issue194 post_install_url is no longer accepted by Facebook.com. Use POST_AUTHORIZE_REDIRECT_URL instead. */
-	//POST_INSTALL_URL("post_install_url", "string"),
-	
 	/** A preloaded FQL query. */
 	PRELOAD_FQL("preload_fql", "string"),
 	/** The URL to your application's privacy terms. */
@@ -94,16 +94,23 @@ public enum ApplicationProperty {
 	PUBLISH_SELF_URL("publish_self_url", "string"),
 	/** The URL from which to fetch your application content for use in the Publisher when the user is publishing on a friend's profile. */
 	PUBLISH_URL("publish_url", "string"),
-	/** ?? */
-	SEE_ALL_URL("see_all_url", "string"),
+	/** Indicates whether Quick Transitions are enabled (1) or disabled (0). (Default value is 1.) */
+	QUICK_TRANSITIONS("quick_transitions", "bool"),
 	/** The default label for an application tab when a user first adds it to his or her profile. */
 	TAB_DEFAULT_NAME("tab_default_name", "string"),
+	/** If set to true, indicates that Demographic Restrictions have been set for your application; if false, then the restrictions were never set or were removed. */
+	TARGETED("targeted", "bool"),
 	/** The URL to your application's Terms of Service. */
 	TOS_URL("tos_url", "string"),
 	/** The URL that Facebook pings after a user removes your application. */
 	UNINSTALL_URL("uninstall_url", "string"),
 	/** Indicates whether you render your application with FBML (0) or in an iframe (1). (Default value is 1.) */
 	USE_IFRAME("use_iframe", "bool"),
+	/**
+	 * Indicates whether your application or site publishes Feed stories about video sales (1) or not (0) -- this is for Video Privacy Protection Act conformance. (This
+	 * is a read-only property that can only be set via the application settings editor.)
+	 */
+	VIDEO_RENTALS("video_rentals", "bool"),
 	/** Indicates whether to use the profile's full canvas width, which is for backwards compatibility. */
 	WIDE_MODE("wide_mode", "bool");
 
