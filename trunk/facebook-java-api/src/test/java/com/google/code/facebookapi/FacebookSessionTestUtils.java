@@ -12,7 +12,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 
 public class FacebookSessionTestUtils {
-	
+
 	public static String lastTokenUsed;
 	public static FacebookXmlRestClient lastClientUsed;
 
@@ -21,36 +21,36 @@ public class FacebookSessionTestUtils {
 		String SECRET;
 
 		JUnitProperties properties = new JUnitProperties();
-		
-		if(generateSessionSecret) {
+
+		if ( generateSessionSecret ) {
 			APIKEY = properties.getDESKTOP_APIKEY();
 			SECRET = properties.getDESKTOP_SECRET();
 		} else {
 			APIKEY = properties.getAPIKEY();
 			SECRET = properties.getSECRET();
 		}
-		
+
 		FacebookXmlRestClient client = new FacebookXmlRestClient( APIKEY, SECRET );
 		String token = client.auth_createToken();
 
 		HttpClient http = new HttpClient();
-        http.setParams(new HttpClientParams());
-        http.setState(new HttpState());
+		http.setParams( new HttpClientParams() );
+		http.setState( new HttpState() );
 
-        final String LOGIN = "http://www.facebook.com/login.php";
-        
-        GetMethod get = new GetMethod(LOGIN + "?api_key=" + APIKEY + "&v=1.0&auth_token=" + token );
+		final String LOGIN = "http://www.facebook.com/login.php";
 
-        http.executeMethod(get);
+		GetMethod get = new GetMethod( LOGIN + "?api_key=" + APIKEY + "&v=1.0&auth_token=" + token );
 
-        PostMethod post = new PostMethod(LOGIN);
-        post.addParameter(new NameValuePair("api_key", APIKEY));
-        post.addParameter(new NameValuePair("v", "1.0"));
-        post.addParameter(new NameValuePair("auth_token", token));
-        post.addParameter(new NameValuePair("email", properties.getEMAIL()));
-        post.addParameter(new NameValuePair("pass", properties.getPASS()));
+		http.executeMethod( get );
 
-        http.executeMethod(post);
+		PostMethod post = new PostMethod( LOGIN );
+		post.addParameter( new NameValuePair( "api_key", APIKEY ) );
+		post.addParameter( new NameValuePair( "v", "1.0" ) );
+		post.addParameter( new NameValuePair( "auth_token", token ) );
+		post.addParameter( new NameValuePair( "email", properties.getEMAIL() ) );
+		post.addParameter( new NameValuePair( "pass", properties.getPASS() ) );
+
+		http.executeMethod( post );
 
 		String sessionID = client.auth_getSession( token, generateSessionSecret );
 		lastTokenUsed = token;
@@ -58,16 +58,14 @@ public class FacebookSessionTestUtils {
 		return sessionID;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends IFacebookRestClient> T getSessionlessValidClient( Class<T> clientReturnType ) {
 		return getSessionlessIFacebookRestClient( clientReturnType );
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType ) throws IOException, FacebookException {
 		return getValidClient( clientReturnType, false );
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType, boolean generateSessionSecret ) throws IOException, FacebookException {
 		final String SESSION_PREFERENCE = "/com/google/code/facebookapi/test/sessionID";
@@ -97,7 +95,6 @@ public class FacebookSessionTestUtils {
 		return (T) client;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T extends IFacebookRestClient> T getIFacebookRestClient( Class<T> clientReturnType, String sessionID ) {
 		try {
 			JUnitProperties properties = new JUnitProperties();
@@ -108,8 +105,7 @@ public class FacebookSessionTestUtils {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	private static <T extends IFacebookRestClient> T getSessionlessIFacebookRestClient( Class<T> clientReturnType ) {
 		try {
 			JUnitProperties properties = new JUnitProperties();
@@ -120,4 +116,5 @@ public class FacebookSessionTestUtils {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
 		}
 	}
+
 }
