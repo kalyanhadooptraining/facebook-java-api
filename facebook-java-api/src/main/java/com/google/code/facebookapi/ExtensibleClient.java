@@ -1122,10 +1122,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException {
 		if ( userId != null ) {
-			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION_NOSESSION, Pairs.newPair( "ext_perm", perm.getName() ), Pairs.newPair( "uid",
+			return extractBoolean10( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION_NOSESSION, Pairs.newPair( "ext_perm", perm.getName() ), Pairs.newPair( "uid",
 					userId ) ) );
 		} else {
-			return extractBoolean( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, Pairs.newPair( "ext_perm", perm.getName() ) ) );
+			return extractBoolean10( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, Pairs.newPair( "ext_perm", perm.getName() ) ) );
 		}
 	}
 
@@ -2619,6 +2619,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		} else {
 			return XmlHelper.extractBoolean( XmlHelper.parseCallResult( result, factory ) );
 		}
+	}
+
+	protected boolean extractBoolean10( String result ) throws FacebookException {
+		return extractInt( result ) == 1;
 	}
 
 	/**
