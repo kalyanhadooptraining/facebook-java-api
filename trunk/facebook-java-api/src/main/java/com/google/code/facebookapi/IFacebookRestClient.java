@@ -771,7 +771,7 @@ public interface IFacebookRestClient<T> {
 	 * @return an T of photo objects.
 	 */
 	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
-	public T photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Long subjId, String albumId, Collection<String> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -785,7 +785,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
-	public T photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Long subjId, Collection<String> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -799,7 +799,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
-	public T photos_get( Long subjId, Long albumId ) throws FacebookException;
+	public T photos_get( Long subjId, String albumId ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -811,7 +811,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
-	public T photos_get( Collection<Long> photoIds ) throws FacebookException;
+	public T photos_get( Collection<String> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -836,7 +836,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
 	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
-	public T photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException;
+	public T photos_getAlbums( Long userId, Collection<String> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves album metadata for albums owned by a user.
@@ -858,7 +858,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.getAlbums"> Developers Wiki: Photos.getAlbums</a>
 	 */
 	@FacebookReturnType(JAXB = PhotosGetAlbumsResponse.class, JSON = JSONArray.class)
-	public T photos_getAlbums( Collection<Long> albumIds ) throws FacebookException;
+	public T photos_getAlbums( Collection<String> albumIds ) throws FacebookException;
 
 	/**
 	 * Retrieves the tags for the given set of photos.
@@ -868,7 +868,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the created album
 	 */
 	@FacebookReturnType(JAXB = PhotosGetTagsResponse.class, JSON = JSONArray.class)
-	public T photos_getTags( Collection<Long> photoIds ) throws FacebookException;
+	public T photos_getTags( Collection<String> photoIds ) throws FacebookException;
 
 	/**
 	 * Creates an album.
@@ -932,7 +932,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
 	@FacebookReturnType(JAXBList = Boolean.class, JSON = JSONArray.class)
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException;
+	public T photos_addTags( String photoId, Collection<PhotoTag> tags ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -947,7 +947,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException;
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -962,7 +962,7 @@ public interface IFacebookRestClient<T> {
 	 *            The text of the tag.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException;
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -979,7 +979,7 @@ public interface IFacebookRestClient<T> {
 	 *            the user tagging the photo.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct, Long userId ) throws FacebookException;
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double xPct, Double yPct, Long userId ) throws FacebookException;
 
 	/**
 	 * Adds a tag to a photo.
@@ -996,7 +996,7 @@ public interface IFacebookRestClient<T> {
 	 *            the user tagging the photo.
 	 * @return whether the tag was successfully added.
 	 */
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct, Long userId ) throws FacebookException;
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double xPct, Double yPct, Long userId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1020,7 +1020,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( File photo, String caption ) throws FacebookException;
+	public T photos_uploadWithCaption( File photo, String caption ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1033,7 +1033,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( File photo, Long albumId ) throws FacebookException;
+	public T photos_uploadToAlbum( File photo, String albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1048,7 +1048,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( File photo, String caption, Long albumId ) throws FacebookException;
+	public T photos_upload( File photo, String caption, String albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1076,7 +1076,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( Long userId, File photo, String caption ) throws FacebookException;
+	public T photos_uploadWithCaption( Long userId, File photo, String caption ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1091,7 +1091,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( Long userId, File photo, Long albumId ) throws FacebookException;
+	public T photos_uploadToAlbum( Long userId, File photo, String albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1108,7 +1108,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException;
+	public T photos_upload( Long userId, File photo, String caption, String albumId ) throws FacebookException;
 
 	/**
 	 * Uploads a photo to Facebook.
@@ -1126,7 +1126,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.upload"> Developers wiki: Photos.upload</a>
 	 */
 	@FacebookReturnType(JAXB = Photo.class, JSON = JSONObject.class)
-	public T photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException;
+	public T photos_upload( Long userId, String caption, String albumId, String fileName, InputStream fileStream ) throws FacebookException;
 
 	/**
 	 * Retrieves the groups associated with a user
@@ -1339,7 +1339,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
-	public T photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException;
+	public T photos_getByAlbum( String albumId, Collection<String> photoIds ) throws FacebookException;
 
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
@@ -1351,7 +1351,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
 	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
-	public T photos_getByAlbum( Long albumId ) throws FacebookException;
+	public T photos_getByAlbum( String albumId ) throws FacebookException;
 
 	/**
 	 * Get the categories available in marketplace.
@@ -3130,7 +3130,7 @@ public interface IFacebookRestClient<T> {
 	 * @return a list of booleans indicating whether the tag was successfully added.
 	 */
 	@FacebookReturnType
-	public T photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
+	public T photos_addTags( String photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException;
 
 	/**
 	 * Sends a message using the LiveMessage API. Note that for the message to be recieved by the recipent, you must set up a FBJS handler function. See

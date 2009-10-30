@@ -474,19 +474,19 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().permissions_revokeApiAccess( apiKey );
 	}
 
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2 ) throws FacebookException {
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double pct, Double pct2 ) throws FacebookException {
 		return getClient().photos_addTag( photoId, taggedUserId, pct, pct2 );
 	}
 
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2 ) throws FacebookException {
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double pct, Double pct2 ) throws FacebookException {
 		return getClient().photos_addTag( photoId, tagText, pct, pct2 );
 	}
 
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException {
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException {
 		return getClient().photos_addTag( photoId, taggedUserId, pct, pct2, userId );
 	}
 
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException {
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException {
 		return getClient().photos_addTag( photoId, tagText, pct, pct2, userId );
 	}
 

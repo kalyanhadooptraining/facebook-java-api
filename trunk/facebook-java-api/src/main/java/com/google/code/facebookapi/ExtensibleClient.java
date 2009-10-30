@@ -2752,15 +2752,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	// ========== PHOTOS ==========
 
-	public Object photos_get( Collection<Long> photoIds ) throws FacebookException {
+	public Object photos_get( Collection<String> photoIds ) throws FacebookException {
 		return photos_get( null /* subjId */, null /* albumId */, photoIds );
 	}
 
-	public Object photos_get( Long subjId, Long albumId ) throws FacebookException {
+	public Object photos_get( Long subjId, String albumId ) throws FacebookException {
 		return photos_get( subjId, albumId, null /* photoIds */);
 	}
 
-	public Object photos_get( Long subjId, Collection<Long> photoIds ) throws FacebookException {
+	public Object photos_get( Long subjId, Collection<String> photoIds ) throws FacebookException {
 		return photos_get( subjId, null /* albumId */, photoIds );
 	}
 
@@ -2768,9 +2768,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return photos_get( subjId, null /* albumId */, null /* photoIds */);
 	}
 
-	public Object photos_get( Long subjId, Long albumId, Collection<Long> photoIds ) throws FacebookException {
+	public Object photos_get( Long subjId, String albumId, Collection<String> photoIds ) throws FacebookException {
 		boolean hasUserId = null != subjId && 0 != subjId;
-		boolean hasAlbumId = null != albumId && 0 != albumId;
+		boolean hasAlbumId = albumId != null;
 		boolean hasPhotoIds = null != photoIds && !photoIds.isEmpty();
 		if ( !hasUserId && !hasAlbumId && !hasPhotoIds ) {
 			throw new IllegalArgumentException( "At least one of photoIds, albumId, or subjId must be provided" );
@@ -2788,15 +2788,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.PHOTOS_GET, params );
 	}
 
-	public Object photos_getTags( Collection<Long> photoIds ) throws FacebookException {
+	public Object photos_getTags( Collection<String> photoIds ) throws FacebookException {
 		return callMethod( FacebookMethod.PHOTOS_GET_TAGS, Pairs.newPair( "pids", BasicClientHelper.delimit( photoIds ) ) );
 	}
 
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException {
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double xPct, Double yPct ) throws FacebookException {
 		return photos_addTag( photoId, xPct, yPct, null, tagText );
 	}
 
-	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText ) throws FacebookException {
+	private boolean photos_addTag( String photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText ) throws FacebookException {
 		assert ( null != photoId && !photoId.equals( 0 ) );
 		assert ( null != taggedUserId || null != tagText );
 		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
@@ -2815,12 +2815,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return photos_createAlbum( albumName, null /* description */, null /* location */);
 	}
 
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException {
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double xPct, Double yPct ) throws FacebookException {
 		return photos_addTag( photoId, xPct, yPct, taggedUserId, null );
 	}
 
-	public Object photos_addTags( Long photoId, Collection<PhotoTag> tags ) throws FacebookException {
-		assert ( photoId > 0 );
+	public Object photos_addTags( String photoId, Collection<PhotoTag> tags ) throws FacebookException {
+		assert ( photoId != null );
 		assert ( null != tags && !tags.isEmpty() );
 
 		JSONArray jsonTags = new JSONArray();
@@ -2844,7 +2844,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM, params );
 	}
 
-	public Object photos_getAlbums( Collection<Long> albumIds ) throws FacebookException {
+	public Object photos_getAlbums( Collection<String> albumIds ) throws FacebookException {
 		return photos_getAlbums( null /* userId */, albumIds );
 	}
 
@@ -2852,7 +2852,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return photos_getAlbums( userId, null /* albumIds */);
 	}
 
-	public Object photos_getAlbums( Long userId, Collection<Long> albumIds ) throws FacebookException {
+	public Object photos_getAlbums( Long userId, Collection<String> albumIds ) throws FacebookException {
 		boolean hasUserId = null != userId && userId != 0;
 		boolean hasAlbumIds = null != albumIds && !albumIds.isEmpty();
 		if ( hasUserId && hasAlbumIds ) {
@@ -2867,15 +2867,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Atleast one of userId or albumIds is required." );
 	}
 
-	public Object photos_getByAlbum( Long albumId, Collection<Long> photoIds ) throws FacebookException {
+	public Object photos_getByAlbum( String albumId, Collection<String> photoIds ) throws FacebookException {
 		return photos_get( null /* subjId */, albumId, photoIds );
 	}
 
-	public Object photos_getByAlbum( Long albumId ) throws FacebookException {
+	public Object photos_getByAlbum( String albumId ) throws FacebookException {
 		return photos_get( null /* subjId */, albumId, null /* photoIds */);
 	}
 
-	private boolean photos_addTag( Long photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException {
+	private boolean photos_addTag( String photoId, Double xPct, Double yPct, Long taggedUserId, CharSequence tagText, Long userId ) throws FacebookException {
 		assert ( null != photoId && !photoId.equals( 0 ) );
 		assert ( null != taggedUserId || null != tagText );
 		assert ( null != xPct && xPct >= 0 && xPct <= 100 );
@@ -2893,11 +2893,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractBoolean( callMethod( FacebookMethod.PHOTOS_ADD_TAG_NOSESSION, params ) );
 	}
 
-	public boolean photos_addTag( Long photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException {
+	public boolean photos_addTag( String photoId, Long taggedUserId, Double pct, Double pct2, Long userId ) throws FacebookException {
 		return photos_addTag( photoId, pct, pct2, taggedUserId, null, userId );
 	}
 
-	public boolean photos_addTag( Long photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException {
+	public boolean photos_addTag( String photoId, CharSequence tagText, Double pct, Double pct2, Long userId ) throws FacebookException {
 		return photos_addTag( photoId, pct, pct2, null, tagText );
 	}
 
@@ -2919,8 +2919,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.PHOTOS_CREATE_ALBUM_NOSESSION, params );
 	}
 
-	public Object photos_addTags( Long photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
-		assert ( photoId > 0 );
+	public Object photos_addTags( String photoId, Collection<PhotoTag> tags, Long userId ) throws FacebookException {
+		assert ( photoId != null );
 		assert ( null != tags && !tags.isEmpty() );
 		String tagStr = null;
 		try {
@@ -2940,15 +2940,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return photos_upload( photo, null /* caption */, null /* albumId */);
 	}
 
-	public Object photos_upload( File photo, String caption ) throws FacebookException {
+	public Object photos_uploadWithCaption( File photo, String caption ) throws FacebookException {
 		return photos_upload( photo, caption, null /* albumId */);
 	}
 
-	public Object photos_upload( File photo, Long albumId ) throws FacebookException {
+	public Object photos_uploadToAlbum( File photo, String albumId ) throws FacebookException {
 		return photos_upload( photo, null /* caption */, albumId );
 	}
 
-	public Object photos_upload( File photo, String caption, Long albumId ) throws FacebookException {
+	public Object photos_upload( File photo, String caption, String albumId ) throws FacebookException {
 		return photos_upload( null, photo, caption, albumId );
 	}
 
@@ -2956,15 +2956,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return photos_upload( userId, photo, null, null );
 	}
 
-	public Object photos_upload( Long userId, File photo, String caption ) throws FacebookException {
+	public Object photos_uploadWithCaption( Long userId, File photo, String caption ) throws FacebookException {
 		return photos_upload( userId, photo, caption, null );
 	}
 
-	public Object photos_upload( Long userId, File photo, Long albumId ) throws FacebookException {
+	public Object photos_uploadToAlbum( Long userId, File photo, String albumId ) throws FacebookException {
 		return photos_upload( userId, photo, null, albumId );
 	}
 
-	public Object photos_upload( Long userId, File photo, String caption, Long albumId ) throws FacebookException {
+	public Object photos_upload( Long userId, File photo, String caption, String albumId ) throws FacebookException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream( photo );
 			BufferedInputStream fileStream = new BufferedInputStream( fileInputStream );
@@ -2981,12 +2981,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
-	public Object photos_upload( Long userId, String caption, Long albumId, String fileName, InputStream fileStream ) throws FacebookException {
+	public Object photos_upload( Long userId, String caption, String albumId, String fileName, InputStream fileStream ) throws FacebookException {
 		if ( fileStream == null ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "fileStream specified was null. fileName was specified as " + fileName );
 		}
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		Pairs.addParamIfNotBlankZero( "aid", albumId, params );
+		Pairs.addParamIfNotBlank( "aid", albumId, params );
 		Pairs.addParamIfNotBlank( "caption", caption, params );
 		boolean uid = Pairs.addParamIfNotBlankZero( "uid", userId, params );
 		FacebookMethod method = uid ? FacebookMethod.PHOTOS_UPLOAD_NOSESSION : FacebookMethod.PHOTOS_UPLOAD;
