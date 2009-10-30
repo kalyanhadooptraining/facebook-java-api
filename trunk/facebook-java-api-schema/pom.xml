@@ -13,6 +13,12 @@
   <name>Facebook Java Library - JAXB Schema</name>
   <description>Generated classes from XSD Schema</description>
   
+  <scm>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</developerConnection>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.jvnet.jaxb2_commons</groupId> 
