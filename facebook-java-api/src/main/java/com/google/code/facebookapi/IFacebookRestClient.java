@@ -414,6 +414,7 @@ public interface IFacebookRestClient<T> {
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
 	 * @see <a href="http://developers.facebook.com/tools.php?feed"> Developers Resources: Feed Preview Console </a>
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException;
 
 	/**
@@ -1405,6 +1406,7 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if any number of bad things happen
 	 */
+	@Deprecated
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException;
 
 	/**
@@ -1884,8 +1886,8 @@ public interface IFacebookRestClient<T> {
 	 * @return a T containing notification count pairs for 'messages', 'pokes' and 'shares', a uid list of 'friend_requests', a gid list of 'group_invites', and an eid
 	 *         list of 'event_invites'
 	 */
-	@Deprecated
 	@FacebookReturnType(JSON = JSONObject.class)
+	@Deprecated
 	public T notifications_get() throws FacebookException;
 
 	/**
@@ -1935,7 +1937,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendEmailToCurrentUser( String subject, String email, String fbml ) throws FacebookException;
 
 	/**
@@ -1959,7 +1960,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendEmail( Collection<Long> recipients, CharSequence subject, CharSequence email, CharSequence fbml )
 			throws FacebookException;
 
@@ -1977,7 +1977,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendTextEmailToCurrentUser( String subject, String email ) throws FacebookException;
 
 	/**
@@ -1996,7 +1995,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendTextEmail( Collection<Long> recipients, String subject, String email ) throws FacebookException;
 
 	/**
@@ -2014,7 +2012,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendFbmlEmailToCurrentUser( String subject, String fbml ) throws FacebookException;
 
 	/**
@@ -2034,7 +2031,6 @@ public interface IFacebookRestClient<T> {
 	 * @throws FacebookException
 	 *             if an error happens when executing the API call.
 	 */
-	@Deprecated
 	public Collection<String> notifications_sendFbmlEmail( Collection<Long> recipients, String subject, String fbml ) throws FacebookException;
 
 	/**
@@ -3008,8 +3004,8 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @throws FacebookException
 	 */
-	@Deprecated
 	@FacebookReturnType
+	@Deprecated
 	public T feed_getRegisteredTemplateBundles() throws FacebookException;
 
 	/**
@@ -3021,8 +3017,8 @@ public interface IFacebookRestClient<T> {
 	 * @return the specified template bundle definition.
 	 * @throws FacebookException
 	 */
-	@Deprecated
 	@FacebookReturnType
+	@Deprecated
 	public T feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException;
 
 	/**
