@@ -137,10 +137,12 @@ public abstract class BaseAdapter {
 		getClient().fbml_registerCustomTags( tags );
 	}
 
+	@Deprecated
 	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException {
 		getClient().profile_setInfo( userId, title, textOnly, fields );
 	}
 
+	@Deprecated
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException {
 		getClient().profile_setInfoOptions( field );
 	}
