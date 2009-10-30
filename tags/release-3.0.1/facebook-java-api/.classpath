@@ -1,0 +1,44 @@
+<classpath>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/test/resources" output="target/test-classes" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="target/generated-sources/apt"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar" sourcepath="M2_REPO/javax/activation/activation/1.1/activation-1.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar" sourcepath="M2_REPO/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar" sourcepath="M2_REPO/javax/mail/mail/1.4/mail-1.4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar" sourcepath="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.2/commons-codec-1.2.jar">
+    <attributes>
+      <attribute value="jar:file:/local/m2/repository/commons-codec/commons-codec/1.2/commons-codec-1.2-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar" sourcepath="M2_REPO/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/local/m2/repository/commons-lang/commons-lang/2.2/commons-lang-2.2-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/local/m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="src" path="/facebook-java-api-schema"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb-impl-2.1.3.jar" sourcepath="M2_REPO/com/sun/xml/bind/jaxb-impl/2.1.3/jaxb-impl-2.1.3-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/json/json/20080701/json-20080701.jar" sourcepath="M2_REPO/org/json/json/20080701/json-20080701-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/local/m2/repository/org/json/json/20080701/json-20080701-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.5/junit-4.5.jar" sourcepath="M2_REPO/junit/junit/4.5/junit-4.5-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.15/log4j-1.2.15.jar" sourcepath="M2_REPO/log4j/log4j/1.2.15/log4j-1.2.15-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jvnet/jaxb2_commons/runtime/0.4.1.5/runtime-0.4.1.5.jar" sourcepath="M2_REPO/org/jvnet/jaxb2_commons/runtime/0.4.1.5/runtime-0.4.1.5-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/local/m2/repository/org/jvnet/jaxb2_commons/runtime/0.4.1.5/runtime-0.4.1.5-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/ostermiller/utils/1.07.00/utils-1.07.00.jar" sourcepath="M2_REPO/org/ostermiller/utils/1.07.00/utils-1.07.00-sources.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>
