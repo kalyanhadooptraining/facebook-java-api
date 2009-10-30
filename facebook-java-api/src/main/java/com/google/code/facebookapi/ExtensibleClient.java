@@ -2615,7 +2615,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected boolean extractBoolean( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (Boolean) JsonHelper.parseCallResult( result );
+			Object out = JsonHelper.parseCallResult( result );
+			if ( out instanceof Boolean ) {
+				return (Boolean) out;
+			}
+			return Boolean.parseBoolean( String.valueOf( out ) );
 		} else {
 			return XmlHelper.extractBoolean( XmlHelper.parseCallResult( result, factory ) );
 		}
@@ -2633,7 +2637,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected int extractInt( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (Integer) JsonHelper.parseCallResult( result );
+			return ( (Number) JsonHelper.parseCallResult( result ) ).intValue();
 		} else {
 			return XmlHelper.extractInt( XmlHelper.parseCallResult( result, factory ) );
 		}
@@ -2647,10 +2651,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected long extractLong( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			// May be a java.lang.Integer or java.lang.Long returned
-			// We can't cast Integer to Long!
-			Number num = (Number) JsonHelper.parseCallResult( result );
-			return num.longValue();
+			return ( (Number) JsonHelper.parseCallResult( result ) ).longValue();
 		} else {
 			return XmlHelper.extractLong( XmlHelper.parseCallResult( result, factory ) );
 		}
@@ -2665,7 +2666,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 	protected String extractString( String result ) throws FacebookException {
 		if ( "json".equals( responseFormat ) ) {
-			return (String) JsonHelper.parseCallResult( result );
+			return String.valueOf( JsonHelper.parseCallResult( result ) );
 		} else {
 			return XmlHelper.extractString( XmlHelper.parseCallResult( result, factory ) );
 		}
