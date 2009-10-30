@@ -190,10 +190,12 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().fbml_setRefHandle( handle, markup );
 	}
 
+	@Deprecated
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException {
 		return getClient().feed_PublishTemplatizedAction( action );
 	}
 
+	@Deprecated
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException {
 		return getClient().feed_deactivateTemplateBundleByID( bundleId );
 	}
@@ -203,26 +205,31 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException {
 		return getClient().feed_publishTemplatizedAction( titleTemplate );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException {
 		return getClient().feed_publishTemplatizedAction( titleTemplate, pageActorId );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images,
 			Long pageActorId ) throws FacebookException {
 		return getClient().feed_publishTemplatizedAction( titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images, pageActorId );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException {
 		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException {
 		return getClient().feed_publishTemplatizedAction( titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, pictures, targetIds );
@@ -235,23 +242,28 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().feed_publishTemplatizedAction( actorId, titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, targetIds, images );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException {
 		return getClient().feed_publishUserAction( bundleId );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException {
 		return getClient().feed_publishUserAction( bundleId, templateData, targetIds, bodyGeneral );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException {
 		return getClient().feed_publishUserAction( bundleId, templateData, images, targetIds, bodyGeneral, storySize );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException {
 		return getClient().feed_registerTemplateBundle( template );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException {
 		return getClient().feed_registerTemplateBundle( templates );
 	}
@@ -261,11 +273,13 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().feed_registerTemplateBundle( template, shortTemplate, longTemplate );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
 			List<BundleActionLink> actionLinks ) throws FacebookException {
 		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate, actionLinks );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
 			throws FacebookException {
 		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate );
@@ -372,14 +386,17 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().marketplace_removeListing( listingId, status, userId );
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
 		return getClient().notifications_send( recipientIds, notification );
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException {
 		return getClient().notifications_send( notification );
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
 		return getClient().notifications_send( recipientIds, notification, isAppToUser );
 	}
@@ -473,51 +490,63 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().photos_addTag( photoId, tagText, pct, pct2, userId );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException {
 		return getClient().profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, profileMain );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException {
 		return getClient().profile_setFBML( userId, profileFbml, actionFbml, mobileFbml );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException {
 		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException {
 		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, profileId );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException {
 		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, mobileFbmlMarkup, profileId );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException {
 		return getClient().profile_setFBML( profileFbmlMarkup, profileActionFbmlMarkup, mobileFbmlMarkup );
 	}
 
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return getClient().profile_setMobileFBML( fbmlMarkup );
 	}
 
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return getClient().profile_setMobileFBML( fbmlMarkup, profileId );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return getClient().profile_setProfileActionFBML( fbmlMarkup );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return getClient().profile_setProfileActionFBML( fbmlMarkup, profileId );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return getClient().profile_setProfileActionFBML( fbmlMarkup );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return getClient().profile_setProfileFBML( fbmlMarkup, profileId );
 	}

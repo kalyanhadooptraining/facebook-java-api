@@ -396,6 +396,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return whether the action story was successfully published; false in case of a permission error
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Feed.publishTemplatizedAction"> Developers Wiki: Feed.publishTemplatizedAction</a>
 	 */
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( Long actorId, CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images )
 			throws FacebookException {
@@ -1067,16 +1068,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return rawResponse;
 	}
 
+	@Deprecated
 	public boolean feed_PublishTemplatizedAction( TemplatizedAction action ) throws FacebookException {
 		return templatizedFeedHandler( action.getTitleTemplate(), action.getTitleParams(), action.getBodyTemplate(), action.getBodyParams(), action.getBodyGeneral(),
 				action.getPictures(), action.getTargetIds(), action.getPageActorId() );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<? extends Object,URL>> pictures, String targetIds ) throws FacebookException {
 		return templatizedFeedHandler( titleTemplate, titleData, bodyTemplate, bodyData, bodyGeneral, pictures, targetIds, null );
 	}
 
+	@Deprecated
 	protected boolean templatizedFeedHandler( String titleTemplate, String titleData, String bodyTemplate, String bodyData, String bodyGeneral,
 			Collection<? extends IPair<?,URL>> pictures, String targetIds, Long pageId ) throws FacebookException {
 		assert ( pictures == null || pictures.size() <= 4 );
@@ -1716,14 +1720,17 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate ) throws FacebookException {
 		return feed_publishTemplatizedAction( titleTemplate, null );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Long pageActorId ) throws FacebookException {
 		return feed_publishTemplatizedAction( titleTemplate, null, null, null, null, null, null, pageActorId );
 	}
 
+	@Deprecated
 	public boolean feed_publishTemplatizedAction( CharSequence titleTemplate, Map<String,CharSequence> titleData, CharSequence bodyTemplate,
 			Map<String,CharSequence> bodyData, CharSequence bodyGeneral, Collection<Long> targetIds, Collection<? extends IPair<? extends Object,URL>> images,
 			Long pageActorId ) throws FacebookException {
@@ -2052,37 +2059,45 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractBoolean( callMethod( FacebookMethod.USERS_SET_STATUS_NOSESSION, params ) );
 	}
 
+	@Deprecated
 	public Object feed_getRegisteredTemplateBundleByID( Long id ) throws FacebookException {
 		return callMethod( FacebookMethod.FEED_GET_TEMPLATE_BY_ID, Pairs.newPair( "template_bundle_id", id ) );
 	}
 
+	@Deprecated
 	public Object feed_getRegisteredTemplateBundles() throws FacebookException {
 		return callMethod( FacebookMethod.FEED_GET_TEMPLATES );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId ) throws FacebookException {
 		return feed_publishUserAction( bundleId, null, null, null );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<Long> targetIds, String bodyGeneral ) throws FacebookException {
 		return feed_publishUserAction( bundleId, templateData, null, targetIds, bodyGeneral, 0 );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( String template ) throws FacebookException {
 		List<String> temp = new ArrayList<String>();
 		temp.add( template );
 		return feed_registerTemplateBundle( temp );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates ) throws FacebookException {
 		return feed_registerTemplateBundle( templates, null, null );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate )
 			throws FacebookException {
 		return feed_registerTemplateBundle( templates, shortTemplates, longTemplate, null );
 	}
 
+	@Deprecated
 	public Long feed_registerTemplateBundle( Collection<String> templates, Collection<BundleStoryTemplate> shortTemplates, BundleStoryTemplate longTemplate,
 			List<BundleActionLink> actionLinks ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
@@ -2120,10 +2135,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return feed_registerTemplateBundle( templates, null, null );
 	}
 
+	@Deprecated
 	public Object profile_getFBML() throws FacebookException {
 		return callMethod( FacebookMethod.PROFILE_GET_FBML );
 	}
 
+	@Deprecated
 	public Object profile_getFBML( Long userId ) throws FacebookException {
 		if ( userId != null ) {
 			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, Pairs.newPair( "uid", userId ) );
@@ -2132,10 +2149,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
+	@Deprecated
 	public Object profile_getFBML( int type ) throws FacebookException {
 		return callMethod( FacebookMethod.PROFILE_GET_FBML, Pairs.newPair( "type", type ) );
 	}
 
+	@Deprecated
 	public Object profile_getFBML( int type, Long userId ) throws FacebookException {
 		if ( userId != null ) {
 			return callMethod( FacebookMethod.PROFILE_GET_FBML_NOSESSION, Pairs.newPair( "type", type ), Pairs.newPair( "uid", userId ) );
@@ -2144,14 +2163,17 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
+	@Deprecated
 	public Object profile_getInfo( Long userId ) throws FacebookException {
 		return callMethod( FacebookMethod.PROFILE_GET_INFO, Pairs.newPair( "uid", userId ) );
 	}
 
+	@Deprecated
 	public Object profile_getInfoOptions( String field ) throws FacebookException {
 		return callMethod( FacebookMethod.PROFILE_GET_INFO_OPTIONS, Pairs.newPair( "field", field ) );
 	}
 
+	@Deprecated
 	public void profile_setInfo( Long userId, String title, boolean textOnly, List<ProfileInfoField> fields ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 		JSONArray json = new JSONArray();
@@ -2186,6 +2208,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		validateVoidResponse( callMethod( FacebookMethod.PROFILE_SET_INFO, params ) );
 	}
 
+	@Deprecated
 	public void profile_setInfoOptions( ProfileInfoField field ) throws FacebookException {
 		JSONArray json = new JSONArray();
 		for ( ProfileFieldItem item : field.getItems() ) {
@@ -2206,51 +2229,63 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		validateVoidResponse( callMethod( FacebookMethod.PROFILE_SET_INFO_OPTIONS, params ) );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup ) throws FacebookException {
 		return profile_setFBML( null, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, Long profileId ) throws FacebookException {
 		return profile_setFBML( profileId, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup ) throws FacebookException {
 		return profile_setFBML( null, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), toString( mobileFbmlMarkup ), null );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( CharSequence profileFbmlMarkup, CharSequence profileActionFbmlMarkup, CharSequence mobileFbmlMarkup, Long profileId )
 			throws FacebookException {
 		return profile_setFBML( profileId, toString( profileFbmlMarkup ), toString( profileActionFbmlMarkup ), toString( mobileFbmlMarkup ), null );
 	}
 
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return profile_setFBML( null, null, null, toString( fbmlMarkup ), null );
 	}
 
+	@Deprecated
 	public boolean profile_setMobileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return profile_setFBML( profileId, null, null, toString( fbmlMarkup ), null );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return profile_setFBML( null, null, toString( fbmlMarkup ), null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileActionFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return profile_setFBML( profileId, null, toString( fbmlMarkup ), null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup ) throws FacebookException {
 		return profile_setFBML( null, toString( fbmlMarkup ), null, null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setProfileFBML( CharSequence fbmlMarkup, Long profileId ) throws FacebookException {
 		return profile_setFBML( profileId, toString( fbmlMarkup ), null, null, null );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml ) throws FacebookException {
 		return profile_setFBML( userId, profileFbml, actionFbml, mobileFbml, null );
 	}
 
+	@Deprecated
 	public boolean profile_setFBML( Long userId, String profileFbml, String actionFbml, String mobileFbml, String profileMain ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 5 );
 		Pairs.addParamIfNotBlank( "uid", userId, params );
@@ -2290,10 +2325,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.ADMIN_GET_METRICS, params );
 	}
 
+	@Deprecated
 	public boolean feed_deactivateTemplateBundleByID( Long bundleId ) throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.FEED_DEACTIVATE_TEMPLATE_BUNDLE, Pairs.newPair( "template_bundle_id", bundleId ) ) );
 	}
 
+	@Deprecated
 	public Boolean feed_publishUserAction( Long bundleId, Map<String,String> templateData, List<IFeedImage> images, List<Long> targetIds, String bodyGeneral,
 			int storySize ) throws FacebookException {
 
@@ -2958,6 +2995,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	// ========== SEND NOTIFICATIONS ==========
 
+	@Deprecated
 	public Object notifications_get() throws FacebookException {
 		return callMethod( FacebookMethod.NOTIFICATIONS_GET );
 	}
@@ -2968,14 +3006,17 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return null;
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( Collection<Long> recipientIds, CharSequence notification ) throws FacebookException {
 		return notifications_send( recipientIds, notification.toString(), false );
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( CharSequence notification ) throws FacebookException {
 		return notifications_send( Arrays.asList( users_getLoggedInUser() ), notification );
 	}
 
+	@Deprecated
 	public Collection<String> notifications_send( Collection<Long> recipientIds, String notification, boolean isAppToUser ) throws FacebookException {
 		FacebookMethod method = FacebookMethod.NOTIFICATIONS_SEND;
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );

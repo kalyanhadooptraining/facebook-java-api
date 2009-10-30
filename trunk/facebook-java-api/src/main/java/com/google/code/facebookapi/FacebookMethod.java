@@ -109,9 +109,7 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	NOTIFICATIONS_SEND("facebook.notifications.send"),
 	@Deprecated
 	NOTIFICATIONS_SEND_REQUEST("facebook.notifications.sendRequest"),
-	@Deprecated
 	NOTIFICATIONS_SEND_EMAIL_SESSION("facebook.notifications.sendEmail"),
-	@Deprecated
 	NOTIFICATIONS_SEND_EMAIL_NOSESSION("facebook.notifications.sendEmail"),
 	// Groups
 	GROUPS_GET("facebook.groups.get"),
@@ -142,11 +140,17 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FBML_GET_CUSTOM_TAGS("facebook.fbml.getCustomTags"),
 	FBML_REGISTER_CUSTOM_TAGS("facebook.fbml.registerCustomTags"),
 	// Feed
+	@Deprecated
 	FEED_PUBLISH_TEMPLATIZED_ACTION("facebook.feed.publishTemplatizedAction"),
+	@Deprecated
 	FEED_REGISTER_TEMPLATE("facebook.feed.registerTemplateBundle"),
+	@Deprecated
 	FEED_GET_TEMPLATES("facebook.feed.getRegisteredTemplateBundles"),
+	@Deprecated
 	FEED_GET_TEMPLATE_BY_ID("facebook.feed.getRegisteredTemplateBundleByID"),
+	@Deprecated
 	FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction"),
+	@Deprecated
 	FEED_DEACTIVATE_TEMPLATE_BUNDLE("facebook.feed.deactivateTemplateBundleByID"),
 	// Marketplace
 	@Deprecated
