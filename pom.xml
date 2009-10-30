@@ -19,9 +19,9 @@
     <url>http://code.google.com/p/facebook-java-api/issues/list</url>
   </issueManagement>
   <scm>
-    <url>https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</url>
-    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</connection>
-    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/fbapi-2.0.0</developerConnection>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</developerConnection>
   </scm>
   <developers>
     <developer>

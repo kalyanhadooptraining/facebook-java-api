@@ -13,6 +13,12 @@
   <name>Facebook Java Library</name>
   <description>Facebook Java Library</description>
 
+  <scm>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk/facebooj-java-api</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api</developerConnection>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>com.google.code.facebookapi</groupId>
