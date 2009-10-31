@@ -2396,7 +2396,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.STREAM_GET, params );
 	}
 
-	public Object stream_publish( final String message, final Attachment attachment, final List<BundleActionLink> actionLinks, final Long targetId, final Long userId )
+	public String stream_publish( final String message, final Attachment attachment, final List<BundleActionLink> actionLinks, final Long targetId, final Long userId )
 			throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 
@@ -2408,34 +2408,20 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			}
 		}
 
-		if ( !StringUtils.isEmpty( message ) ) {
-			params.add( Pairs.newPair( "message", message ) );
-		}
+		Pairs.addParamIfNotBlank( "message", message, params );
+
 
 		// A JSON-encoded object containing the text of the post, relevant links, a media type (image, video, mp3, flash), as well as any other key/value pairs you may
 		// want to add.
-		if ( attachment != null ) {
-			params.add( Pairs.newPair( "attachment", attachment.toJson() ) );
-		}
+		Pairs.addParamJsonIfNotBlank( "attachment", attachment, params );
 
 		// An array of action link objects, containing the link text and a hyperlink.
-		JSONArray jsonActionLinks = new JSONArray();
-		if ( actionLinks != null && !actionLinks.isEmpty() ) {
-			for ( BundleActionLink actionLink : actionLinks ) {
-				jsonActionLinks.put( actionLink.toJson() );
-			}
-		}
+		JSONArray jsonActionLinks = BundleActionLink.toJsonArray( actionLinks );
+		Pairs.addParamIfNotBlank( "action_links", jsonActionLinks, params );
 
-		// associate to param
-		if ( jsonActionLinks.length() > 0 ) {
-			params.add( Pairs.newPair( "action_links", jsonActionLinks ) );
-		}
+		Pairs.addParamIfNotBlank( "target_id", targetId, params );
 
-		if ( targetId != null ) {
-			params.add( Pairs.newPair( "target_id", targetId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_PUBLISH, params );
+		return extractString( callMethod( FacebookMethod.STREAM_PUBLISH, params ) );
 	}
 
 	public Object stream_remove( final String postId, final Long userId ) throws FacebookException {

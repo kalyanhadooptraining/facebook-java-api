@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
 @SuppressWarnings("serial")
-public class Attachment implements Serializable {
+public class Attachment implements Serializable, ToJsonObject {
 
 	private String name;
 	private String href;

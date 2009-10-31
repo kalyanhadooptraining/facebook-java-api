@@ -2,6 +2,7 @@ package com.google.code.facebookapi;
 
 import java.io.Serializable;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -80,6 +81,17 @@ public class BundleActionLink implements Serializable {
 	 */
 	public final void setHref( String href ) {
 		this.href = href;
+	}
+
+	public static JSONArray toJsonArray( Iterable<BundleActionLink> list ) {
+		if ( list != null ) {
+			JSONArray out = new JSONArray();
+			for ( BundleActionLink link : list ) {
+				out.put( link.toJson() );
+			}
+			return out;
+		}
+		return null;
 	}
 
 }

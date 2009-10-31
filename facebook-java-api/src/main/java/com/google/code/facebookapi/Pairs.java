@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 
 /**
  * Basic client taking care of rest call mechanics (signing, etc) to facebook. No api knowledge, nor response interpretation is planned.
@@ -86,6 +87,21 @@ public class Pairs {
 		if ( ( value != null ) && ( !"".equals( value ) ) ) {
 			params.add( newPair( name, value ) );
 			return true;
+		}
+		return false;
+	}
+
+	protected static boolean addParamIfNotBlank( String name, JSONArray value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null ) {
+			params.add( newPair( name, value ) );
+			return true;
+		}
+		return false;
+	}
+
+	protected static boolean addParamJsonIfNotBlank( String name, ToJsonObject value, Collection<Pair<String,CharSequence>> params ) {
+		if ( value != null ) {
+			return addParam( name, value.toJson(), params );
 		}
 		return false;
 	}
