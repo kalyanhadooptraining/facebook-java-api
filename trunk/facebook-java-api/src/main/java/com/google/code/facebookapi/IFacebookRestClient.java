@@ -3606,23 +3606,18 @@ public interface IFacebookRestClient<T> {
 
 	public String stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
-	public T stream_remove( String postId, Long userId ) throws FacebookException;
+	public boolean stream_remove( String postId, Long userId ) throws FacebookException;
 
 	@FacebookReturnType
 	public T stream_getComments( String postId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = String.class, JSON = String.class)
-	public T stream_addComment( String postId, String comment, Long userId ) throws FacebookException;
+	public String stream_addComment( String postId, String comment, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
-	public T stream_removeComment( String commentId, Long userId ) throws FacebookException;
+	public boolean stream_removeComment( String commentId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
-	public T stream_addLike( String postId, Long userId ) throws FacebookException;
+	public boolean stream_addLike( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
-	public T stream_removeLike( String postId, Long userId ) throws FacebookException;
+	public boolean stream_removeLike( String postId, Long userId ) throws FacebookException;
 
 	@FacebookReturnType
 	public T stream_getFilters( Long userId ) throws FacebookException;

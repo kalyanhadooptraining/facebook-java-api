@@ -576,6 +576,26 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().stream_publish( message, attachment, actionLinks, targetId, userId );
 	}
 
+	public boolean stream_remove( final String postId, final Long userId ) throws FacebookException {
+		return getClient().stream_remove( postId, userId );
+	}
+
+	public String stream_addComment( String postId, String comment, Long userId ) throws FacebookException {
+		return getClient().stream_addComment( postId, comment, userId );
+	}
+
+	public boolean stream_removeComment( String commentId, Long userId ) throws FacebookException {
+		return getClient().stream_removeComment( commentId, userId );
+	}
+
+	public boolean stream_addLike( String postId, Long userId ) throws FacebookException {
+		return getClient().stream_addLike( postId, userId );
+	}
+
+	public boolean stream_removeLike( String postId, Long userId ) throws FacebookException {
+		return getClient().stream_removeLike( postId, userId );
+	}
+
 	public boolean users_clearStatus() throws FacebookException {
 		return getClient().users_clearStatus();
 	}
