@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1665,59 +1664,29 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Map<ApplicationProperty,String> admin_getAppPropertiesMap( Collection<ApplicationProperty> properties ) throws FacebookException {
-		Map<ApplicationProperty,String> result = new LinkedHashMap<ApplicationProperty,String>();
-		String json = admin_getAppPropertiesAsString( properties );
-		// FIXME: need to use JSON libraries to properly deal with this.
+		return parseAppProperties( admin_getAppPropertiesAsString( properties ) );
+	}
+
+	protected static Map<ApplicationProperty,String> parseAppProperties( String json ) {
+		Map<ApplicationProperty,String> out = new TreeMap<ApplicationProperty,String>();
 		if ( json == null ) {
 			return null;
 		}
-		if ( json.matches( "\\{.*\\}" ) ) {
-			json = json.substring( 1, json.lastIndexOf( "}" ) );
-		} else {
-			json = json.substring( 1, json.lastIndexOf( "]" ) );
-		}
-		String[] parts = json.split( "\\," );
-		for ( String part : parts ) {
-			parseFragment( part, result );
-		}
-
-		return result;
-	}
-
-	protected static Map<ApplicationProperty,String> parseProperties( String json ) {
-		Map<ApplicationProperty,String> result = new TreeMap<ApplicationProperty,String>();
-		if ( json == null ) {
-			return null;
-		}
-		if ( json.matches( "\\{.*\\}" ) ) {
-			json = json.substring( 1, json.lastIndexOf( "}" ) );
-		} else {
-			json = json.substring( 1, json.lastIndexOf( "]" ) );
-		}
-		String[] parts = json.split( "\\," );
-		for ( String part : parts ) {
-			parseFragment( part, result );
-		}
-		return result;
-	}
-
-	protected static void parseFragment( String fragment, Map<ApplicationProperty,String> result ) {
-		if ( fragment.startsWith( "{" ) ) {
-			fragment = fragment.substring( 1, fragment.lastIndexOf( "}" ) );
-		}
-		String keyString = fragment.substring( 1 );
-		keyString = keyString.substring( 0, keyString.indexOf( '"' ) );
-		ApplicationProperty key = ApplicationProperty.getPropertyForString( keyString );
-		String value = fragment.substring( fragment.indexOf( ":" ) + 1 ).replaceAll( "\\\\", "" ); // strip escape characters
-		if ( key.getType().equals( "string" ) ) {
-			result.put( key, value.substring( 1, value.lastIndexOf( '"' ) ) );
-		} else {
-			if ( value.equals( "1" ) ) {
-				result.put( key, "true" );
-			} else {
-				result.put( key, "false" );
+		if ( json.startsWith( "{" ) ) {
+			try {
+				JSONObject obj = new JSONObject( json );
+				Iterator<String> keys = obj.keys();
+				while ( keys.hasNext() ) {
+					String key = keys.next();
+					String val = obj.getString( key );
+					out.put( ApplicationProperty.valueOf( key ), val );
+				}
+			}
+			catch ( JSONException ex ) {
+				throw BasicClientHelper.runtimeException( ex );
 			}
 		}
+		return out;
 	}
 
 	@Deprecated
@@ -1800,14 +1769,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.FRIENDS_GET_LISTS );
 	}
 
-	/**
-	 * Sets several property values for an application. The properties available are analogous to the ones editable via the Facebook Developer application. A session is
-	 * not required to use this method.
-	 * 
-	 * @param properties
-	 *            an ApplicationPropertySet that is translated into a single JSON String.
-	 * @return a boolean indicating whether the properties were successfully set
-	 */
 	public boolean admin_setAppProperties( ApplicationPropertySet properties ) throws FacebookException {
 		if ( null == properties || properties.isEmpty() ) {
 			throw new IllegalArgumentException( "expecting a non-empty set of application properties" );
@@ -1815,16 +1776,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractBoolean( callMethod( FacebookMethod.ADMIN_SET_APP_PROPERTIES, Pairs.newPair( "properties", properties.toJson() ) ) );
 	}
 
-	/**
-	 * Gets property values previously set for an application on either the Facebook Developer application or the with the <code>admin.setAppProperties</code> call. A
-	 * session is not required to use this method.
-	 * 
-	 * @param properties
-	 *            an enumeration of the properties to get
-	 * @return an ApplicationPropertySet
-	 * @see ApplicationProperty
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Admin.getAppProperties"> Developers Wiki: Admin.getAppProperties</a>
-	 */
 	public ApplicationPropertySet admin_getAppPropertiesAsSet( Collection<ApplicationProperty> properties ) throws FacebookException {
 		String propJson = admin_getAppPropertiesAsString( properties );
 		return new ApplicationPropertySet( propJson );

@@ -61,7 +61,7 @@ public class ApplicationPropertySet implements Serializable {
 	 *             if the JSON-encoded mapping doesn't conform to expectations
 	 */
 	public ApplicationPropertySet( String jsonString ) throws ClassCastException {
-		Map<ApplicationProperty,String> mappings = ExtensibleClient.parseProperties( jsonString );
+		Map<ApplicationProperty,String> mappings = ExtensibleClient.parseAppProperties( jsonString );
 		Set<Map.Entry<ApplicationProperty,String>> entries = mappings.entrySet();
 		for ( Map.Entry<ApplicationProperty,String> entry : entries ) {
 			ApplicationProperty prop = entry.getKey();
