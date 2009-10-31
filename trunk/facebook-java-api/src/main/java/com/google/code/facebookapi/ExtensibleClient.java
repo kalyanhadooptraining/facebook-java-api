@@ -1679,7 +1679,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				while ( keys.hasNext() ) {
 					String key = keys.next();
 					String val = obj.getString( key );
-					out.put( ApplicationProperty.valueOf( key ), val );
+					out.put( ApplicationProperty.valueOf( key.toUpperCase() ), val );
 				}
 			}
 			catch ( JSONException ex ) {
