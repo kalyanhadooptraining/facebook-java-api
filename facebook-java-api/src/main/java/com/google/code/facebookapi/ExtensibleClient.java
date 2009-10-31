@@ -2410,7 +2410,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 		Pairs.addParamIfNotBlank( "message", message, params );
 
-
 		// A JSON-encoded object containing the text of the post, relevant links, a media type (image, video, mp3, flash), as well as any other key/value pairs you may
 		// want to add.
 		Pairs.addParamJsonIfNotBlank( "attachment", attachment, params );
@@ -2420,13 +2419,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		Pairs.addParamIfNotBlank( "action_links", jsonActionLinks, params );
 
 		Pairs.addParamIfNotBlank( "target_id", targetId, params );
-
 		return extractString( callMethod( FacebookMethod.STREAM_PUBLISH, params ) );
 	}
 
-	public Object stream_remove( final String postId, final Long userId ) throws FacebookException {
+	public boolean stream_remove( final String postId, final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( isDesktop() ) {
 			params.add( Pairs.newPair( "session_key", getCacheSessionKey() ) );
 		} else {
@@ -2434,45 +2431,26 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				params.add( Pairs.newPair( "uid", userId ) );
 			}
 		}
-
-		if ( !StringUtils.isEmpty( postId ) ) {
-			params.add( Pairs.newPair( "post_id", postId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_REMOVE, params );
+		Pairs.addParamIfNotBlank( "post_id", postId, params );
+		return extractBoolean( callMethod( FacebookMethod.STREAM_REMOVE, params ) );
 	}
 
 	public Object stream_getComments( final String postId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
-		if ( !StringUtils.isEmpty( postId ) ) {
-			params.add( Pairs.newPair( "post_id", postId ) );
-		}
-
+		Pairs.addParamIfNotBlank( "post_id", postId, params );
 		return callMethod( FacebookMethod.STREAM_GET_COMMENTS, params );
 	}
 
-	public Object stream_addComment( final String postId, final String comment, final Long userId ) throws FacebookException {
+	public String stream_addComment( final String postId, final String comment, final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
-		if ( !StringUtils.isEmpty( postId ) ) {
-			params.add( Pairs.newPair( "post_id", postId ) );
-		}
-
-		if ( !StringUtils.isEmpty( comment ) ) {
-			params.add( Pairs.newPair( "comment", comment ) );
-		}
-
-		if ( userId != null ) {
-			params.add( Pairs.newPair( "uid", userId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_ADD_COMMENT, params );
+		Pairs.addParamIfNotBlank( "post_id", postId, params );
+		Pairs.addParamIfNotBlank( "comment", comment, params );
+		Pairs.addParamIfNotBlank( "uid", userId, params );
+		return extractString( callMethod( FacebookMethod.STREAM_ADD_COMMENT, params ) );
 	}
 
-	public Object stream_removeComment( final String commentId, final Long userId ) throws FacebookException {
+	public boolean stream_removeComment( final String commentId, final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( isDesktop() ) {
 			params.add( Pairs.newPair( "session_key", getCacheSessionKey() ) );
 		} else {
@@ -2480,17 +2458,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				params.add( Pairs.newPair( "uid", userId ) );
 			}
 		}
-
-		if ( !StringUtils.isEmpty( commentId ) ) {
-			params.add( Pairs.newPair( "comment_id", commentId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_REMOVE_COMMENT, params );
+		Pairs.addParamIfNotBlank( "comment_id", commentId, params );
+		return extractBoolean( callMethod( FacebookMethod.STREAM_REMOVE_COMMENT, params ) );
 	}
 
-	public Object stream_addLike( final String postId, final Long userId ) throws FacebookException {
+	public boolean stream_addLike( final String postId, final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( isDesktop() ) {
 			params.add( Pairs.newPair( "session_key", getCacheSessionKey() ) );
 		} else {
@@ -2498,17 +2471,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				params.add( Pairs.newPair( "uid", userId ) );
 			}
 		}
-
-		if ( !StringUtils.isEmpty( postId ) ) {
-			params.add( Pairs.newPair( "post_id", postId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_ADD_LIKE, params );
+		Pairs.addParamIfNotBlank( "post_id", postId, params );
+		return extractBoolean( callMethod( FacebookMethod.STREAM_ADD_LIKE, params ) );
 	}
 
-	public Object stream_removeLike( final String postId, final Long userId ) throws FacebookException {
+	public boolean stream_removeLike( final String postId, final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( isDesktop() ) {
 			params.add( Pairs.newPair( "session_key", getCacheSessionKey() ) );
 		} else {
@@ -2516,17 +2484,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				params.add( Pairs.newPair( "uid", userId ) );
 			}
 		}
-
-		if ( !StringUtils.isEmpty( postId ) ) {
-			params.add( Pairs.newPair( "post_id", postId ) );
-		}
-
-		return callMethod( FacebookMethod.STREAM_REMOVE_LIKE, params );
+		Pairs.addParamIfNotBlank( "post_id", postId, params );
+		return extractBoolean( callMethod( FacebookMethod.STREAM_REMOVE_LIKE, params ) );
 	}
 
 	public Object stream_getFilters( final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-
 		if ( isDesktop() ) {
 			params.add( Pairs.newPair( "session_key", getCacheSessionKey() ) );
 		} else {
@@ -2534,7 +2497,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				params.add( Pairs.newPair( "uid", userId ) );
 			}
 		}
-
 		return callMethod( FacebookMethod.STREAM_GET_FILTERS, params );
 	}
 
