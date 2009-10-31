@@ -11,25 +11,22 @@ import com.sun.mirror.declaration.AnnotationTypeDeclaration;
 
 public class FacebookReturnTypeProcessorFactory5 implements AnnotationProcessorFactory {
 
-    // Process any set of annotations
-    private static final Collection<String> supportedAnnotations
-        = Collections.unmodifiableCollection(Collections.singletonList("com.google.code.facebookapi.FacebookReturnType"));
+	// Process any set of annotations
+	private static final Collection<String> supportedAnnotations = Collections.unmodifiableCollection( Collections
+			.singletonList( "com.google.code.facebookapi.FacebookReturnType" ) );
 
-    // No supported options
-    private static final Collection<String> supportedOptions = Collections.emptySet();
+	// No supported options
+	private static final Collection<String> supportedOptions = Collections.emptySet();
 
-    public Collection<String> supportedAnnotationTypes() {
-        return supportedAnnotations;
-    }
+	public Collection<String> supportedAnnotationTypes() {
+		return supportedAnnotations;
+	}
 
-    public Collection<String> supportedOptions() {
-        return supportedOptions;
-    }
+	public Collection<String> supportedOptions() {
+		return supportedOptions;
+	}
 
-    public AnnotationProcessor getProcessorFor(
-            Set<AnnotationTypeDeclaration> atds,
-            AnnotationProcessorEnvironment env) {
-        return new FacebookReturnTypeProcessor5(env);
-    }
+	public AnnotationProcessor getProcessorFor( Set<AnnotationTypeDeclaration> atds, AnnotationProcessorEnvironment env ) {
+		return new FacebookReturnTypeProcessor5( env );
+	}
 }
-
