@@ -571,6 +571,11 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().sms_sendMessageWithSession( userId, message );
 	}
 
+	public String stream_publish( final String message, final Attachment attachment, final List<BundleActionLink> actionLinks, final Long targetId, final Long userId )
+			throws FacebookException {
+		return getClient().stream_publish( message, attachment, actionLinks, targetId, userId );
+	}
+
 	public boolean users_clearStatus() throws FacebookException {
 		return getClient().users_clearStatus();
 	}

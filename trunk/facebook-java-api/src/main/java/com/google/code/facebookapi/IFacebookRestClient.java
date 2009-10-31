@@ -3604,8 +3604,7 @@ public interface IFacebookRestClient<T> {
 	@FacebookReturnType
 	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = String.class, JSON = String.class)
-	public T stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
+	public String stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
 
 	@FacebookReturnType(JAXB = Boolean.class, JSON = Boolean.class)
 	public T stream_remove( String postId, Long userId ) throws FacebookException;
