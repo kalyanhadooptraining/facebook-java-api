@@ -165,11 +165,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return responseFormat;
 	}
 
-	@Deprecated
-	public void setResponseFormat( String val ) {
-		// ignored
-	}
-
 	public String getApiKey() {
 		return _apiKey;
 	}
