@@ -233,7 +233,6 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	}
 
 	public void process() {
-
 		DateFormat isoDateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.mmmZ" );
 		String now = isoDateFormat.format( new Date() );
 
@@ -355,21 +354,21 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			CharSequence paramListCode = parametersExcludingTypes( e );
 
 			outJAXB.println( methodCode.toString().replace( "%RETURNTYPE%", jaxbReturnType ) );
-			outJAXB.println( "        client.setResponseFormat(\"xml\");" );
+			// outJAXB.println( "        client.setResponseFormat(\"xml\");" );
 			outJAXB.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outJAXB.println( "        return (" + jaxbReturnType + ")parseCallResult( rawResponse );" );
 			outJAXB.println( "    }" );
 			outJAXB.println();
 
 			outJSON.println( methodCode.toString().replace( "%RETURNTYPE%", jsonReturnType ) );
-			outJSON.println( "        client.setResponseFormat(\"json\");" );
+			// outJSON.println( "        client.setResponseFormat(\"json\");" );
 			outJSON.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outJSON.println( "        return (" + jsonReturnType + ")parseCallResult( rawResponse );" );
 			outJSON.println( "    }" );
 			outJSON.println();
 
 			outXML.println( methodCode.toString().replace( "%RETURNTYPE%", xmlReturnType ) );
-			outXML.println( "        client.setResponseFormat(\"xml\");" );
+			// outXML.println( "        client.setResponseFormat(\"xml\");" );
 			outXML.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outXML.println( "        return (" + xmlReturnType + ")parseCallResult( rawResponse );" );
 			outXML.println( "    }" );
@@ -378,11 +377,12 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	}
 
 
-	String stripDotClass( String input ) {
+	public static String stripDotClass( String input ) {
 		if ( !input.endsWith( ".class" ) ) {
 			return input;
 		} else {
 			return input.substring( 0, input.length() - 6 );
 		}
 	}
+
 }
