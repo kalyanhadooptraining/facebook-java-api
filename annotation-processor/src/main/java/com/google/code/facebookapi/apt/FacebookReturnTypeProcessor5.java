@@ -354,21 +354,18 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			CharSequence paramListCode = parametersExcludingTypes( e );
 
 			outJAXB.println( methodCode.toString().replace( "%RETURNTYPE%", jaxbReturnType ) );
-			// outJAXB.println( "        client.setResponseFormat(\"xml\");" );
 			outJAXB.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outJAXB.println( "        return (" + jaxbReturnType + ")parseCallResult( rawResponse );" );
 			outJAXB.println( "    }" );
 			outJAXB.println();
 
 			outJSON.println( methodCode.toString().replace( "%RETURNTYPE%", jsonReturnType ) );
-			// outJSON.println( "        client.setResponseFormat(\"json\");" );
 			outJSON.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outJSON.println( "        return (" + jsonReturnType + ")parseCallResult( rawResponse );" );
 			outJSON.println( "    }" );
 			outJSON.println();
 
 			outXML.println( methodCode.toString().replace( "%RETURNTYPE%", xmlReturnType ) );
-			// outXML.println( "        client.setResponseFormat(\"xml\");" );
 			outXML.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
 			outXML.println( "        return (" + xmlReturnType + ")parseCallResult( rawResponse );" );
 			outXML.println( "    }" );
