@@ -580,6 +580,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				conn.setReadTimeout( _readTimeout );
 			}
 			conn.setRequestMethod( "POST" );
+			conn.setRequestProperty( "Content-type", "application/x-www-form-urlencoded" );
 			conn.setDoOutput( true );
 			conn.connect();
 			out = conn.getOutputStream();
