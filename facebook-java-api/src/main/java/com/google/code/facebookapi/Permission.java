@@ -78,17 +78,7 @@ public enum Permission {
 	 * 
 	 * Note: You should prompt users for the publish_stream permission instead, since it includes the ability to let a user share links.
 	 */
-	SHARE_ITEM("share_item"),
-	/**
-	 * This permission allows an app to create and modify listings for a user via the marketplace.removeListing and marketplace.createListing methods. The user will not
-	 * need to approve each listing individually.
-	 */
-	CREATE_LISTING("create_listing"),
-	/**
-	 * @deprecated {@link #CREATE_LISTING}
-	 */
-	@Deprecated
-	MARKETPLACE_CREATE("create_listing");
+	SHARE_ITEM("share_item");
 
 	/**
 	 * The unchanging part of the URL to use when authorizing permissions.
