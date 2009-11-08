@@ -45,7 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
@@ -61,11 +60,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
-
-	public static final String MARKETPLACE_STATUS_DEFAULT = "DEFAULT";
-	public static final String MARKETPLACE_STATUS_NOT_SUCCESS = "NOT_SUCCESS";
-	public static final String MARKETPLACE_STATUS_SUCCESS = "SUCCESS";
-
 
 	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -887,178 +881,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractString( d );
 	}
 
-	/**
-	 * Create a marketplace listing
-	 * 
-	 * @param showOnProfile
-	 *            whether the listing can be shown on the user's profile
-	 * @param attrs
-	 *            the properties of the listing
-	 * @return the id of the created listing
-	 * @see MarketplaceListing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 */
-	@Deprecated
-	public Long marketplace_createListing( Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
-		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, Pairs.newPair( "show_on_profile", ( showOnProfile ? "1" : "0" ) ), Pairs.newPair(
-				"listing_id", "0" ), Pairs.newPair( "listing_attrs", attrs.jsonify() ) );
-		return extractLong( result );
-	}
-
-	/**
-	 * Modify a marketplace listing
-	 * 
-	 * @param listingId
-	 *            identifies the listing to be modified
-	 * @param showOnProfile
-	 *            whether the listing can be shown on the user's profile
-	 * @param attrs
-	 *            the properties of the listing
-	 * @return the id of the edited listing
-	 * @see MarketplaceListing
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.createListing"> Developers Wiki: marketplace.createListing</a>
-	 */
-	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketplaceListing attrs ) throws FacebookException {
-		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, Pairs.newPair( "show_on_profile", ( showOnProfile ? "1" : "0" ) ), Pairs.newPair(
-				"listing_id", listingId ), Pairs.newPair( "listing_attrs", attrs.jsonify() ) );
-		return extractLong( result );
-	}
-
-	/**
-	 * Remove a marketplace listing
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @return boolean indicating whether the listing was removed
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	public boolean marketplace_removeListing( Long listingId ) throws FacebookException {
-		return marketplace_removeListing( listingId, MARKETPLACE_STATUS_DEFAULT );
-	}
-
-	/**
-	 * Remove a marketplace listing
-	 * 
-	 * @param listingId
-	 *            the listing to be removed
-	 * @param status
-	 *            MARKETPLACE_STATUS_DEFAULT, MARKETPLACE_STATUS_SUCCESS, or MARKETPLACE_STATUS_NOT_SUCCESS
-	 * @return boolean indicating whether the listing was removed
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.removeListing"> Developers Wiki: marketplace.removeListing</a>
-	 */
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, CharSequence status ) throws FacebookException {
-		assert MARKETPLACE_STATUS_DEFAULT.equals( status ) || MARKETPLACE_STATUS_SUCCESS.equals( status ) || MARKETPLACE_STATUS_NOT_SUCCESS.equals( status ) : "Invalid status: "
-				+ status;
-		String result = callMethod( FacebookMethod.MARKETPLACE_REMOVE_LISTING, Pairs.newPair( "listing_id", listingId ), Pairs.newPair( "status", status ) );
-		return extractBoolean( result );
-	}
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 */
-	@Deprecated
-	public List<String> marketplace_getCategories() throws FacebookException {
-		Object temp = callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
-		if ( temp == null ) {
-			return null;
-		}
-		List<String> results = new ArrayList<String>();
-		if ( temp instanceof Document ) {
-			Document d = (Document) temp;
-			NodeList cats = d.getElementsByTagName( "marketplace_category" );
-			for ( int count = 0; count < cats.getLength(); count++ ) {
-				results.add( cats.item( count ).getFirstChild().getTextContent() );
-			}
-		} else {
-			JSONObject j = (JSONObject) temp;
-			Iterator it = j.keys();
-			while ( it.hasNext() ) {
-				try {
-					results.add( j.get( (String) it.next() ).toString() );
-				}
-				catch ( Exception ex ) {
-					BasicClientHelper.runtimeException( ex );
-				}
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Get the subcategories available for a category.
-	 * 
-	 * @param category
-	 *            a category, e.g. "HOUSING"
-	 * @return a T listing the marketplace sub-categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getSubCategories"> Developers Wiki: marketplace.getSubCategories</a>
-	 */
-	@Deprecated
-	public Object marketplace_getSubCategories( CharSequence category ) throws FacebookException {
-		return callMethod( FacebookMethod.MARKETPLACE_GET_SUBCATEGORIES, Pairs.newPair( "category", category ) );
-	}
-
-	/**
-	 * Fetch marketplace listings, filtered by listing IDs and/or the posting users' IDs.
-	 * 
-	 * @param listingIds
-	 *            listing identifiers (required if uids is null/empty)
-	 * @param userIds
-	 *            posting user identifiers (required if listingIds is null/empty)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getListings"> Developers Wiki: marketplace.getListings</a>
-	 */
-	@Deprecated
-	public Object marketplace_getListings( Collection<Long> listingIds, Collection<Long> userIds ) throws FacebookException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 2 );
-		if ( null != listingIds && !listingIds.isEmpty() ) {
-			params.add( Pairs.newPair( "listing_ids", BasicClientHelper.delimit( listingIds ) ) );
-		}
-		if ( null != userIds && !userIds.isEmpty() ) {
-			params.add( Pairs.newPair( "uids", BasicClientHelper.delimit( userIds ) ) );
-		}
-		assert !params.isEmpty() : "Either listingIds or userIds should be provided";
-		return callMethod( FacebookMethod.MARKETPLACE_GET_LISTINGS, params );
-	}
-
-	/**
-	 * Search for marketplace listings, optionally by category, subcategory, and/or query string.
-	 * 
-	 * @param category
-	 *            the category of listings desired (optional except if subcategory is provided)
-	 * @param subCategory
-	 *            the subcategory of listings desired (optional)
-	 * @param query
-	 *            a query string (optional)
-	 * @return a T of marketplace listings
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.search"> Developers Wiki: marketplace.search</a>
-	 */
-	@Deprecated
-	public Object marketplace_search( CharSequence category, CharSequence subCategory, CharSequence query ) throws FacebookException {
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
-		boolean hasCategory = Pairs.addParamIfNotBlank( "category", category, params );
-		if ( hasCategory ) {
-			Pairs.addParamIfNotBlank( "subcategory", subCategory, params );
-		}
-		Pairs.addParamIfNotBlank( "query", query, params );
-		return callMethod( FacebookMethod.MARKETPLACE_SEARCH, params );
-	}
-
-	/**
-	 * Get the categories available in marketplace.
-	 * 
-	 * @return a T listing the marketplace categories
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Marketplace.getCategories"> Developers Wiki: marketplace.getCategories</a>
-	 */
-	@Deprecated
-	public Object marketplace_getCategoriesObject() throws FacebookException {
-		return callMethod( FacebookMethod.MARKETPLACE_GET_CATEGORIES );
-	}
-
 	public String getRawResponse() {
 		return rawResponse;
 	}
@@ -1122,33 +944,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		} else {
 			return extractBoolean10( callMethod( FacebookMethod.USERS_HAS_APP_PERMISSION, Pairs.newPair( "ext_perm", perm.getName() ) ) );
 		}
-	}
-
-
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes ) throws FacebookException {
-		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, Pairs.newPair( "show_on_profile", ( showOnProfile ? "1" : "0" ) ), Pairs.newPair(
-				"listing_id", "0" ), Pairs.newPair( "listing_attrs", attributes ) );
-		return extractLong( result );
-	}
-
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing ) throws FacebookException {
-		return marketplace_createListing( listingId, showOnProfile, listing.getAttribs() );
-	}
-
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing ) throws FacebookException {
-		return marketplace_createListing( null, showOnProfile, listing.getAttribs() );
-	}
-
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status ) throws FacebookException {
-		return marketplace_removeListing( listingId, status.getName() );
-	}
-
-	@Deprecated
-	public Long marketplace_editListing( Long listingId, Boolean showOnProfile, MarketListing attrs ) throws FacebookException {
-		String result = callMethod( FacebookMethod.MARKETPLACE_CREATE_LISTING, Pairs.newPair( "show_on_profile", ( showOnProfile ? "1" : "0" ) ), Pairs.newPair(
-				"listing_id", listingId ), Pairs.newPair( "listing_attrs", attrs.getAttribs() ) );
-		return extractLong( result );
 	}
 
 	public boolean users_setStatus( String newStatus, boolean clear ) throws FacebookException {
@@ -1933,49 +1728,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public boolean auth_expireSession() throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
-	}
-
-	@Deprecated
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, String attributes, Long userId ) throws FacebookException {
-		if ( listingId == null ) {
-			listingId = 0l;
-		}
-		MarketListing test = new MarketListing( attributes );
-		if ( !test.verify() ) {
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "The specified listing is invalid!" );
-		}
-		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 4 );
-		params.add( Pairs.newPair( "listing_id", listingId ) );
-		if ( showOnProfile ) {
-			params.add( Pairs.newPair( "show_on_profile", "true" ) );
-		}
-		params.add( Pairs.newPair( "listing_attrs", attributes ) );
-		params.add( Pairs.newPair( "uid", listingId ) );
-		return extractLong( callMethod( FacebookMethod.MARKET_CREATE_LISTING_NOSESSION, params ) );
-	}
-
-	public Long marketplace_createListing( Long listingId, boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException {
-		return marketplace_createListing( listingId, showOnProfile, listing.getAttribs(), userId );
-	}
-
-	public Long marketplace_createListing( boolean showOnProfile, MarketListing listing, Long userId ) throws FacebookException {
-		return marketplace_createListing( 0l, showOnProfile, listing.getAttribs(), userId );
-	}
-
-	public boolean marketplace_removeListing( Long listingId, Long userId ) throws FacebookException {
-		return marketplace_removeListing( listingId, MarketListingStatus.DEFAULT, userId );
-	}
-
-	@Deprecated
-	public boolean marketplace_removeListing( Long listingId, MarketListingStatus status, Long userId ) throws FacebookException {
-		if ( status == null ) {
-			status = MarketListingStatus.DEFAULT;
-		}
-		if ( listingId == null ) {
-			return false;
-		}
-		return extractBoolean( callMethod( FacebookMethod.MARKET_REMOVE_LISTING_NOSESSION, Pairs.newPair( "listing_id", listingId ), Pairs.newPair( "status", status
-				.getName() ), Pairs.newPair( "uid", userId ) ) );
 	}
 
 	@Deprecated

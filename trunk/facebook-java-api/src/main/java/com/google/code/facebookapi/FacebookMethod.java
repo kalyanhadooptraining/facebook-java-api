@@ -152,53 +152,6 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	FEED_PUBLISH_USER_ACTION("facebook.feed.publishUserAction"),
 	@Deprecated
 	FEED_DEACTIVATE_TEMPLATE_BUNDLE("facebook.feed.deactivateTemplateBundleByID"),
-	// Marketplace
-	@Deprecated
-	MARKET_CREATE_LISTING("facebook.marketplace.createListing"),
-	@Deprecated
-	MARKET_CREATE_LISTING_NOSESSION("facebook.marketplace.createListing"),
-	@Deprecated
-	MARKET_GET_CATEGORIES("facebook.marketplace.getCategories"),
-	@Deprecated
-	MARKET_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories"),
-	@Deprecated
-	MARKET_GET_LISTINGS("facebook.marketplace.getListings"),
-	@Deprecated
-	MARKET_REMOVE_LISTING("facebook.marketplace.removeListing"),
-	@Deprecated
-	MARKET_REMOVE_LISTING_NOSESSION("facebook.marketplace.removeListing"),
-	@Deprecated
-	MARKET_SEARCH("facebook.marketplace.search"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_GET_CATEGORIES instead.
-	 */
-	@Deprecated
-	MARKETPLACE_GET_CATEGORIES("facebook.marketplace.getCategories"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_GET_SUBCATEGORIES instead.
-	 */
-	@Deprecated
-	MARKETPLACE_GET_SUBCATEGORIES("facebook.marketplace.getSubCategories"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_GET_LISTINGS instead.
-	 */
-	@Deprecated
-	MARKETPLACE_GET_LISTINGS("facebook.marketplace.getListings"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_CREATE_LISTING instead.
-	 */
-	@Deprecated
-	MARKETPLACE_CREATE_LISTING("facebook.marketplace.createListing"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_SEARCH instead.
-	 */
-	@Deprecated
-	MARKETPLACE_SEARCH("facebook.marketplace.search"),
-	/**
-	 * @deprecated provided for legacy support only. Please use MARKET_REMOVE_LISTING instead.
-	 */
-	@Deprecated
-	MARKETPLACE_REMOVE_LISTING("facebook.marketplace.removeListing"),
 
 	// Data
 	DATA_SET_COOKIE("facebook.data.setCookie"),
@@ -296,10 +249,10 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 
 	static {
 		listSessionNone = EnumSet.of( USERS_IS_APP_ADDED_NOSESSION, USERS_IS_APP_USER_NOSESSION, PROFILE_SET_FBML_NOSESSION, PROFILE_GET_FBML_NOSESSION,
-				USERS_SET_STATUS_NOSESSION, MARKET_CREATE_LISTING_NOSESSION, MARKET_REMOVE_LISTING_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION,
-				PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION, PAGES_GET_INFO_NOSESSION, SMS_SEND, SMS_SEND_MESSAGE, FBML_REFRESH_IMG_SRC,
-				FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE, CONNECT_REGISTER_USERS, CONNECT_UNREGISTER_USERS, AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION,
-				NOTIFICATIONS_SEND_EMAIL_NOSESSION, FBML_DELETE_CUSTOM_TAGS, FBML_GET_CUSTOM_TAGS, FBML_REGISTER_CUSTOM_TAGS );
+				USERS_SET_STATUS_NOSESSION, PHOTOS_ADD_TAG_NOSESSION, PHOTOS_CREATE_ALBUM_NOSESSION, PHOTOS_UPLOAD_NOSESSION, USERS_HAS_APP_PERMISSION_NOSESSION,
+				PAGES_GET_INFO_NOSESSION, SMS_SEND, SMS_SEND_MESSAGE, FBML_REFRESH_IMG_SRC, FBML_REFRESH_REF_URL, FBML_SET_REF_HANDLE, CONNECT_REGISTER_USERS,
+				CONNECT_UNREGISTER_USERS, AUTH_REVOKE_EXTENDED_PERMISSION_NOSESSION, NOTIFICATIONS_SEND_EMAIL_NOSESSION, FBML_DELETE_CUSTOM_TAGS, FBML_GET_CUSTOM_TAGS,
+				FBML_REGISTER_CUSTOM_TAGS );
 		listTakesFile = EnumSet.of( PHOTOS_UPLOAD, PHOTOS_UPLOAD_NOSESSION );
 	}
 
