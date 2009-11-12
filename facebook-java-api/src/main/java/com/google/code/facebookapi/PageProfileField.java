@@ -1,35 +1,3 @@
-/*
- +---------------------------------------------------------------------------+
- | Facebook Development Platform Java Client                                 |
- +---------------------------------------------------------------------------+
- | Copyright (c) 2007 Facebook, Inc.                                         |
- | All rights reserved.                                                      |
- |                                                                           |
- | Redistribution and use in source and binary forms, with or without        |
- | modification, are permitted provided that the following conditions        |
- | are met:                                                                  |
- |                                                                           |
- | 1. Redistributions of source code must retain the above copyright         |
- |    notice, this list of conditions and the following disclaimer.          |
- | 2. Redistributions in binary form must reproduce the above copyright      |
- |    notice, this list of conditions and the following disclaimer in the    |
- |    documentation and/or other materials provided with the distribution.   |
- |                                                                           |
- | THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR      |
- | IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES |
- | OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.   |
- | IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,          |
- | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT  |
- | NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, |
- | DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY     |
- | THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT       |
- | (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF  |
- | THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.         |
- +---------------------------------------------------------------------------+
- | For help with this library, contact developers-help@facebook.com          |
- +---------------------------------------------------------------------------+
- */
-
 package com.google.code.facebookapi;
 
 /**
@@ -38,26 +6,39 @@ package com.google.code.facebookapi;
  * @see IFacebookRestClient#pages_getInfo
  */
 public enum PageProfileField {
-	/** The id corresponding to the page returned. This is always returned (whether included in fields or not, and always as the first subelement. */
+
+	/** The ID of the Page being queried. */
 	PAGE_ID("page_id"),
 
-	/** Page entered profile field. May not be blank. */
+	/** The name of the Page being queried. */
 	NAME("name"),
 
-	/** URL of profile picture, with max width 50px and max height 150px. May be blank. */
+	/** The URL to the small-sized picture for the Page being queried. The image can have a maximum width of 50px and a maximum height of 150px. This URL may be blank. */
 	PIC_SMALL("pic_small"),
 
-	/** URL of a square section of the profile picture, with width 50px and height 50px. May be blank. */
-	PIC_SQUARE("pic_square"),
-
-	/** URL of profile picture with max width 200px and max height 600px. May be blank. */
+	/**
+	 * The URL to the large-sized profile picture for the Page being queried. The image can have a maximum width of 200px and a maximum height of 600px. This URL may be
+	 * blank.
+	 */
 	PIC_BIG("pic_big"),
 
-	/** URL of profile picture with max width 100px and max height 300px. May be blank. */
+	/** The URL to the square profile picture for the Page being queried. The image can have a maximum width and height of 50px. This URL may be blank. */
+	PIC_SQUARE("pic_square"),
+
+	/**
+	 * The URL to the medium-sized profile picture for the Page being queried. The image can have a maximum width of 100px and a maximum height of 300px. This URL may be
+	 * blank.
+	 */
 	PIC("pic"),
 
-	/** URL of profile picture with max width 396px and max height 1188px. May be blank. */
+	/**
+	 * The URL to the largest-sized profile picture for the Page being queried. The image can have a maximum width of 396px and a maximum height of 1188px. This URL may
+	 * be blank.
+	 */
 	PIC_LARGE("pic_large"),
+
+	/** The profile URL for the Page being queried. If the Page admin specified a username for the Page, page_url contains the username. */
+	PAGE_URL("page_url"),
 
 	/** Contains the type of the page. */
 	TYPE("type"),
@@ -65,11 +46,32 @@ public enum PageProfileField {
 	/** Contains the website of the page. */
 	WEBSITE("website"),
 
-	/**
-	 * Contains the location of the entity. Applies to Local Businesses. Contains five children: street - may be blank, city - may be blank, state - well-defined
-	 * two-letter American state or Canadian province abbreviation, and may be blank, country - well-defined, may be blank, zip - an integer, 0 if unspecified.
-	 */
+	/** Indicates whether a calling application has been added by the Page being queried. */
+	HAS_ADDED_APP("has_added_app"),
+
+	/** The date when the subject of the Page being queried was founded. This field may be blank. */
+	FOUNDED("founded"),
+
+	/** Summary of the subject of the Page being queried. This field may be blank. */
+	COMPANY_OVERVIEW("company_overview"),
+
+	/** The mission statement of the organization that is the subject of the Page being queried. This field may be blank. */
+	MISSION("mission"),
+
+	/** The products offered by the company on the Page being queried. This field may be blank. */
+	PRODUCTS("products"),
+
+	/** The location of the Page being queried, including the street, city, state, country and zip (or post code). Some of the fields may be blank. */
 	LOCATION("location"),
+
+	/**
+	 * Parking options available. <br/>
+	 * Contains three children: street, lot, and valet. Each field returned is a boolean value (1 or 0) indicating if the Page has the specified parking option.
+	 */
+	PARKING("parking"),
+
+	/** Public transit details, e.g. "Take Caltrain to Palo Alto station. Walk down University Ave one block." */
+	PUBLIC_TRANSIT("public_transit"),
 
 	/**
 	 * Contains the operating hours. Each local business will be allowed to specify up to two sets of operating hours per day. Contains the following children: <br/>
@@ -80,15 +82,6 @@ public enum PageProfileField {
 	 * Each field is returned with time (in seconds since epoch). For example, 9:00 AM is represented as 406800
 	 */
 	HOURS("hours"),
-
-	/**
-	 * Parking options available. <br/> Contains three children: street, lot, and valet. Each field returned is a boolean value (1 or 0) indicating if the Page has the
-	 * specified parking option.
-	 */
-	PARKING("parking"),
-
-	/** Public transit details, e.g. "Take Caltrain to Palo Alto station. Walk down University Ave one block." */
-	PUBLIC_TRANSIT("public_transit"),
 
 	/** Restaurant recommended attire, may be one of Unspecfied, Casual, or Dressy */
 	ATTIRE("attire"),
@@ -102,86 +95,89 @@ public enum PageProfileField {
 	 */
 	PAYMENT_OPTIONS("payment_options"),
 
-	/** Members of the band, may be blank. */
-	BAND_MEMBERS("band_members"),
+	/** The team of people preparing the food at the restaurant at the Page being queried. This field may be blank. */
+	CULINARY_TEAM("culinary_team"),
 
-	/** biography field, may be blank. */
-	BIO("bio"),
+	/** The general manager of the Page being queried. This field may be blank. */
+	GENERAL_MANAGER("general_manager"),
 
-	/** hometown field, may be blank. */
-	HOMETOWN("hometown"),
+	/** */
+	PRICE_RANGE("price_range"),
 
-	/**
-	 * genre of music. Contains the following children: dance, party, relax, talk, think, workout, sing, intimate, raunchy, headphones . Notes on the children: Zero or
-	 * more of them may be set May be 1 or 0.
-	 */
-	GENRE("genre"),
+	/** */
+	RESTAURANT_SERVICES("restaurant_services"),
 
-	/** record label, may be blank */
-	RECORD_LABEL("record_label"),
+	/** */
+	RESTAURANT_SPECIALTIES("restaurant_specialties"),
 
-	/** influences, may be blank */
-	INFLUENCES("influences"),
-
-	/** Bool (0 or 1) indicating whether the page has added the calling application to their Facebook account. */
-	HAS_ADDED_APP("has_added_app"),
-
-	/** When company was founded, may be blank */
-	FOUNDED("founded"),
-
-	/** overview of company, may be blank */
-	COMPANY_OVERVIEW("company_overview"),
-
-	/** Mission of company, may be blank */
-	MISSION("mission"),
-
-	/** Company's products, may be blank */
-	PRODUCTS("products"),
-
-	/** Release date of film, may be blank */
+	/** */
 	RELEASE_DATE("release_date"),
 
-	/** Who's starring in TV/Film, may be blank */
+	/** */
+	GENRE("genre"),
+
+	/** */
 	STARRING("starring"),
 
-	/** Who wrote TV/Film, may be blank */
-	WRITTEN_BY("written_by"),
+	/** */
+	SCREENPLAY_BY("screenplay_by"),
 
-	/** Who directed TV/Film, may be blank */
+	/** */
 	DIRECTED_BY("directed_by"),
 
-	/** Who produced TV/Film, may be blank */
+	/** */
 	PRODUCED_BY("produced_by"),
 
-	/** Studio Film was produced, may be blank */
+	/** */
 	STUDIO("studio"),
 
-	/** Awards received by TV/Film, may be blank */
+	/** */
 	AWARDS("awards"),
 
-	/** Plot outline of TV/Film, may be blank */
+	/** */
 	PLOT_OUTLINE("plot_outline"),
 
-	/** Network of TV show, may be blank */
+	/** */
 	NETWORK("network"),
 
-	/** Season of TV show, may be blank */
+	/** */
 	SEASON("season"),
 
-	/** Schedule of TV show, may be blank */
+	/** */
 	SCHEDULE("schedule"),
 
-	/** Current location, may be blank */
+	/** */
+	WRITTEN_BY("written_by"),
+
+	/** */
+	BAND_MEMBERS("band_members"),
+
+	/** */
+	HOMETOWN("hometown"),
+
+	/** */
 	CURRENT_LOCATION("current_location"),
+
+	/** */
+	RECORD_LABEL("record_label"),
 
 	/** Boooking agent, may be blank */
 	BOOKING_AGENT("booking_agent"),
 
-	/** Artists also liked by the musician, may be blank */
+	/** */
+	PRESS_CONTACT("press_contact"),
+
+	/** */
 	ARTISTS_WE_LIKE("artists_we_like"),
+
+	/** influences, may be blank */
+	INFLUENCES("influences"),
 
 	/** Band interests, may be blank */
 	BAND_INTERESTS("band_interests"),
+
+	/** biography field, may be blank. */
+	BIO("bio"),
 
 	/** Affiliation field of person or team, may be blank */
 	AFFILIATION("affiliation"),
@@ -208,7 +204,13 @@ public enum PageProfileField {
 	MPG("mpg"),
 
 	/** general info field, may be blank */
-	GENERAL_INFO("general_info");
+	GENERAL_INFO("general_info"),
+
+	/** */
+	FAN_COUNT("fan_count"),
+
+	/** */
+	USERNAME("username");
 
 	private String fieldName;
 
