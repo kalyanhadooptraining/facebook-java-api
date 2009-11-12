@@ -968,8 +968,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = ( null == cacheSessionKey ) ? FacebookMethod.PAGES_GET_INFO_NOSESSION : FacebookMethod.PAGES_GET_INFO;
-		return callMethod( method, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
+		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper
+				.delimit( fields ) ) );
 	}
 
 	/**
@@ -990,8 +990,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( fields == null || fields.isEmpty() ) {
 			throw new IllegalArgumentException( "fields cannot be empty or null" );
 		}
-		IFacebookMethod method = null == cacheSessionKey ? FacebookMethod.PAGES_GET_INFO_NOSESSION : FacebookMethod.PAGES_GET_INFO;
-		return callMethod( method, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper.delimit( fields ) ) );
+		return callMethod( FacebookMethod.PAGES_GET_INFO, Pairs.newPair( "page_ids", BasicClientHelper.delimit( pageIds ) ), Pairs.newPair( "fields", BasicClientHelper
+				.delimit( fields ) ) );
 	}
 
 	/**
