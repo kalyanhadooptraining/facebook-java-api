@@ -1903,7 +1903,11 @@
 <xsd:element name="gifts_update_response" type="xsd:string" />
 
 <xsd:element name="fql_query_response">
-  <xsd:complexType />
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any />
+    </xsd:sequence>
+  </xsd:complexType>
 </xsd:element>
 
 <xsd:element name="fql_multiquery_response">
