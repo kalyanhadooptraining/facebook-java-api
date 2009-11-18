@@ -19,7 +19,7 @@ public class Issue30InfoMusicListTest {
 		UsersGetInfoResponse response = client.users_getInfo( Arrays.asList( uid ), fields );
 		User user = response.getUser().get( 0 );
 		System.out.println( "music:" + user.getMusic() );
-		//System.out.println( "music-raw:" + client.getRawResponse() );
+		// System.out.println( "music-raw:" + client.getRawResponse() );
 	}
 
 }

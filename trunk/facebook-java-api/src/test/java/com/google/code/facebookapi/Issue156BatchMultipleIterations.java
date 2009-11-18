@@ -28,10 +28,11 @@ public class Issue156BatchMultipleIterations {
 			assertNull( result );
 		}
 
-		client.friends_get(); //This makes the total 31 calls
+		client.friends_get(); // This makes the total 31 calls
 
 		List<? extends Object> batchResponse = client.executeBatch( false );
 
 		assertEquals( 31, batchResponse.size() );
 	}
+
 }

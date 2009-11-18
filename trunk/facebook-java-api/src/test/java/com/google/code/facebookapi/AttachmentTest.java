@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public class AttachmentTest {
+
 	@Test
 	public void testStreamPublishProperties() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );

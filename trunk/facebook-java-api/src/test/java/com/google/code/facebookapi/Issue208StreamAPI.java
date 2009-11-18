@@ -12,8 +12,8 @@ import org.apache.commons.lang.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.Test;
 
-
 public class Issue208StreamAPI {
+
 	@Test
 	public void testStreamGet() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
@@ -203,4 +203,5 @@ public class Issue208StreamAPI {
 
 		System.out.println( result );
 	}
+
 }
