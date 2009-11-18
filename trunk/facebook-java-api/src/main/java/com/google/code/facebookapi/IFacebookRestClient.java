@@ -1187,14 +1187,6 @@ public interface IFacebookRestClient<T> {
 	 */
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException;
 
-	/**
-	 * Call this function to get the user ID.
-	 * 
-	 * @return The ID of the current session's user, or -1 if none.
-	 */
-	@Deprecated
-	public long auth_getUserId( String authToken ) throws FacebookException;
-
 	public String getCacheSessionKey();
 
 	public Long getCacheUserId();

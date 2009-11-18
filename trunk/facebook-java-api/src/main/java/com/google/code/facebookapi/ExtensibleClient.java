@@ -726,23 +726,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return cacheUserId;
 	}
 
-	/**
-	 * Call this function to get the user ID.
-	 * 
-	 * @return The ID of the current session's user, or -1 if none.
-	 * @deprecated please call auth_getSession(authToken), then you can call users_getLoggedInUser(), or getCacheUserId()
-	 */
-	@Deprecated
-	public long auth_getUserId( String authToken ) throws FacebookException {
-		/*
-		 * Get the session information if we don't have it; this will populate the user ID as well.
-		 */
-		if ( null == cacheSessionKey ) {
-			auth_getSession( authToken );
-		}
-		return users_getLoggedInUser();
-	}
-
 	public boolean isDesktop() {
 		return _isDesktop;
 	}
