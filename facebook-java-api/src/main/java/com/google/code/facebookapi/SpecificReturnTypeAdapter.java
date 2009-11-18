@@ -85,11 +85,6 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().auth_getSession( authToken, generateSessionSecret );
 	}
 
-	@Deprecated
-	public long auth_getUserId( String authToken ) throws FacebookException {
-		return getClient().auth_getUserId( authToken );
-	}
-
 	public String auth_promoteSession() throws FacebookException {
 		return getClient().auth_promoteSession();
 	}
