@@ -13,20 +13,6 @@ public class JUnitProperties {
 	private String email;
 	private String pass;
 
-	public JUnitProperties() {
-		Properties properties = loadProperties();
-		apikey = loadProperty( "APIKEY", properties );
-		secret = loadProperty( "SECRET", properties );
-		apikeyDesktop = loadProperty( "DESKTOP_APIKEY", properties );
-		secretDesktop = loadProperty( "DESKTOP_SECRET", properties );
-		email = loadProperty( "USER", properties );
-		pass = loadProperty( "PASS", properties );
-		if ( getAPIKEY() == null || getSECRET() == null || getEMAIL() == null || getPASS() == null ) {
-			throw new RuntimeException(
-					"junit.properties must contain values for APIKEY, SECRET, DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications), EMAIL and PASS (your Facebook password)" );
-		}
-	}
-
 	public String getAPIKEY() {
 		return apikey;
 	}
@@ -49,6 +35,16 @@ public class JUnitProperties {
 
 	public String getPASS() {
 		return pass;
+	}
+
+	public JUnitProperties() {
+		Properties properties = loadProperties();
+		apikey = loadProperty( "APIKEY", properties );
+		secret = loadProperty( "SECRET", properties );
+		apikeyDesktop = loadProperty( "DESKTOP_APIKEY", properties );
+		secretDesktop = loadProperty( "DESKTOP_SECRET", properties );
+		email = loadProperty( "USER", properties );
+		pass = loadProperty( "PASS", properties );
 	}
 
 	public static Properties loadProperties() {
