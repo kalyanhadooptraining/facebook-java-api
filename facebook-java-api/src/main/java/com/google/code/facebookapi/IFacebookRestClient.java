@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
-import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
+import com.google.code.facebookapi.schema.AppInfo;
 import com.google.code.facebookapi.schema.BatchRunResponse;
 import com.google.code.facebookapi.schema.ConnectRegisterUsersResponse;
 import com.google.code.facebookapi.schema.ConnectUnregisterUsersResponse;
@@ -2316,7 +2316,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = AppInfo.class, JSON = JSONObject.class)
 	public T application_getPublicInfo( Long applicationId, String applicationKey, String applicationCanvas ) throws FacebookException;
 
 	/**
@@ -2328,7 +2328,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = AppInfo.class, JSON = JSONObject.class)
 	public T application_getPublicInfoById( Long applicationId ) throws FacebookException;
 
 	/**
@@ -2340,7 +2340,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = AppInfo.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByApiKey( String applicationKey ) throws FacebookException;
 
 	/**
@@ -2352,7 +2352,7 @@ public interface IFacebookRestClient<T> {
 	 * @return the public information for the specified application
 	 * @see http://wiki.developers.facebook.com/index.php/Application.getPublicInfo
 	 */
-	@FacebookReturnType(JAXB = ApplicationGetPublicInfoResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = AppInfo.class, JSON = JSONObject.class)
 	public T application_getPublicInfoByCanvasName( String applicationCanvas ) throws FacebookException;
 
 	/**

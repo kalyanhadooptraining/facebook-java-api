@@ -26,7 +26,7 @@ public class Issue176UserStandardInfo {
 		
 		UsersGetStandardInfoResponse response = client.users_getStandardInfo( userIds, profileFields );
 		
-		User user = response.getStandardUserInfo().get( 0 );
+		User user = response.getUser().get( 0 );
 		
 		assertNotNull( user.getName() );
 		assertNotSame( "", user.getName().trim() );
