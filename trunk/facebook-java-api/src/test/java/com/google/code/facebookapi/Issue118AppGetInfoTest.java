@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.code.facebookapi.schema.ApplicationGetPublicInfoResponse;
+import com.google.code.facebookapi.schema.AppInfo;
 
 public class Issue118AppGetInfoTest {
 
@@ -21,7 +21,7 @@ public class Issue118AppGetInfoTest {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		// Stuff application
-		ApplicationGetPublicInfoResponse appInfo = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
+		AppInfo appInfo = client.application_getPublicInfoByApiKey( stuffAPIKEY_ExistsInDirectory );
 
 		assertNotNull( appInfo.getAppId() );
 		assertNotNull( appInfo.getApiKey() );
@@ -30,7 +30,6 @@ public class Issue118AppGetInfoTest {
 		assertNotNull( appInfo.getIconUrl() );
 		assertNotNull( appInfo.getLogoUrl() );
 		assertNotNull( appInfo.getDescription() );
-		assertTrue( appInfo.getDailyActivePercentage() > -1 );
 		assertTrue( appInfo.getDailyActiveUsers() > -1 );
 		assertTrue( appInfo.getWeeklyActiveUsers() > -1 );
 		assertTrue( appInfo.getMonthlyActiveUsers() > -1 );
