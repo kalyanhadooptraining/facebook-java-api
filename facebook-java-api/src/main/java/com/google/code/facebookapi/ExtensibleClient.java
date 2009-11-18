@@ -318,9 +318,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public String auth_getSession( String authToken, boolean generateSessionSecret ) throws FacebookException {
 		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
-		params.add( Pairs.newPair( "auth_token", authToken ) );
+		Pairs.addParam( "auth_token", authToken, params );
 		if ( generateSessionSecret ) {
-			params.add( Pairs.newPair( "generate_session_secret", "true" ) );
+			Pairs.addParam( "generate_session_secret", "true", params );
 		}
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
 
@@ -804,7 +804,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			return callMethod( FacebookMethod.FRIENDS_GET );
 		}
 
-		log.trace( "We're not in batch mode and we don't have " + "a cached list of friends." );
+		log.trace( "We're not in batch mode and we don't have a cached list of friends." );
 
 		if ( cacheSessionKey == null ) {
 			log.trace( "friends_get() called without a session key. Trying to get cached logged in user and "

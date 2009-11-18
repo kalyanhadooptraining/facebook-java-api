@@ -49,7 +49,8 @@ public class FacebookSessionTestUtils {
 		http.executeMethod( post );
 
 		// assume success, and try to attain valid session now
-		String session_key = client.auth_getSession( auth_token, generateSessionSecret );
+		client.auth_getSession( auth_token, generateSessionSecret );
+		String session_key = client.getCacheSessionKey();
 		String session_secret = client.getCacheSessionSecret();
 		return new String[] { session_key, session_secret };
 	}
