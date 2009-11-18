@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class JUnitProperties {
 
-	Properties properties;
+	private Properties properties;
 
 	public JUnitProperties() {
 		properties = new Properties();

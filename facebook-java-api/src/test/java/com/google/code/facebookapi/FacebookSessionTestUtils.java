@@ -13,48 +13,45 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 
 public class FacebookSessionTestUtils {
 
-	public static String lastTokenUsed;
-	public static FacebookXmlRestClient lastClientUsed;
+	public static final String LOGIN_BASE_URL = "http://www.facebook.com/login.php";
 
-	public static String getValidSessionID( boolean generateSessionSecret ) throws IOException, FacebookException {
+	public static String[] getValidSessionID( boolean generateSessionSecret ) throws IOException, FacebookException {
 		JUnitProperties properties = new JUnitProperties();
 
-		String apikey;
-		String secret;
+		String apikey = properties.getAPIKEY();
+		String secret = properties.getSECRET();
 		if ( generateSessionSecret ) {
 			apikey = properties.getDESKTOP_APIKEY();
 			secret = properties.getDESKTOP_SECRET();
-		} else {
-			apikey = properties.getAPIKEY();
-			secret = properties.getSECRET();
 		}
 
+		// attain auth_token
 		FacebookXmlRestClient client = new FacebookXmlRestClient( apikey, secret );
-		String token = client.auth_createToken();
+		String auth_token = client.auth_createToken();
 
+		// create http client
 		HttpClient http = new HttpClient();
 		http.setParams( new HttpClientParams() );
 		http.setState( new HttpState() );
 
-		final String LOGIN = "http://www.facebook.com/login.php";
 
-		GetMethod get = new GetMethod( LOGIN + "?api_key=" + apikey + "&v=1.0&auth_token=" + token );
-
+		// 'open' login popup/window
+		GetMethod get = new GetMethod( LOGIN_BASE_URL + "?api_key=" + apikey + "&v=1.0&auth_token=" + auth_token );
 		http.executeMethod( get );
 
-		PostMethod post = new PostMethod( LOGIN );
+		// 'submit' login popup/window
+		PostMethod post = new PostMethod( LOGIN_BASE_URL );
 		post.addParameter( new NameValuePair( "api_key", apikey ) );
 		post.addParameter( new NameValuePair( "v", "1.0" ) );
-		post.addParameter( new NameValuePair( "auth_token", token ) );
+		post.addParameter( new NameValuePair( "auth_token", auth_token ) );
 		post.addParameter( new NameValuePair( "email", properties.getEMAIL() ) );
 		post.addParameter( new NameValuePair( "pass", properties.getPASS() ) );
-
 		http.executeMethod( post );
 
-		String sessionID = client.auth_getSession( token, generateSessionSecret );
-		lastTokenUsed = token;
-		lastClientUsed = client;
-		return sessionID;
+		// assume success, and try to attain valid session now
+		String session_key = client.auth_getSession( auth_token, generateSessionSecret );
+		String session_secret = client.getCacheSessionSecret();
+		return new String[] { session_key, session_secret };
 	}
 
 	public static <T extends IFacebookRestClient> T getSessionlessValidClient( Class<T> clientReturnType ) {
@@ -71,24 +68,27 @@ public class FacebookSessionTestUtils {
 
 		IFacebookRestClient<T> client = null;
 
-		String sessionID = Preferences.userRoot().get( SESSION_PREFERENCE, null );
-		if ( sessionID != null ) {
+		Preferences prefs = Preferences.userRoot();
+
+		String session_key = prefs.get( SESSION_PREFERENCE, null );
+		if ( session_key != null ) {
 			try {
-				client = getIFacebookRestClient( clientReturnType, sessionID );
+				client = getIFacebookRestClient( clientReturnType, session_key );
 				// Test out the session ID
 				client.friends_get();
 			}
 			catch ( FacebookException ex ) {
-				Preferences.userRoot().remove( SESSION_PREFERENCE );
+				prefs.remove( SESSION_PREFERENCE );
 				client = null;
 				System.out.println( "Session ID is out of date; generate a new one" );
 			}
 		}
 
 		if ( client == null ) {
-			sessionID = FacebookSessionTestUtils.getValidSessionID( generateSessionSecret );
-			Preferences.userRoot().put( SESSION_PREFERENCE, sessionID );
-			client = getIFacebookRestClient( clientReturnType, sessionID );
+			String[] session_info = FacebookSessionTestUtils.getValidSessionID( generateSessionSecret );
+			session_key = session_info[0];
+			prefs.put( SESSION_PREFERENCE, session_key );
+			client = getIFacebookRestClient( clientReturnType, session_key );
 		}
 
 		return (T) client;
