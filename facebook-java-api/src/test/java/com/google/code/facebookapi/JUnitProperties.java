@@ -6,21 +6,21 @@ import java.util.Properties;
 
 public class JUnitProperties {
 
-	private Properties properties;
+	private String apikey;
+	private String secret;
+	private String apikeyDesktop;
+	private String secretDesktop;
+	private String email;
+	private String pass;
 
 	public JUnitProperties() {
-		properties = new Properties();
-		InputStream propertiesInputStream = getClass().getResourceAsStream( "/junit.properties" );
-		if ( propertiesInputStream == null ) {
-			throw new RuntimeException( "Could not locate junit.properties on the root directory of the classpath" );
-		}
-		try {
-			properties.load( propertiesInputStream );
-		}
-		catch ( IOException ex ) {
-			throw new RuntimeException( "Located junit.properties but could not load from it", ex );
-		}
-
+		Properties properties = loadProperties();
+		apikey = loadProperty( "APIKEY", properties );
+		secret = loadProperty( "SECRET", properties );
+		apikeyDesktop = loadProperty( "DESKTOP_APIKEY", properties );
+		secretDesktop = loadProperty( "DESKTOP_SECRET", properties );
+		email = loadProperty( "USER", properties );
+		pass = loadProperty( "PASS", properties );
 		if ( getAPIKEY() == null || getSECRET() == null || getEMAIL() == null || getPASS() == null ) {
 			throw new RuntimeException(
 					"junit.properties must contain values for APIKEY, SECRET, DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications), EMAIL and PASS (your Facebook password)" );
@@ -28,27 +28,54 @@ public class JUnitProperties {
 	}
 
 	public String getAPIKEY() {
-		return properties.getProperty( "APIKEY" );
+		return apikey;
 	}
 
 	public String getSECRET() {
-		return properties.getProperty( "SECRET" );
+		return secret;
 	}
 
 	public String getDESKTOP_APIKEY() {
-		return properties.getProperty( "DESKTOP_APIKEY" );
+		return apikeyDesktop;
 	}
 
 	public String getDESKTOP_SECRET() {
-		return properties.getProperty( "DESKTOP_SECRET" );
+		return secretDesktop;
 	}
 
 	public String getEMAIL() {
-		return properties.getProperty( "EMAIL" );
+		return email;
 	}
 
 	public String getPASS() {
-		return properties.getProperty( "PASS" );
+		return pass;
+	}
+
+	public static Properties loadProperties() {
+		Properties out = new Properties();
+		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "/junit.properties" );
+		if ( stream == null ) {
+			throw new RuntimeException( "Could not locate junit.properties on the root directory of the classpath" );
+		}
+		try {
+			out.load( stream );
+		}
+		catch ( IOException ex ) {
+			throw new RuntimeException( "Located junit.properties but could not load from it", ex );
+		}
+		return out;
+	}
+
+	public static String loadProperty( String name, Properties properties ) {
+		String out = properties.getProperty( name );
+		if ( out == null ) {
+			// "junit.properties must contain values for:
+			// APIKEY, SECRET
+			// DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications)
+			// EMAIL and PASS (your Facebook password)
+			throw new RuntimeException( String.format( "junit.properties missing value for %s", name ) );
+		}
+		return out;
 	}
 
 }
