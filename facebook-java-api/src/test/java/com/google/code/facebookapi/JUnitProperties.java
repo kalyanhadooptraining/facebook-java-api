@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class JUnitProperties {
+
+	protected static Logger logger = Logger.getLogger( JUnitProperties.class );
 
 	private String apikey;
 	private String secret;
@@ -76,6 +80,12 @@ public class JUnitProperties {
 		}
 		catch ( IOException ex ) {
 			throw new RuntimeException( "Located junit.properties but could not load from it", ex );
+		}
+		try {
+			stream.close();
+		}
+		catch ( IOException ex ) {
+			logger.warn( "Trouble closing stream", ex );
 		}
 		return out;
 	}
