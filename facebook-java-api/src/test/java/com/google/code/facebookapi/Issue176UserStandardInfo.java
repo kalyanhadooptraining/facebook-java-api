@@ -16,20 +16,20 @@ import com.google.code.facebookapi.schema.UsersGetStandardInfoResponse;
 public class Issue176UserStandardInfo {
 
 	@Test
-	public void testGetStandardInfo() throws FacebookException, IOException  {
+	public void testGetStandardInfo() throws FacebookException, IOException {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
-		
+
 		List<Long> userIds = Collections.singletonList( client.users_getLoggedInUser() );
 		List<ProfileField> profileFields = new ArrayList<ProfileField>();
-		
+
 		profileFields.add( ProfileField.NAME );
-		
+
 		UsersGetStandardInfoResponse response = client.users_getStandardInfo( userIds, profileFields );
-		
+
 		User user = response.getUser().get( 0 );
-		
+
 		assertNotNull( user.getName() );
 		assertNotSame( "", user.getName().trim() );
 	}
-	
+
 }

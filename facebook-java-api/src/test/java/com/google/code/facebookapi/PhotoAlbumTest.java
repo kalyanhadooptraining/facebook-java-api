@@ -22,21 +22,21 @@ import com.google.code.facebookapi.schema.Album;
 import com.google.code.facebookapi.schema.PhotosGetAlbumsResponse;
 
 public class PhotoAlbumTest {
-	
+
 	@Test
 	public void test_PhotoAlbumList() throws Exception {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
-		xpath.setNamespaceContext(new FacebookNamespaceContext());
-		
+		xpath.setNamespaceContext( new FacebookNamespaceContext() );
+
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 		client.setNamespaceAware( false );
 		Long userId = client.users_getLoggedInUser();
 		Document doc = client.photos_getAlbums( userId );
 		assertNotNull( doc );
-		//You'd need //fbapi:album if the FacebookXmlRestClient was set to
-	    //namespace aware.
-		NodeList albums = (NodeList)xpath.evaluate( "//album", doc, XPathConstants.NODESET );
+		// You'd need //fbapi:album if the FacebookXmlRestClient was set to
+		// namespace aware.
+		NodeList albums = (NodeList) xpath.evaluate( "//album", doc, XPathConstants.NODESET );
 		assertTrue( albums.getLength() > 0 );
 		for ( int i = 0; i < albums.getLength(); i++ ) {
 			Node albumNode = albums.item( i );

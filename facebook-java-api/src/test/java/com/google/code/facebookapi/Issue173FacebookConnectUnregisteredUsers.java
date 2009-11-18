@@ -13,4 +13,5 @@ public class Issue173FacebookConnectUnregisteredUsers {
 		int count = client.connect_getUnconnectedFriendsCount();
 		assertTrue( "Count is returned successfully", count >= 0 );
 	}
+
 }

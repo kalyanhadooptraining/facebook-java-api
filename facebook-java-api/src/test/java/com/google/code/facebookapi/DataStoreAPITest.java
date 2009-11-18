@@ -29,14 +29,15 @@ import org.w3c.dom.NodeList;
  * @author dave@daveboden.com
  */
 public class DataStoreAPITest {
-	
+
 	XPath xpath;
+
 	public DataStoreAPITest() {
 		XPathFactory factory = XPathFactory.newInstance();
 		xpath = factory.newXPath();
-		xpath.setNamespaceContext(new FacebookNamespaceContext());
+		xpath.setNamespaceContext( new FacebookNamespaceContext() );
 	}
-	
+
 	@Test
 	public void test_dataStore() throws Exception {
 		IFacebookRestClient<Document> client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
@@ -45,18 +46,16 @@ public class DataStoreAPITest {
 		long davidBoden = 536286910L;
 
 		// ***BEGIN CLEANUP FROM PREVIOUS FAILED RUNS***
-		cleanObjectType(client, "footballteam");
-		cleanAssociation(client, "supports");
+		cleanObjectType( client, "footballteam" );
+		cleanAssociation( client, "supports" );
 		// ***END CLEANUP FROM PREVIOUS FAILED RUNS***
-		
-		client.data_createObjectType("footballteam");
-		client.data_defineObjectProperty("footballteam", "name", PropertyType.STRING);
-		client.data_defineObjectProperty("footballteam", "stadium", PropertyType.STRING);
-		client.data_defineAssociation("supports", AssociationType.ONE_WAY,
-				                      new AssociationInfo("user", null, false),
-				                      new AssociationInfo("footballteam", "footballteam", false),
-				                      null); //The inverse name isn't used because we've only defined a 1 way relationship
-		
+
+		client.data_createObjectType( "footballteam" );
+		client.data_defineObjectProperty( "footballteam", "name", PropertyType.STRING );
+		client.data_defineObjectProperty( "footballteam", "stadium", PropertyType.STRING );
+		client.data_defineAssociation( "supports", AssociationType.ONE_WAY, new AssociationInfo( "user", null, false ), new AssociationInfo( "footballteam",
+				"footballteam", false ), null ); // The inverse name isn't used because we've only defined a 1 way relationship
+
 		Map<String,String> teamProperties = new HashMap<String,String>();
 
 		teamProperties.put( "name", "Manchester United" );
@@ -103,11 +102,11 @@ public class DataStoreAPITest {
 		client.data_deleteObject( arsenal );
 
 		// All data is now deleted
-		
-		client.data_dropObjectType("footballteam");
-		client.data_undefineAssociation("supports");
-		
-		//All metadata is now removed
+
+		client.data_dropObjectType( "footballteam" );
+		client.data_undefineAssociation( "supports" );
+
+		// All metadata is now removed
 	}
 
 	List<String> parseTeamNames( Document doc ) throws XPathException {
@@ -133,82 +132,81 @@ public class DataStoreAPITest {
 		}
 		return values;
 	}
-	
+
 	@Test
 	public void testRenameObjects() throws Exception {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
-		//Cleanup from previous run
-		cleanObjectType(client, "testrename_1234");
-		cleanObjectType(client, "testrename_5678");
-		
-		client.data_createObjectType("testrename_1234");
-		client.data_defineObjectProperty("testrename_1234", "property1", PropertyType.INTEGER);
-		Document objectTypeQuery = client.data_getObjectType("testrename_1234");
-		assertEquals("property1", xpath.evaluate("//fbapi:object_property_info/fbapi:name", objectTypeQuery));
+		// Cleanup from previous run
+		cleanObjectType( client, "testrename_1234" );
+		cleanObjectType( client, "testrename_5678" );
+
+		client.data_createObjectType( "testrename_1234" );
+		client.data_defineObjectProperty( "testrename_1234", "property1", PropertyType.INTEGER );
+		Document objectTypeQuery = client.data_getObjectType( "testrename_1234" );
+		assertEquals( "property1", xpath.evaluate( "//fbapi:object_property_info/fbapi:name", objectTypeQuery ) );
 		Document objectTypesQuery = client.data_getObjectTypes();
-		assertEquals("1", xpath.evaluate("count(//fbapi:object_type_info[fbapi:name = 'testrename_1234'])", objectTypesQuery));
-		
-		client.data_renameObjectType("testrename_1234", "testrename_5678");
-		client.data_renameObjectProperty("testrename_5678", "property1", "property2");
-		
-		objectTypeQuery = client.data_getObjectType("testrename_5678");
-		assertEquals("property2", xpath.evaluate("//fbapi:object_property_info/fbapi:name", objectTypeQuery));
-		
-		client.data_undefineObjectProperty("testrename_5678", "property2");
-		objectTypeQuery = client.data_getObjectType("testrename_5678");
-		assertEquals("0", xpath.evaluate("count(//fbapi:name)", objectTypeQuery));
-		
-		//Cleanup
-		cleanObjectType(client, "testrename_1234");
-		cleanObjectType(client, "testrename_5678");
+		assertEquals( "1", xpath.evaluate( "count(//fbapi:object_type_info[fbapi:name = 'testrename_1234'])", objectTypesQuery ) );
+
+		client.data_renameObjectType( "testrename_1234", "testrename_5678" );
+		client.data_renameObjectProperty( "testrename_5678", "property1", "property2" );
+
+		objectTypeQuery = client.data_getObjectType( "testrename_5678" );
+		assertEquals( "property2", xpath.evaluate( "//fbapi:object_property_info/fbapi:name", objectTypeQuery ) );
+
+		client.data_undefineObjectProperty( "testrename_5678", "property2" );
+		objectTypeQuery = client.data_getObjectType( "testrename_5678" );
+		assertEquals( "0", xpath.evaluate( "count(//fbapi:name)", objectTypeQuery ) );
+
+		// Cleanup
+		cleanObjectType( client, "testrename_1234" );
+		cleanObjectType( client, "testrename_5678" );
 	}
-	
+
 	@Test
 	public void testRenameAssociations() throws Exception {
 		IFacebookRestClient<Document> client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
-		//Cleanup from previous run
-		cleanAssociation(client, "testrename_abcd");
-		cleanAssociation(client, "testrename_efgh");
-		
-		client.data_defineAssociation("testrename_abcd", AssociationType.ONE_WAY,
-									  new AssociationInfo("user1"), new AssociationInfo("user2"),
-									  null);
-		
-		Document associationQuery = client.data_getAssociationDefinition("testrename_abcd");
-		
-		client.data_renameAssociation("testrename_abcd", "testrename_efgh", null, "user3");
-		associationQuery = client.data_getAssociationDefinition("testrename_efgh");
-		
-		assertEquals("user1", xpath.evaluate("//fbapi:assoc_info1_elt[1]", associationQuery));
-		assertEquals("user2 has been replaced by user3",
-				     "user3", xpath.evaluate("//fbapi:assoc_info2_elt[1]", associationQuery));
-		
-		client.data_undefineAssociation("testrename_efgh");
+		// Cleanup from previous run
+		cleanAssociation( client, "testrename_abcd" );
+		cleanAssociation( client, "testrename_efgh" );
+
+		client.data_defineAssociation( "testrename_abcd", AssociationType.ONE_WAY, new AssociationInfo( "user1" ), new AssociationInfo( "user2" ), null );
+
+		Document associationQuery = client.data_getAssociationDefinition( "testrename_abcd" );
+
+		client.data_renameAssociation( "testrename_abcd", "testrename_efgh", null, "user3" );
+		associationQuery = client.data_getAssociationDefinition( "testrename_efgh" );
+
+		assertEquals( "user1", xpath.evaluate( "//fbapi:assoc_info1_elt[1]", associationQuery ) );
+		assertEquals( "user2 has been replaced by user3", "user3", xpath.evaluate( "//fbapi:assoc_info2_elt[1]", associationQuery ) );
+
+		client.data_undefineAssociation( "testrename_efgh" );
 	}
-	
+
 	/**
 	 * Removes the specified object type if it exists, doesn't complain if it doesn't exist.
+	 * 
 	 * @param name
 	 */
-	private void cleanObjectType(IFacebookRestClient<?> client, String name) {
+	private void cleanObjectType( IFacebookRestClient<?> client, String name ) {
 		try {
-			client.data_dropObjectType(name);
-		} catch(FacebookException ex) {
-			if(ex.getCode() != 803) {
-				fail("Error " + ex.getCode() + " returned when " +
-				     "trying to clean up " + name + " object: " + ex.getMessage());
+			client.data_dropObjectType( name );
+		}
+		catch ( FacebookException ex ) {
+			if ( ex.getCode() != 803 ) {
+				fail( "Error " + ex.getCode() + " returned when " + "trying to clean up " + name + " object: " + ex.getMessage() );
 			}
 		}
 	}
-	
-	private void cleanAssociation(IFacebookRestClient<?> client, String associationName) {
+
+	private void cleanAssociation( IFacebookRestClient<?> client, String associationName ) {
 		try {
-			client.data_undefineAssociation(associationName);
-		} catch(FacebookException ex) {
-			if(ex.getCode() != 803) {
-				fail("Error " + ex.getCode() + " returned when " +
-				     "trying to clean up " + associationName + " association: " + ex.getMessage());
+			client.data_undefineAssociation( associationName );
+		}
+		catch ( FacebookException ex ) {
+			if ( ex.getCode() != 803 ) {
+				fail( "Error " + ex.getCode() + " returned when " + "trying to clean up " + associationName + " association: " + ex.getMessage() );
 			}
 		}
 	}
+
 }

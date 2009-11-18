@@ -63,9 +63,9 @@ public class Issue118AppGetInfoTest {
 		 * xsi:schemaLocation ="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd" > <error_code>900</error_code> <error_msg>No such application
 		 * exists.</error_msg> <request_args list="true"> <arg><key>api_key</key> <value>985c882028dc9bd8438fc349792fdc6b</value></arg> <arg><key>application_api_key
 		 * </key><value>985c882028dc9bd8438fc349792fdc6b</value></arg> <arg><key>call_id</key> <value>1227046450038</value> </arg> <arg><key>format</key>
-		 * <value>xml</value> </arg> <arg> <key>method</key><value>facebook.application.getPublicInfo</value> </arg> <arg><key>session_key</key><value>acf0ea397c61da3eef0f6d02-536286910
-		 * </value> </arg> <arg><key>sig</key> <value>13a49ac16477fb59a40183831c44cbfd</value> </arg> <arg> <key>v</key> <value>1.0</value> </arg> </request_args>
-		 * </error_response>
+		 * <value>xml</value> </arg> <arg> <key>method</key><value>facebook.application.getPublicInfo</value> </arg>
+		 * <arg><key>session_key</key><value>acf0ea397c61da3eef0f6d02-536286910 </value> </arg> <arg><key>sig</key> <value>13a49ac16477fb59a40183831c44cbfd</value> </arg>
+		 * <arg> <key>v</key> <value>1.0</value> </arg> </request_args> </error_response>
 		 */
 	}
 
