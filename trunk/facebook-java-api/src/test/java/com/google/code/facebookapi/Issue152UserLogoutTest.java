@@ -14,13 +14,15 @@ public class Issue152UserLogoutTest {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 		client.auth_expireSession();
 		try {
-			client.auth_getSession( FacebookSessionTestUtils.lastTokenUsed );
-			fail( "Session is expired, getSession should fail" );
+			// clear cached user id
+			client.setCacheSession( client.getCacheSessionKey(), null, client.getCacheSessionExpires() );
+			// attempt to get user id from facebook
+			client.users_getLoggedInUser();
+			// should not have a valid session key
+			fail( "Session is expired, getLoggedInUser should fail" );
 		}
 		catch ( FacebookException ex ) {
-			// Success
 			assertEquals( ErrorCode.SESSION_INVALID, ex.getCode() );
-			System.out.println( "Logout success, FacebookException thrown" );
 		}
 	}
 

@@ -13,15 +13,9 @@ public class Issue179SessionSecretAndDesktop {
 	public void testCreateSessionSecretAndUseIt() throws FacebookException, IOException {
 		JUnitProperties props = new JUnitProperties();
 
-		String sessionKey = FacebookSessionTestUtils.getValidSessionID( true );
-
-		// Just checking...
-		assertEquals( sessionKey, FacebookSessionTestUtils.lastClientUsed.getCacheSessionKey() );
-
-		// Here's the generated session secret, ready to pass to your desktop app client
-		String sessionSecret = FacebookSessionTestUtils.lastClientUsed.getCacheSessionSecret();
-
-		System.out.println( sessionSecret );
+		String[] session_info = FacebookSessionTestUtils.getValidSessionID( true );
+		String sessionKey = session_info[0];
+		String sessionSecret = session_info[1];
 
 		// restrictedClient is simulating construction of the client on the
 		// desktop app using the session secret instead of the real secret.
