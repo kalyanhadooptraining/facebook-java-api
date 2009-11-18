@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.code.facebookapi.schema.AdminGetMetricsResponse;
+import com.google.code.facebookapi.schema.Album;
 import com.google.code.facebookapi.schema.AppInfo;
 import com.google.code.facebookapi.schema.BatchRunResponse;
 import com.google.code.facebookapi.schema.ConnectRegisterUsersResponse;
@@ -23,6 +24,9 @@ import com.google.code.facebookapi.schema.DataGetCookiesResponse;
 import com.google.code.facebookapi.schema.DataGetObjectTypeResponse;
 import com.google.code.facebookapi.schema.DataGetObjectTypesResponse;
 import com.google.code.facebookapi.schema.DataGetObjectsResponse;
+import com.google.code.facebookapi.schema.EventMembers;
+import com.google.code.facebookapi.schema.EventsGetResponse;
+import com.google.code.facebookapi.schema.FbmlGetCustomTagsResponse;
 import com.google.code.facebookapi.schema.FriendsAreFriendsResponse;
 import com.google.code.facebookapi.schema.FriendsGetAppUsersResponse;
 import com.google.code.facebookapi.schema.FriendsGetListsResponse;
@@ -33,6 +37,9 @@ import com.google.code.facebookapi.schema.Photo;
 import com.google.code.facebookapi.schema.PhotosGetAlbumsResponse;
 import com.google.code.facebookapi.schema.PhotosGetResponse;
 import com.google.code.facebookapi.schema.PhotosGetTagsResponse;
+import com.google.code.facebookapi.schema.StreamData;
+import com.google.code.facebookapi.schema.StreamGetCommentsResponse;
+import com.google.code.facebookapi.schema.StreamGetFiltersResponse;
 import com.google.code.facebookapi.schema.UsersGetInfoResponse;
 import com.google.code.facebookapi.schema.UsersGetStandardInfoResponse;
 
@@ -874,7 +881,7 @@ public interface IFacebookRestClient<T> {
 	 *            The list of photos from which to extract photo tags.
 	 * @return the created album
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = Album.class, JSON = JSONObject.class)
 	public T photos_createAlbum( String albumName ) throws FacebookException;
 
 	/**
@@ -888,7 +895,7 @@ public interface IFacebookRestClient<T> {
 	 *            The album description (optional).
 	 * @return an array of photo objects.
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = Album.class, JSON = JSONObject.class)
 	public T photos_createAlbum( String name, String description, String location ) throws FacebookException;
 
 	/**
@@ -900,7 +907,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return the created album
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = Album.class, JSON = JSONObject.class)
 	public T photos_createAlbum( String albumName, Long userId ) throws FacebookException;
 
 	/**
@@ -916,7 +923,7 @@ public interface IFacebookRestClient<T> {
 	 *            the id of the user creating the album.
 	 * @return an array of photo objects.
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = Album.class, JSON = JSONObject.class)
 	public T photos_createAlbum( String name, String description, String location, Long userId ) throws FacebookException;
 
 	/**
@@ -2945,7 +2952,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = EventsGetResponse.class, JSON = JSONArray.class)
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime ) throws FacebookException;
 
 	/**
@@ -2964,7 +2971,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Events.get
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = EventsGetResponse.class, JSON = JSONArray.class)
 	public T events_get( Long userId, Collection<Long> eventIds, Long startTime, Long endTime, String rsvp_status ) throws FacebookException;
 
 	/**
@@ -2975,7 +2982,7 @@ public interface IFacebookRestClient<T> {
 	 * @return T consisting of four membership lists corresponding to RSVP status, with keys 'attending', 'unsure', 'declined', and 'not_replied'
 	 * @see http://wiki.developers.facebook.com/index.php/Events.getMembers
 	 */
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = EventMembers.class, JSON = JSONArray.class)
 	public T events_getMembers( Long eventId ) throws FacebookException;
 
 	/**
@@ -3250,7 +3257,7 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @see http://wiki.developers.facebook.com/index.php/Fbml.getCustomTags
 	 */
-	@FacebookReturnType()
+	@FacebookReturnType(JAXB = FbmlGetCustomTagsResponse.class, JSON = JSONArray.class)
 	public T fbml_getCustomTags( String appId ) throws FacebookException;
 
 	/**
@@ -3306,14 +3313,14 @@ public interface IFacebookRestClient<T> {
 
 	// ========== STREAM ==========
 
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = StreamData.class, JSON = JSONObject.class)
 	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
 
 	public String stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
 
 	public boolean stream_remove( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = StreamGetCommentsResponse.class, JSON = JSONObject.class)
 	public T stream_getComments( String postId ) throws FacebookException;
 
 	public String stream_addComment( String postId, String comment, Long userId ) throws FacebookException;
@@ -3324,7 +3331,7 @@ public interface IFacebookRestClient<T> {
 
 	public boolean stream_removeLike( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType
+	@FacebookReturnType(JAXB = StreamGetFiltersResponse.class, JSON = JSONObject.class)
 	public T stream_getFilters( Long userId ) throws FacebookException;
 
 	// ========== INTL ==========
