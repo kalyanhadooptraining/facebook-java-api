@@ -17,7 +17,6 @@ public class Issue118AppGetInfoTest {
 
 	@Test
 	public void testAppInfo() throws Exception {
-
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		// Stuff application
