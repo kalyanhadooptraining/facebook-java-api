@@ -159,14 +159,6 @@
   <xsd:restriction base="xsd:int" />
 </xsd:simpleType>
 
-<xsd:simpleType name="marketplace_category">
-  <xsd:restriction base="xsd:string" />
-</xsd:simpleType>
-
-<xsd:simpleType name="marketplace_subcategory">
-  <xsd:restriction base="xsd:string" />
-</xsd:simpleType>
-
 <xsd:simpleType name="json_string">
   <xsd:restriction base="xsd:string" />
 </xsd:simpleType>
@@ -699,46 +691,6 @@
 
 <xsd:complexType name="container">
   <xsd:sequence>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="listing">
-  <xsd:sequence>
-    <xsd:element name="listing_id" type="lid" />
-    <xsd:element name="url" type="xsd:string" />
-    <xsd:element name="title" type="xsd:string" />
-    <xsd:element name="description" type="xsd:string" />
-    <xsd:element name="price" type="xsd:decimal" minOccurs="0" />
-    <xsd:element name="poster" type="uid" />
-    <xsd:element name="update_time" type="time" />
-    <xsd:element name="category" type="marketplace_category" />
-    <xsd:element name="subcategory" type="marketplace_subcategory" />
-    <xsd:element name="image_urls" minOccurs="0">
-      <xsd:complexType>
-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-          <xsd:element name="image_urls_elt" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attribute name="list" type="xsd:boolean" />
-      </xsd:complexType>
-    </xsd:element>
-    <xsd:element name="condition" type="xsd:int" minOccurs="0" />
-    <xsd:element name="isbn" type="xsd:string" minOccurs="0" />
-    <xsd:element name="num_beds" type="xsd:string" minOccurs="0" />
-    <xsd:element name="num_maths" type="xsd:string" minOccurs="0" />
-    <xsd:element name="dogs" type="xsd:string" minOccurs="0" />
-    <xsd:element name="cats" type="xsd:string" minOccurs="0" />
-    <xsd:element name="smoking" type="xsd:string" minOccurs="0" />
-    <xsd:element name="square_footage" type="xsd:string" minOccurs="0" />
-    <xsd:element name="street" type="xsd:string" minOccurs="0" />
-    <xsd:element name="crossstreet" type="xsd:string" minOccurs="0" />
-    <xsd:element name="postal" type="xsd:string" minOccurs="0" />
-    <xsd:element name="rent" type="xsd:string" minOccurs="0" />
-    <xsd:element name="pay" type="xsd:string" minOccurs="0" />
-    <xsd:element name="full" type="xsd:string" minOccurs="0" />
-    <xsd:element name="intern" type="xsd:string" minOccurs="0" />
-    <xsd:element name="summer" type="xsd:string" minOccurs="0" />
-    <xsd:element name="nonprofit" type="xsd:string" minOccurs="0" />
-    <xsd:element name="pay_type" type="xsd:string" minOccurs="0" />
   </xsd:sequence>
 </xsd:complexType>
 
@@ -1392,46 +1344,6 @@
     <xsd:attribute name="list" type="xsd:boolean" />
   </xsd:complexType>
 </xsd:element>
-
-<xsd:element name="marketplace_getCategories_response">
-  <xsd:complexType>
-    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="marketplace_category" type="marketplace_category" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="list" type="xsd:boolean" />
-  </xsd:complexType>
-</xsd:element>
-
-<xsd:element name="marketplace_getSubCategories_response">
-  <xsd:complexType>
-    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="marketplace_subcategory" type="marketplace_subcategory" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="list" type="xsd:boolean" />
-  </xsd:complexType>
-</xsd:element>
-
-<xsd:element name="marketplace_getListings_response">
-  <xsd:complexType>
-    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="listing" type="listing" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="list" type="xsd:boolean" />
-  </xsd:complexType>
-</xsd:element>
-
-<xsd:element name="marketplace_search_response">
-  <xsd:complexType>
-    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="listing" type="listing" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="list" type="xsd:boolean" />
-  </xsd:complexType>
-</xsd:element>
-
-<xsd:element name="marketplace_createListing_response" type="lid" />
-
-<xsd:element name="marketplace_removeListing_response" type="xsd:boolean" />
 
 <xsd:element name="liveMessage_send_response" type="xsd:boolean" />
 
