@@ -22,8 +22,8 @@ public class JUnitProperties {
 		}
 
 		if ( getAPIKEY() == null || getSECRET() == null || getEMAIL() == null || getPASS() == null ) {
-			throw new RuntimeException( "junit.properties must contain values for APIKEY, SECRET, "
-					+ "DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications), " + "EMAIL and PASS (your Facebook password)" );
+			throw new RuntimeException(
+					"junit.properties must contain values for APIKEY, SECRET, DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications), EMAIL and PASS (your Facebook password)" );
 		}
 	}
 
