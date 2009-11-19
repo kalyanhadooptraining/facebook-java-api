@@ -10,15 +10,14 @@ public class Issue179SessionSecretAndDesktop {
 
 	@Test
 	public void testCreateSessionSecretAndUseIt() throws Exception {
-		JUnitProperties props = new JUnitProperties();
-
-		JSONObject session_info = FacebookSessionTestUtils.getValidSessionID( true );
+		JSONObject session_info = FacebookSessionTestUtils.attainSession( true );
+		String apikey = session_info.getString( "api_key" );
 		String sessionKey = session_info.getString( "session_key" );
 		String sessionSecret = session_info.getString( "secret" );
 
 		// restrictedClient is simulating construction of the client on the
 		// desktop app using the session secret instead of the real secret.
-		FacebookJsonRestClient restrictedClient = new FacebookJsonRestClient( props.getDESKTOP_APIKEY(), sessionSecret, sessionKey );
+		FacebookJsonRestClient restrictedClient = new FacebookJsonRestClient( apikey, sessionSecret, sessionKey );
 
 		assertEquals( "Session Secret ending in __ should have been auto-detected", true, restrictedClient.isDesktop() );
 

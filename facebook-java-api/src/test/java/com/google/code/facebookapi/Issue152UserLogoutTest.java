@@ -22,6 +22,9 @@ public class Issue152UserLogoutTest {
 		catch ( FacebookException ex ) {
 			assertEquals( ErrorCode.SESSION_INVALID, ex.getCode() );
 		}
+		finally {
+			FacebookSessionTestUtils.clearSessions();
+		}
 	}
 
 }
