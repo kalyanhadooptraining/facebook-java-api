@@ -1,15 +1,12 @@
 package com.google.code.facebookapi;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -415,7 +412,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.FQL_QUERY, Pairs.newPair( "query", query ) );
 	}
 
-	private String generateSignature( List<String> params, boolean requiresSession ) {
+	private String generateSignature( List<String> params ) {
 		String secret = _secret;
 		return FacebookSignatureUtil.generateSignature( params, secret );
 	}
@@ -497,7 +494,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 
 		assert ( !params.containsKey( "sig" ) );
-		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), includeSession );
+		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ) );
 		params.put( "sig", signature );
 
 		if ( batchMode ) {
@@ -557,9 +554,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
-		CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
-			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
+			log.debug( method.methodName() + ": POST-FILE: " + serverUrl.toString() + ": " + params );
 		}
 
 		HttpURLConnection conn = null;
@@ -578,9 +574,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			conn.setDoOutput( true );
 			conn.connect();
 			out = conn.getOutputStream();
+			CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 			out.write( paramString.toString().getBytes( "UTF-8" ) );
 			in = conn.getInputStream();
-			return getResponse( method, in );
+			return BasicClientHelper.toString( in );
 		}
 		finally {
 			BasicClientHelper.close( in );
@@ -603,6 +600,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 */
 
 	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
+		if ( log.isDebugEnabled() ) {
+			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
+		}
+
 		HttpURLConnection con = null;
 		OutputStream urlOut = null;
 		InputStream in = null;
@@ -657,25 +658,13 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
 			out.flush();
 			in = con.getInputStream();
-			return getResponse( method, in );
+			return BasicClientHelper.toString( in );
 		}
 		finally {
 			BasicClientHelper.close( urlOut );
 			BasicClientHelper.close( in );
 			BasicClientHelper.disconnect( con );
 		}
-	}
-
-	private String getResponse( IFacebookMethod method, InputStream data ) throws IOException {
-		Reader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
-		StringBuilder buffer = new StringBuilder();
-		char[] buf = new char[1000];
-		int l = 0;
-		while ( l >= 0 ) {
-			buffer.append( buf, 0, l );
-			l = in.read( buf );
-		}
-		return buffer.toString();
 	}
 
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException {
