@@ -555,7 +555,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
 		if ( log.isDebugEnabled() ) {
-			log.debug( method.methodName() + ": POST-FILE: " + serverUrl.toString() + ": " + params );
+			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
 		}
 
 		HttpURLConnection conn = null;
