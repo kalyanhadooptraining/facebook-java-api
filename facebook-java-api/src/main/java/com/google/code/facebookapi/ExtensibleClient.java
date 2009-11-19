@@ -775,33 +775,33 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	public Object friends_get() throws FacebookException {
-		if ( cacheFriendsList != null && !batchMode ) {
-			// Pretend we went to the Facebook server
-			rawResponse = toFriendsGetResponse( cacheFriendsList );
-			log.trace( "Didn't need to go to the Facebook server" );
-			return rawResponse;
-		}
-
-		if ( batchMode ) {
-			log.debug( "Request to get friends list as part of a batch. " + "This will ultimately result in a request to Facebook's server." );
-			return callMethod( FacebookMethod.FRIENDS_GET );
-		}
-
-		log.trace( "We're not in batch mode and we don't have a cached list of friends." );
-
-		if ( cacheSessionKey == null ) {
-			log.trace( "friends_get() called without a session key. Trying to get cached logged in user and "
-					+ "call the sessionless version of the facebook method specifying the uid." );
-
-			if ( cacheUserId == null ) {
-				throw new FacebookException( ErrorCode.SESSION_REQUIRED, "friends_get can't return " + "a value if it doesn't have either a session key or "
-						+ "the uid of a user." );
-			} else {
-				return friends_get( cacheUserId );
-			}
-		}
-
-		log.debug( "No cached list of friends but a session key is available. " + "Going to Facebook to get the list." );
+		// if ( cacheFriendsList != null && !batchMode ) {
+		// // Pretend we went to the Facebook server
+		// rawResponse = toFriendsGetResponse( cacheFriendsList );
+		// log.trace( "Didn't need to go to the Facebook server" );
+		// return rawResponse;
+		// }
+		//
+		// if ( batchMode ) {
+		// log.debug( "Request to get friends list as part of a batch. " + "This will ultimately result in a request to Facebook's server." );
+		// return callMethod( FacebookMethod.FRIENDS_GET );
+		// }
+		//
+		// log.trace( "We're not in batch mode and we don't have a cached list of friends." );
+		//
+		// if ( cacheSessionKey == null ) {
+		// log.trace( "friends_get() called without a session key. Trying to get cached logged in user and "
+		// + "call the sessionless version of the facebook method specifying the uid." );
+		//
+		// if ( cacheUserId == null ) {
+		// throw new FacebookException( ErrorCode.SESSION_REQUIRED, "friends_get can't return " + "a value if it doesn't have either a session key or "
+		// + "the uid of a user." );
+		// } else {
+		// return friends_get( cacheUserId );
+		// }
+		// }
+		//
+		// log.debug( "No cached list of friends but a session key is available. " + "Going to Facebook to get the list." );
 		return callMethod( FacebookMethod.FRIENDS_GET );
 	}
 
@@ -810,7 +810,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * 
 	 * @return String that looks like it came from the Facebook server
 	 */
-	//
+	@SuppressWarnings("unused")
 	private String toFriendsGetResponse( List<Long> ids ) {
 		if ( "json".equals( responseFormat ) ) {
 			JSONArray out = new JSONArray();
@@ -2760,15 +2760,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return result;
 	}
 
-	List<Long> cacheFriendsList;
-
-	public List<Long> getCacheFriendsList() {
-		return cacheFriendsList;
-	}
-
-	public void setCacheFriendsList( List<Long> friendIds ) {
-		this.cacheFriendsList = friendIds;
-	}
+	// List<Long> cacheFriendsList;
+	//
+	// public List<Long> getCacheFriendsList() {
+	// return cacheFriendsList;
+	// }
+	//
+	// public void setCacheFriendsList( List<Long> friendIds ) {
+	// this.cacheFriendsList = friendIds;
+	// }
 
 	// CUSTOM TAGS
 

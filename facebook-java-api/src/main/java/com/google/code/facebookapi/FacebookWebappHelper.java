@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -65,7 +63,8 @@ public class FacebookWebappHelper<T> {
 		return new FacebookWebappHelper<Object>( request, response, apiKey, secret, new FacebookJaxbRestClient( apiKey, secret ) );
 	}
 
-	@SuppressWarnings("deprecation") //Get rid of the app added flag then remove this suppression.
+	@SuppressWarnings("deprecation")
+	// Get rid of the app added flag then remove this suppression.
 	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.request = request;
 		this.response = response;
@@ -85,17 +84,17 @@ public class FacebookWebappHelper<T> {
 				apiClient.setCacheSession( null, Long.parseLong( canvasUserS ), null );
 			}
 		}
-		{
-			// caching of friends
-			String friends = fbParams.get( "friends" );
-			if ( friends != null && !friends.equals( "" ) ) {
-				List<Long> friendsList = new ArrayList<Long>();
-				for ( String friend : friends.split( "," ) ) {
-					friendsList.add( Long.parseLong( friend ) );
-				}
-				apiClient.setCacheFriendsList( friendsList );
-			}
-		}
+		// {
+		// // caching of friends
+		// String friends = fbParams.get( "friends" );
+		// if ( friends != null && !friends.equals( "" ) ) {
+		// List<Long> friendsList = new ArrayList<Long>();
+		// for ( String friend : friends.split( "," ) ) {
+		// friendsList.add( Long.parseLong( friend ) );
+		// }
+		// apiClient.setCacheFriendsList( friendsList );
+		// }
+		// }
 		{
 			// caching of the "added" value
 			String added = fbParams.get( "added" );
@@ -309,7 +308,7 @@ public class FacebookWebappHelper<T> {
 	public boolean isAdded() {
 		return "1".equals( fbParams.get( FacebookParam.ADDED.getSignatureName() ) );
 	}
-	
+
 	/**
 	 * Returns true if UNINSTALL param exists and is 1.
 	 */
