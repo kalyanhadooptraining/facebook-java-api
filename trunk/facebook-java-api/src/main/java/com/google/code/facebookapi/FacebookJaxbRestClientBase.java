@@ -166,22 +166,18 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 			return null;
 		}
 		log.debug( "Facebook response:  " + rawResponse );
-		Object res = getResponsePOJO( (String) rawResponse );
-		if ( res instanceof FacebookApiException ) {
-			FacebookApiException error = (FacebookApiException) res;
+		Object out = getResponsePOJO( (String) rawResponse );
+		if ( out instanceof JAXBElement<?> ) {
+			JAXBElement<?> jbe = (JAXBElement<?>) out;
+			out = jbe.getValue();
+		}
+		if ( out instanceof FacebookApiException ) {
+			FacebookApiException error = (FacebookApiException) out;
 			int errorCode = error.getErrorCode();
 			String message = error.getErrorMsg();
 			throw new FacebookException( errorCode, message );
-		} else if ( res instanceof JAXBElement<?> ) {
-			JAXBElement<?> jbe = (JAXBElement<?>) res;
-			if ( FacebookApiException.class.equals( jbe.getDeclaredType() ) ) {
-				FacebookApiException error = (FacebookApiException) jbe.getValue();
-				int errorCode = error.getErrorCode();
-				String message = error.getErrorMsg();
-				throw new FacebookException( errorCode, message );
-			}
 		}
-		return res;
+		return out;
 	}
 
 	/**
