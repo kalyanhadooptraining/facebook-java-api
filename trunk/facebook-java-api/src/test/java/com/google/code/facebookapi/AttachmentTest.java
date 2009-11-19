@@ -8,12 +8,13 @@ import java.util.TreeMap;
 
 import junit.framework.Assert;
 
+import org.json.JSONException;
 import org.junit.Test;
 
 public class AttachmentTest {
 
 	@Test
-	public void testStreamPublishProperties() throws IOException, FacebookException {
+	public void testStreamPublishProperties() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish properties test.";
@@ -25,7 +26,7 @@ public class AttachmentTest {
 	}
 
 	@Test
-	public void testStreamPublishAdditionalInfo() throws IOException, FacebookException {
+	public void testStreamPublishAdditionalInfo() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish properties test.";
@@ -37,7 +38,7 @@ public class AttachmentTest {
 	}
 
 	@Test
-	public void testStreamPublishImage() throws IOException, FacebookException {
+	public void testStreamPublishImage() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish image test.";
@@ -49,7 +50,7 @@ public class AttachmentTest {
 	}
 
 	@Test
-	public void testStreamPublishFlash() throws IOException, FacebookException {
+	public void testStreamPublishFlash() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish flash test.";
@@ -61,7 +62,7 @@ public class AttachmentTest {
 	}
 
 	@Test
-	public void testStreamPublishMP3() throws IOException, FacebookException {
+	public void testStreamPublishMP3() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish mp3 test.";
@@ -73,7 +74,7 @@ public class AttachmentTest {
 	}
 
 	@Test
-	public void testStreamPublishVideo() throws IOException, FacebookException {
+	public void testStreamPublishVideo() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish video test.";
@@ -135,8 +136,14 @@ public class AttachmentTest {
 		return mediaVideo;
 	}
 
-	/** Used by various unit tests to remove stream item. */
-	private void streamRemove( final String postId ) throws IOException, FacebookException {
+	/**
+	 * Used by various unit tests to remove stream item.
+	 * 
+	 * @throws JSONException
+	 * @throws FacebookException
+	 * @throws IOException
+	 */
+	private void streamRemove( final String postId ) throws IOException, FacebookException, JSONException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		Object result = client.stream_remove( postId, null );
 		Assert.assertNotNull( result );

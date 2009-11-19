@@ -1,6 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -14,7 +13,7 @@ import com.google.code.facebookapi.schema.UsersGetInfoResponse;
 public class Issue157UsersGetInfo {
 
 	@Test
-	public void testUsersGetInfo() throws FacebookException, IOException {
+	public void testUsersGetInfo() throws Exception {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		long logged = client.users_getLoggedInUser();

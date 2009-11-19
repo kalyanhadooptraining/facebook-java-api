@@ -3,14 +3,12 @@ package com.google.code.facebookapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 public class Issue152UserLogoutTest {
 
 	@Test
-	public void testUserLogoutFacebookException() throws FacebookException, IOException {
+	public void testUserLogoutFacebookException() throws Exception {
 		FacebookXmlRestClient client = FacebookSessionTestUtils.getValidClient( FacebookXmlRestClient.class );
 		client.auth_expireSession();
 		try {

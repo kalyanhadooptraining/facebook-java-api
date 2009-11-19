@@ -3,19 +3,18 @@ package com.google.code.facebookapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
+import org.json.JSONObject;
 import org.junit.Test;
 
 public class Issue179SessionSecretAndDesktop {
 
 	@Test
-	public void testCreateSessionSecretAndUseIt() throws FacebookException, IOException {
+	public void testCreateSessionSecretAndUseIt() throws Exception {
 		JUnitProperties props = new JUnitProperties();
 
-		String[] session_info = FacebookSessionTestUtils.getValidSessionID( true );
-		String sessionKey = session_info[0];
-		String sessionSecret = session_info[1];
+		JSONObject session_info = FacebookSessionTestUtils.getValidSessionID( true );
+		String sessionKey = session_info.getString( "session_key" );
+		String sessionSecret = session_info.getString( "secret" );
 
 		// restrictedClient is simulating construction of the client on the
 		// desktop app using the session secret instead of the real secret.

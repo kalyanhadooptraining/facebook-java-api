@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FacebookSessionTestUtils {
 
@@ -21,7 +24,7 @@ public class FacebookSessionTestUtils {
 	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
 	public static final String PERM_BASE_URL = "http://www.facebook.com/connect/prompt_permissions.php";
 
-	public static String[] getValidSessionID( boolean generateSessionSecret ) throws IOException, FacebookException {
+	public static JSONObject getValidSessionID( boolean generateSessionSecret ) throws FacebookException, HttpException, IOException, JSONException {
 		JUnitProperties properties = new JUnitProperties();
 
 		String apikey = properties.getAPIKEY();
@@ -67,19 +70,25 @@ public class FacebookSessionTestUtils {
 		client.auth_getSession( auth_token, generateSessionSecret );
 		String session_key = client.getCacheSessionKey();
 		String session_secret = client.getCacheSessionSecret();
-		return new String[] { session_key, session_secret };
+		JSONObject out = new JSONObject();
+		out.put( "session_key", client.getCacheSessionKey() );
+		out.put( "uid", client.getCacheUserId() );
+		out.put( "expires", client.getCacheSessionExpires() / 1000 );
+		out.put( "secret", client.getCacheSessionSecret() );
+		return out;
 	}
 
 	public static <T extends IFacebookRestClient> T getSessionlessValidClient( Class<T> clientReturnType ) {
 		return getSessionlessIFacebookRestClient( clientReturnType );
 	}
 
-	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType ) throws IOException, FacebookException {
+	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType ) throws IOException, FacebookException, JSONException {
 		return getValidClient( clientReturnType, false );
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType, boolean generateSessionSecret ) throws IOException, FacebookException {
+	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType, boolean generateSessionSecret ) throws IOException, FacebookException,
+			JSONException {
 		final String SESSION_PREFERENCE = "/com/google/code/facebookapi/test/sessionID";
 
 		IFacebookRestClient<T> client = null;
@@ -101,8 +110,8 @@ public class FacebookSessionTestUtils {
 		}
 
 		if ( client == null ) {
-			String[] session_info = FacebookSessionTestUtils.getValidSessionID( generateSessionSecret );
-			session_key = session_info[0];
+			JSONObject session_info = FacebookSessionTestUtils.getValidSessionID( generateSessionSecret );
+			session_key = session_info.getString( "session_key" );
 			prefs.put( SESSION_PREFERENCE, session_key );
 			client = getIFacebookRestClient( clientReturnType, session_key );
 		}
@@ -152,5 +161,5 @@ public class FacebookSessionTestUtils {
 			throw new IllegalStateException( "Require extended permission " + perm.getName() + "; please visit: " + url );
 		}
 	}
-	
+
 }
