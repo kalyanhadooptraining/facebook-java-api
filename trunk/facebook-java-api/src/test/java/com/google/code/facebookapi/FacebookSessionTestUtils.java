@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -23,15 +24,46 @@ public class FacebookSessionTestUtils {
 
 	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
 	public static final String PERM_BASE_URL = "http://www.facebook.com/connect/prompt_permissions.php";
+	public static final String PREFS_SESSIONS_NODE = "/com/google/code/facebookapi/test_sessions";
 
-	public static JSONObject getValidSessionID( boolean generateSessionSecret ) throws FacebookException, HttpException, IOException, JSONException {
-		JUnitProperties properties = new JUnitProperties();
+	public static final JUnitProperties junitProperties = new JUnitProperties();
 
-		String apikey = properties.getAPIKEY();
-		String secret = properties.getSECRET();
+	public static void clearSessions() throws BackingStoreException {
+		Preferences root = Preferences.userRoot();
+		Preferences prefs = root.node( PREFS_SESSIONS_NODE );
+		for ( String key : prefs.keys() ) {
+			prefs.remove( key );
+		}
+		prefs.flush();
+	}
+
+	public static JSONObject attainSession( boolean generateSessionSecret ) throws FacebookException, HttpException, IOException, JSONException, BackingStoreException {
+		Preferences root = Preferences.userRoot();
+		Preferences prefs = root.node( PREFS_SESSIONS_NODE );
+		prefs.flush();
+		String apikey = junitProperties.getAPIKEY();
+		String key = "session:" + generateSessionSecret + ":" + apikey;
+		String val = prefs.get( key, null );
+		if ( val != null ) {
+			JSONObject out = new JSONObject( val );
+			long exp = out.getLong( "expires" );
+			if ( exp * 1000 < System.currentTimeMillis() ) {
+				return out;
+			}
+			// FIXME: should we validate the session_key even more?
+		}
+		JSONObject out = attainSessionRaw( generateSessionSecret );
+		prefs.put( key, out.toString() );
+		prefs.flush();
+		return out;
+	}
+
+	public static JSONObject attainSessionRaw( boolean generateSessionSecret ) throws FacebookException, HttpException, IOException, JSONException {
+		String apikey = junitProperties.getAPIKEY();
+		String secret = junitProperties.getSECRET();
 		if ( generateSessionSecret ) {
-			apikey = properties.getDESKTOP_APIKEY();
-			secret = properties.getDESKTOP_SECRET();
+			apikey = junitProperties.getDESKTOP_APIKEY();
+			secret = junitProperties.getDESKTOP_SECRET();
 		}
 
 		// attain auth_token
@@ -43,39 +75,48 @@ public class FacebookSessionTestUtils {
 		http.setParams( new HttpClientParams() );
 		http.setState( new HttpState() );
 
-		// 'open' login popup/window
+		{
+			// 'open' login popup/window
+			Map<String,String> params = new HashMap<String,String>();
+			params.put( "api_key", apikey );
+			params.put( "v", "1.0" );
+			params.put( "auth_token", auth_token );
+			String queryString = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
+			GetMethod get = new GetMethod( LOGIN_BASE_URL + "?" + queryString );
+			http.executeMethod( get );
+			logger.debug( "uri: " + get.getURI() );
+		}
 
-		Map<String,String> params = new HashMap<String,String>();
-		params.put( "api_key", apikey );
-		params.put( "v", "1.0" );
-		params.put( "auth_token", auth_token );
-		String queryString = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
-		GetMethod get = new GetMethod( LOGIN_BASE_URL + "?" + queryString );
-		http.executeMethod( get );
+		{
+			// 'submit' login popup/window
+			PostMethod post = new PostMethod( LOGIN_BASE_URL );
+			post.addParameter( new NameValuePair( "login_attempt", "1" ) );
+			post.addParameter( new NameValuePair( "version", "1.0" ) );
+			post.addParameter( new NameValuePair( "auth_token", auth_token ) );
+			post.addParameter( new NameValuePair( "api_key", apikey ) );
+			// return_session=0/1, req_perms="", session_key_only=0/1
+			// ??? lsd=DhB8X
+			// ??? login_attempt=1
+			post.addParameter( new NameValuePair( "email", junitProperties.getEMAIL() ) );
+			post.addParameter( new NameValuePair( "pass", junitProperties.getPASS() ) );
+			http.executeMethod( post );
+		}
 
-		// 'submit' login popup/window
-		PostMethod post = new PostMethod( LOGIN_BASE_URL );
-		post.addParameter( new NameValuePair( "login_attempt", "1" ) );
-		post.addParameter( new NameValuePair( "version", "1.0" ) );
-		post.addParameter( new NameValuePair( "auth_token", auth_token ) );
-		post.addParameter( new NameValuePair( "api_key", apikey ) );
-		// return_session=0/1, req_perms="", session_key_only=0/1
-		// ??? lsd=DhB8X
-		// ??? login_attempt=1
-		post.addParameter( new NameValuePair( "email", properties.getEMAIL() ) );
-		post.addParameter( new NameValuePair( "pass", properties.getPASS() ) );
-		http.executeMethod( post );
-
-		// assume success, and try to attain valid session now
-		client.auth_getSession( auth_token, generateSessionSecret );
-		String session_key = client.getCacheSessionKey();
-		String session_secret = client.getCacheSessionSecret();
-		JSONObject out = new JSONObject();
-		out.put( "session_key", client.getCacheSessionKey() );
-		out.put( "uid", client.getCacheUserId() );
-		out.put( "expires", client.getCacheSessionExpires() / 1000 );
-		out.put( "secret", client.getCacheSessionSecret() );
-		return out;
+		{
+			// assume success, and try to attain valid session now
+			client.auth_getSession( auth_token, generateSessionSecret );
+			JSONObject out = new JSONObject();
+			out.put( "api_key", apikey );
+			out.put( "session_key", client.getCacheSessionKey() );
+			out.put( "uid", client.getCacheUserId() );
+			out.put( "expires", client.getCacheSessionExpires() );
+			if ( generateSessionSecret ) {
+				out.put( "secret", client.getCacheSessionSecret() );
+			} else {
+				out.put( "secret", secret );
+			}
+			return out;
+		}
 	}
 
 	public static <T extends IFacebookRestClient> T getSessionlessValidClient( Class<T> clientReturnType ) {
@@ -86,44 +127,27 @@ public class FacebookSessionTestUtils {
 		return getValidClient( clientReturnType, false );
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType, boolean generateSessionSecret ) throws IOException, FacebookException,
-			JSONException {
-		final String SESSION_PREFERENCE = "/com/google/code/facebookapi/test/sessionID";
-
-		IFacebookRestClient<T> client = null;
-
-		Preferences prefs = Preferences.userRoot();
-
-		String session_key = prefs.get( SESSION_PREFERENCE, null );
-		if ( session_key != null ) {
-			try {
-				client = getIFacebookRestClient( clientReturnType, session_key );
-				// Test out the session ID
-				client.friends_get();
-			}
-			catch ( FacebookException ex ) {
-				prefs.remove( SESSION_PREFERENCE );
-				client = null;
-				System.out.println( "Session ID is out of date; generate a new one" );
-			}
+	public static <T extends IFacebookRestClient> T getValidClient( Class<T> clientReturnType, boolean generateSessionSecret ) {
+		try {
+			JSONObject session_info = attainSession( generateSessionSecret );
+			return createRestClient( clientReturnType, session_info );
 		}
-
-		if ( client == null ) {
-			JSONObject session_info = FacebookSessionTestUtils.getValidSessionID( generateSessionSecret );
-			session_key = session_info.getString( "session_key" );
-			prefs.put( SESSION_PREFERENCE, session_key );
-			client = getIFacebookRestClient( clientReturnType, session_key );
+		catch ( Exception ex ) {
+			throw BasicClientHelper.runtimeException( ex );
 		}
-
-		return (T) client;
 	}
 
-	private static <T extends IFacebookRestClient> T getIFacebookRestClient( Class<T> clientReturnType, String sessionID ) {
+	private static <T extends IFacebookRestClient> T createRestClient( Class<T> clientReturnType, JSONObject session_info ) throws JSONException {
+		String apikey = session_info.getString( "api_key" );
+		String secret = session_info.getString( "secret" );
+		String sessionkey = session_info.getString( "session_key" );
+		return createRestClient( clientReturnType, apikey, secret, sessionkey );
+	}
+
+	private static <T extends IFacebookRestClient> T createRestClient( Class<T> clientReturnType, String apikey, String secret, String sessionkey ) {
 		try {
-			JUnitProperties properties = new JUnitProperties();
 			Constructor<T> clientConstructor = clientReturnType.getConstructor( String.class, String.class, String.class );
-			return clientConstructor.newInstance( properties.getAPIKEY(), properties.getSECRET(), sessionID );
+			return clientConstructor.newInstance( apikey, secret, sessionkey );
 		}
 		catch ( Exception ex ) {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
@@ -132,16 +156,15 @@ public class FacebookSessionTestUtils {
 
 	private static <T extends IFacebookRestClient> T getSessionlessIFacebookRestClient( Class<T> clientReturnType ) {
 		try {
-			JUnitProperties properties = new JUnitProperties();
 			Constructor<T> clientConstructor = clientReturnType.getConstructor( String.class, String.class );
-			return clientConstructor.newInstance( properties.getAPIKEY(), properties.getSECRET() );
+			return clientConstructor.newInstance( junitProperties.getAPIKEY(), junitProperties.getSECRET() );
 		}
 		catch ( Exception ex ) {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
 		}
 	}
 
-	public static void requirePerm( Permission perm, IFacebookRestClient client ) throws FacebookException {
+	public static <T extends IFacebookRestClient> void requirePerm( Permission perm, T client ) throws FacebookException {
 		if ( !client.users_hasAppPermission( perm ) ) {
 			// create http client
 			HttpClient http = new HttpClient();
