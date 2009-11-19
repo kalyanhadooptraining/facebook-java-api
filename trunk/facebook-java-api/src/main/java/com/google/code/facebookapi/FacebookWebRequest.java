@@ -1,7 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,11 +43,12 @@ public class FacebookWebRequest<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, String[]> getRequestParameterMap(HttpServletRequest request) {
-		return (Map<String, String[]>)request.getParameterMap(); 
+	private static Map<String,String[]> getRequestParameterMap( HttpServletRequest request ) {
+		return (Map<String,String[]>) request.getParameterMap();
 	}
-	
-	@SuppressWarnings("deprecation") //Get rid of "app added" flag then remove this suppression
+
+	@SuppressWarnings("deprecation")
+	// Get rid of "app added" flag then remove this suppression
 	protected FacebookWebRequest( HttpServletRequest request, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.apiKey = apiKey;
 		this.apiClient = apiClient;
@@ -77,17 +76,17 @@ public class FacebookWebRequest<T> {
 					apiClient.setCacheSession( sessionKey, userId, sessionExpires );
 				}
 			}
-			{
-				// caching of friends
-				String friends = getFbParam( FacebookParam.FRIENDS );
-				if ( friends != null && !friends.equals( "" ) ) {
-					List<Long> friendsList = new ArrayList<Long>();
-					for ( String friend : friends.split( "," ) ) {
-						friendsList.add( Long.parseLong( friend ) );
-					}
-					apiClient.setCacheFriendsList( friendsList );
-				}
-			}
+			// {
+			// // caching of friends
+			// String friends = getFbParam( FacebookParam.FRIENDS );
+			// if ( friends != null && !friends.equals( "" ) ) {
+			// List<Long> friendsList = new ArrayList<Long>();
+			// for ( String friend : friends.split( "," ) ) {
+			// friendsList.add( Long.parseLong( friend ) );
+			// }
+			// apiClient.setCacheFriendsList( friendsList );
+			// }
+			// }
 			{
 				// caching of the "added" value
 				appAdded = getFbParamBoolean( FacebookParam.ADDED );
@@ -127,7 +126,7 @@ public class FacebookWebRequest<T> {
 
 	public boolean fbParamEquals( FacebookParam key, String val ) {
 		String param = getFbParam( key );
-		return key.equals( param );
+		return val.equals( param );
 	}
 
 	// ---- Getters

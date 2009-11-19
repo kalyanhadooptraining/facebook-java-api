@@ -90,10 +90,10 @@ public interface IFacebookRestClient<T> {
 	 */
 	public boolean isDesktop();
 
-	@FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
-	public T getCacheFriendsList() throws FacebookException;
-
-	public void setCacheFriendsList( List<Long> friendIds );
+	// @FacebookReturnType(JAXB = FriendsGetResponse.class, JSON = JSONArray.class)
+	// public T getCacheFriendsList() throws FacebookException;
+	//
+	// public void setCacheFriendsList( List<Long> friendIds );
 
 	@Deprecated
 	public Boolean getCacheAppAdded();

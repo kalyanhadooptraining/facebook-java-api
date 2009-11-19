@@ -147,10 +147,6 @@ public abstract class BaseAdapter {
 		getClient().profile_setInfoOptions( field );
 	}
 
-	public void setCacheFriendsList( List<Long> ids ) {
-		getClient().setCacheFriendsList( ids );
-	}
-
 	@Deprecated
 	public void setCacheAppAdded( Boolean appAdded ) {
 		getClient().setCacheAppAdded( appAdded );
