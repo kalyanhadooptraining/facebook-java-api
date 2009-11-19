@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A FacebookRestClient that uses the JSON result format. This means results from calls to the Facebook API are returned as <a href="http://www.json.org/">JSON</a> and
@@ -48,9 +49,18 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> T parseCallResult( @SuppressWarnings("unused") Class<T> type, Object rawResponse ) throws FacebookException {
+	protected <T> T parseCallResult( Class<T> type, Object rawResponse ) throws FacebookException {
 		log.debug( "Facebook response:  " + rawResponse );
-		return (T) JsonHelper.parseCallResult( rawResponse );
+		Object out = JsonHelper.parseCallResult( rawResponse );
+		if ( type == JSONArray.class && out instanceof JSONObject ) {
+			JSONArray arr = new JSONArray();
+			JSONObject json = (JSONObject) out;
+			if ( json.length() > 0 ) {
+				arr.put( json );
+			}
+			out = arr;
+		}
+		return (T) out;
 	}
 
 
