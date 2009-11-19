@@ -48,6 +48,7 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 	}
 
 	public Object parseCallResult( Object rawResponse ) throws FacebookException {
+		log.debug( "Facebook response:  " + rawResponse );
 		return JsonHelper.parseCallResult( rawResponse );
 	}
 

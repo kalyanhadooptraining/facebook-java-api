@@ -49,6 +49,7 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 	}
 
 	Document parseCallResult( Object rawResponse ) throws FacebookException {
+		log.debug( "Facebook response:  " + rawResponse );
 		return XmlHelper.parseCallResult( rawResponse, factory );
 	}
 

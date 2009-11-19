@@ -323,7 +323,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			Pairs.addParam( "generate_session_secret", "true", params );
 		}
 		String rawResponse = callMethod( FacebookMethod.AUTH_GET_SESSION, params );
-
+		log.debug( "auth_getSession_response: " + rawResponse );
 		if ( "json".equals( getResponseFormat() ) ) {
 			try {
 				JSONObject json = new JSONObject( rawResponse );
