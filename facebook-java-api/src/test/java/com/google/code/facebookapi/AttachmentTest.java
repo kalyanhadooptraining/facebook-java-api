@@ -15,6 +15,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishProperties() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
 		attachment.setProperties( createPropertiesList() );
@@ -26,6 +27,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishAdditionalInfo() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
 		attachment.setAdditionalInfo( createAdditionalInfoMap() );
@@ -37,6 +39,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishImage() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish image test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaImage() );
@@ -48,6 +51,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishFlash() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish flash test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaFlash() );
@@ -59,6 +63,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishMP3() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish mp3 test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaMP3() );
@@ -70,6 +75,7 @@ public class AttachmentTest {
 	@Test
 	public void testStreamPublishVideo() throws IOException, FacebookException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish video test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaVideo() );
