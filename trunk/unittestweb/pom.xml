@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>parent-pom</artifactId>
+    <groupId>com.google.code.facebookapi</groupId>
+    <version>3.0.2-SNAPSHOT</version>
+  </parent>
+  <groupId>com.google.code.facebookapi</groupId>
+  <artifactId>unittestweb</artifactId>
+  <version>3.0.2-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>Facebook Java Library - Unit Test Website Helper</name>
+</project>
