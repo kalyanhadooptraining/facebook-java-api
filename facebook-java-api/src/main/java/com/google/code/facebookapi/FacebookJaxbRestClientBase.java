@@ -207,7 +207,6 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		List<Object> result = new ArrayList<Object>();
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
 			for ( String clientResult : clientResults ) {
 				Document doc = builder.parse( new InputSource( new StringReader( clientResult ) ) );
 				NodeList responses = doc.getElementsByTagName( "batch_run_response_elt" );

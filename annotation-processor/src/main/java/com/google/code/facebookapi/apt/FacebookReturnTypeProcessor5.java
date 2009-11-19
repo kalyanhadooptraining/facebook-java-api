@@ -2,10 +2,7 @@ package com.google.code.facebookapi.apt;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 import com.sun.mirror.apt.AnnotationProcessor;
@@ -24,13 +21,14 @@ import com.sun.mirror.type.ReferenceType;
 import com.sun.mirror.type.TypeMirror;
 import com.sun.mirror.util.SimpleDeclarationVisitor;
 
+@SuppressWarnings("restriction")
 public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 
-	PrintWriter outJAXB;
-	PrintWriter outJSON;
-	PrintWriter outXML;
+	private PrintWriter outJAXB;
+	private PrintWriter outJSON;
+	private PrintWriter outXML;
 
-	AnnotationProcessorEnvironment processingEnv;
+	private AnnotationProcessorEnvironment processingEnv;
 
 	public FacebookReturnTypeProcessor5( AnnotationProcessorEnvironment processingEnv ) {
 		this.processingEnv = processingEnv;
@@ -38,12 +36,12 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 
 
 
-	class CopyConstructorVisitor extends SimpleDeclarationVisitor {
+	public static class CopyConstructorVisitor extends SimpleDeclarationVisitor {
 
-		String clientType;
-		PrintWriter out;
+		private String clientType;
+		private PrintWriter out;
 
-		CopyConstructorVisitor( String clientType, PrintWriter out ) {
+		public CopyConstructorVisitor( String clientType, PrintWriter out ) {
 			this.clientType = clientType;
 			this.out = out;
 		}
@@ -70,7 +68,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 
 	}
 
-	private CharSequence modifiers( ConstructorDeclaration e ) {
+	private static CharSequence modifiers( ConstructorDeclaration e ) {
 		StringBuilder modifiers = new StringBuilder();
 		Collection<Modifier> modifierSet = e.getModifiers();
 		boolean isFirstModifier = true;
@@ -84,7 +82,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return modifiers;
 	}
 
-	private CharSequence throwClause( ConstructorDeclaration e ) {
+	private static CharSequence throwClause( ConstructorDeclaration e ) {
 		StringBuilder throwClause = new StringBuilder();
 		Collection<ReferenceType> thrownTypes = e.getThrownTypes();
 		boolean isFirstThrows = true;
@@ -100,7 +98,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return throwClause;
 	}
 
-	private CharSequence throwClause( MethodDeclaration e ) {
+	private static CharSequence throwClause( MethodDeclaration e ) {
 		StringBuilder throwClause = new StringBuilder();
 		Collection<ReferenceType> thrownTypes = e.getThrownTypes();
 		boolean isFirstThrows = true;
@@ -116,7 +114,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return throwClause;
 	}
 
-	private CharSequence parametersIncludingTypes( ConstructorDeclaration e ) {
+	private static CharSequence parametersIncludingTypes( ConstructorDeclaration e ) {
 		StringBuilder methodCode = new StringBuilder();
 
 		boolean isFirstParam = true;
@@ -143,7 +141,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return methodCode;
 	}
 
-	private CharSequence parametersIncludingTypes( MethodDeclaration e ) {
+	private static CharSequence parametersIncludingTypes( MethodDeclaration e ) {
 		StringBuilder methodCode = new StringBuilder();
 
 		boolean isFirstParam = true;
@@ -170,7 +168,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return methodCode;
 	}
 
-	private CharSequence parametersExcludingTypes( ConstructorDeclaration e ) {
+	private static CharSequence parametersExcludingTypes( ConstructorDeclaration e ) {
 		StringBuilder paramListCode = new StringBuilder();
 
 		boolean isFirstParam = true;
@@ -194,7 +192,7 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return paramListCode;
 	}
 
-	private CharSequence parametersExcludingTypes( MethodDeclaration e ) {
+	private static CharSequence parametersExcludingTypes( MethodDeclaration e ) {
 		StringBuilder paramListCode = new StringBuilder();
 
 		boolean isFirstParam = true;
@@ -218,13 +216,10 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return paramListCode;
 	}
 
-	private void writeHeader( PrintWriter out, String classNamePart, String now ) {
+	private static void writeHeader( PrintWriter out, String classNamePart ) {
 		out.println( "package com.google.code.facebookapi;" );
 		out.println();
-		// out.println("import javax.annotation.Generated;");
-		// out.println();
 
-		// out.println("@Generated(value=\"com.google.code.facebookapi.apt.FacebookReturnTypeProcessor\", date=\"" + now + "\")");
 		if ( classNamePart.equals( "Jaxb" ) ) {
 			out.println( "@SuppressWarnings(\"unchecked\")" );
 		}
@@ -233,8 +228,8 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	}
 
 	public void process() {
-		DateFormat isoDateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.mmmZ" );
-		String now = isoDateFormat.format( new Date() );
+		// DateFormat isoDateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.mmmZ" );
+		// String now = isoDateFormat.format( new Date() );
 
 		try {
 			outJAXB = processingEnv.getFiler().createSourceFile( "com.google.code.facebookapi.FacebookJaxbRestClient" );
@@ -246,31 +241,31 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			return;
 		}
 
-		writeHeader( outJAXB, "Jaxb", now );
-		writeHeader( outJSON, "Json", now );
-		writeHeader( outXML, "Xml", now );
+		writeHeader( outJAXB, "Jaxb" );
+		writeHeader( outJSON, "Json" );
+		writeHeader( outXML, "Xml" );
 
 		CopyConstructorVisitor copyConstructorsJaxb = new CopyConstructorVisitor( "Jaxb", outJAXB );
 		CopyConstructorVisitor copyConstructorsJson = new CopyConstructorVisitor( "Json", outJSON );
 		CopyConstructorVisitor copyConstructorsXml = new CopyConstructorVisitor( "Xml", outXML );
 
-		ClassDeclaration facebookJaxbRestClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJaxbRestClientBase" );
-		for ( ConstructorDeclaration cd : facebookJaxbRestClientBase.getConstructors() ) {
+		ClassDeclaration jaxbClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJaxbRestClientBase" );
+		for ( ConstructorDeclaration cd : jaxbClientBase.getConstructors() ) {
 			cd.accept( copyConstructorsJaxb );
 		}
 
-		ClassDeclaration facebookJsonRestClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJsonRestClientBase" );
-		for ( ConstructorDeclaration cd : facebookJsonRestClientBase.getConstructors() ) {
+		ClassDeclaration jsonClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJsonRestClientBase" );
+		for ( ConstructorDeclaration cd : jsonClientBase.getConstructors() ) {
 			cd.accept( copyConstructorsJson );
 		}
 
-		ClassDeclaration facebookXmlRestClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookXmlRestClientBase" );
-		for ( ConstructorDeclaration cd : facebookXmlRestClientBase.getConstructors() ) {
+		ClassDeclaration xmlClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookXmlRestClientBase" );
+		for ( ConstructorDeclaration cd : xmlClientBase.getConstructors() ) {
 			cd.accept( copyConstructorsXml );
 		}
 
 
-		AnnotationVisitor visitor = new AnnotationVisitor();
+		AnnotationVisitor visitor = new AnnotationVisitor( outJAXB, outJSON, outXML );
 
 		Collection<Declaration> elements = processingEnv.getDeclarationsAnnotatedWith( (AnnotationTypeDeclaration) processingEnv
 				.getTypeDeclaration( "com.google.code.facebookapi.FacebookReturnType" ) );
@@ -290,7 +285,6 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		outXML.println( "}" );
 		outXML.flush();
 		outXML.close();
-
 	}
 
 	/**
@@ -298,13 +292,23 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 	 * 
 	 * @param e
 	 */
-	private void shakeEnclosingElementMethods( MethodDeclaration e ) {
+	private static void shakeEnclosingElementMethods( MethodDeclaration e ) {
 		e.getDeclaringType().getMethods();
 	}
 
 
 
-	class AnnotationVisitor extends SimpleDeclarationVisitor {
+	public static class AnnotationVisitor extends SimpleDeclarationVisitor {
+
+		private PrintWriter outJAXB;
+		private PrintWriter outJSON;
+		private PrintWriter outXML;
+
+		public AnnotationVisitor( PrintWriter outJAXB, PrintWriter outJSON, PrintWriter outXML ) {
+			this.outJAXB = outJAXB;
+			this.outJSON = outJSON;
+			this.outXML = outXML;
+		}
 
 		@Override
 		public void visitMethodDeclaration( MethodDeclaration e ) {
@@ -320,59 +324,56 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			Map<AnnotationTypeElementDeclaration,AnnotationValue> annotationParams = firstAnnotation.getElementValues();
 			boolean jaxbAlreadySet = false;
 			for ( AnnotationTypeElementDeclaration key : annotationParams.keySet() ) {
-				if ( key.getSimpleName().contentEquals( "JAXBList" ) ) {
+				String name = key.getSimpleName();
+				String val = annotationParams.get( key ).toString();
+				if ( name.contentEquals( "JAXBList" ) ) {
 					if ( annotationParams.get( key ) != null ) {
-						jaxbReturnType = "java.util.List<" + stripDotClass( annotationParams.get( key ).toString() ) + ">";
+						jaxbReturnType = "java.util.List<" + stripDotClass( val ) + ">";
 						jaxbAlreadySet = true;
 					}
-				} else if ( !jaxbAlreadySet && key.getSimpleName().contentEquals( "JAXB" ) ) {
+				} else if ( !jaxbAlreadySet && name.contentEquals( "JAXB" ) ) {
 					if ( annotationParams.get( key ) != null ) {
-						jaxbReturnType = stripDotClass( annotationParams.get( key ).toString() );
+						jaxbReturnType = stripDotClass( val );
 					}
-				} else if ( key.getSimpleName().contentEquals( "JSON" ) ) {
+				} else if ( name.contentEquals( "JSON" ) ) {
 					if ( annotationParams.get( key ) != null ) {
-						jsonReturnType = stripDotClass( annotationParams.get( key ).toString() );
+						jsonReturnType = stripDotClass( val );
 					}
 				}
 			}
 
-			StringBuilder methodCode = new StringBuilder();
+			boolean deprecated = e.getAnnotation( Deprecated.class ) != null;
 
-			if ( e.getAnnotation( Deprecated.class ) != null ) {
-				methodCode.append( "    @Deprecated" ).append( System.getProperty( "line.separator" ) );
-			}
+			String methName = e.getSimpleName();
 
-			methodCode.append( "    public " );
-			methodCode.append( "%RETURNTYPE%" );
-			methodCode.append( " " );
-			methodCode.append( e.getSimpleName() ).append( "( " );
-			methodCode.append( parametersIncludingTypes( e ) );
-			methodCode.append( " ) " );
-			methodCode.append( throwClause( e ) );
-			methodCode.append( " {" );
+			String methSig = "    public %s %s( %s ) %s {";
+			methSig = String.format( methSig, "%RETURNTYPE%", methName, parametersIncludingTypes( e ), throwClause( e ) );
 
-			CharSequence paramListCode = parametersExcludingTypes( e );
+			String methCall = "        Object rawResponse = client.%s( %s );";
+			methCall = String.format( methCall, methName, parametersExcludingTypes( e ) );
 
-			outJAXB.println( methodCode.toString().replace( "%RETURNTYPE%", jaxbReturnType ) );
-			outJAXB.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
-			outJAXB.println( "        return (" + jaxbReturnType + ")parseCallResult( rawResponse );" );
-			outJAXB.println( "    }" );
-			outJAXB.println();
+			String methRet = "        return (%s)parseCallResult( rawResponse );";
+			methRet = String.format( methRet, "%RETURNTYPE%" );
 
-			outJSON.println( methodCode.toString().replace( "%RETURNTYPE%", jsonReturnType ) );
-			outJSON.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
-			outJSON.println( "        return (" + jsonReturnType + ")parseCallResult( rawResponse );" );
-			outJSON.println( "    }" );
-			outJSON.println();
+			String methRet2 = "        return parseCallResult( %s.class, rawResponse );";
+			methRet2 = String.format( methRet2, "%RETURNTYPE%" );
 
-			outXML.println( methodCode.toString().replace( "%RETURNTYPE%", xmlReturnType ) );
-			outXML.println( "        Object rawResponse = client." + e.getSimpleName() + "( " + paramListCode + " );" );
-			outXML.println( "        return (" + xmlReturnType + ")parseCallResult( rawResponse );" );
-			outXML.println( "    }" );
-			outXML.println();
+			printMethod( outJAXB, jaxbReturnType, deprecated, methSig, methCall, methRet );
+			printMethod( outJSON, jsonReturnType, deprecated, methSig, methCall, methRet2 );
+			printMethod( outXML, xmlReturnType, deprecated, methSig, methCall, methRet );
 		}
 	}
 
+	public static void printMethod( PrintWriter out, String returnType, boolean deprecated, String methSig, String methCall, String methRet ) {
+		if ( deprecated ) {
+			out.println( "    @Deprecated" );
+		}
+		out.println( methSig.replace( "%RETURNTYPE%", returnType ) );
+		out.println( methCall );
+		out.println( methRet.replace( "%RETURNTYPE%", returnType ) );
+		out.println( "    }" );
+		out.println();
+	}
 
 	public static String stripDotClass( String input ) {
 		if ( !input.endsWith( ".class" ) ) {
