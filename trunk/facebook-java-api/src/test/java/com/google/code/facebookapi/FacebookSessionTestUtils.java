@@ -2,6 +2,8 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -17,6 +19,7 @@ public class FacebookSessionTestUtils {
 	protected static Logger logger = Logger.getLogger( FacebookSessionTestUtils.class );
 
 	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
+	public static final String PERM_BASE_URL = "http://www.facebook.com/connect/prompt_permissions.php";
 
 	public static String[] getValidSessionID( boolean generateSessionSecret ) throws IOException, FacebookException {
 		JUnitProperties properties = new JUnitProperties();
@@ -37,9 +40,14 @@ public class FacebookSessionTestUtils {
 		http.setParams( new HttpClientParams() );
 		http.setState( new HttpState() );
 
-
 		// 'open' login popup/window
-		GetMethod get = new GetMethod( LOGIN_BASE_URL + "?api_key=" + apikey + "&v=1.0&auth_token=" + auth_token );
+
+		Map<String,String> params = new HashMap<String,String>();
+		params.put( "api_key", apikey );
+		params.put( "v", "1.0" );
+		params.put( "auth_token", auth_token );
+		String queryString = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
+		GetMethod get = new GetMethod( LOGIN_BASE_URL + "?" + queryString );
 		http.executeMethod( get );
 
 		// 'submit' login popup/window
@@ -124,4 +132,25 @@ public class FacebookSessionTestUtils {
 		}
 	}
 
+	public static void requirePerm( Permission perm, IFacebookRestClient client ) throws FacebookException {
+		if ( !client.users_hasAppPermission( perm ) ) {
+			// create http client
+			HttpClient http = new HttpClient();
+			http.setParams( new HttpClientParams() );
+			http.setState( new HttpState() );
+
+			// 'open' login popup/window
+			Map<String,String> params = new HashMap<String,String>();
+			params.put( "api_key", client.getApiKey() );
+			params.put( "v", "1.0" );
+			params.put( "fbconnect", "true" );
+			params.put( "extern", "1" );
+			params.put( "ext_perm", perm.getName() );
+			params.put( "next", "http://www.facebook.com/connect/login_success.html?xxRESULTTOKENxx" );
+			String queryString = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
+			String url = PERM_BASE_URL + "?" + queryString;
+			throw new IllegalStateException( "Require extended permission " + perm.getName() + "; please visit: " + url );
+		}
+	}
+	
 }
