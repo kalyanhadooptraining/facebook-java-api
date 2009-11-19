@@ -1,6 +1,5 @@
 package com.google.code.facebookapi;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +14,7 @@ import org.junit.Test;
 public class Issue208StreamAPI {
 
 	@Test
-	public void testStreamGet() throws IOException, FacebookException {
+	public void testStreamGet() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		JSONObject result = (JSONObject) client.stream_get( null, null, null, null, null, null, null );
@@ -27,7 +26,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamGetLimit() throws IOException, FacebookException {
+	public void testStreamGetLimit() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		JSONObject result = (JSONObject) client.stream_get( null, null, null, null, 1, null, null );
@@ -39,7 +38,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamGetDateRange() throws IOException, FacebookException {
+	public void testStreamGetDateRange() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Date start = DateUtils.addDays( new Date(), -2 );
@@ -54,7 +53,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamGetMetadata() throws IOException, FacebookException {
+	public void testStreamGetMetadata() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		List<String> metadata = new ArrayList<String>( 1 );
@@ -69,7 +68,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamGetSourceIds() throws IOException, FacebookException {
+	public void testStreamGetSourceIds() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		List<Long> sourceIds = new ArrayList<Long>( 1 );
@@ -84,13 +83,13 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamPublishAndRemove() throws IOException, FacebookException {
+	public void testStreamPublishAndRemove() throws Exception {
 		String postId = streamPublish();
 		streamRemove( postId );
 	}
 
 	/** Used by various unit tests to create stream item. */
-	private String streamPublish() throws IOException, FacebookException {
+	private String streamPublish() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		String message = "Facebook stream publish test.";
@@ -105,7 +104,7 @@ public class Issue208StreamAPI {
 	}
 
 	/** Used by various unit tests to remove stream item. */
-	private void streamRemove( final String postId ) throws IOException, FacebookException {
+	private void streamRemove( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Object result = client.stream_remove( postId, null );
@@ -117,7 +116,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamComments() throws IOException, FacebookException {
+	public void testStreamComments() throws Exception {
 		String postId = streamPublish();
 		String commentId = streamAddComment( postId );
 		streamGetComments( postId );
@@ -125,7 +124,7 @@ public class Issue208StreamAPI {
 		streamRemove( postId );
 	}
 
-	private String streamAddComment( final String postId ) throws IOException, FacebookException {
+	private String streamAddComment( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		String comment = "Unit test comment.";
@@ -138,7 +137,7 @@ public class Issue208StreamAPI {
 		return result.toString();
 	}
 
-	private void streamGetComments( final String postId ) throws IOException, FacebookException {
+	private void streamGetComments( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Object result = client.stream_getComments( postId );
@@ -148,7 +147,7 @@ public class Issue208StreamAPI {
 		System.out.println( result );
 	}
 
-	private void streamRemoveComment( final String postId ) throws IOException, FacebookException {
+	private void streamRemoveComment( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Object result = client.stream_removeComment( postId, null );
@@ -159,14 +158,14 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamLikes() throws IOException, FacebookException {
+	public void testStreamLikes() throws Exception {
 		String postId = streamPublish();
 		streamAddLike( postId );
 		streamRemoveLike( postId );
 		streamRemove( postId );
 	}
 
-	private String streamAddLike( final String postId ) throws IOException, FacebookException {
+	private String streamAddLike( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Object result = client.stream_addLike( postId, null );
@@ -179,7 +178,7 @@ public class Issue208StreamAPI {
 		return result.toString();
 	}
 
-	private void streamRemoveLike( final String postId ) throws IOException, FacebookException {
+	private void streamRemoveLike( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		Object result = client.stream_removeLike( postId, null );
@@ -191,7 +190,7 @@ public class Issue208StreamAPI {
 	}
 
 	@Test
-	public void testStreamGetFilters() throws IOException, FacebookException {
+	public void testStreamGetFilters() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		List<Long> sourceIds = new ArrayList<Long>( 1 );

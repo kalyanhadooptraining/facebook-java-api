@@ -3,7 +3,6 @@ package com.google.code.facebookapi;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,7 @@ import com.google.code.facebookapi.schema.UsersGetStandardInfoResponse;
 public class Issue176UserStandardInfo {
 
 	@Test
-	public void testGetStandardInfo() throws FacebookException, IOException {
+	public void testGetStandardInfo() throws Exception {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		List<Long> userIds = Collections.singletonList( client.users_getLoggedInUser() );

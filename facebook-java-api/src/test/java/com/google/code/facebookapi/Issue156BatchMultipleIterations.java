@@ -3,7 +3,6 @@ package com.google.code.facebookapi;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -17,7 +16,7 @@ import org.junit.Test;
 public class Issue156BatchMultipleIterations {
 
 	@Test
-	public void testGetMultipleBatchIterations() throws FacebookException, IOException {
+	public void testGetMultipleBatchIterations() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		long uid = client.users_getLoggedInUser();

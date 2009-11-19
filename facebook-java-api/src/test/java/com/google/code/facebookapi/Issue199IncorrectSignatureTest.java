@@ -1,23 +1,22 @@
 package com.google.code.facebookapi;
 
-import java.io.IOException;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import org.junit.Test;
-import static org.junit.Assert.fail;
 
 public class Issue199IncorrectSignatureTest {
 
 	@Test
-	public void testUsersGetInfoWithZeroUserIds() throws FacebookException, IOException {
+	public void testUsersGetInfoWithZeroUserIds() throws Exception {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 		client.users_getInfo( new ArrayList<Long>(), EnumSet.of( ProfileField.NAME ) );
-
 	}
 
 	@Test
-	public void testDataGetObjectsWithZeroObjectsIds() throws FacebookException, IOException {
+	public void testDataGetObjectsWithZeroObjectsIds() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		try {
 			client.data_getObjects( new ArrayList<Long>() );
@@ -31,7 +30,7 @@ public class Issue199IncorrectSignatureTest {
 	}
 
 	@Test
-	public void testPhotosGetTagsWithZeroPhotoIds() throws FacebookException, IOException {
+	public void testPhotosGetTagsWithZeroPhotoIds() throws Exception {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 		client.photos_getTags( new ArrayList<String>() );
 	}
