@@ -10,10 +10,13 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.log4j.Logger;
 
 public class FacebookSessionTestUtils {
 
-	public static final String LOGIN_BASE_URL = "http://www.facebook.com/login.php";
+	protected static Logger logger = Logger.getLogger( FacebookSessionTestUtils.class );
+
+	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
 
 	public static String[] getValidSessionID( boolean generateSessionSecret ) throws IOException, FacebookException {
 		JUnitProperties properties = new JUnitProperties();
@@ -41,9 +44,13 @@ public class FacebookSessionTestUtils {
 
 		// 'submit' login popup/window
 		PostMethod post = new PostMethod( LOGIN_BASE_URL );
-		post.addParameter( new NameValuePair( "api_key", apikey ) );
-		post.addParameter( new NameValuePair( "v", "1.0" ) );
+		post.addParameter( new NameValuePair( "login_attempt", "1" ) );
+		post.addParameter( new NameValuePair( "version", "1.0" ) );
 		post.addParameter( new NameValuePair( "auth_token", auth_token ) );
+		post.addParameter( new NameValuePair( "api_key", apikey ) );
+		// return_session=0/1, req_perms="", session_key_only=0/1
+		// ??? lsd=DhB8X
+		// ??? login_attempt=1
 		post.addParameter( new NameValuePair( "email", properties.getEMAIL() ) );
 		post.addParameter( new NameValuePair( "pass", properties.getPASS() ) );
 		http.executeMethod( post );
