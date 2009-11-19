@@ -22,6 +22,19 @@ public class BasicClientHelper {
 
 	protected static Log log = LogFactory.getLog( BasicClientHelper.class );
 
+	public static String toString( InputStream data ) throws IOException {
+		Reader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
+		StringBuilder buffer = new StringBuilder();
+		char[] buf = new char[1000];
+		int l = 0;
+		while ( l >= 0 ) {
+			buffer.append( buf, 0, l );
+			l = in.read( buf );
+		}
+		return buffer.toString();
+	}
+
+
 	public static CharSequence delimit( Iterable<?> iterable ) {
 		if ( iterable == null ) {
 			return null;
