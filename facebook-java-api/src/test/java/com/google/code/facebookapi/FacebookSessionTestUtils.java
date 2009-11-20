@@ -91,11 +91,8 @@ public class FacebookSessionTestUtils {
 			out.put( "session_key", client.getCacheSessionKey() );
 			out.put( "uid", client.getCacheUserId() );
 			out.put( "expires", client.getCacheSessionExpires() );
-			if ( generateSessionSecret ) {
-				out.put( "secret", client.getCacheSessionSecret() );
-			} else {
-				out.put( "secret", secret );
-			}
+			out.put( "ss", client.getCacheSessionSecret() );
+			out.put( "secret", secret );
 			return out;
 		}
 	}

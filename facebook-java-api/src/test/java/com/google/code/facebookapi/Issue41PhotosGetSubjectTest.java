@@ -32,7 +32,7 @@ public class Issue41PhotosGetSubjectTest {
 
 		String numOfPhotos = xpath.evaluate( "count(//fbapi:photo)", result );
 
-		assertTrue( Integer.parseInt( numOfPhotos ) > 0 );
+		assertTrue( "No photos tagged with user found. (For this test to pass test user must have at least one tagged photo)", Integer.parseInt( numOfPhotos ) > 0 );
 	}
 
 }

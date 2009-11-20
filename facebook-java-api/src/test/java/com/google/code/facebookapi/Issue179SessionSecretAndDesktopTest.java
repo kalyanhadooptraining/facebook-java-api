@@ -3,6 +3,8 @@ package com.google.code.facebookapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -10,10 +12,10 @@ public class Issue179SessionSecretAndDesktopTest {
 
 	@Test
 	public void testCreateSessionSecretAndUseIt() throws Exception {
-		JSONObject session_info = FacebookSessionTestUtils.attainSession( true );
+		JSONObject session_info = FacebookSessionTestUtils.attainSession( false );
 		String apikey = session_info.getString( "api_key" );
 		String sessionKey = session_info.getString( "session_key" );
-		String sessionSecret = session_info.getString( "secret" );
+		String sessionSecret = session_info.getString( "ss" );
 
 		// restrictedClient is simulating construction of the client on the
 		// desktop app using the session secret instead of the real secret.
@@ -26,8 +28,8 @@ public class Issue179SessionSecretAndDesktopTest {
 		// For some methods, you will get a failure if you're using a
 		// generated session secret, for security reasons
 		try {
-			restrictedClient.fbml_setRefHandle( "abc", "123" );
-			fail( "Restricted Client shouldn't be able to call fbml_setRefHandle" );
+			restrictedClient.admin_getAppPropertiesMap( Arrays.asList( ApplicationProperty.APP_ID, ApplicationProperty.APPLICATION_NAME ) );
+			fail( "Restricted Client shouldn't be able to call admin_getAppProperties" );
 		}
 		catch ( FacebookException ex ) {
 			assertEquals( (int) ErrorCode.GEN_PERMISSIONS_ERROR, ex.getCode() );
