@@ -12,7 +12,7 @@ public class Issue179SessionSecretAndDesktopTest {
 
 	@Test
 	public void testCreateSessionSecretAndUseIt() throws Exception {
-		JSONObject session_info = FacebookSessionTestUtils.attainSession( false );
+		JSONObject session_info = FacebookSessionTestUtils.attainSession();
 		String apikey = session_info.getString( "api_key" );
 		String sessionKey = session_info.getString( "session_key" );
 		String sessionSecret = session_info.getString( "ss" );
