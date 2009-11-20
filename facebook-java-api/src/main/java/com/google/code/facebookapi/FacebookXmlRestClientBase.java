@@ -48,6 +48,10 @@ public abstract class FacebookXmlRestClientBase extends SpecificReturnTypeAdapte
 		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey ) );
 	}
 
+	public FacebookXmlRestClientBase( String apiKey, String secret, String sessionKey, boolean sessionSecret ) {
+		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey, sessionSecret ) );
+	}
+
 	protected Document parseCallResult( Object rawResponse ) throws FacebookException {
 		log.debug( "Facebook response:  " + rawResponse );
 		return XmlHelper.parseCallResult( rawResponse, factory );

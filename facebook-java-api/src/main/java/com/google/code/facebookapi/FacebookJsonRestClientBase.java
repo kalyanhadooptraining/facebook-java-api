@@ -48,6 +48,10 @@ public abstract class FacebookJsonRestClientBase extends SpecificReturnTypeAdapt
 		this( new ExtensibleClient( "json", apiKey, secret, sessionKey ) );
 	}
 
+	public FacebookJsonRestClientBase( String apiKey, String secret, String sessionKey, boolean sessionSecret ) {
+		this( new ExtensibleClient( "json", apiKey, secret, sessionKey, sessionSecret ) );
+	}
+
 	@SuppressWarnings("unchecked")
 	protected <T> T parseCallResult( Class<T> type, Object rawResponse ) throws FacebookException {
 		log.debug( "Facebook response:  " + rawResponse );

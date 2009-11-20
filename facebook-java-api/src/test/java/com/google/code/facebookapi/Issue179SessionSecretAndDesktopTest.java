@@ -19,7 +19,7 @@ public class Issue179SessionSecretAndDesktopTest {
 
 		// restrictedClient is simulating construction of the client on the
 		// desktop app using the session secret instead of the real secret.
-		FacebookJsonRestClient restrictedClient = new FacebookJsonRestClient( apikey, sessionSecret, sessionKey );
+		FacebookJsonRestClient restrictedClient = new FacebookJsonRestClient( apikey, sessionSecret, sessionKey, true );
 
 		assertEquals( "Session Secret ending in __ should have been auto-detected", true, restrictedClient.isDesktop() );
 
