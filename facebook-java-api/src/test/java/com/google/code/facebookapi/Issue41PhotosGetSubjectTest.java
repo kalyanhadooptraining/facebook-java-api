@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
  * 
  * @author david.j.boden
  */
-public class Issue41PhotosGetSubject {
+public class Issue41PhotosGetSubjectTest {
 
 	@Test
 	public void testGetPhotosBySubject() throws Exception {

@@ -11,7 +11,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class Issue208StreamAPI {
+public class Issue208StreamAPITest {
 
 	@Test
 	public void testStreamGet() throws Exception {

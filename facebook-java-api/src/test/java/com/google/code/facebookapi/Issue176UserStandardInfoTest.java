@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.google.code.facebookapi.schema.User;
 import com.google.code.facebookapi.schema.UsersGetStandardInfoResponse;
 
-public class Issue176UserStandardInfo {
+public class Issue176UserStandardInfoTest {
 
 	@Test
 	public void testGetStandardInfo() throws Exception {

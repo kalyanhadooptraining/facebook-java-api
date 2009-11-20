@@ -13,7 +13,7 @@ import org.junit.Test;
  * 
  * @author david.j.boden
  */
-public class Issue156BatchMultipleIterations {
+public class Issue156BatchMultipleIterationsTest {
 
 	@Test
 	public void testGetMultipleBatchIterations() throws Exception {
