@@ -2,7 +2,6 @@ package com.google.code.facebookapi;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -41,12 +40,6 @@ public class PhotoAlbumTest {
 		assertTrue( albums.getLength() > 0 );
 		for ( int i = 0; i < albums.getLength(); i++ ) {
 			Node albumNode = albums.item( i );
-			String type = xpath.evaluate( "type/text()", albumNode );
-			if ( "profile".equals( type ) ) {
-				assertEquals( "", xpath.evaluate( "created/text()", albumNode ) );
-			} else {
-				assertNotSame( "", xpath.evaluate( "created/text()", albumNode ) );
-			}
 			assertNotSame( "", xpath.evaluate( "aid/text()", albumNode ) );
 			assertNotSame( "", xpath.evaluate( "name/text()", albumNode ) );
 			String link = xpath.evaluate( "link/text()", albumNode );
@@ -66,7 +59,6 @@ public class PhotoAlbumTest {
 		for ( Album album : albums ) {
 			assertNotNull( album.getAid() );
 			assertNotNull( album.getName() );
-			assertTrue( album.getCreated() > 0 );
 			new URL( album.getLink() );
 		}
 	}
@@ -82,7 +74,6 @@ public class PhotoAlbumTest {
 			JSONObject album = (JSONObject) albums.get( i );
 			assertNotNull( album.getString( "aid" ) );
 			assertNotNull( album.getString( "name" ) );
-			assertTrue( album.getLong( "created" ) > 0 );
 			new URL( album.getString( "link" ) );
 		}
 	}
