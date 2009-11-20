@@ -523,8 +523,8 @@
     <xsd:element name="cover_pid" type="pid" />
     <xsd:element name="owner" type="uid" />
     <xsd:element name="name" type="xsd:string" />
-    <xsd:element name="created" type="time" />
-    <xsd:element name="modified" type="time" />
+    <xsd:element name="created" type="time" nillable="true"/>
+    <xsd:element name="modified" type="time" nillable="true"/>
     <xsd:element name="description" type="xsd:string" />
     <xsd:element name="location" type="xsd:string" />
     <xsd:element name="link" type="xsd:string" />
