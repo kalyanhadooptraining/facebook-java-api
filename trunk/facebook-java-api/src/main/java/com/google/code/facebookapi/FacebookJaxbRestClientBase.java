@@ -87,6 +87,10 @@ public abstract class FacebookJaxbRestClientBase extends SpecificReturnTypeAdapt
 		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey ) );
 	}
 
+	public FacebookJaxbRestClientBase( String apiKey, String secret, String sessionKey, boolean sessionSecret ) {
+		this( new ExtensibleClient( "xml", apiKey, secret, sessionKey, sessionSecret ) );
+	}
+
 	protected static JAXBContext JAXB_CONTEXT;
 
 	public JAXBContext getJaxbContext() {

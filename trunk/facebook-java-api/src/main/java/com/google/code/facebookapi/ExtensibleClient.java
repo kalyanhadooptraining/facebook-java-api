@@ -96,6 +96,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	protected ExtensibleClient( String responseFormat, String apiKey, String secret, String sessionKey ) {
+		this( responseFormat, apiKey, secret, sessionKey, false );
+	}
+
+	protected ExtensibleClient( String responseFormat, String apiKey, String secret, String sessionKey, boolean sessionSecret ) {
 		this._serverUrl = FacebookApiUrls.getDefaultServerUrl();
 		this._connectTimeout = -1;
 		this._readTimeout = -1;
@@ -104,7 +108,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this._apiKey = apiKey;
 		this._secret = secret;
 		this.cacheSessionKey = sessionKey;
-		if ( secret.endsWith( "__" ) ) {
+		if ( sessionSecret || secret.endsWith( "__" ) ) {
 			_isDesktop = true;
 		}
 
