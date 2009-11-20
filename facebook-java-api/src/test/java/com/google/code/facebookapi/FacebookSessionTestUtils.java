@@ -2,9 +2,17 @@ package com.google.code.facebookapi;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -16,6 +24,11 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mortbay.jetty.Request;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.AbstractHandler;
+
+import com.Ostermiller.util.Browser;
 
 public class FacebookSessionTestUtils {
 
@@ -160,6 +173,122 @@ public class FacebookSessionTestUtils {
 			String queryString = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
 			String url = PERM_BASE_URL + "?" + queryString;
 			throw new IllegalStateException( "Require extended permission " + perm.getName() + "; please visit: " + url );
+		}
+	}
+
+	public static JSONObject attainSessionRaw2() throws Exception {
+		return attainSessionRaw2( junitProperties.getAPIKEY(), junitProperties.getSECRET() );
+	}
+
+	public static JSONObject attainSessionRaw2( String apikey, String secret ) throws Exception {
+		Server server = null;
+		Semaphore semaphore = new Semaphore( 1 );
+		semaphore.drainPermits();
+		CaptureSessionHandler handler = new CaptureSessionHandler( secret, semaphore );
+		try {
+			{
+				// start jetty to capture return value from connect login
+				server = new Server( 8080 );
+				server.setHandler( handler );
+				logger.info( "Starting Jetty" );
+				server.start();
+			}
+			{
+				// send user to connect_login popup
+				Map<String,String> params = new HashMap<String,String>();
+				params.put( "api_key", apikey );
+				params.put( "fbconnect", "true" );
+				params.put( "v", "1.0" );
+				// params.put( "connect_display", "popup" );
+				params.put( "return_session", "true" );
+				params.put( "req_perms", "publish_stream,read_stream,offline_access" );
+				params.put( "next", "http://localhost:8080/next" );
+				params.put( "cancel_url", "http://localhost:8080/cancel" );
+				String query = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
+				String url = LOGIN_BASE_URL + "?" + query;
+				logger.info( "Sending user to attain session:\n" + url );
+				Browser.init();
+				Browser.displayURL( url );
+			}
+			{
+				// wait until jetty handler receives reply and captures session
+				for ( int i = 1; i <= 12; i++ ) {
+					logger.debug( "Waiting for 5 sec (" + i + ")" );
+					if ( semaphore.tryAcquire( 5, TimeUnit.SECONDS ) ) {
+						Thread.sleep( 1000 );
+						break;
+					}
+				}
+			}
+		}
+		finally {
+			if ( server != null && ! ( server.isStopped() || server.isStopping() ) ) {
+				logger.info( "Stopping Jetty" );
+				server.stop();
+			}
+		}
+		return handler.getOut();
+	}
+
+	public static JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
+		String str = request.getParameter( "session" );
+		JSONObject out = new JSONObject( str );
+		out.remove( "sig" );
+		out.put( "ss", out.getString( "secret" ) );
+		out.put( "secret", secret );
+		logger.debug( "session: " + out );
+		return out;
+	}
+
+	public static String printMap( Map<String,String[]> map ) {
+		StringBuilder sb = new StringBuilder();
+		for ( Entry<String,String[]> entry : map.entrySet() ) {
+			sb.append( "\n" );
+			sb.append( entry.getKey() + " : " + Arrays.asList( entry.getValue() ) );
+		}
+		return sb.toString();
+	}
+
+
+
+	public static class CaptureSessionHandler extends AbstractHandler {
+
+		private JSONObject out;
+		private String secret;
+		private Semaphore semaphore;
+
+		public CaptureSessionHandler( String secret, Semaphore semaphore ) {
+			this.secret = secret;
+			this.semaphore = semaphore;
+		}
+
+		public JSONObject getOut() {
+			return out;
+		}
+
+		@SuppressWarnings("unchecked")
+		public void handle( String target, HttpServletRequest request, HttpServletResponse response, int dispatch ) throws IOException, ServletException {
+			logger.debug( "handle(): " + request.getRequestURL() + printMap( request.getParameterMap() ) );
+			try {
+				if ( target.equals( "/next" ) ) {
+					out = captureSession( request, secret );
+				}
+				if ( target.equals( "/cancel" ) ) {
+					logger.warn( "User cancelled" );
+					semaphore.release();
+				}
+				if ( target.equals( "/done" ) ) {
+					logger.warn( "User is done" );
+					semaphore.release();
+				}
+			}
+			catch ( JSONException ex ) {
+				throw new ServletException( ex );
+			}
+			response.setContentType( "text/html" );
+			response.setStatus( HttpServletResponse.SC_OK );
+			response.getWriter().println( "<html><body><a href='/done'>done?</a></body></html>" );
+			( (Request) request ).setHandled( true );
 		}
 	}
 
