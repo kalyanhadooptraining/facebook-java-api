@@ -22,12 +22,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.facebookapi</groupId>
-			<artifactId>facebook-java-api-testhelper</artifactId>
-			<version>3.0.2-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.facebookapi</groupId>
 			<artifactId>facebook-java-api-schema</artifactId>
 			<version>3.0.2-SNAPSHOT</version>
 		</dependency>

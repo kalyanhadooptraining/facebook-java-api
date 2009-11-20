@@ -38,8 +38,6 @@
     <module>annotation-processor</module>
     <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
-    <module>testhelper</module>
-    <module>testhelperweb</module>
   </modules>
   <build>
     <plugins>
