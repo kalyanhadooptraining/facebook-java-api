@@ -4,7 +4,7 @@ import static junit.framework.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class IFacebookRestClientTest {
+public class EmailHashTest {
 
 	@Test
 	public void test_emailHash() {
