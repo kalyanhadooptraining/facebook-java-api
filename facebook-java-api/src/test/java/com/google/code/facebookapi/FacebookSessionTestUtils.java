@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -24,37 +23,19 @@ public class FacebookSessionTestUtils {
 
 	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
 	public static final String PERM_BASE_URL = "http://www.facebook.com/connect/prompt_permissions.php";
-	public static final String PREFS_SESSIONS_NODE = "/com/google/code/facebookapi/test_sessions";
 
 	public static final JUnitProperties junitProperties = new JUnitProperties();
 
-	public static void clearSessions() throws BackingStoreException {
-		Preferences root = Preferences.userRoot();
-		Preferences prefs = root.node( PREFS_SESSIONS_NODE );
-		for ( String key : prefs.keys() ) {
-			prefs.remove( key );
-		}
-		prefs.flush();
+	public static void clearSessions() throws IOException {
+		junitProperties.clearSessions();
 	}
 
 	public static JSONObject attainSession( boolean generateSessionSecret ) throws FacebookException, HttpException, IOException, JSONException, BackingStoreException {
-		Preferences root = Preferences.userRoot();
-		Preferences prefs = root.node( PREFS_SESSIONS_NODE );
-		prefs.flush();
-		String apikey = junitProperties.getAPIKEY();
-		String key = "session:" + generateSessionSecret + ":" + apikey;
-		String val = prefs.get( key, null );
-		if ( val != null ) {
-			JSONObject out = new JSONObject( val );
-			long exp = out.getLong( "expires" );
-			if ( exp * 1000 < System.currentTimeMillis() ) {
-				return out;
-			}
-			// FIXME: should we validate the session_key even more?
+		JSONObject out = junitProperties.loadSession( generateSessionSecret );
+		if ( out == null ) {
+			out = attainSessionRaw( generateSessionSecret );
+			junitProperties.storeSession( out );
 		}
-		JSONObject out = attainSessionRaw( generateSessionSecret );
-		prefs.put( key, out.toString() );
-		prefs.flush();
 		return out;
 	}
 
