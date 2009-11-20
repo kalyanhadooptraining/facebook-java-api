@@ -230,25 +230,6 @@ public class FacebookSessionTestUtils {
 		return handler.getOut();
 	}
 
-	public static JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
-		String str = request.getParameter( "session" );
-		JSONObject out = new JSONObject( str );
-		out.remove( "sig" );
-		out.put( "ss", out.getString( "secret" ) );
-		out.put( "secret", secret );
-		logger.debug( "session: " + out );
-		return out;
-	}
-
-	public static String printMap( Map<String,String[]> map ) {
-		StringBuilder sb = new StringBuilder();
-		for ( Entry<String,String[]> entry : map.entrySet() ) {
-			sb.append( "\n" );
-			sb.append( entry.getKey() + " : " + Arrays.asList( entry.getValue() ) );
-		}
-		return sb.toString();
-	}
-
 
 
 	public static class CaptureSessionHandler extends AbstractHandler {
@@ -290,6 +271,26 @@ public class FacebookSessionTestUtils {
 			response.getWriter().println( "<html><body><a href='/done'>done?</a></body></html>" );
 			( (Request) request ).setHandled( true );
 		}
+
+		public static JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
+			String str = request.getParameter( "session" );
+			JSONObject out = new JSONObject( str );
+			out.remove( "sig" );
+			out.put( "ss", out.getString( "secret" ) );
+			out.put( "secret", secret );
+			logger.debug( "session: " + out );
+			return out;
+		}
+
+		public static String printMap( Map<String,String[]> map ) {
+			StringBuilder sb = new StringBuilder();
+			for ( Entry<String,String[]> entry : map.entrySet() ) {
+				sb.append( "\n" );
+				sb.append( entry.getKey() + " : " + Arrays.asList( entry.getValue() ) );
+			}
+			return sb.toString();
+		}
+
 	}
 
 }
