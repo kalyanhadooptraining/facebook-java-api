@@ -26,14 +26,6 @@ public class JUnitProperties {
 		return getProperty( "SECRET" );
 	}
 
-	public String getDESKTOP_APIKEY() {
-		return getProperty( "DESKTOP_APIKEY" );
-	}
-
-	public String getDESKTOP_SECRET() {
-		return getProperty( "DESKTOP_SECRET" );
-	}
-
 	public String getUID() {
 		return getProperty( "UID" );
 	}
@@ -57,10 +49,8 @@ public class JUnitProperties {
 		storeProperties();
 	}
 
-	public JSONObject loadSession( boolean desktop ) throws JSONException {
-		String apikey = desktop ? getDESKTOP_APIKEY() : getAPIKEY();
-		String uid = getUID();
-		return loadSession( uid, apikey );
+	public JSONObject loadSession() throws JSONException {
+		return loadSession( getUID(), getAPIKEY() );
 	}
 
 	public static String key( String uid, String apikey ) {
