@@ -50,7 +50,7 @@ public class CaptureSessionFilter implements Filter {
 	public void doFilter( HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws IOException, ServletException {
 		logger.debug( "doFilter(): " + request.getRequestURL() + " :\n" + printMap( request.getParameterMap() ) );
 		try {
-			JSONObject session = junitProperties.loadSession( false );
+			JSONObject session = junitProperties.loadSession();
 			logger.debug( "loadSession: " + session );
 		}
 		catch ( JSONException ex ) {

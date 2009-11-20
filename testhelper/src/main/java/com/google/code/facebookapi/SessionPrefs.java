@@ -28,9 +28,9 @@ public class SessionPrefs {
 		prefs.flush();
 	}
 
-	public static JSONObject loadSession( boolean desktop ) throws JSONException {
+	public static JSONObject loadSession() throws JSONException {
 		// FIXME: integrate uid into key somehow
-		String apikey = desktop ? junitProperties.getDESKTOP_APIKEY() : junitProperties.getAPIKEY();
+		String apikey = junitProperties.getAPIKEY();
 		String uid = junitProperties.getUID();
 		String key = PREFIX_TEST_SESSION + uid + ":" + apikey;
 		String val = prefs.get( key, null );
