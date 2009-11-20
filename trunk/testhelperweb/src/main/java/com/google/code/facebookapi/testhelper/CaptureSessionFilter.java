@@ -73,7 +73,7 @@ public class CaptureSessionFilter implements Filter {
 		chain.doFilter( request, response );
 	}
 
-	public JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
+	public static JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
 		JSONObject out = new JSONObject();
 		copy( "fb_sig_api_key", request, "api_key", out );
 		out.put( "secret", secret );
@@ -85,14 +85,14 @@ public class CaptureSessionFilter implements Filter {
 		return out;
 	}
 
-	public void copy( String rname, HttpServletRequest request, String jname, JSONObject json ) throws JSONException {
+	public static void copy( String rname, HttpServletRequest request, String jname, JSONObject json ) throws JSONException {
 		String val = request.getParameter( rname );
 		if ( val != null ) {
 			json.put( jname, val );
 		}
 	}
 
-	public void copyLong( String rname, HttpServletRequest request, String jname, JSONObject json ) throws JSONException {
+	public static void copyLong( String rname, HttpServletRequest request, String jname, JSONObject json ) throws JSONException {
 		String val = request.getParameter( rname );
 		if ( val != null ) {
 			json.put( jname, Long.parseLong( val ) );
