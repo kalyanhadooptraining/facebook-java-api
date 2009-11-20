@@ -113,6 +113,9 @@ public class FacebookSessionTestUtils {
 		return attainSessionRaw2( junitProperties.getAPIKEY(), junitProperties.getSECRET(), 8080 );
 	}
 
+	/**
+	 * http://wiki.developers.facebook.com/index.php/Authorization_and_Authentication_for_Desktop_Applications
+	 */
 	public static JSONObject attainSessionRaw2( String apikey, String secret, int port ) throws Exception {
 		Server server = null;
 		Semaphore semaphore = new Semaphore( 1 );
