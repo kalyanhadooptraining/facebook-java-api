@@ -30,14 +30,6 @@ public class JUnitProperties {
 		return getProperty( "UID" );
 	}
 
-	public String getEMAIL() {
-		return getProperty( "EMAIL" );
-	}
-
-	public String getPASS() {
-		return getProperty( "PASS" );
-	}
-
 	@SuppressWarnings("unchecked")
 	public void clearSessions() throws IOException {
 		Set<String> set = new HashSet( properties.keySet() );
