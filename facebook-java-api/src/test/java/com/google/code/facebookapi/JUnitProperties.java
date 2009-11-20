@@ -109,9 +109,7 @@ public class JUnitProperties {
 		String out = properties.getProperty( name );
 		if ( out == null ) {
 			// "junit.properties must contain values for:
-			// APIKEY, SECRET
-			// DESKTOP_APIKEY, DESKTOP_SECRET (for testing 'desktop mode' applications)
-			// EMAIL and PASS (your Facebook password)
+			// APIKEY, SECRET, UID
 			throw new RuntimeException( String.format( "junit.properties missing value for %s", name ) );
 		}
 		return out;
