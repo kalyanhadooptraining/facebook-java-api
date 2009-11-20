@@ -61,7 +61,11 @@ public class JUnitProperties {
 		String key = key( uid, apikey );
 		String str = properties.getProperty( key );
 		if ( str != null ) {
-			return new JSONObject( str );
+			JSONObject out = new JSONObject( str );
+			long expires = out.getLong( "expires" );
+			if ( expires == 0 || expires * 1000 < System.currentTimeMillis() ) {
+				return out;
+			}
 		}
 		return null;
 	}
