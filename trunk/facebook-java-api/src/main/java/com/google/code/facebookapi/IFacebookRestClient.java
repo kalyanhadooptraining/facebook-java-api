@@ -3320,7 +3320,7 @@ public interface IFacebookRestClient<T> {
 
 	public boolean stream_remove( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = StreamGetCommentsResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = StreamGetCommentsResponse.class, JSON = JSONArray.class)
 	public T stream_getComments( String postId ) throws FacebookException;
 
 	public String stream_addComment( String postId, String comment, Long userId ) throws FacebookException;
@@ -3331,7 +3331,7 @@ public interface IFacebookRestClient<T> {
 
 	public boolean stream_removeLike( String postId, Long userId ) throws FacebookException;
 
-	@FacebookReturnType(JAXB = StreamGetFiltersResponse.class, JSON = JSONObject.class)
+	@FacebookReturnType(JAXB = StreamGetFiltersResponse.class, JSON = JSONArray.class)
 	public T stream_getFilters( Long userId ) throws FacebookException;
 
 	// ========== INTL ==========
