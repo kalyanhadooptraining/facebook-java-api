@@ -177,10 +177,10 @@ public class FacebookSessionTestUtils {
 	}
 
 	public static JSONObject attainSessionRaw2() throws Exception {
-		return attainSessionRaw2( junitProperties.getAPIKEY(), junitProperties.getSECRET() );
+		return attainSessionRaw2( junitProperties.getAPIKEY(), junitProperties.getSECRET(), 8080 );
 	}
 
-	public static JSONObject attainSessionRaw2( String apikey, String secret ) throws Exception {
+	public static JSONObject attainSessionRaw2( String apikey, String secret, int port ) throws Exception {
 		Server server = null;
 		Semaphore semaphore = new Semaphore( 1 );
 		semaphore.drainPermits();
@@ -188,7 +188,7 @@ public class FacebookSessionTestUtils {
 		try {
 			{
 				// start jetty to capture return value from connect login
-				server = new Server( 8080 );
+				server = new Server( port );
 				server.setHandler( handler );
 				logger.info( "Starting Jetty" );
 				server.start();
@@ -202,8 +202,8 @@ public class FacebookSessionTestUtils {
 				// params.put( "connect_display", "popup" );
 				params.put( "return_session", "true" );
 				params.put( "req_perms", "publish_stream,read_stream,offline_access" );
-				params.put( "next", "http://localhost:8080/next" );
-				params.put( "cancel_url", "http://localhost:8080/cancel" );
+				params.put( "next", "http://localhost:" + port + "/next" );
+				params.put( "cancel_url", "http://localhost:" + port + "/cancel" );
 				String query = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
 				String url = LOGIN_BASE_URL + "?" + query;
 				logger.info( "Sending user to attain session:\n" + url );
