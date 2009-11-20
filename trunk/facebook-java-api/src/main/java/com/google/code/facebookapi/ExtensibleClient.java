@@ -471,6 +471,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
 
+		if ( isDesktop() ) {
+			params.put( "ss", "1" );
+		}
+
 		params.put( "method", method.methodName() );
 		params.put( "api_key", _apiKey );
 		params.put( "v", TARGET_API_VERSION );
@@ -1422,7 +1426,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 		catch ( Exception e ) {
 			// response failed to parse
-			throw new FacebookException( ErrorCode.GEN_SERVICE_ERROR, "Failed to parse server response:  " + json );
+			throw new FacebookException( -1, "Failed to parse server response:  " + json );
 		}
 	}
 
@@ -2712,8 +2716,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			props.put( property.getName() );
 		}
 		String rawResponse = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, Pairs.newPair( "properties", props ) );
+		log.debug( "Facebook response: " + rawResponse );
 		if ( "json".equals( getResponseFormat() ) ) {
-			return rawResponse;
+			return JsonHelper.parseCallResult( rawResponse ).toString();
 		} else {
 			return XmlHelper.extractString( XmlHelper.parseCallResult( rawResponse, factory ) );
 		}
