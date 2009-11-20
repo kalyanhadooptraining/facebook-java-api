@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.google.code.facebookapi.schema.UsersGetInfoResponse;
 
-public class Issue157UsersGetInfo {
+public class Issue157UsersGetInfoTest {
 
 	@Test
 	public void testUsersGetInfo() throws Exception {

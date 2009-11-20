@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class Issue173FacebookConnectUnregisteredUsers {
+public class Issue173FacebookConnectUnregisteredUsersTest {
 
 	@Test
 	public void testFacebookConnectUnregisteredUsers() throws Exception {

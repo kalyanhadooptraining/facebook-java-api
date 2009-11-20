@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class Issue98MultipleUseOfSession {
+public class Issue98MultipleUseOfSessionTest {
 
 	@Test
 	public void testMultipleUseOfSession() throws Exception {

@@ -11,7 +11,7 @@ import org.junit.Test;
 
 @Ignore
 @Deprecated
-public class Issue188TemplateBundleShortStory {
+public class Issue188TemplateBundleShortStoryTest {
 
 	@Test
 	// Remove this line, we want this test to work!

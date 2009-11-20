@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class Issue179SessionSecretAndDesktop {
+public class Issue179SessionSecretAndDesktopTest {
 
 	@Test
 	public void testCreateSessionSecretAndUseIt() throws Exception {
