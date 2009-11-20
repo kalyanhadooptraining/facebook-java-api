@@ -117,7 +117,7 @@ public class FacebookSessionTestUtils {
 		Server server = null;
 		Semaphore semaphore = new Semaphore( 1 );
 		semaphore.drainPermits();
-		CaptureSessionHandler handler = new CaptureSessionHandler( secret, semaphore );
+		CaptureSessionHandler handler = new CaptureSessionHandler( apikey, secret, semaphore );
 		try {
 			{
 				// start jetty to capture return value from connect login
@@ -168,10 +168,12 @@ public class FacebookSessionTestUtils {
 	public static class CaptureSessionHandler extends AbstractHandler {
 
 		private JSONObject out;
+		private String apikey;
 		private String secret;
 		private Semaphore semaphore;
 
-		public CaptureSessionHandler( String secret, Semaphore semaphore ) {
+		public CaptureSessionHandler( String apikey, String secret, Semaphore semaphore ) {
+			this.apikey = apikey;
 			this.secret = secret;
 			this.semaphore = semaphore;
 		}
@@ -185,7 +187,7 @@ public class FacebookSessionTestUtils {
 			logger.debug( "handle(): " + request.getRequestURL() + printMap( request.getParameterMap() ) );
 			try {
 				if ( target.equals( "/next" ) ) {
-					out = captureSession( request, secret );
+					out = captureSession( request, apikey, secret );
 				}
 				if ( target.equals( "/cancel" ) ) {
 					logger.warn( "User cancelled" );
@@ -205,12 +207,13 @@ public class FacebookSessionTestUtils {
 			( (Request) request ).setHandled( true );
 		}
 
-		public static JSONObject captureSession( HttpServletRequest request, String secret ) throws JSONException {
+		public static JSONObject captureSession( HttpServletRequest request, String apikey, String secret ) throws JSONException {
 			String str = request.getParameter( "session" );
 			JSONObject out = new JSONObject( str );
 			out.remove( "sig" );
 			out.put( "ss", out.getString( "secret" ) );
 			out.put( "secret", secret );
+			out.put( "api_key", apikey );
 			logger.debug( "session: " + out );
 			return out;
 		}
