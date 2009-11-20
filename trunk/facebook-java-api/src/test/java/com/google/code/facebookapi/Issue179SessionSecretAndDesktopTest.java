@@ -32,7 +32,7 @@ public class Issue179SessionSecretAndDesktopTest {
 			fail( "Restricted Client shouldn't be able to call admin_getAppProperties" );
 		}
 		catch ( FacebookException ex ) {
-			assertEquals( (int) ErrorCode.GEN_PERMISSIONS_ERROR, ex.getCode() );
+			assertEquals( ErrorCode.API_EC_SESSION_SECRET_NOT_ALLOWED, ex.getCode() );
 		}
 	}
 
