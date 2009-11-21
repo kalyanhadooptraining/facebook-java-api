@@ -263,7 +263,7 @@ public class BasicClient {
 
 		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
-			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
+			rawResponse = method.takesFile() ? postFileRequest( params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return rawResponse;
 		}
 		catch ( IOException ex ) {
@@ -295,7 +295,7 @@ public class BasicClient {
 			out = conn.getOutputStream();
 			out.write( paramString.toString().getBytes( "UTF-8" ) );
 			in = conn.getInputStream();
-			return BasicClientHelper.getResponse( method, in );
+			return BasicClientHelper.getResponse( in );
 		}
 		finally {
 			BasicClientHelper.close( in );
@@ -317,7 +317,7 @@ public class BasicClient {
 	 * @see #photos_upload
 	 */
 
-	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
+	protected String postFileRequest( Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		HttpURLConnection con = null;
 		OutputStream urlOut = null;
 		InputStream in = null;
@@ -372,7 +372,7 @@ public class BasicClient {
 			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
 			out.flush();
 			in = con.getInputStream();
-			return BasicClientHelper.getResponse( method, in );
+			return BasicClientHelper.getResponse( in );
 		}
 		finally {
 			BasicClientHelper.close( urlOut );
