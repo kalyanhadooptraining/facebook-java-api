@@ -1,7 +1,7 @@
 package com.google.code.facebookapi;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -18,7 +18,7 @@ public class AttachmentMediaImage extends AttachmentMedia {
 
 	public AttachmentMediaImage() {
 		super( "image" );
-		images = new TreeMap<String,String>();
+		images = new LinkedHashMap<String,String>();
 	}
 
 	/**
