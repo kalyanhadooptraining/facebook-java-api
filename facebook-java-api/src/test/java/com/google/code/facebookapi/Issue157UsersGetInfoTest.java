@@ -17,8 +17,9 @@ public class Issue157UsersGetInfoTest {
 		FacebookJaxbRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJaxbRestClient.class );
 
 		long logged = client.users_getLoggedInUser();
-		List<Long> list_u = Collections.singletonList( logged );
-		UsersGetInfoResponse response = client.users_getInfo( list_u, EnumSet.of( ProfileField.NAME, ProfileField.PIC_SMALL, ProfileField.STATUS, ProfileField.PIC_BIG ) );
+		List<Long> users = Collections.singletonList( logged );
+		EnumSet<ProfileField> fields = EnumSet.allOf( ProfileField.class );
+		UsersGetInfoResponse response = client.users_getInfo( users, fields );
 
 		String name = response.getUser().get( 0 ).getName();
 
