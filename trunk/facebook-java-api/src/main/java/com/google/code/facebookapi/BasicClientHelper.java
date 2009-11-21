@@ -71,7 +71,7 @@ public class BasicClientHelper {
 		return result;
 	}
 
-	public static String getResponse( IFacebookMethod method, InputStream data ) throws IOException {
+	public static String getResponse( InputStream data ) throws IOException {
 		Reader in = new BufferedReader( new InputStreamReader( data, "UTF-8" ) );
 		StringBuilder buffer = new StringBuilder();
 		char[] buf = new char[1000];
