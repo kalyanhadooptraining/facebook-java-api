@@ -22,7 +22,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result );
+		// System.out.println( result );
 
 		return result.toString();
 	}
@@ -112,7 +112,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result );
+		// System.out.println( result );
 
 		return result.toString();
 	}
@@ -144,7 +144,7 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	private void streamRemoveComment( final String postId ) throws Exception {
@@ -154,7 +154,7 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -173,7 +173,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 
 		return result.toString();
 	}
@@ -186,7 +186,7 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 	@Test
@@ -200,7 +200,7 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		System.out.println( result );
+		// System.out.println( result );
 	}
 
 }
