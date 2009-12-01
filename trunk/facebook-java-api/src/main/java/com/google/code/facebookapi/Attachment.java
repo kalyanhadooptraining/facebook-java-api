@@ -34,7 +34,6 @@ public class Attachment implements Serializable, ToJsonObject {
 	 */
 	public JSONObject toJson() {
 		jsonAttachment = new JSONObject();
-
 		putJsonObject( "name", name );
 		putJsonObject( "href", href );
 		putJsonObject( "caption", caption );
@@ -48,15 +47,17 @@ public class Attachment implements Serializable, ToJsonObject {
 	}
 
 	private void putJsonObject( final String key, final Object value ) {
-		if ( jsonAttachment == null ) {
-			// this should only be called by toJson() after the object is initialized
-			return;
-		}
-		try {
-			jsonAttachment.put( key, value );
-		}
-		catch ( Exception ignored ) {
-			// ignore
+		putQuiet( key, value, jsonAttachment );
+	}
+
+	private static void putQuiet( final String key, final Object value, JSONObject json ) {
+		if ( value != null ) {
+			try {
+				json.put( key, value );
+			}
+			catch ( JSONException ex ) {
+				throw BasicClientHelper.runtimeException( ex );
+			}
 		}
 	}
 
