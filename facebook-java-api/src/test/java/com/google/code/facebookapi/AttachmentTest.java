@@ -99,7 +99,7 @@ public class AttachmentTest {
 		properties.add( new AttachmentProperty( "my website", "abdinoor.com", null ) );
 		properties.add( new AttachmentProperty( "twitter", "twitter/abdinoor", "http://twitter.com/abdinoor" ) );
 		properties.add( new AttachmentProperty( "linkedin", "linkedin.com", "http://www.linkedin.com/pub/dan-abdinoor/3/3b5/708" ) );
-		properties.add( new AttachmentProperty( "facebook", null, "http://www.facebook.com/abdinoor" ) );
+		// properties.add( new AttachmentProperty( "facebook", null, "http://www.facebook.com/abdinoor" ) );
 		return properties;
 	}
 
@@ -111,8 +111,7 @@ public class AttachmentTest {
 	}
 
 	private AttachmentMediaImage createMediaImage() {
-		return new AttachmentMediaImage(
-				"http://icanhascheezburger.files.wordpress.com/2009/03/funny-pictures-kitten-finished-his-milk-and-wants-a-cookie.jpg",
+		return new AttachmentMediaImage( "http://icanhascheezburger.files.wordpress.com/2009/03/funny-pictures-kitten-finished-his-milk-and-wants-a-cookie.jpg",
 				"http://icanhascheezburger.com/2009/03/30/funny-pictures-awlll-gone-cookie-now/" );
 	}
 

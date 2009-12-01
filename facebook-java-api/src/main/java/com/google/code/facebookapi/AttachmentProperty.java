@@ -23,6 +23,9 @@ public class AttachmentProperty {
 	 *            The target for link (optional).
 	 */
 	public AttachmentProperty( final String key, final String value, final String href ) {
+		if ( value == null ) {
+			throw new IllegalArgumentException( "AttachmentProperty value must not be null" );
+		}
 		this.key = key;
 		this.value = value;
 		this.href = href;
