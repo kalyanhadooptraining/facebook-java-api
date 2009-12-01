@@ -1,10 +1,12 @@
 package com.google.code.facebookapi;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,9 +23,10 @@ public class Attachment implements Serializable, ToJsonObject {
 	private String caption;
 	private String description;
 	private List<AttachmentProperty> properties;
-	private AttachmentMedia media;
+	private List<AttachmentMedia> media;
 	private Map<String,String> additionalInfo;
-	private JSONObject jsonAttachment;
+
+	private JSONObject tojson;
 
 	public Attachment() {
 		// empty
@@ -33,21 +36,17 @@ public class Attachment implements Serializable, ToJsonObject {
 	 * @return a JSON representation of attachment.
 	 */
 	public JSONObject toJson() {
-		jsonAttachment = new JSONObject();
-		putJsonObject( "name", name );
-		putJsonObject( "href", href );
-		putJsonObject( "caption", caption );
-		putJsonObject( "description", description );
+		tojson = new JSONObject();
+		putQuiet( "name", name, tojson );
+		putQuiet( "href", href, tojson );
+		putQuiet( "caption", caption, tojson );
+		putQuiet( "description", description, tojson );
 
-		putJsonProperties();
-		putJsonMedia();
-		putJsonAdditionalInfo();
+		putProperties( tojson );
+		putMedia( tojson );
+		putAdditionalInfo( tojson );
 
-		return jsonAttachment;
-	}
-
-	private void putJsonObject( final String key, final Object value ) {
-		putQuiet( key, value, jsonAttachment );
+		return tojson;
 	}
 
 	private static void putQuiet( final String key, final Object value, JSONObject json ) {
@@ -61,7 +60,7 @@ public class Attachment implements Serializable, ToJsonObject {
 		}
 	}
 
-	private void putJsonProperties() {
+	private void putProperties( JSONObject tojson ) {
 		if ( properties == null || properties.isEmpty() ) {
 			return;
 		}
@@ -69,12 +68,13 @@ public class Attachment implements Serializable, ToJsonObject {
 		JSONObject jsonProperties = new JSONObject();
 		for ( AttachmentProperty link : properties ) {
 			try {
-				if ( !StringUtils.isEmpty( link.getCaption() ) ) {
-					if ( !StringUtils.isEmpty( link.getText() ) && !StringUtils.isEmpty( link.getHref() ) ) {
-						jsonProperties.put( link.getCaption(), link.toJson() );
-					} else if ( !StringUtils.isEmpty( link.getText() ) ) {
-						jsonProperties.put( link.getCaption(), link.getText() );
-					}
+				if ( !StringUtils.isEmpty( link.getHref() ) ) {
+					JSONObject val = new JSONObject();
+					val.put( "text", link.getValue() );
+					val.put( "href", link.getHref() );
+					jsonProperties.put( link.getKey(), val );
+				} else {
+					jsonProperties.put( link.getKey(), link.getValue() );
 				}
 			}
 			catch ( JSONException exception ) {
@@ -82,24 +82,28 @@ public class Attachment implements Serializable, ToJsonObject {
 			}
 		}
 
-		putJsonObject( "properties", jsonProperties );
+		putQuiet( "properties", jsonProperties, tojson );
 	}
 
-	private void putJsonMedia() {
-		if ( media == null ) {
+	private void putMedia( JSONObject tojson ) {
+		if ( media == null || media.isEmpty() ) {
 			return;
 		}
 
-		putJsonObject( "media", media.toJson() );
+		JSONArray ar = new JSONArray();
+		for ( AttachmentMedia m : media ) {
+			ar.put( m.toJson() );
+		}
+		putQuiet( "media", ar, tojson );
 	}
 
-	private void putJsonAdditionalInfo() {
+	private void putAdditionalInfo( JSONObject tojson ) {
 		if ( additionalInfo == null || additionalInfo.isEmpty() ) {
 			return;
 		}
 
 		for ( String key : additionalInfo.keySet() ) {
-			putJsonObject( key, additionalInfo.get( key ) );
+			putQuiet( key, additionalInfo.get( key ), tojson );
 		}
 	}
 
@@ -151,12 +155,24 @@ public class Attachment implements Serializable, ToJsonObject {
 		this.additionalInfo = additionalInfo;
 	}
 
-	public AttachmentMedia getMedia() {
+	public List<AttachmentMedia> getMedia() {
 		return media;
 	}
 
-	public void setMedia( AttachmentMedia media ) {
+	public void setMedia( List<AttachmentMedia> media ) {
 		this.media = media;
+	}
+
+	public void setMedia( AttachmentMedia media ) {
+		this.media = new ArrayList<AttachmentMedia>();
+		this.media.add( media );
+	}
+
+	public void addMedia( AttachmentMedia media ) {
+		if ( this.media == null ) {
+			this.media = new ArrayList<AttachmentMedia>();
+		}
+		this.media.add( media );
 	}
 
 }

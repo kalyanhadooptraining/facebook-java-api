@@ -1,10 +1,6 @@
 package com.google.code.facebookapi;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -14,65 +10,44 @@ import org.json.JSONObject;
  */
 public class AttachmentMediaImage extends AttachmentMedia {
 
-	private Map<String,String> images;
+	private String src;
+	private String href;
 
-	public AttachmentMediaImage() {
+	public AttachmentMediaImage( String src, String href ) {
 		super( "image" );
-		images = new LinkedHashMap<String,String>();
+		this.src = src;
+		this.href = href;
 	}
 
-	/**
-	 * Add an image. Max number of images is 5.
-	 * 
-	 * @param src
-	 *            URL of the image.
-	 * @param href
-	 *            Location to link image to.
-	 */
-	public void addImage( final String src, final String href ) {
-		if ( StringUtils.isEmpty( src ) || StringUtils.isEmpty( href ) ) {
-			return;
-		}
-		if ( images.size() > 4 ) {
-			return;
-		}
-		images.put( src, href );
-	}
-
-	/**
-	 * @return a JSON representation of attachment.
-	 */
 	@Override
-	public JSONArray toJson() {
-		JSONArray jsonArray = new JSONArray();
-		for ( String key : images.keySet() ) {
-			JSONObject image = new JSONObject();
-
-			try {
-				image.put( "type", getMediaType() );
+	public JSONObject toJson() {
+		try {
+			JSONObject json = super.toJson();
+			json.put( "src", src );
+			if ( href != null ) {
+				json.put( "href", href );
 			}
-			catch ( Exception ignored ) {
-				// ignore
-			}
-
-			try {
-				image.put( "src", key );
-			}
-			catch ( Exception ignored ) {
-				// ignore
-			}
-
-			try {
-				image.put( "href", images.get( key ) );
-			}
-			catch ( Exception ignored ) {
-				// ignore
-			}
-
-			jsonArray.put( image );
+			return json;
 		}
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+	}
 
-		return jsonArray;
+	public String getSrc() {
+		return src;
+	}
+
+	public void setSrc( String src ) {
+		this.src = src;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref( String href ) {
+		this.href = href;
 	}
 
 }
