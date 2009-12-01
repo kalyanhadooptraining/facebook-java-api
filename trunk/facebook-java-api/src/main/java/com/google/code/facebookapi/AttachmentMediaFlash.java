@@ -1,6 +1,6 @@
 package com.google.code.facebookapi;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,7 +16,6 @@ public class AttachmentMediaFlash extends AttachmentMedia {
 	private Integer height;
 	private Integer expandedWidth;
 	private Integer expandedHeight;
-	private JSONObject jsonObject;
 
 	/**
 	 * Construct a Flash attachment.
@@ -49,38 +48,28 @@ public class AttachmentMediaFlash extends AttachmentMedia {
 	 * @return a JSON representation of attachment.
 	 */
 	@Override
-	public JSONArray toJson() {
-		jsonObject = new JSONObject();
-		putJsonProperty( "type", getMediaType() );
-		putJsonProperty( "swfsrc", swfsrc );
-		putJsonProperty( "imgsrc", imgsrc );
-		if ( height != null ) {
-			putJsonProperty( "height", height );
-		}
-		if ( width != null ) {
-			putJsonProperty( "width", width );
-		}
-		if ( expandedHeight != null ) {
-			putJsonProperty( "expanded_height", expandedHeight );
-		}
-		if ( expandedWidth != null ) {
-			putJsonProperty( "expanded_width", expandedWidth );
-		}
-
-		JSONArray jsonArray = new JSONArray();
-		jsonArray.put( jsonObject );
-
-		return jsonArray;
-	}
-
-	private JSONObject putJsonProperty( final String key, final Object value ) {
+	public JSONObject toJson() {
 		try {
-			jsonObject.put( key, value );
+			JSONObject json = super.toJson();
+			json.put( "swfsrc", swfsrc );
+			json.put( "imgsrc", imgsrc );
+			if ( height != null ) {
+				json.put( "height", height );
+			}
+			if ( width != null ) {
+				json.put( "width", width );
+			}
+			if ( expandedHeight != null ) {
+				json.put( "expanded_height", expandedHeight );
+			}
+			if ( expandedWidth != null ) {
+				json.put( "expanded_width", expandedWidth );
+			}
+			return json;
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
 		}
-		return jsonObject;
 	}
 
 	public String getSwfsrc() {

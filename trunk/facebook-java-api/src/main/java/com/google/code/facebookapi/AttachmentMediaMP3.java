@@ -1,7 +1,7 @@
 package com.google.code.facebookapi;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -15,7 +15,10 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 	private String title;
 	private String artist;
 	private String album;
-	private JSONObject jsonObject;
+
+	public AttachmentMediaMP3() {
+		super( "mp3" );
+	}
 
 	/**
 	 * Construct a MP3 attachment.
@@ -37,46 +40,25 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 		this.album = album;
 	}
 
-	/**
-	 * Construct a MP3 attachment.
-	 */
-	public AttachmentMediaMP3() {
-		super( "mp3" );
-	}
-
-	/**
-	 * @return a JSON representation of attachment.
-	 */
 	@Override
-	public JSONArray toJson() {
-		jsonObject = new JSONObject();
-		putJsonProperty( "type", getMediaType() );
-		putJsonProperty( "src", src );
-		if ( !StringUtils.isEmpty( title ) ) {
-			putJsonProperty( "title", title );
-		}
-		if ( !StringUtils.isEmpty( artist ) ) {
-			putJsonProperty( "artist", artist );
-		}
-		if ( !StringUtils.isEmpty( album ) ) {
-			putJsonProperty( "album", album );
-		}
-
-		JSONArray jsonArray = new JSONArray();
-		jsonArray.put( jsonObject );
-
-		return jsonArray;
-	}
-
-	private JSONObject putJsonProperty( final String key, final Object value ) {
+	public JSONObject toJson() {
 		try {
-			jsonObject.put( key, value );
+			JSONObject json = super.toJson();
+			json.put( "src", src );
+			if ( !StringUtils.isEmpty( title ) ) {
+				json.put( "title", title );
+			}
+			if ( !StringUtils.isEmpty( artist ) ) {
+				json.put( "artist", artist );
+			}
+			if ( !StringUtils.isEmpty( album ) ) {
+				json.put( "album", album );
+			}
+			return json;
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
 		}
-
-		return jsonObject;
 	}
 
 	public String getSrc() {

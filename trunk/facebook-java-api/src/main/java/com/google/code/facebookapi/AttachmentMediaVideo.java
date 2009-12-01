@@ -1,7 +1,7 @@
 package com.google.code.facebookapi;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,15 +16,18 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 	private String title;
 	private String type;
 	private String link;
-	private JSONObject jsonObject;
+
+	public AttachmentMediaVideo() {
+		super( "video" );
+	}
 
 	/**
 	 * Construct a video attachment.
 	 * 
 	 * @param videoSrc
-	 *            URL of the video to be rendered.
+	 *            URL of the video to be rendered. (required)
 	 * @param previewImg
-	 *            URL of an image that should be displayed in place of the video until the user clicks to play.
+	 *            URL of an image that should be displayed in place of the video until the user clicks to play. (required)
 	 * @param title
 	 *            Video title. (optional)
 	 * @param type
@@ -41,45 +44,29 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 		this.link = link;
 	}
 
-	public AttachmentMediaVideo() {
-		super( "video" );
-	}
-
 	/**
 	 * @return a JSON representation of attachment.
 	 */
 	@Override
-	public JSONArray toJson() {
-		jsonObject = new JSONObject();
-		putJsonProperty( "type", getMediaType() );
-		putJsonProperty( "video_src", videoSrc );
-		putJsonProperty( "preview_img", previewImg );
-
-		if ( !StringUtils.isEmpty( title ) ) {
-			putJsonProperty( "video_title", title );
-		}
-		if ( !StringUtils.isEmpty( type ) ) {
-			putJsonProperty( "video_type", type );
-		}
-		if ( !StringUtils.isEmpty( link ) ) {
-			putJsonProperty( "video_link", link );
-		}
-
-		JSONArray jsonArray = new JSONArray();
-		jsonArray.put( jsonObject );
-
-		return jsonArray;
-	}
-
-	private JSONObject putJsonProperty( final String key, final Object value ) {
+	public JSONObject toJson() {
 		try {
-			jsonObject.put( key, value );
+			JSONObject json = super.toJson();
+			json.put( "video_src", videoSrc );
+			json.put( "preview_img", previewImg );
+			if ( !StringUtils.isEmpty( title ) ) {
+				json.put( "video_title", title );
+			}
+			if ( !StringUtils.isEmpty( type ) ) {
+				json.put( "video_type", type );
+			}
+			if ( !StringUtils.isEmpty( link ) ) {
+				json.put( "video_link", link );
+			}
+			return json;
 		}
-		catch ( Exception ignored ) {
-			// ignore
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
 		}
-
-		return jsonObject;
 	}
 
 	public String getVideoSrc() {
