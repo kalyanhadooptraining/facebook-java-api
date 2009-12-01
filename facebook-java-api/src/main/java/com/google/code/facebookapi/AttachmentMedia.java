@@ -7,7 +7,7 @@ import org.json.JSONArray;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-public abstract class AttachmentMedia {
+public abstract class AttachmentMedia implements ToJsonArray {
 
 	private String mediaType;
 
