@@ -3,27 +3,27 @@
 	<parent>
 		<groupId>com.google.code.facebookapi</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>3.0.2</version>
+		<version>3.0.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>com.google.code.facebookapi</groupId>
 	<artifactId>facebook-java-api</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<name>Facebook Java Library</name>
 	<description>Facebook Java Library</description>
 
 	<scm>
-		<url>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2/facebooj-java-api</url>
-		<connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2/facebook-java-api</connection>
-		<developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2/facebook-java-api</developerConnection>
+		<url>https://facebook-java-api.googlecode.com/svn/trunk/facebooj-java-api</url>
+		<connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api</connection>
+		<developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api</developerConnection>
 	</scm>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.facebookapi</groupId>
 			<artifactId>facebook-java-api-schema</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>com.google.code.facebookapi</groupId>
 			<artifactId>facebook-java-api-annotation-processor</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

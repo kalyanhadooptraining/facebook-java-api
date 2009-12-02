@@ -4,7 +4,7 @@
   <groupId>com.google.code.facebookapi</groupId>
   <artifactId>parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <name>Facebook Java Library - Parent Pom</name>
   <description>Facebook Java Library - Parent Pom</description>
   <url>http://code.google.com/p/facebook-java-api/</url>
@@ -20,9 +20,9 @@
     <url>http://code.google.com/p/facebook-java-api/issues/list</url>
   </issueManagement>
   <scm>
-    <url>https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2</url>
-    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2</connection>
-    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.2</developerConnection>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</developerConnection>
   </scm>
   <developers>
     <developer>
