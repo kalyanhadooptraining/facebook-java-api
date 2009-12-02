@@ -2124,7 +2124,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.STREAM_GET, params );
 	}
 
-	public String stream_publish( final String message, final Attachment attachment, final List<BundleActionLink> actionLinks, final Long targetId, final Long userId )
+	public String stream_publish( final String message, final Attachment attachment, final Collection<BundleActionLink> actionLinks, final Long targetId, final Long userId )
 			throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 

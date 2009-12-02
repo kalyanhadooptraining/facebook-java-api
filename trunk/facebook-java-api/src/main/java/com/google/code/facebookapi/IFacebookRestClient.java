@@ -3316,7 +3316,7 @@ public interface IFacebookRestClient<T> {
 	@FacebookReturnType(JAXB = StreamData.class, JSON = JSONObject.class)
 	public T stream_get( Long viewerId, List<Long> sourceIds, Date start, Date end, Integer limit, String filterKey, List<String> metadata ) throws FacebookException;
 
-	public String stream_publish( String message, Attachment attachment, List<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
+	public String stream_publish( String message, Attachment attachment, Collection<BundleActionLink> actionLinks, Long targetId, Long userId ) throws FacebookException;
 
 	public boolean stream_remove( String postId, Long userId ) throws FacebookException;
 
