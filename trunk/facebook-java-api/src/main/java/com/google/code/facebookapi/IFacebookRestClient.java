@@ -96,12 +96,6 @@ public interface IFacebookRestClient<T> {
 	// public void setCacheFriendsList( List<Long> friendIds );
 
 	@Deprecated
-	public Boolean getCacheAppAdded();
-
-	@Deprecated
-	public void setCacheAppAdded( Boolean appAdded );
-
-	@Deprecated
 	public Boolean getCacheAppUser();
 
 	@Deprecated
@@ -614,28 +608,6 @@ public interface IFacebookRestClient<T> {
 	 * @return the Facebook user ID of the logged-in user
 	 */
 	public long users_getLoggedInUser() throws FacebookException;
-
-	/**
-	 * Retrieves an indicator of whether the logged-in user has added the application associated with the _apiKey.
-	 * 
-	 * @return boolean indicating whether the user has added the app
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">Users.isAppAdded</a>
-	 * @deprecated
-	 */
-	@Deprecated
-	public boolean users_isAppAdded() throws FacebookException;
-
-	/**
-	 * Retrieves an indicator of whether the specified user has added the application associated with the _apiKey.
-	 * 
-	 * @param userId
-	 *            the if of the user to check for.
-	 * @return boolean indicating whether the user has added the app
-	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppAdded">Users.isAppAdded</a>
-	 * @deprecated
-	 */
-	@Deprecated
-	public boolean users_isAppAdded( Long userId ) throws FacebookException;
 
 	/**
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Users.isAppUser">Users.isAppUser</a>

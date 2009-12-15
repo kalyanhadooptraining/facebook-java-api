@@ -280,11 +280,6 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate );
 	}
 
-	@Deprecated
-	public Boolean getCacheAppAdded() {
-		return getClient().getCacheAppAdded();
-	}
-
 	public Boolean getCacheAppUser() {
 		return getClient().getCacheAppUser();
 	}
@@ -537,16 +532,6 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 
 	public boolean users_hasAppPermission( Permission perm, Long userId ) throws FacebookException {
 		return getClient().users_hasAppPermission( perm, userId );
-	}
-
-	@Deprecated
-	public boolean users_isAppAdded() throws FacebookException {
-		return getClient().users_isAppAdded();
-	}
-
-	@Deprecated
-	public boolean users_isAppAdded( Long userId ) throws FacebookException {
-		return getClient().users_isAppAdded( userId );
 	}
 
 	public boolean users_isAppUser() throws FacebookException {
