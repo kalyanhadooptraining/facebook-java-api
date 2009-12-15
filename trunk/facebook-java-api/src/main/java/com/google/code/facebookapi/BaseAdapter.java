@@ -147,6 +147,7 @@ public abstract class BaseAdapter {
 		getClient().profile_setInfoOptions( field );
 	}
 
+	@Deprecated
 	public void setCacheAppUser( Boolean appUser ) {
 		getClient().setCacheAppUser( appUser );
 	}

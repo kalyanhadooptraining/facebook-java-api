@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Base class for interacting with the Facebook Application Programming Interface (API). Most Facebook API methods map directly to function calls of this class. <br/>
@@ -66,14 +67,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	private String responseFormat;
 
 	protected final String _apiKey;
-	protected final String _secret;
+	protected String _secret;
 	protected boolean _isDesktop;
 
 	protected String cacheSessionKey;
 	protected Long cacheUserId;
 	protected Long cacheSessionExpires;
-	/** filled in when session is established only used for desktop apps */
-	protected String cacheSessionSecret;
 
 	protected String rawResponse;
 	protected boolean batchMode;
@@ -108,9 +107,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this._apiKey = apiKey;
 		this._secret = secret;
 		this.cacheSessionKey = sessionKey;
-		if ( sessionSecret || secret.endsWith( "__" ) ) {
-			_isDesktop = true;
-		}
+		this._isDesktop = ( sessionSecret || secret.endsWith( "__" ) );
 
 		this.batchMode = false;
 		this.queries = new ArrayList<BatchQuery>();
@@ -176,27 +173,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this.permissionsApiKey = null;
 	}
 
-	/**
-	 * Gets the session-token used by Facebook to authenticate a desktop application. If your application does not run in desktop mode, than this field is not relevent to
-	 * you.
-	 * 
-	 * @return the desktop-app session token.
-	 */
-	public String getSessionSecret() {
-		return cacheSessionSecret;
-	}
-
-	/**
-	 * Allows the session-token to be manually overridden when running a desktop application. If your application does not run in desktop mode, then setting this field
-	 * will have no effect. If you set an incorrect value here, your application will probably fail to run.
-	 * 
-	 * @param key
-	 *            the new value to set. Incorrect values may cause your application to fail to run.
-	 */
-	public void setSessionSecret( String key ) {
-		cacheSessionSecret = key;
-	}
-
 	@Deprecated
 	protected Boolean cacheAppUser; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
@@ -208,14 +184,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	@Deprecated
 	public void setCacheAppUser( Boolean cacheAppUser ) {
 		this.cacheAppUser = cacheAppUser;
-	}
-
-	public String getCacheSessionSecret() {
-		return cacheSessionSecret;
-	}
-
-	public void setCacheSessionSecret( String cacheSessionSecret ) {
-		this.cacheSessionSecret = cacheSessionSecret;
 	}
 
 	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires ) {
@@ -321,8 +289,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				this.cacheSessionKey = json.getString( "session_key" );
 				this.cacheUserId = json.getLong( "uid" );
 				this.cacheSessionExpires = json.getLong( "expires" );
-				if ( generateSessionSecret ) {
-					this.cacheSessionSecret = json.getString( "secret" );
+				if ( json.has( "secret" ) ) {
+					this._secret = json.getString( "secret" );
+					this._isDesktop = true;
 				}
 			}
 			catch ( JSONException ex ) {
@@ -334,8 +303,10 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			this.cacheSessionKey = XmlHelper.extractString( d.getElementsByTagName( "session_key" ).item( 0 ) );
 			this.cacheUserId = XmlHelper.extractLong( d.getElementsByTagName( "uid" ).item( 0 ) );
 			this.cacheSessionExpires = XmlHelper.extractLong( d.getElementsByTagName( "expires" ).item( 0 ) );
-			if ( generateSessionSecret ) {
-				this.cacheSessionSecret = XmlHelper.extractString( d.getElementsByTagName( "secret" ).item( 0 ) );
+			NodeList secretList = d.getElementsByTagName( "secret" );
+			if ( secretList.getLength() > 0 ) {
+				this._secret = XmlHelper.extractString( secretList.item( 0 ) );
+				this._isDesktop = true;
 			}
 		}
 		return this.cacheSessionKey;
@@ -2101,8 +2072,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.STREAM_GET, params );
 	}
 
-	public String stream_publish( final String message, final Attachment attachment, final Collection<BundleActionLink> actionLinks, final Long targetId, final Long userId )
-			throws FacebookException {
+	public String stream_publish( final String message, final Attachment attachment, final Collection<BundleActionLink> actionLinks, final Long targetId,
+			final Long userId ) throws FacebookException {
 		Collection<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>();
 
 		if ( isDesktop() ) {

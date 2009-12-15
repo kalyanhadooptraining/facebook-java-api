@@ -40,9 +40,6 @@ public class BasicClient {
 	protected String cacheSessionKey;
 	protected Long cacheSessionExpires;
 
-	/** filled in when session is established only used for desktop apps */
-	protected String cacheSessionSecret;
-
 	protected String rawResponse;
 	protected boolean batchMode;
 
@@ -126,35 +123,6 @@ public class BasicClient {
 
 	public void endPermissionsMode() {
 		this.permissionsApiKey = null;
-	}
-
-	/**
-	 * Gets the session-token used by Facebook to authenticate a desktop application. If your application does not run in desktop mode, than this field is not relevent to
-	 * you.
-	 * 
-	 * @return the desktop-app session token.
-	 */
-	public String getSessionSecret() {
-		return cacheSessionSecret;
-	}
-
-	/**
-	 * Allows the session-token to be manually overridden when running a desktop application. If your application does not run in desktop mode, then setting this field
-	 * will have no effect. If you set an incorrect value here, your application will probably fail to run.
-	 * 
-	 * @param key
-	 *            the new value to set. Incorrect values may cause your application to fail to run.
-	 */
-	public void setSessionSecret( String key ) {
-		cacheSessionSecret = key;
-	}
-
-	public String getCacheSessionSecret() {
-		return cacheSessionSecret;
-	}
-
-	public void setCacheSessionSecret( String cacheSessionSecret ) {
-		this.cacheSessionSecret = cacheSessionSecret;
 	}
 
 	public Long getCacheSessionExpires() {
