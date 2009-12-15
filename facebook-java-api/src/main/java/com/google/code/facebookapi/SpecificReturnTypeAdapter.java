@@ -280,6 +280,7 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().feed_registerTemplateBundle( templates, shortTemplates, longTemplate );
 	}
 
+	@Deprecated
 	public Boolean getCacheAppUser() {
 		return getClient().getCacheAppUser();
 	}
@@ -290,10 +291,6 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 
 	public String getCacheSessionKey() {
 		return getClient().getCacheSessionKey();
-	}
-
-	public String getCacheSessionSecret() {
-		return getClient().getCacheSessionSecret();
 	}
 
 	public Long getCacheUserId() {

@@ -1173,8 +1173,6 @@ public interface IFacebookRestClient<T> {
 
 	public Long getCacheSessionExpires();
 
-	public String getCacheSessionSecret();
-
 	/**
 	 * Used to retrieve photo objects using the search parameters (one or more of the parameters must be provided).
 	 * 
