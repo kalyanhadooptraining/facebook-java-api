@@ -63,7 +63,6 @@ public class FacebookWebappHelper<T> {
 		return new FacebookWebappHelper<Object>( request, response, apiKey, secret, new FacebookJaxbRestClient( apiKey, secret ) );
 	}
 
-	@SuppressWarnings("deprecation")
 	// Get rid of the app added flag then remove this suppression.
 	public FacebookWebappHelper( HttpServletRequest request, HttpServletResponse response, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.request = request;
@@ -95,13 +94,13 @@ public class FacebookWebappHelper<T> {
 		// apiClient.setCacheFriendsList( friendsList );
 		// }
 		// }
-		{
-			// caching of the "added" value
-			String added = fbParams.get( "added" );
-			if ( added != null ) {
-				apiClient.setCacheAppAdded( added.equals( "1" ) );
-			}
-		}
+		// {
+		// // caching of the "added" value
+		// String added = fbParams.get( "added" );
+		// if ( added != null ) {
+		// apiClient.setCacheAppAdded( added.equals( "1" ) );
+		// }
+		// }
 	}
 
 	/**

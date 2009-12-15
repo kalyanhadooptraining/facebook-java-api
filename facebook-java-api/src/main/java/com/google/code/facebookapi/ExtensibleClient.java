@@ -198,19 +198,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	@Deprecated
-	protected Boolean cacheAppAdded; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
-
-	@Deprecated
-	public Boolean getCacheAppAdded() {
-		return cacheAppAdded;
-	}
-
-	@Deprecated
-	public void setCacheAppAdded( Boolean cacheAppAdded ) {
-		this.cacheAppAdded = cacheAppAdded;
-	}
-
-	@Deprecated
 	protected Boolean cacheAppUser; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
 	@Deprecated
@@ -728,14 +715,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public boolean isDesktop() {
 		return _isDesktop;
-	}
-
-	@Deprecated
-	public boolean users_isAppAdded() throws FacebookException {
-		if ( cacheAppAdded == null ) {
-			cacheAppAdded = extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED ) );
-		}
-		return cacheAppAdded;
 	}
 
 	public boolean users_isAppUser() throws FacebookException {
@@ -1711,11 +1690,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	public boolean auth_expireSession() throws FacebookException {
 		return extractBoolean( callMethod( FacebookMethod.AUTH_EXPIRE_SESSION ) );
-	}
-
-	@Deprecated
-	public boolean users_isAppAdded( Long userId ) throws FacebookException {
-		return extractBoolean( callMethod( FacebookMethod.USERS_IS_APP_ADDED_NOSESSION, Pairs.newPair( "uid", userId ) ) );
 	}
 
 	public boolean users_setStatus( String status, Long userId ) throws FacebookException {
