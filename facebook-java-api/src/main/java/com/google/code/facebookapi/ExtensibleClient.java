@@ -210,12 +210,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this.cacheAppAdded = cacheAppAdded;
 	}
 
+	@Deprecated
 	protected Boolean cacheAppUser; // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
 
+	@Deprecated
 	public Boolean getCacheAppUser() {
 		return cacheAppUser;
 	}
 
+	@Deprecated
 	public void setCacheAppUser( Boolean cacheAppUser ) {
 		this.cacheAppUser = cacheAppUser;
 	}

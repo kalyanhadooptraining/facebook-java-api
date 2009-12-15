@@ -104,6 +104,7 @@ public interface IFacebookRestClient<T> {
 	@Deprecated
 	public Boolean getCacheAppUser();
 
+	@Deprecated
 	public void setCacheAppUser( Boolean appUser );
 
 	public void setCacheSession( String cacheSessionKey, Long cacheUserId, Long cacheSessionExpires );
