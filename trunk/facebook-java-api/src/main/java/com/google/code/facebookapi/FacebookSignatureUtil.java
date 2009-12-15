@@ -334,7 +334,7 @@ public final class FacebookSignatureUtil {
 	public static List<String> convert( Collection<Map.Entry<String,String>> entries ) {
 		List<String> result = new ArrayList<String>( entries.size() );
 		for ( Map.Entry<String,? extends CharSequence> entry : entries ) {
-			result.add( FacebookParam.stripSignaturePrefix( entry.getKey() ) + "=" + ((entry.getValue() == null) ? "" : entry.getValue()) );
+			result.add( FacebookParam.stripSignaturePrefix( entry.getKey() ) + "=" + ( ( entry.getValue() == null ) ? "" : entry.getValue() ) );
 		}
 		return result;
 	}

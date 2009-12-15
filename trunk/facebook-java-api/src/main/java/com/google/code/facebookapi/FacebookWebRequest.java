@@ -10,6 +10,12 @@ import org.w3c.dom.Document;
 
 public class FacebookWebRequest<T> {
 
+	// MAINTAINING FBSESSION INFORMATION:
+	// 3 sources: FBRequestParams, FBConnectCookies, sessionObj
+	// Values can be in requestScope or sessionScope
+	
+	// MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
+
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
 	private String apiKey;
@@ -21,8 +27,6 @@ public class FacebookWebRequest<T> {
 	private Long userId;
 	private Long sessionExpires;
 
-	@Deprecated
-	private boolean appAdded;
 	private boolean appUser;
 	private boolean inCanvas;
 	private boolean inIframe;
@@ -47,11 +51,14 @@ public class FacebookWebRequest<T> {
 		return (Map<String,String[]>) request.getParameterMap();
 	}
 
-	@SuppressWarnings("deprecation")
 	// Get rid of "app added" flag then remove this suppression
 	protected FacebookWebRequest( HttpServletRequest request, String apiKey, String secret, IFacebookRestClient<T> apiClient ) {
 		this.apiKey = apiKey;
 		this.apiClient = apiClient;
+		processParams( request, secret );
+	}
+
+	private void processParams( HttpServletRequest request, String secret ) {
 		this.fbParams = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( request ) );
 		this.valid = FacebookSignatureUtil.verifySignature( fbParams, secret );
 		if ( valid ) {
@@ -87,11 +94,6 @@ public class FacebookWebRequest<T> {
 			// apiClient.setCacheFriendsList( friendsList );
 			// }
 			// }
-			{
-				// caching of the "added" value
-				appAdded = getFbParamBoolean( FacebookParam.ADDED );
-				apiClient.setCacheAppAdded( appAdded );
-			}
 			{
 				// caching of the "added" value
 				appUser = getFbParamBoolean( FacebookParam.ADDED );
@@ -141,11 +143,6 @@ public class FacebookWebRequest<T> {
 
 	public String getApiKey() {
 		return apiKey;
-	}
-
-	@Deprecated
-	public boolean isAppAdded() {
-		return appAdded;
 	}
 
 	public boolean isAppUser() {
