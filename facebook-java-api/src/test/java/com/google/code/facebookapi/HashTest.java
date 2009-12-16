@@ -4,7 +4,7 @@ import static junit.framework.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class EmailHashTest {
+public class HashTest {
 
 	@Test
 	public void test_emailHash() {
