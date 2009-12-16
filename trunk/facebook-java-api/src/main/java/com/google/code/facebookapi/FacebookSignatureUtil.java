@@ -12,6 +12,8 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.zip.CRC32;
 
+import javax.servlet.http.Cookie;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,15 +26,26 @@ public final class FacebookSignatureUtil {
 	protected static Log log = LogFactory.getLog( FacebookSignatureUtil.class );
 
 	public static SortedMap<String,String> pulloutFbSigParams( Map<String,String[]> reqParams ) {
-		SortedMap<String,String> result = new TreeMap<String,String>();
+		SortedMap<String,String> out = new TreeMap<String,String>();
 		for ( Map.Entry<String,String[]> entry : reqParams.entrySet() ) {
 			String key = entry.getKey();
 			String[] values = entry.getValue();
-			if ( values.length > 0 && FacebookParam.isInNamespace( key ) ) {
-				result.put( key, values[0] );
+			if ( values.length > 0 && key.startsWith( "fb_sig" ) ) {
+				out.put( key, values[0] );
 			}
 		}
-		return result;
+		return out;
+	}
+
+	public static SortedMap<String,String> pulloutFbConnectCookies( Cookie[] cookies, String apiKey ) {
+		SortedMap<String,String> out = new TreeMap<String,String>();
+		for ( Cookie cookie : cookies ) {
+			String key = cookie.getName();
+			if ( key.startsWith( apiKey ) ) {
+				out.put( key, cookie.getValue() );
+			}
+		}
+		return out;
 	}
 
 	/**
