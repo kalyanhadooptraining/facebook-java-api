@@ -450,9 +450,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			params.put( "session_key", cacheSessionKey );
 		}
 
-		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, BasicClientHelper.toString( p.second ) );
+			CharSequence oldVal = params.put( p.first, BasicClientHelper.toString( p.second ) );
 			if ( oldVal != null ) {
 				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
 			}
