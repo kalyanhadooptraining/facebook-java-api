@@ -2,6 +2,8 @@ package com.google.code.facebookapi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +67,12 @@ public class Attachment implements Serializable, ToJsonObject {
 			return;
 		}
 
-		JSONObject jsonProperties = new JSONObject();
+		JSONObject jsonProperties = new JSONObject( new LinkedHashMap() ) {
+			public Iterator sortedKeys() {
+				return this.keys();
+			}
+		};
+
 		for ( AttachmentProperty link : properties ) {
 			try {
 				if ( !StringUtils.isEmpty( link.getHref() ) ) {
