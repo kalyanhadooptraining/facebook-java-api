@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
@@ -377,11 +378,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( FacebookMethod.FQL_QUERY, Pairs.newPair( "query", query ) );
 	}
 
-	private String generateSignature( List<String> params ) {
-		String secret = _secret;
-		return FacebookSignatureUtil.generateSignature( params, secret );
-	}
-
 	public Object groups_get( Long userId, Collection<Long> groupIds ) throws FacebookException {
 		boolean hasGroups = ( null != groupIds && !groupIds.isEmpty() );
 		if ( null != userId ) {
@@ -430,7 +426,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			throws FacebookException {
 		rawResponse = null;
 
-		Map<String,String> params = new TreeMap<String,String>();
+		SortedMap<String,String> params = new TreeMap<String,String>();
 
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -456,14 +452,14 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, FacebookSignatureUtil.toString( p.second ) );
+			oldVal = params.put( p.first, BasicClientHelper.toString( p.second ) );
 			if ( oldVal != null ) {
 				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
 			}
 		}
 
 		assert ( !params.containsKey( "sig" ) );
-		String signature = generateSignature( FacebookSignatureUtil.convert( params.entrySet() ) );
+		String signature = FacebookSignatureUtil.generateSignature( params, _secret );
 		params.put( "sig", signature );
 
 		if ( batchMode ) {
