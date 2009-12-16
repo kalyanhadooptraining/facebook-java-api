@@ -11,12 +11,6 @@ import org.w3c.dom.Document;
 
 public class FacebookWebRequest<T> {
 
-	// MAINTAINING FBSESSION INFORMATION:
-	// 3 sources: FBRequestParams, FBConnectCookies, sessionObj
-	// Values can be in requestScope or sessionScope
-	
-	// MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
-
 	protected static Log log = LogFactory.getLog( FacebookWebRequest.class );
 
 	private String apiKey;
