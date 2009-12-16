@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class FacebookWebFilter implements Filter {
+public class FBWebFilter implements Filter {
 
 	private String apiKey;
 	private String secret;
