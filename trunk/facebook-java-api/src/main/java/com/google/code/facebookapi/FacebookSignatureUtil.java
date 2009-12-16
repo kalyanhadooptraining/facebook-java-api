@@ -3,9 +3,7 @@ package com.google.code.facebookapi;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -59,67 +57,43 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static boolean verifySignature( SortedMap<String,String> params, String secret ) {
+		return verifySignature( "fb_sig", params, secret );
+	}
+
+	public static String generateSignature( SortedMap<String,String> params, String secret ) {
+		return generateSignature( "fb_sig", params, secret );
+	}
+
+	private static boolean verifySignature( String prefix, SortedMap<String,String> params, String secret ) {
 		if ( params == null || params.isEmpty() ) {
 			return false;
 		}
-		String sig = params.remove( FacebookParam.SIGNATURE.toString() );
+		String sig = params.remove( prefix );
 		if ( sig != null ) {
-			return verifySignature( params, secret, sig );
+			return StringUtils.equals( sig, generateSignature( prefix, params, secret ) );
 		}
 		return false;
 	}
 
-	/**
-	 * Verifies that a signature received matches the expected value.
-	 * 
-	 * @param params
-	 *            a map of parameters and their values, such as one obtained from extractFacebookNamespaceParams
-	 * @param secret
-	 *            the developers 'secret' API key
-	 * @param expected
-	 *            the expected resulting value of computing the MD5 sum of the 'sig' params and the 'secret' key
-	 * @return a boolean indicating whether the calculated signature matched the expected signature
-	 */
-	public static boolean verifySignature( SortedMap<String,String> params, String secret, String expected ) {
-		if ( params == null || params.isEmpty() ) {
-			return false;
-		}
-		return StringUtils.equals( expected, generateSignature( params, secret ) );
+	private static String generateSignature( String prefix, SortedMap<String,String> params, String secret ) {
+		StringBuilder sb = generateBaseString( prefix, params );
+		sb.append( secret );
+		return generateMD5( sb.toString() );
 	}
 
-	/**
-	 * Converts a Map of key-value pairs into the form expected by generateSignature
-	 * 
-	 * @param entries
-	 *            a collection of Map.Entry's, such as can be obtained using myMap.entrySet()
-	 * @return a List suitable for being passed to generateSignature
-	 */
-	public static List<String> convert( Collection<Map.Entry<String,String>> entries ) {
-		List<String> result = new ArrayList<String>( entries.size() );
-		for ( Map.Entry<String,String> entry : entries ) {
-			result.add( FacebookParam.stripSignaturePrefix( entry.getKey() ) + "=" + ( ( entry.getValue() == null ) ? "" : entry.getValue() ) );
-		}
-		return result;
-	}
-
-	public static StringBuilder generateBaseString( SortedMap<String,String> params ) {
+	private static StringBuilder generateBaseString( String prefix, SortedMap<String,String> params ) {
 		StringBuilder sb = new StringBuilder();
 		for ( Entry<String,String> entry : params.entrySet() ) {
 			String key = entry.getKey();
-			if ( FacebookParam.isInNamespace( key ) && !FacebookParam.isSignature( key ) ) {
-				sb.append( FacebookParam.stripSignaturePrefix( key ) );
+			if ( key.startsWith( prefix ) && !key.equals( prefix ) ) {
+				key = key.substring( prefix.length() + 1 );
+				sb.append( key );
 				sb.append( "=" );
 				String value = entry.getValue();
 				sb.append( ( value == null ) ? "" : value );
 			}
 		}
 		return sb;
-	}
-
-	public static String generateSignature( SortedMap<String,String> params, String secret ) {
-		StringBuilder sb = generateBaseString( params );
-		sb.append( secret );
-		return generateMD5( sb.toString() );
 	}
 
 	public static String generateMD5( String value ) {
