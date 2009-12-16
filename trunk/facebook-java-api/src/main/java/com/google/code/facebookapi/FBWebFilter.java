@@ -23,10 +23,10 @@ public class FBWebFilter implements Filter {
 
 	private String apiKey;
 	private String secret;
+	private boolean noCookies;
 	private boolean multiApp;
 	private String skey;
 	private String rkey;
-	private boolean noCookies;
 
 	public void init( FilterConfig filterConfig ) throws ServletException {
 		if ( apiKey == null ) {
@@ -37,6 +37,18 @@ public class FBWebFilter implements Filter {
 		}
 		noCookies = BooleanUtils.toBoolean( filterConfig.getInitParameter( "noCookies" ) );
 		multiApp = BooleanUtils.toBoolean( filterConfig.getInitParameter( "multiApp" ) );
+		init();
+	}
+
+	public void init( String apiKey, String secret, boolean noCookies, boolean multiApp ) {
+		this.apiKey = apiKey;
+		this.secret = secret;
+		this.noCookies = noCookies;
+		this.multiApp = multiApp;
+		init();
+	}
+
+	public void init() {
 		if ( !multiApp ) {
 			skey = "fbses";
 			rkey = "fbreq";
@@ -59,6 +71,11 @@ public class FBWebFilter implements Filter {
 	}
 
 	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain ) throws IOException, ServletException {
+		doFilter( httpRequest, httpResponse );
+		chain.doFilter( httpRequest, httpResponse );
+	}
+
+	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse ) throws IOException, ServletException {
 		HttpSession httpSession = httpRequest.getSession();
 
 		// MAINTAINING FBSESSION INFORMATION:
@@ -109,8 +126,6 @@ public class FBWebFilter implements Filter {
 		// TODO: update cookies
 
 		// TODO: MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
-
-		chain.doFilter( httpRequest, httpResponse );
 	}
 
 	// ---- Helpers
@@ -233,6 +248,22 @@ public class FBWebFilter implements Filter {
 
 	public void setSecret( String secret ) {
 		this.secret = secret;
+	}
+
+	public boolean isNoCookies() {
+		return noCookies;
+	}
+
+	public void setNoCookies( boolean noCookies ) {
+		this.noCookies = noCookies;
+	}
+
+	public boolean isMultiApp() {
+		return multiApp;
+	}
+
+	public void setMultiApp( boolean multiApp ) {
+		this.multiApp = multiApp;
 	}
 
 }
