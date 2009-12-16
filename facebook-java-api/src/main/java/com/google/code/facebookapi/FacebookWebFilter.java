@@ -13,14 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FacebookWebFilter implements Filter {
 
-	@SuppressWarnings("unused")
-	private FilterConfig config;
-	
 	private String apiKey;
 	private String secret;
 
 	public void init( FilterConfig filterConfig ) throws ServletException {
-		this.config = filterConfig;
+		// empty
 	}
 
 	public void destroy() {
@@ -41,6 +38,22 @@ public class FacebookWebFilter implements Filter {
 		// Values can be in requestScope or sessionScope
 
 		// MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
+	}
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey( String apiKey ) {
+		this.apiKey = apiKey;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret( String secret ) {
+		this.secret = secret;
 	}
 
 }
