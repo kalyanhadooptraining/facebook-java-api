@@ -15,6 +15,9 @@ public class FacebookWebFilter implements Filter {
 
 	@SuppressWarnings("unused")
 	private FilterConfig config;
+	
+	private String apiKey;
+	private String secret;
 
 	public void init( FilterConfig filterConfig ) throws ServletException {
 		this.config = filterConfig;
