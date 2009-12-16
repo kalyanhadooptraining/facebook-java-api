@@ -25,8 +25,7 @@ public class Attachment implements Serializable, ToJsonObject {
 	private List<AttachmentProperty> properties;
 	private List<AttachmentMedia> media;
 	private Map<String,String> additionalInfo;
-
-	private JSONObject tojson;
+	private String commentsXid;
 
 	public Attachment() {
 		// empty
@@ -36,17 +35,18 @@ public class Attachment implements Serializable, ToJsonObject {
 	 * @return a JSON representation of attachment.
 	 */
 	public JSONObject toJson() {
-		tojson = new JSONObject();
-		putQuiet( "name", name, tojson );
-		putQuiet( "href", href, tojson );
-		putQuiet( "caption", caption, tojson );
-		putQuiet( "description", description, tojson );
+		JSONObject out = new JSONObject();
+		putQuiet( "name", name, out );
+		putQuiet( "href", href, out );
+		putQuiet( "caption", caption, out );
+		putQuiet( "description", description, out );
+		putQuiet( "comments_xid", commentsXid, out );
 
-		putProperties( tojson );
-		putMedia( tojson );
-		putAdditionalInfo( tojson );
+		putProperties( out );
+		putMedia( out );
+		putAdditionalInfo( out );
 
-		return tojson;
+		return out;
 	}
 
 	private static void putQuiet( final String key, final Object value, JSONObject json ) {
@@ -153,6 +153,14 @@ public class Attachment implements Serializable, ToJsonObject {
 
 	public void setAdditionalInfo( Map<String,String> additionalInfo ) {
 		this.additionalInfo = additionalInfo;
+	}
+
+	public String getCommentsXid() {
+		return commentsXid;
+	}
+
+	public void setCommentsXid( String commentsXid ) {
+		this.commentsXid = commentsXid;
 	}
 
 	public List<AttachmentMedia> getMedia() {
