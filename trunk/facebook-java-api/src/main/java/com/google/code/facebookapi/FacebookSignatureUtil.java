@@ -10,8 +10,6 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.zip.CRC32;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,17 +33,6 @@ public final class FacebookSignatureUtil {
 		return out;
 	}
 
-	public static SortedMap<String,String> pulloutFbConnectCookies( Cookie[] cookies, String apiKey ) {
-		SortedMap<String,String> out = new TreeMap<String,String>();
-		for ( Cookie cookie : cookies ) {
-			String key = cookie.getName();
-			if ( key.startsWith( apiKey ) ) {
-				out.put( key, cookie.getValue() );
-			}
-		}
-		return out;
-	}
-
 	/**
 	 * Verifies that a signature received matches the expected value. Removes FacebookParam.SIGNATURE from params if present.
 	 * 
@@ -64,7 +51,7 @@ public final class FacebookSignatureUtil {
 		return generateSignature( "fb_sig", params, secret );
 	}
 
-	private static boolean verifySignature( String prefix, SortedMap<String,String> params, String secret ) {
+	public static boolean verifySignature( String prefix, SortedMap<String,String> params, String secret ) {
 		if ( params == null || params.isEmpty() ) {
 			return false;
 		}
