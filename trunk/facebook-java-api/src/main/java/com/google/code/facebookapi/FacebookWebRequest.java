@@ -1,6 +1,7 @@
 package com.google.code.facebookapi;
 
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +22,7 @@ public class FacebookWebRequest<T> {
 	private String apiKey;
 	private IFacebookRestClient<T> apiClient;
 	private boolean valid;
-	private Map<String,String> fbParams;
+	private SortedMap<String,String> fbParams;
 
 	private String sessionKey;
 	private Long userId;

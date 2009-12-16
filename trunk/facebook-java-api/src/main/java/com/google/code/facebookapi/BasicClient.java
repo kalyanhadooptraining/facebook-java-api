@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -173,7 +174,7 @@ public class BasicClient {
 			throws FacebookException {
 		rawResponse = null;
 
-		Map<String,String> params = new TreeMap<String,String>();
+		SortedMap<String,String> params = new TreeMap<String,String>();
 
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
@@ -195,14 +196,14 @@ public class BasicClient {
 
 		CharSequence oldVal;
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			oldVal = params.put( p.first, FacebookSignatureUtil.toString( p.second ) );
+			oldVal = params.put( p.first, BasicClientHelper.toString( p.second ) );
 			if ( oldVal != null ) {
 				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
 			}
 		}
 
 		assert ( !params.containsKey( "sig" ) );
-		String signature = FacebookSignatureUtil.generateSignature( FacebookSignatureUtil.convert( params.entrySet() ), _secret );
+		String signature = FacebookSignatureUtil.generateSignature( params, _secret );
 		params.put( "sig", signature );
 
 		if ( batchMode ) {
