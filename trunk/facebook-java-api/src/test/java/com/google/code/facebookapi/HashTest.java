@@ -26,7 +26,7 @@ public class HashTest {
 		params.put( "fields", "FIELDS" );
 		params.put( "fb_sig_apikey", "APIKEY" );
 		params.put( "fb_sig_session_key", "SESSIONKEY" );
-		StringBuilder baseString = FacebookSignatureUtil.generateBaseString( "fb_sig", params );
+		StringBuilder baseString = FacebookSignatureUtil.generateBaseString( params );
 		logger.debug( baseString.toString() );
 	}
 
