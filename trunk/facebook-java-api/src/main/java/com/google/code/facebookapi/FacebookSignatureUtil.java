@@ -56,9 +56,8 @@ public final class FacebookSignatureUtil {
 			if ( key.equals( prefix ) ) {
 				sig = entry.getValue();
 			} else if ( key.startsWith( prefix2 ) ) {
-				String value = entry.getValue();
-				value = value.substring( prefix2.length() );
-				out.put( key, value );
+				key = key.substring( prefix2.length() );
+				out.put( key, entry.getValue() );
 			}
 		}
 		String sigGen = generateSignature( out, secret );
