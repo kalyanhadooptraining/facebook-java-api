@@ -21,13 +21,39 @@ public class HashTest {
 	}
 
 	@Test
-	public void test_baseString() {
-		SortedMap<String,String> params = new TreeMap<String,String>();
-		params.put( "fields", "FIELDS" );
-		params.put( "fb_sig_apikey", "APIKEY" );
-		params.put( "fb_sig_session_key", "SESSIONKEY" );
-		StringBuilder baseString = FacebookSignatureUtil.generateBaseString( params );
-		logger.debug( baseString.toString() );
+	public void test_Sig() {
+		SortedMap<String,String> paramsA = new TreeMap<String,String>();
+		paramsA.put( "aA", "aA" );
+		paramsA.put( "bB", "bB" );
+		paramsA.put( "cC", "cC" );
+
+		String expectedBaseString = "aA=aAbB=bBcC=cC";
+		StringBuilder baseString = FacebookSignatureUtil.generateBaseString( paramsA );
+		assertEquals( expectedBaseString, baseString.toString() );
+
+		String secret = "secret";
+		String expectedSignature = "9376fd922ce506221cc1b3892ddca0b9";
+		String sig = FacebookSignatureUtil.generateSignature( paramsA, secret );
+		assertEquals( expectedSignature, sig );
+	}
+
+	@Test
+	public void test_FbSig() {
+		SortedMap<String,String> paramsA = new TreeMap<String,String>();
+		paramsA.put( "aA", "aA" );
+		paramsA.put( "bB", "bB" );
+		paramsA.put( "cC", "cC" );
+
+		String secret = "secret";
+		SortedMap<String,String> paramsB = new TreeMap<String,String>();
+		paramsB.put( "fb_sig_aA", "aA" );
+		paramsB.put( "fb_sig_bB", "bB" );
+		paramsB.put( "fb_sig_cC", "cC" );
+		paramsB.put( "fb_sig", "9376fd922ce506221cc1b3892ddca0b9" );
+
+		SortedMap<String,String> paramsC = FacebookSignatureUtil.getVerifiedParams( "fb_sig", paramsB, secret );
+
+		assertEquals( paramsA, paramsC );
 	}
 
 }
