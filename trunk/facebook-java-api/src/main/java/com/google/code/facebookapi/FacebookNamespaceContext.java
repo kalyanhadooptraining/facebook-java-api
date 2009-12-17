@@ -13,8 +13,6 @@ import javax.xml.namespace.NamespaceContext;
  * Use xpath.setNamespaceContext(new FacebookNamespaceContext()) on your javax.xml.xpath.XPath object so that you can evaluate XPath expressions using prefixes like:
  * 
  * xpath.evaluate("fbapi:fql_query_response", document);
- * 
- * @author david.j.boden
  */
 public class FacebookNamespaceContext implements NamespaceContext {
 
