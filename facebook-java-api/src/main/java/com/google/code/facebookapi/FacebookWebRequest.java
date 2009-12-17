@@ -55,7 +55,7 @@ public class FacebookWebRequest<T> {
 
 	private void processParams( HttpServletRequest request, String secret ) {
 		this.fbParams = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( request ) );
-		this.valid = FacebookSignatureUtil.verifySignature( fbParams, secret );
+		this.valid = ( FacebookSignatureUtil.getVerifiedParams( "fb_sig", fbParams, secret ) != null );
 		if ( valid ) {
 			inNewFacebook = getFbParamBoolean( FacebookParam.IN_NEW_FACEBOOK );
 			inProfileTab = getFbParamBoolean( FacebookParam.IN_PROFILE_TAB );
