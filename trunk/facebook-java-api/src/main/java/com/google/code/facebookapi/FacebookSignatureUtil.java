@@ -23,7 +23,7 @@ public final class FacebookSignatureUtil {
 
 	public static SortedMap<String,String> pulloutFbSigParams( Map<String,String[]> reqParams ) {
 		SortedMap<String,String> out = new TreeMap<String,String>();
-		for ( Map.Entry<String,String[]> entry : reqParams.entrySet() ) {
+		for ( Entry<String,String[]> entry : reqParams.entrySet() ) {
 			String key = entry.getKey();
 			String[] values = entry.getValue();
 			if ( values.length > 0 && key.startsWith( "fb_sig" ) ) {
@@ -44,41 +44,44 @@ public final class FacebookSignatureUtil {
 	 * @return a boolean indicating whether the calculated signature matched the expected signature
 	 */
 	public static boolean verifySignature( SortedMap<String,String> params, String secret ) {
-		return verifySignature( "fb_sig", params, secret );
+		return ( getVerifiedParams( "fb_sig", params, secret ) != null );
+	}
+
+	public static SortedMap<String,String> getVerifiedParams( String prefix, SortedMap<String,String> map, String secret ) {
+		SortedMap<String,String> out = new TreeMap<String,String>();
+		String prefix2 = prefix + "_";
+		String sig = null;
+		for ( Entry<String,String> entry : map.entrySet() ) {
+			String key = entry.getKey();
+			if ( key.equals( prefix ) ) {
+				sig = entry.getValue();
+			} else if ( key.startsWith( prefix2 ) ) {
+				String value = entry.getValue();
+				value = value.substring( prefix2.length() );
+				out.put( key, value );
+			}
+		}
+		String sigGen = generateSignature( out, secret );
+		if ( StringUtils.equals( sig, sigGen ) ) {
+			return out;
+		}
+		return null;
 	}
 
 	public static String generateSignature( SortedMap<String,String> params, String secret ) {
-		return generateSignature( "fb_sig", params, secret );
-	}
-
-	public static boolean verifySignature( String prefix, SortedMap<String,String> params, String secret ) {
-		if ( params == null || params.isEmpty() ) {
-			return false;
-		}
-		String sig = params.remove( prefix );
-		if ( sig != null ) {
-			return StringUtils.equals( sig, generateSignature( prefix, params, secret ) );
-		}
-		return false;
-	}
-
-	private static String generateSignature( String prefix, SortedMap<String,String> params, String secret ) {
-		StringBuilder sb = generateBaseString( prefix, params );
+		StringBuilder sb = generateBaseString( params );
 		sb.append( secret );
 		return generateMD5( sb.toString() );
 	}
 
-	private static StringBuilder generateBaseString( String prefix, SortedMap<String,String> params ) {
+	public static StringBuilder generateBaseString( SortedMap<String,String> params ) {
 		StringBuilder sb = new StringBuilder();
 		for ( Entry<String,String> entry : params.entrySet() ) {
 			String key = entry.getKey();
-			if ( key.startsWith( prefix ) && !key.equals( prefix ) ) {
-				key = key.substring( prefix.length() + 1 );
-				sb.append( key );
-				sb.append( "=" );
-				String value = entry.getValue();
-				sb.append( ( value == null ) ? "" : value );
-			}
+			sb.append( key );
+			sb.append( "=" );
+			String value = entry.getValue();
+			sb.append( ( value == null ) ? "" : value );
 		}
 		return sb;
 	}

@@ -83,8 +83,10 @@ public class FBWebFilter implements Filter {
 		// Values can be in requestScope or sessionScope
 
 
-		SortedMap<String,String> params = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( httpRequest ) );
-		boolean validParams = FacebookSignatureUtil.verifySignature( params, secret );
+		SortedMap<String,String> params = null;
+		params = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( httpRequest ) );
+		params = FacebookSignatureUtil.getVerifiedParams( "fb_sig", params, secret );
+		boolean validParams = ( params != null );
 		if ( !validParams ) {
 			params = new TreeMap<String,String>();
 		}
@@ -95,7 +97,8 @@ public class FBWebFilter implements Filter {
 			cookies = new TreeMap<String,String>();
 		} else {
 			cookies = pulloutFbConnectCookies( httpRequest.getCookies(), apiKey );
-			validCookies = FacebookSignatureUtil.verifySignature( apiKey, cookies, secret );
+			cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, secret );
+			validCookies = ( cookies != null );
 			if ( !validCookies ) {
 				cookies = new TreeMap<String,String>();
 			}
