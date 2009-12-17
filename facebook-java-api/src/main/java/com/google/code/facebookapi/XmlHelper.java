@@ -15,6 +15,12 @@ import org.xml.sax.SAXException;
 
 public class XmlHelper {
 
+	public static String printDom( Node n, String prefix ) {
+		StringBuilder sb = new StringBuilder();
+		printDom( n, prefix, sb );
+		return sb.toString();
+	}
+
 	/**
 	 * Prints out the DOM tree.
 	 * 
