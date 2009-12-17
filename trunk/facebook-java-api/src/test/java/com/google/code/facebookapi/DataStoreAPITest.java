@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -29,6 +30,8 @@ import org.w3c.dom.NodeList;
  * @author dave@daveboden.com
  */
 public class DataStoreAPITest {
+
+	protected static Logger logger = Logger.getLogger( DataStoreAPITest.class );
 
 	XPath xpath;
 
@@ -143,6 +146,7 @@ public class DataStoreAPITest {
 		client.data_createObjectType( "testrename_1234" );
 		client.data_defineObjectProperty( "testrename_1234", "property1", PropertyType.INTEGER );
 		Document objectTypeQuery = client.data_getObjectType( "testrename_1234" );
+		// logger.debug( XmlHelper.printDom( objectTypeQuery, " " ) );
 		assertEquals( "property1", xpath.evaluate( "//fbapi:object_property_info/fbapi:name", objectTypeQuery ) );
 		Document objectTypesQuery = client.data_getObjectTypes();
 		assertEquals( "1", xpath.evaluate( "count(//fbapi:object_type_info[fbapi:name = 'testrename_1234'])", objectTypesQuery ) );
