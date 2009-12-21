@@ -24,10 +24,12 @@
 
       <!-- This line doesn't work on a Mac: <systemPath>${java.home}/../lib/tools.jar</systemPath> -->
       <!-- <systemPath>${java.home}/../Classes/classes.jar</systemPath> -->
-<!--
 	  <profile>
 	    <activation>
-              <jdk>1.5</jdk>
+              <property>
+		<name>java.vendor</name>
+		<value>Sun Microsystems Inc.</value>
+              </property>
 	    </activation>
 	    <dependencies>
 	      <dependency>
@@ -39,7 +41,6 @@
 	      </dependency>
 	    </dependencies>
 	  </profile>
--->
 	</profiles>
 
 </project>
