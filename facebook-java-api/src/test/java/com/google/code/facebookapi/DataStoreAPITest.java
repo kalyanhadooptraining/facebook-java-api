@@ -26,8 +26,6 @@ import org.w3c.dom.NodeList;
  * You currently need to have an API_KEY and SECRET system property. In the future, we should setup a dedicated API_KEY (i.e. facebook user) which will be the test
  * environment for the API. Once this test is actually setting up and deleting the object definitions and association definitions then this will be easier to do. At that
  * stage, we can probably just check the API_KEY and SECRET of this dummy applicaion into source control.
- * 
- * @author dave@daveboden.com
  */
 public class DataStoreAPITest {
 
