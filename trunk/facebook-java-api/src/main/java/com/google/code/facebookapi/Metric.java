@@ -8,8 +8,6 @@ import java.util.Map;
  * interested in to the API call.
  * 
  * See http://wiki.developers.facebook.com/index.php/Admin.getMetrics for details.
- * 
- * @author aroth
  */
 public enum Metric {
 	/**

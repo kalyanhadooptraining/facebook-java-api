@@ -10,8 +10,6 @@ import org.junit.Test;
 
 /**
  * Ensure that multiple batches (> 20 results, which is the Facebook limit) work as expected.
- * 
- * @author david.j.boden
  */
 public class Issue156BatchMultipleIterationsTest {
 

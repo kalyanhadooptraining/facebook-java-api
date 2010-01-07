@@ -13,8 +13,6 @@ import org.w3c.dom.Document;
  * 
  * If you're running the test as yourself, that's probably the case anyway. If you're running it as a batch test user, ensure that at least one photo is posted for that
  * fake user.
- * 
- * @author david.j.boden
  */
 public class Issue41PhotosGetSubjectTest {
 

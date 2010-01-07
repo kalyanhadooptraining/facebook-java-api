@@ -6,10 +6,9 @@ import java.util.List;
 /**
  * A data structure for managing the profile info fields objects required by the profile.setInfo and profile.setInfoOptions API calls. Each field is identified by name,
  * and may contain any number of field items. Each field-item must specify a label and a link URL, and may optionally include a description, a sublabel, and an image URL.
- * 
- * @author aroth
  */
 public class ProfileInfoField {
+
 	String fieldName;
 	List<ProfileFieldItem> items;
 

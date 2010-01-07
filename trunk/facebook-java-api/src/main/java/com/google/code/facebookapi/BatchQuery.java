@@ -4,8 +4,6 @@ import java.util.Map;
 
 /**
  * Represents a bactched Facebook API request.
- * 
- * @author aroth
  */
 // package-level access intentional (at least for now)
 class BatchQuery {

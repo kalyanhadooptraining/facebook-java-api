@@ -21,8 +21,6 @@ import com.google.code.facebookapi.schema.Preference;
 
 /**
  * Uses preferences 161 and 162 (overwrites them) to test the data preferences functions.
- * 
- * @author david.j.boden
  */
 public class DataPreferencesAPITest {
 
