@@ -17,7 +17,6 @@ public class FBWebRequest {
 
 	private boolean inCanvas;
 	private boolean inIframe;
-	private boolean inNewFacebook;
 	private boolean inProfileTab;
 
 	public FBWebRequest( HttpServletRequest request, HttpServletResponse response, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies ) {
@@ -26,6 +25,7 @@ public class FBWebRequest {
 		this.session = session;
 		this.params = params;
 		this.cookies = cookies;
+		this.valid = params != null && cookies != null && !params.isEmpty() && !cookies.isEmpty();
 	}
 
 	public FBWebRequest( HttpServletRequest request, HttpServletResponse response, FBWebSession session, SortedMap<String,String> params,
@@ -68,14 +68,6 @@ public class FBWebRequest {
 
 	public void setInIframe( boolean inIframe ) {
 		this.inIframe = inIframe;
-	}
-
-	public boolean isInNewFacebook() {
-		return inNewFacebook;
-	}
-
-	public void setInNewFacebook( boolean inNewFacebook ) {
-		this.inNewFacebook = inNewFacebook;
 	}
 
 	public boolean isInProfileTab() {
