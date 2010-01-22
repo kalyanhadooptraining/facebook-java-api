@@ -71,11 +71,11 @@ public class FBWebFilter implements Filter {
 	}
 
 	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain ) throws IOException, ServletException {
-		doFilter( httpRequest, httpResponse );
+		doFilter( apiKey, secret, httpRequest, httpResponse );
 		chain.doFilter( httpRequest, httpResponse );
 	}
 
-	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse ) throws IOException, ServletException {
+	public void doFilter( String apiKey, String secret, HttpServletRequest httpRequest, HttpServletResponse httpResponse ) throws IOException, ServletException {
 		HttpSession httpSession = httpRequest.getSession();
 
 		// MAINTAINING FBSESSION INFORMATION:
@@ -91,17 +91,14 @@ public class FBWebFilter implements Filter {
 			params = new TreeMap<String,String>();
 		}
 
-		boolean validCookies = true;
 		SortedMap<String,String> cookies = null;
-		if ( noCookies ) {
-			cookies = new TreeMap<String,String>();
-		} else {
+		if ( !noCookies ) {
 			cookies = pulloutFbConnectCookies( httpRequest.getCookies(), apiKey );
 			cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, secret );
-			validCookies = ( cookies != null );
-			if ( !validCookies ) {
-				cookies = new TreeMap<String,String>();
-			}
+		}
+		boolean validCookies = ( cookies != null );
+		if ( !validCookies ) {
+			cookies = new TreeMap<String,String>();
 		}
 
 		FBWebSession session = (FBWebSession) httpSession.getAttribute( skey );
@@ -116,8 +113,8 @@ public class FBWebFilter implements Filter {
 		if ( validParams ) {
 			updateSession = updateSession || updateRequestSessionFromParams( params, request, session );
 		}
-		if ( !noCookies && validCookies ) {
-			updateSession = updateSession || updateSessionFromCookies( cookies, session );
+		if ( validCookies ) {
+			updateSession = updateSession || updateSessionFromCookies( apiKey, cookies, session );
 		}
 		if ( updateSession ) {
 			httpSession.setAttribute( skey, session );
@@ -140,7 +137,6 @@ public class FBWebFilter implements Filter {
 		request.setInCanvas( getFbParamBoolean( FacebookParam.IN_CANVAS, params ) );
 		request.setInIframe( getFbParamBoolean( FacebookParam.IN_IFRAME, params ) || !request.isInCanvas() );
 		request.setInProfileTab( getFbParamBoolean( FacebookParam.IN_PROFILE_TAB, params ) );
-		request.setInNewFacebook( getFbParamBoolean( FacebookParam.IN_NEW_FACEBOOK, params ) );
 
 		if ( !request.isInProfileTab() ) {
 			sessionKey = getFbParam( FacebookParam.SESSION_KEY, params );
@@ -160,7 +156,7 @@ public class FBWebFilter implements Filter {
 		return session.update( sessionKey, sessionExpires, userId, sessionSecret, appUser );
 	}
 
-	public boolean updateSessionFromCookies( SortedMap<String,String> cookies, FBWebSession session ) {
+	public boolean updateSessionFromCookies( String apiKey, SortedMap<String,String> cookies, FBWebSession session ) {
 		String sessionKey = cookies.get( apiKey + "_session_key" );
 		Date sessionExpires = toDate( cookies.get( apiKey + "_expires" ) );
 		Long userId = toLong( cookies.get( apiKey + "_user" ) );
