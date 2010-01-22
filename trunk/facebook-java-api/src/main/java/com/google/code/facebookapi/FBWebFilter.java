@@ -21,6 +21,13 @@ import org.apache.commons.lang.BooleanUtils;
 
 public class FBWebFilter implements Filter {
 
+	// TODO: update cookies; make sure cookies are good and match request?
+	// should this be knee jerk? or asked for by user
+
+	// TODO: MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
+	// jsessionid has to be same on fbml and browser
+
+
 	private String apiKey;
 	private String secret;
 	private boolean noCookies;
@@ -71,18 +78,25 @@ public class FBWebFilter implements Filter {
 	}
 
 	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain ) throws IOException, ServletException {
-		doFilter( apiKey, secret, httpRequest, httpResponse );
+		attainFBWebRequest( apiKey, secret, noCookies, rkey, skey, httpRequest );
 		chain.doFilter( httpRequest, httpResponse );
 	}
 
-	public void doFilter( String apiKey, String secret, HttpServletRequest httpRequest, HttpServletResponse httpResponse ) throws IOException, ServletException {
+	public static FBWebRequest attainFBWebRequest( String apiKey, String secret, String rkey, String skey, HttpServletRequest httpRequest ) throws IOException,
+			ServletException {
+		boolean noCookies = false;
+		return attainFBWebRequest( apiKey, secret, noCookies, rkey, skey, httpRequest );
+	}
+
+	public static FBWebRequest attainFBWebRequest( String apiKey, String secret, boolean noCookies, String rkey, String skey, HttpServletRequest httpRequest )
+			throws IOException, ServletException {
 		HttpSession httpSession = httpRequest.getSession();
 
 		// MAINTAINING FBSESSION INFORMATION:
 		// 3 sources: FBRequestParams, FBConnectCookies, sessionObj
 		// Values can be in requestScope or sessionScope
 
-
+		// FB REQUEST PARAMS (canvas/fbml/iframe)
 		SortedMap<String,String> params = null;
 		params = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( httpRequest ) );
 		params = FacebookSignatureUtil.getVerifiedParams( "fb_sig", params, secret );
@@ -91,6 +105,7 @@ public class FBWebFilter implements Filter {
 			params = new TreeMap<String,String>();
 		}
 
+		// FB CONNECT COOKIES
 		SortedMap<String,String> cookies = null;
 		if ( !noCookies ) {
 			cookies = pulloutFbConnectCookies( httpRequest.getCookies(), apiKey );
@@ -101,13 +116,14 @@ public class FBWebFilter implements Filter {
 			cookies = new TreeMap<String,String>();
 		}
 
+		// PREVIOUSLY STORED SESSION
 		FBWebSession session = (FBWebSession) httpSession.getAttribute( skey );
 		if ( session == null ) {
 			session = new FBWebSession( apiKey );
 			httpSession.setAttribute( skey, session );
 		}
 
-		FBWebRequest request = new FBWebRequest( httpRequest, httpResponse, session, params, cookies, validParams || validCookies );
+		FBWebRequest request = new FBWebRequest( httpRequest, session, params, cookies, validParams || validCookies );
 
 		boolean updateSession = false;
 		if ( validParams ) {
@@ -120,17 +136,20 @@ public class FBWebFilter implements Filter {
 			httpSession.setAttribute( skey, session );
 		}
 
+		boolean updateCookies = !noCookies && validParams && !validCookies;
+		if ( updateCookies ) {
+			// TODO: update cookies in http response
+		}
+
 		httpRequest.setAttribute( rkey, request );
 		httpRequest.setAttribute( skey, session );
 
-		// TODO: update cookies
-
-		// TODO: MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
+		return request;
 	}
 
 	// ---- Helpers
 
-	public boolean updateRequestSessionFromParams( SortedMap<String,String> params, FBWebRequest request, FBWebSession session ) {
+	public static boolean updateRequestSessionFromParams( SortedMap<String,String> params, FBWebRequest request, FBWebSession session ) {
 		String sessionKey = session.getSessionKey();
 		Long userId = session.getUserId();
 
@@ -156,7 +175,7 @@ public class FBWebFilter implements Filter {
 		return session.update( sessionKey, sessionExpires, userId, sessionSecret, appUser );
 	}
 
-	public boolean updateSessionFromCookies( String apiKey, SortedMap<String,String> cookies, FBWebSession session ) {
+	public static boolean updateSessionFromCookies( String apiKey, SortedMap<String,String> cookies, FBWebSession session ) {
 		String sessionKey = cookies.get( apiKey + "_session_key" );
 		Date sessionExpires = toDate( cookies.get( apiKey + "_expires" ) );
 		Long userId = toLong( cookies.get( apiKey + "_user" ) );

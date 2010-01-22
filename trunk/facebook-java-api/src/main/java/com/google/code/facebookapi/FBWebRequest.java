@@ -3,12 +3,10 @@ package com.google.code.facebookapi;
 import java.util.SortedMap;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class FBWebRequest {
 
 	private HttpServletRequest request;
-	private HttpServletResponse response;
 	private FBWebSession session;
 
 	private boolean valid;
@@ -19,19 +17,16 @@ public class FBWebRequest {
 	private boolean inIframe;
 	private boolean inProfileTab;
 
-	public FBWebRequest( HttpServletRequest request, HttpServletResponse response, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies ) {
+	public FBWebRequest( HttpServletRequest request, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies ) {
 		this.request = request;
-		this.response = response;
 		this.session = session;
 		this.params = params;
 		this.cookies = cookies;
 		this.valid = params != null && cookies != null && !params.isEmpty() && !cookies.isEmpty();
 	}
 
-	public FBWebRequest( HttpServletRequest request, HttpServletResponse response, FBWebSession session, SortedMap<String,String> params,
-			SortedMap<String,String> cookies, boolean valid ) {
+	public FBWebRequest( HttpServletRequest request, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies, boolean valid ) {
 		this.request = request;
-		this.response = response;
 		this.session = session;
 		this.params = params;
 		this.cookies = cookies;
@@ -80,10 +75,6 @@ public class FBWebRequest {
 
 	public HttpServletRequest getRequest() {
 		return request;
-	}
-
-	public HttpServletResponse getResponse() {
-		return response;
 	}
 
 	public FBWebSession getSession() {
