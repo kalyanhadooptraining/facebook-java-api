@@ -105,6 +105,42 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().connect_getUnconnectedFriendsCount();
 	}
 
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
+		return getClient().dashboard_multiAddNews( userIds, newsItems, imageUrl );
+	}
+
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException {
+		return getClient().dashboard_multiAddNews( userIds, newsItems );
+	}
+
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException {
+		return getClient().dashboard_addGlobalNews( newsItems );
+	}
+	
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
+		return getClient().dashboard_addGlobalNews( newsItems, imageUrl );
+	}
+
+	public boolean dashboard_clearGlobalNews() throws FacebookException {
+		return getClient().dashboard_clearGlobalNews();
+	}
+
+	public boolean dashboard_clearGlobalNews( Collection<Long> newsItemIds ) throws FacebookException {
+		return getClient().dashboard_clearGlobalNews( newsItemIds );
+	}
+
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem ) throws FacebookException {
+		return getClient().dashboard_publishActivity( activityItem );
+	}
+	
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem, String imageUrl ) throws FacebookException {
+		return getClient().dashboard_publishActivity( activityItem, imageUrl );
+	}
+
+	public Set<Long> dashboard_multiIncrementCount( Collection<Long> userIds ) throws FacebookException {
+		return getClient().dashboard_multiIncrementCount( userIds );
+	}
+
 	public long data_createObject( String objectType, Map<String,String> properties ) throws FacebookException {
 		return getClient().data_createObject( objectType, properties );
 	}
