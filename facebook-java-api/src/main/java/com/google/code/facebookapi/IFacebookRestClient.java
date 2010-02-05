@@ -1848,6 +1848,89 @@ public interface IFacebookRestClient<T> {
 	public String admin_getAppPropertiesAsString( Collection<ApplicationProperty> properties ) throws FacebookException;
 
 	/**
+	 * Adds all of the supplied news items to each of the users specified.
+	 * 
+	 * @param userIds 
+	 * 			Target users. Each user will be the target of all of the supplied news items.
+	 * @param newsitems 
+	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param imageUrl
+	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 * 
+	 * @return Set of user ids for which the operation was successful.
+	 */
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException;
+
+	/**
+	 * Non-imageUrl method signature form.
+	 *  
+	 * @see #dashboard_multiAddNews(Collection, Collection, String) 
+	 */
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException;
+
+	/**
+	 * Submits global news items for all users of the app.
+	 * 
+	 * @param newsitems 
+	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param imageUrl
+	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 * 
+	 * @return Global news item id if successful, null if unsuccessful.
+	 */
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException;
+
+	/**
+	 * Non-imageUrl method signature form.
+	 *  
+	 * @see #dashboard_addGlobalNews(Collection, Collection, String) 
+	 */
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException;
+
+	/**
+	 * Clears all global news items from application.
+	 * 
+	 * @return True if removal of global news items was successful.
+	 */
+	public boolean dashboard_clearGlobalNews() throws FacebookException;
+	
+	/**
+	 * Clears specific global news items from application.
+	 * 
+	 * @return True if removal of global news items was successful.
+	 */
+	public boolean dashboard_clearGlobalNews(Collection<Long> newsIds) throws FacebookException;
+	
+	/**
+	 * Submits activity for a given user as it will appear in the dashboard section, 'what your friends are doing'.
+	 * 
+	 * @param activityItem 
+	 * 			Activity item object consisting of a message (mandatory) and an action link (optional).
+	 * @param imageUrl
+	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 * 
+	 * @return Activity id if successful, null if unsuccessful.
+	 */
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem, String imageUrl ) throws FacebookException;
+
+	/**
+	 * Non-imageUrl method signature form.
+	 *  
+	 * @see #dashboard_publishActivity(DashboardActivityItem, String)
+	 */
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem ) throws FacebookException;
+
+	/**
+	 * Increments the dashboard bookmark counter by one for the given set of users.
+	 * 
+	 * @param userIds
+	 * 			Users for which to update dashboard bookmark counter by one.
+	 * 
+	 * @return Set of user ids for which operation was successful.
+	 */
+	public Set<Long> dashboard_multiIncrementCount( Collection<Long> userIds ) throws FacebookException;
+
+	/**
 	 * Get all cookies for the currently logged-in user.
 	 * 
 	 * @return all cookies for the current user.

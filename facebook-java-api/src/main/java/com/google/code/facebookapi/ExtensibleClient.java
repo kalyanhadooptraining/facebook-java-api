@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
+
+	private static final int MAX_DASHBOARD_NEW_ITEMS = 8;
 
 	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -2747,4 +2750,240 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractInt( callMethod( FacebookMethod.INTL_UPLOAD_NATIVE_STRINGS, Pairs.newPair( "native_strings", array ) ) );
 	}
 
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, 
+			 Collection<DashboardNewsItem> newsItems) throws FacebookException {
+		
+		return dashboard_multiAddNews( userIds, newsItems, null );
+	}
+	
+	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, 
+											 Collection<DashboardNewsItem> newsItems,
+											 String imageUrl) throws FacebookException {
+	
+		// validation
+		if ( userIds == null || userIds.isEmpty() || newsItems == null || newsItems.isEmpty() ) {
+			return Collections.EMPTY_SET;
+		}
+
+		validateNewsItemsForDashboard( newsItems, imageUrl );
+		
+		// build parameters
+		JSONArray idsJSONArray = new JSONArray( userIds );
+
+		JSONArray newsJSONArray = buildDashboardNewsItemJSONArray( newsItems );
+		
+		Pair userIdsParameter = Pairs.newPair( "uids", idsJSONArray );
+		Pair newsParameter = Pairs.newPair( "news", newsJSONArray );
+		Pair imageUrlParameter = null;
+		if (imageUrl != null) {
+			imageUrlParameter = Pairs.newPair( "image", imageUrl );
+		}
+		
+		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
+		parameters.add( userIdsParameter );
+		parameters.add( newsParameter );
+		if (imageUrlParameter != null) {
+			parameters.add( imageUrlParameter );
+		}
+		
+		// invoke API call
+		callMethod( FacebookMethod.DASHBOARD_MULTI_ADD_NEWS, parameters );
+		
+		/*
+		 * FIXME: Facebook bug report against return values for this call. 
+		 * FB BUG REPORT: http://bugs.developers.facebook.com/show_bug.cgi?id=8557
+		 * 
+		 * For now, assuming all ids were successfully processed.
+		 */
+		return new HashSet<Long>( userIds );
+	}
+
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException {
+		
+		return dashboard_addGlobalNews( newsItems, null );
+	}
+	
+	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
+	
+		// validation
+		validateNewsItemsForDashboard( newsItems, imageUrl );
+		
+		JSONArray newsJSONArray = buildDashboardNewsItemJSONArray( newsItems );
+		
+		Pair newsParameter = Pairs.newPair( "news", newsJSONArray );
+		Pair imageUrlParameter = null;
+		if (imageUrl != null) {
+			imageUrlParameter = Pairs.newPair( "image", imageUrl );
+		}
+		
+		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
+		parameters.add( newsParameter );
+		if (imageUrlParameter != null) {
+			parameters.add( imageUrlParameter );
+		}
+		
+		// invoke API call
+		long response = extractLong( callMethod( FacebookMethod.DASHBOARD_ADD_GLOBAL_NEWS, parameters ) );
+		
+		return response == 0 ? null : response;
+	}
+
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem ) throws FacebookException {
+		
+		return dashboard_publishActivity( activityItem, null );
+	}
+	
+	public Long dashboard_publishActivity( DashboardActivityItem activityItem, String imageUrl ) throws FacebookException {
+	
+		// validation
+		validateDashboardItem( activityItem );
+		validateImageUrl( imageUrl );
+		
+		// build parameters
+		Pair newsParameter = Pairs.newPair( "activity", activityItem.toJSON() );
+		Pair imageUrlParameter = null;
+		if (imageUrl != null) {
+			imageUrlParameter = Pairs.newPair( "image", imageUrl );
+		}
+		
+		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
+		parameters.add( newsParameter );
+		if (imageUrlParameter != null) {
+			parameters.add( imageUrlParameter );
+		}
+		
+		// invoke API call
+		long response = extractLong( callMethod( FacebookMethod.DASHBOARD_PUBLISH_ACTIVITY, parameters ) );
+		
+		return response == 0 ? null : response;
+	}
+
+	public Set<Long> dashboard_multiIncrementCount( Collection<Long> userIds ) throws FacebookException {
+	
+		// validation
+		if ( userIds == null || userIds.isEmpty() ) {
+			return Collections.EMPTY_SET;
+		}
+
+		// build parameters
+		JSONArray idsJSONArray = new JSONArray( userIds );
+
+		Pair userIdsParameter = Pairs.newPair( "uids", idsJSONArray );
+		
+		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
+		parameters.add( userIdsParameter );
+		
+		// invoke API call
+		callMethod( FacebookMethod.DASHBOARD_MULTI_INCREMENT_COUNT, parameters );
+		
+		/*
+		 * FIXME: Facebook bug report against return values for this call. 
+		 * FB BUG REPORT: http://bugs.developers.facebook.com/show_bug.cgi?id=8557
+		 * 
+		 * For now, assuming all ids were successfully processed.
+		 */
+		return new HashSet<Long>( userIds );
+	}
+
+	public boolean dashboard_clearGlobalNews() throws FacebookException {
+		return dashboard_clearGlobalNews( null );
+	}
+	
+	public boolean dashboard_clearGlobalNews( Collection<Long> newsIds ) throws FacebookException {
+		
+		Pair newsIdsParameter = null;
+		if (newsIds != null && !newsIds.isEmpty()) {
+			
+			JSONArray newsIdsJSONArray = new JSONArray( newsIds );
+			newsIdsParameter = Pairs.newPair( "news_ids", newsIdsJSONArray );
+		}
+		
+		boolean toReturn;
+		if (newsIdsParameter != null) {
+			toReturn = extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS, newsIdsParameter ) ); 
+		} else {
+			toReturn = extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS ) );
+		}
+		
+		return toReturn; 
+	}
+
+	/**
+	 * Builds a JSONArray consisting of the specified DashboardNewsItem instances.
+	 */
+	private JSONArray buildDashboardNewsItemJSONArray( Collection<DashboardNewsItem> newsItems ) {
+		
+		JSONArray newsJSONArray = new JSONArray();
+		for ( DashboardNewsItem newsItem : newsItems ) {
+			newsJSONArray.put( newsItem.toJSON() );
+		}
+		
+		return newsJSONArray;
+	}
+
+	/**
+	 * Builds a JSONArray consisting of the specified DashboardActivityItem instances.
+	 */
+	private JSONArray buildDashboardActivityItemJSONArray( Collection<DashboardActivityItem> activityItems ) {
+		
+		JSONArray activityJSONArray = new JSONArray();
+		for ( DashboardActivityItem activityItem : activityItems ) {
+			activityJSONArray.put( activityItem.toJSON() );
+		}
+		
+		return activityJSONArray;
+	}
+	
+	/**
+	 * Dashboard-specific news items validation logic.
+	 */
+	private void validateNewsItemsForDashboard( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
+		if ( newsItems.size() > MAX_DASHBOARD_NEW_ITEMS ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, 
+				"Exceeded maximum of " + MAX_DASHBOARD_NEW_ITEMS + " news items allowed by API." );
+		}
+		
+		for ( DashboardNewsItem newsItem : newsItems ) {
+			validateDashboardItem( newsItem );
+		}
+		
+		validateImageUrl( imageUrl );
+	}
+
+	/**
+	 * Validates image URL for dashboard if defined.
+	 * @param imageUrl
+	 * 			Url for image appearing alongside dashboard items.
+	 * @throws FacebookException
+	 */
+	private void validateImageUrl( String imageUrl ) throws FacebookException {
+		if ( imageUrl != null && "".equals( imageUrl.trim() ) ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Image url cannot be empty when specified." );
+		}
+	}
+
+	/**
+	 * Validates a single DashboardItem object for presence of mandatory and optional attributes.
+	 * @param item 
+	 * 			DashboardItem object to validate.
+	 */
+	private void validateDashboardItem( DashboardItem item ) throws FacebookException {
+		
+		if ( item.getMessage() == null || "".equals( item.getMessage().trim() ) ) {
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Message parameter is mandatory in DashboardItem." );
+		}
+		
+		BundleActionLink actionLink = item.getActionLink();
+		if (actionLink != null) {
+			
+			if (actionLink.getHref() == null || "".equals( actionLink.getHref().trim() ) ) {
+				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "ActionLink 'href' cannot be empty." );
+			}
+
+			if (actionLink.getText() == null || "".equals( actionLink.getText().trim() ) ) {
+				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "ActionLink 'text' cannot be empty." );
+			}
+		}
+	}
 }
+
