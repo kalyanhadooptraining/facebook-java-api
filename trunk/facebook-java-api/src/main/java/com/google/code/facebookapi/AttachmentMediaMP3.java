@@ -33,7 +33,7 @@ public class AttachmentMediaMP3 extends AttachmentMedia {
 	 *            MP3 album. (optional)
 	 */
 	public AttachmentMediaMP3( final String src, final String title, final String artist, final String album ) {
-		super( "mp3" );
+		this();
 		this.src = src;
 		this.title = title;
 		this.artist = artist;

@@ -36,7 +36,7 @@ public class AttachmentMediaVideo extends AttachmentMedia {
 	 *            Video link, default is value of videoSrc. (optional)
 	 */
 	public AttachmentMediaVideo( final String videoSrc, final String previewImg, final String title, final String type, final String link ) {
-		super( "video" );
+		this();
 		this.videoSrc = videoSrc;
 		this.previewImg = previewImg;
 		this.title = title;
