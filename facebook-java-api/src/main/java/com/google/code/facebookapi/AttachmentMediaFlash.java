@@ -17,6 +17,10 @@ public class AttachmentMediaFlash extends AttachmentMedia {
 	private Integer expandedWidth;
 	private Integer expandedHeight;
 
+	public AttachmentMediaFlash() {
+		super( "flash" );
+	}
+
 	/**
 	 * Construct a Flash attachment.
 	 * 
@@ -35,7 +39,7 @@ public class AttachmentMediaFlash extends AttachmentMedia {
 	 */
 	public AttachmentMediaFlash( final String swfsrc, final String imgsrc, final Integer width, final Integer height, final Integer expandedWidth,
 			final Integer expandedHeight ) {
-		super( "flash" );
+		this();
 		this.swfsrc = swfsrc;
 		this.imgsrc = imgsrc;
 		this.height = height;

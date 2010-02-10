@@ -13,8 +13,12 @@ public class AttachmentMediaImage extends AttachmentMedia {
 	private String src;
 	private String href;
 
-	public AttachmentMediaImage( String src, String href ) {
+	public AttachmentMediaImage() {
 		super( "image" );
+	}
+
+	public AttachmentMediaImage( String src, String href ) {
+		this();
 		this.src = src;
 		this.href = href;
 	}
