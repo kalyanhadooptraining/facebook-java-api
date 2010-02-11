@@ -1,5 +1,7 @@
 package com.google.code.facebookapi;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,7 +10,7 @@ import org.json.JSONObject;
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
-public abstract class AttachmentMedia implements ToJsonObject {
+public abstract class AttachmentMedia implements ToJsonObject, Serializable {
 
 	private String mediaType;
 
