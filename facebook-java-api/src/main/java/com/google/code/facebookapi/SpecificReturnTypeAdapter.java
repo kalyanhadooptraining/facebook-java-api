@@ -105,14 +105,6 @@ public abstract class SpecificReturnTypeAdapter<T> extends BaseAdapter implement
 		return getClient().connect_getUnconnectedFriendsCount();
 	}
 
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
-		return getClient().dashboard_multiAddNews( userIds, newsItems, imageUrl );
-	}
-
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException {
-		return getClient().dashboard_multiAddNews( userIds, newsItems );
-	}
-
 	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException {
 		return getClient().dashboard_addGlobalNews( newsItems );
 	}

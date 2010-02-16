@@ -19,6 +19,8 @@ import com.google.code.facebookapi.schema.AppInfo;
 import com.google.code.facebookapi.schema.BatchRunResponse;
 import com.google.code.facebookapi.schema.ConnectRegisterUsersResponse;
 import com.google.code.facebookapi.schema.ConnectUnregisterUsersResponse;
+import com.google.code.facebookapi.schema.DashboardMultiAddNewsResponse;
+import com.google.code.facebookapi.schema.DashboardMultiClearNewsResponse;
 import com.google.code.facebookapi.schema.DataGetAssociationDefinitionsResponse;
 import com.google.code.facebookapi.schema.DataGetCookiesResponse;
 import com.google.code.facebookapi.schema.DataGetObjectTypeResponse;
@@ -1859,14 +1861,39 @@ public interface IFacebookRestClient<T> {
 	 * 
 	 * @return Set of user ids for which the operation was successful.
 	 */
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException;
+	@FacebookReturnType(JAXB = DashboardMultiAddNewsResponse.class, JSON = JSONArray.class)
+	public T dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException;
 
 	/**
 	 * Non-imageUrl method signature form.
 	 *  
 	 * @see #dashboard_multiAddNews(Collection, Collection, String) 
 	 */
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException;
+	@FacebookReturnType(JAXB = DashboardMultiAddNewsResponse.class, JSON = JSONArray.class)
+	public T dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException;
+
+	/**
+	 * Removes the referenced news items against each of the users specified.
+	 * 
+	 * @param userIds 
+	 * 			Target users. Each user will be the target of all of the supplied news items.
+	 * @param newsitems 
+	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param imageUrl
+	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 * 
+	 * @return Set of user ids for which the operation was successful.
+	 */
+	@FacebookReturnType(JAXB = DashboardMultiClearNewsResponse.class, JSON = JSONArray.class)
+	public T dashboard_multiClearNews( Map<Long, Collection<Long>> userIdToNewsIdsMap ) throws FacebookException;
+
+	/**
+	 * Clears all of the news items associated to the specified users. 
+	 *  
+	 * @see #dashboard_multiClearNews(Map<Long, Collection<Long>>) 
+	 */
+	@FacebookReturnType(JAXB = DashboardMultiClearNewsResponse.class, JSON = JSONArray.class)
+	public T dashboard_multiClearNews( Collection<Long> userIds ) throws FacebookException;
 
 	/**
 	 * Submits global news items for all users of the app.

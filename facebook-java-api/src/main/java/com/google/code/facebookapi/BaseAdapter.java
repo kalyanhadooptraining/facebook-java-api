@@ -192,4 +192,7 @@ public abstract class BaseAdapter {
 		getClient().sms_sendMessage( userId, message );
 	}
 
+	public void setCommunicationStrategy(CommunicationStrategy communicationStrategy) {
+		getClient().setCommunicationStrategy(communicationStrategy);
+	}
 }
