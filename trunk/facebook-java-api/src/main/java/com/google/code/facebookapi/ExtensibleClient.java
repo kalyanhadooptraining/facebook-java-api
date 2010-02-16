@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -57,9 +58,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
-	protected static final String CRLF = "\r\n";
-	protected static final String PREF = "--";
-	protected static final int UPLOAD_BUFFER_SIZE = 1024;
+	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
+	protected static final String CRLF = DefaultCommunicationStrategy.CRLF;
+	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
+	protected static final String PREF = DefaultCommunicationStrategy.PREF;
+	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
+	protected static final int UPLOAD_BUFFER_SIZE = DefaultCommunicationStrategy.UPLOAD_BUFFER_SIZE;
 
 	private static final int MAX_DASHBOARD_NEW_ITEMS = 8;
 
@@ -69,7 +73,8 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	protected int _connectTimeout;
 	protected int _readTimeout;
 	private String responseFormat;
-
+	private CommunicationStrategy _communicationStrategy;
+	
 	protected final String _apiKey;
 	protected String _secret;
 	protected boolean _isDesktop;
@@ -117,8 +122,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		this.queries = new ArrayList<BatchQuery>();
 	}
 
-
-
 	public URL getServerUrl() {
 		return _serverUrl;
 	}
@@ -152,6 +155,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		_readTimeout = readTimeout;
 	}
 
+	public CommunicationStrategy getCommunicationStrategy() {
+		
+		if (_communicationStrategy == null) {
+			_communicationStrategy = new DefaultCommunicationStrategy( _connectTimeout, _readTimeout );
+		}
+		
+		return _communicationStrategy;
+	}
+	
+	public void setCommunicationStrategy(CommunicationStrategy communicationStrategy) {
+		_communicationStrategy = communicationStrategy;
+	}
+	
 	/**
 	 * The response format in which results to FacebookMethod calls are returned
 	 * 
@@ -525,32 +541,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
 		}
 
-		HttpURLConnection conn = null;
-		OutputStream out = null;
-		InputStream in = null;
-		try {
-			conn = (HttpURLConnection) serverUrl.openConnection();
-			if ( _connectTimeout != -1 ) {
-				conn.setConnectTimeout( _connectTimeout );
-			}
-			if ( _readTimeout != -1 ) {
-				conn.setReadTimeout( _readTimeout );
-			}
-			conn.setRequestMethod( "POST" );
-			conn.setRequestProperty( "Content-type", "application/x-www-form-urlencoded" );
-			conn.setDoOutput( true );
-			conn.connect();
-			out = conn.getOutputStream();
-			CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
-			out.write( paramString.toString().getBytes( "UTF-8" ) );
-			in = conn.getInputStream();
-			return BasicClientHelper.toString( in );
-		}
-		finally {
-			BasicClientHelper.close( in );
-			BasicClientHelper.close( out );
-			BasicClientHelper.disconnect( conn );
-		}
+		return getCommunicationStrategy().sendPostRequest( serverUrl, params );
 	}
 
 	/**
@@ -570,68 +561,13 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
 		}
-
-		HttpURLConnection con = null;
-		OutputStream urlOut = null;
-		InputStream in = null;
-		try {
-			String boundary = Long.toString( System.currentTimeMillis(), 16 );
-			con = (HttpURLConnection) _serverUrl.openConnection();
-			if ( _connectTimeout != -1 ) {
-				con.setConnectTimeout( _connectTimeout );
-			}
-			if ( _readTimeout != -1 ) {
-				con.setReadTimeout( _readTimeout );
-			}
-			con.setDoInput( true );
-			con.setDoOutput( true );
-			con.setUseCaches( false );
-			con.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + boundary );
-			con.setRequestProperty( "MIME-version", "1.0" );
-
-			urlOut = con.getOutputStream();
-			DataOutputStream out = new DataOutputStream( urlOut );
-
-			for ( Map.Entry<String,String> entry : params.entrySet() ) {
-				out.writeBytes( PREF + boundary + CRLF );
-
-				out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
-				// out.writeBytes( "Content-Transfer-Encoding: application/x-www-form-urlencoded" + CRLF );
-
-				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
-				// out.writeBytes( "Content-Transfer-Encoding: quoted-printable" + CRLF );
-
-				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" + CRLF );
-				out.writeBytes( CRLF );
-				byte[] valueBytes = entry.getValue().toString().getBytes( "UTF-8" );
-				out.write( valueBytes );
-				out.writeBytes( CRLF );
-			}
-
-			out.writeBytes( PREF + boundary + CRLF );
-			out.writeBytes( "Content-Type: image" + CRLF );
-			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
-			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
-
-			// Write the file
-			out.writeBytes( CRLF );
-			byte buf[] = new byte[UPLOAD_BUFFER_SIZE];
-			int len = 0;
-			while ( len >= 0 ) {
-				out.write( buf, 0, len );
-				len = fileStream.read( buf );
-			}
-
-			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
-			out.flush();
-			in = con.getInputStream();
-			return BasicClientHelper.toString( in );
-		}
-		finally {
-			BasicClientHelper.close( urlOut );
-			BasicClientHelper.close( in );
-			BasicClientHelper.disconnect( con );
-		}
+		
+		return getCommunicationStrategy().postFileRequest(
+				_serverUrl, 
+				method, 
+				params, 
+				fileName, 
+				fileStream);
 	}
 
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException {
@@ -2750,19 +2686,19 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractInt( callMethod( FacebookMethod.INTL_UPLOAD_NATIVE_STRINGS, Pairs.newPair( "native_strings", array ) ) );
 	}
 
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, 
+	public Object dashboard_multiAddNews( Collection<Long> userIds, 
 			 Collection<DashboardNewsItem> newsItems) throws FacebookException {
 		
 		return dashboard_multiAddNews( userIds, newsItems, null );
 	}
 	
-	public Set<Long> dashboard_multiAddNews( Collection<Long> userIds, 
-											 Collection<DashboardNewsItem> newsItems,
-											 String imageUrl) throws FacebookException {
+	public Object dashboard_multiAddNews( Collection<Long> userIds, 
+										  Collection<DashboardNewsItem> newsItems,
+										  String imageUrl) throws FacebookException {
 	
 		// validation
 		if ( userIds == null || userIds.isEmpty() || newsItems == null || newsItems.isEmpty() ) {
-			return Collections.EMPTY_SET;
+			return null;
 		}
 
 		validateNewsItemsForDashboard( newsItems, imageUrl );
@@ -2787,17 +2723,44 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 		
 		// invoke API call
-		callMethod( FacebookMethod.DASHBOARD_MULTI_ADD_NEWS, parameters );
-		
-		/*
-		 * FIXME: Facebook bug report against return values for this call. 
-		 * FB BUG REPORT: http://bugs.developers.facebook.com/show_bug.cgi?id=8557
-		 * 
-		 * For now, assuming all ids were successfully processed.
-		 */
-		return new HashSet<Long>( userIds );
+		return callMethod( FacebookMethod.DASHBOARD_MULTI_ADD_NEWS, parameters );
 	}
 
+	public Object dashboard_multiClearNews( Collection<Long> userIds) throws FacebookException {
+		
+		Map<Long, Collection<Long>> parameterMap = new HashMap<Long,Collection<Long>>();
+		for ( Long userId : userIds ) {
+			parameterMap.put( userId, Collections.EMPTY_LIST );
+		}
+		
+		return dashboard_multiClearNews( parameterMap );
+	}
+	
+	public Object dashboard_multiClearNews( Map<Long, Collection<Long>> userIdToNewsIdMap ) throws FacebookException {
+		
+		if (userIdToNewsIdMap == null || userIdToNewsIdMap.size() == 0) {
+			return null;
+		}
+
+		// build parameter
+		JSONObject parameterJSON = new JSONObject();
+		for (Entry<Long,Collection<Long>> entry : userIdToNewsIdMap.entrySet()) {
+			
+			JSONArray newsIdArray = new JSONArray(entry.getValue());
+			try {
+				parameterJSON.put( entry.getKey().toString(), newsIdArray );
+			}
+			catch ( JSONException exception ) {
+				BasicClientHelper.runtimeException( exception );
+			}
+		}
+
+		Pair singleParameter = Pairs.newPair( "ids", parameterJSON );
+
+		// invoke API call
+		return callMethod( FacebookMethod.DASHBOARD_MULTI_CLEAR_NEWS, singleParameter );
+	}
+	
 	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException {
 		
 		return dashboard_addGlobalNews( newsItems, null );
