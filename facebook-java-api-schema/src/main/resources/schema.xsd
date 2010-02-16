@@ -1628,6 +1628,49 @@
   </xsd:complexType>
 </xsd:element>
 
+<xsd:complexType name="idPair">
+    <xsd:simpleContent>
+        <xsd:extension base="xsd:long">
+            <xsd:attribute name="key" type="xsd:long" />
+        </xsd:extension>
+    </xsd:simpleContent>
+</xsd:complexType>
+
+<xsd:complexType name="idToBooleanPair">
+    <xsd:simpleContent>
+        <xsd:extension base="xsd:boolean">
+            <xsd:attribute name="key" type="xsd:long"/>
+        </xsd:extension>
+    </xsd:simpleContent>
+</xsd:complexType>
+
+<!-- For issues with these return types, see: http://bugs.developers.facebook.com/show_bug.cgi?id=8607 -->
+<xsd:element name="dashboard_multiClearNews_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="dashboard_multiClearNews_response_elt">
+			<xsd:complexType>
+			    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			        <xsd:element name="dashboard_multiClearNews_response_elt_elt" type="idToBooleanPair" />
+			    </xsd:sequence>
+          <xsd:attribute name="key" type="xsd:long" />
+			    <xsd:attribute name="list" type="xsd:boolean"/>
+			</xsd:complexType>
+        </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="dashboard_multiAddNews_response">
+  <xsd:complexType>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="dashboard_multiAddNews_response_elt" type="idPair"/>
+    </xsd:sequence>
+    <xsd:attribute name="list" type="xsd:boolean" />
+  </xsd:complexType>
+</xsd:element>
+
 <xsd:element name="dashboard_incrementCount_response" type="xsd:boolean" />
 
 <xsd:element name="dashboard_decrementCount_response" type="xsd:boolean" />
