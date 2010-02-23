@@ -5,10 +5,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Facebook has deprecated this {@link http://developers.facebook.com/news.php?blog=1&story=340}
+ * 
  * A simple data structure for video media type used by Attachment.
  * 
  * @see {@link http://wiki.developers.facebook.com/index.php/Attachment_(Streams)}
  */
+@Deprecated
 public class AttachmentMediaVideo extends AttachmentMedia {
 
 	private String videoSrc;

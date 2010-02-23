@@ -1,8 +1,11 @@
 package com.google.code.facebookapi;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -90,6 +93,32 @@ public class BundleActionLink implements ToJsonObject, Serializable {
 				out.put( link.toJson() );
 			}
 			return out;
+		}
+		return null;
+	}
+
+	public static BundleActionLink fromJson( JSONObject obj ) throws JSONException {
+		BundleActionLink out = null;
+		if ( obj.has( "text" ) ) {
+			out = new BundleActionLink();
+			out.setText( obj.getString( "text" ) );
+			if ( obj.has( "href" ) ) {
+				out.setHref( obj.getString( "href" ) );
+			}
+		}
+		return out;
+	}
+
+	public static List<BundleActionLink> fromJson( JSONArray arr ) throws JSONException {
+		if ( arr != null ) {
+			List<BundleActionLink> out = new ArrayList<BundleActionLink>();
+			for ( int i = 0; i < arr.length(); i++ ) {
+				JSONObject link = arr.getJSONObject( i );
+				BundleActionLink outa = fromJson( link );
+				if ( outa != null ) {
+					out.add( outa );
+				}
+			}
 		}
 		return null;
 	}
