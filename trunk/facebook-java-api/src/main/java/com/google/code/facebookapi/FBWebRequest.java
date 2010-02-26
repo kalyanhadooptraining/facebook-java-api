@@ -1,12 +1,10 @@
 package com.google.code.facebookapi;
 
 import java.util.SortedMap;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.TreeMap;
 
 public class FBWebRequest {
 
-	private HttpServletRequest request;
 	private FBWebSession session;
 
 	private boolean valid;
@@ -17,20 +15,11 @@ public class FBWebRequest {
 	private boolean inIframe;
 	private boolean inProfileTab;
 
-	public FBWebRequest( HttpServletRequest request, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies ) {
-		this.request = request;
+	public FBWebRequest( FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies, boolean valid ) {
 		this.session = session;
-		this.params = params;
-		this.cookies = cookies;
-		this.valid = params != null && cookies != null && !params.isEmpty() && !cookies.isEmpty();
-	}
-
-	public FBWebRequest( HttpServletRequest request, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies, boolean valid ) {
-		this.request = request;
-		this.session = session;
-		this.params = params;
-		this.cookies = cookies;
 		this.valid = valid;
+		this.params = params != null ? params : new TreeMap<String,String>();
+		this.cookies = cookies != null ? cookies : new TreeMap<String,String>();
 	}
 
 	public SortedMap<String,String> getParams() {
@@ -71,10 +60,6 @@ public class FBWebRequest {
 
 	public void setInProfileTab( boolean inProfileTab ) {
 		this.inProfileTab = inProfileTab;
-	}
-
-	public HttpServletRequest getRequest() {
-		return request;
 	}
 
 	public FBWebSession getSession() {

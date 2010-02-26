@@ -21,42 +21,28 @@ public class FBWebFilter implements Filter {
 	// TODO: MAINTAINING JSESSIONID COOKIE sync across FBML/BROWSER cookies
 	// jsessionid has to be same on fbml and browser
 
-
-	private String apiKey;
-	private String secret;
+	private FBAppConf appConf;
 	private boolean noCookies;
-	private boolean multiApp;
-	private String skey;
-	private String rkey;
 
 	public void init( FilterConfig filterConfig ) throws ServletException {
-		if ( apiKey == null ) {
-			apiKey = filterConfig.getInitParameter( "apiKey" );
-		}
-		if ( secret == null ) {
-			secret = filterConfig.getInitParameter( "secret" );
+		if ( appConf == null ) {
+			String appId = filterConfig.getInitParameter( "appId" );
+			String apiKey = filterConfig.getInitParameter( "apiKey" );
+			String secret = filterConfig.getInitParameter( "secret" );
+			appConf = new FBAppConfBean( appId, apiKey, secret );
 		}
 		noCookies = BooleanUtils.toBoolean( filterConfig.getInitParameter( "noCookies" ) );
-		multiApp = BooleanUtils.toBoolean( filterConfig.getInitParameter( "multiApp" ) );
 		init();
 	}
 
-	public void init( String apiKey, String secret, boolean noCookies, boolean multiApp ) {
-		this.apiKey = apiKey;
-		this.secret = secret;
+	public void init( FBAppConf appConf, boolean noCookies ) {
+		this.appConf = appConf;
 		this.noCookies = noCookies;
-		this.multiApp = multiApp;
 		init();
 	}
 
 	public void init() {
-		if ( !multiApp ) {
-			skey = "fbses";
-			rkey = "fbreq";
-		} else {
-			skey = "fbses:" + apiKey;
-			rkey = "fbreq:" + apiKey;
-		}
+		// empty
 	}
 
 	public void destroy() {
@@ -72,26 +58,22 @@ public class FBWebFilter implements Filter {
 	}
 
 	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain ) throws IOException, ServletException {
-		FbWebHelper.attainFBWebRequest( apiKey, secret, noCookies, rkey, skey, httpRequest );
+		String skey = "fbses";
+		String rkey = "fbreq";
+		FBWebRequest request = FbWebHelper.attainFBWebRequest( appConf, noCookies, skey, httpRequest );
+		httpRequest.setAttribute( rkey, request );
+		httpRequest.setAttribute( skey, request.getSession() );
 		chain.doFilter( httpRequest, httpResponse );
 	}
 
 	// ---- Getters
 
-	public String getApiKey() {
-		return apiKey;
+	public FBAppConf getAppConf() {
+		return appConf;
 	}
 
-	public void setApiKey( String apiKey ) {
-		this.apiKey = apiKey;
-	}
-
-	public String getSecret() {
-		return secret;
-	}
-
-	public void setSecret( String secret ) {
-		this.secret = secret;
+	public void setAppConf( FBAppConf appConf ) {
+		this.appConf = appConf;
 	}
 
 	public boolean isNoCookies() {
@@ -100,14 +82,6 @@ public class FBWebFilter implements Filter {
 
 	public void setNoCookies( boolean noCookies ) {
 		this.noCookies = noCookies;
-	}
-
-	public boolean isMultiApp() {
-		return multiApp;
-	}
-
-	public void setMultiApp( boolean multiApp ) {
-		this.multiApp = multiApp;
 	}
 
 }

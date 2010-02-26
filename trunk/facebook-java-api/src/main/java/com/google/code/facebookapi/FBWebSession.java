@@ -8,7 +8,7 @@ import org.apache.commons.lang.ObjectUtils;
 
 public class FBWebSession {
 
-	private String apiKey;
+	private FBAppConf appConf;
 	private String sessionKey;
 	private Date sessionExpires;
 	private Long userId;
@@ -17,13 +17,13 @@ public class FBWebSession {
 
 	private boolean appUser;
 
-	public FBWebSession( String apiKey ) {
-		this.apiKey = apiKey;
+	public FBWebSession( FBAppConf appConf ) {
+		this.appConf = appConf;
 		this.params = new TreeMap<String,String>();
 	}
 
-	public String getApiKey() {
-		return apiKey;
+	public FBAppConf getAppConf() {
+		return appConf;
 	}
 
 	public String getSessionKey() {
@@ -32,6 +32,10 @@ public class FBWebSession {
 
 	public void setSessionKey( String sessionKey ) {
 		this.sessionKey = sessionKey;
+	}
+
+	public boolean isExpired() {
+		return sessionExpires == null || sessionExpires.getTime() <= System.currentTimeMillis();
 	}
 
 	public Date getSessionExpires() {

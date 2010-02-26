@@ -11,17 +11,21 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * @see http://wiki.developers.facebook.com/index.php/Authorizing_Applications
+ */
 public class FbWebHelper {
 
-	public static FBWebRequest attainFBWebRequest( String apiKey, String secret, String rkey, String skey, HttpServletRequest httpRequest ) throws IOException,
-			ServletException {
+	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, String skey, HttpServletRequest httpRequest ) throws IOException, ServletException {
 		boolean noCookies = false;
-		return attainFBWebRequest( apiKey, secret, noCookies, rkey, skey, httpRequest );
+		return attainFBWebRequest( appConf, noCookies, skey, httpRequest );
 	}
 
-	public static FBWebRequest attainFBWebRequest( String apiKey, String secret, boolean noCookies, String rkey, String skey, HttpServletRequest httpRequest )
-			throws IOException, ServletException {
+	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, boolean noCookies, String skey, HttpServletRequest httpRequest ) throws IOException,
+			ServletException {
 		HttpSession httpSession = httpRequest.getSession();
+		String apiKey = appConf.getApiKey();
+		String secret = appConf.getSecret();
 
 		// MAINTAINING FBSESSION INFORMATION:
 		// 3 sources: FBRequestParams, FBConnectCookies, sessionObj
@@ -32,9 +36,6 @@ public class FbWebHelper {
 		params = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( httpRequest ) );
 		params = FacebookSignatureUtil.getVerifiedParams( "fb_sig", params, secret );
 		boolean validParams = ( params != null );
-		if ( !validParams ) {
-			params = new TreeMap<String,String>();
-		}
 
 		// FB CONNECT COOKIES
 		SortedMap<String,String> cookies = null;
@@ -43,18 +44,17 @@ public class FbWebHelper {
 			cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, secret );
 		}
 		boolean validCookies = ( cookies != null );
-		if ( !validCookies ) {
-			cookies = new TreeMap<String,String>();
-		}
 
 		// PREVIOUSLY STORED SESSION
 		FBWebSession session = (FBWebSession) httpSession.getAttribute( skey );
 		if ( session == null ) {
-			session = new FBWebSession( apiKey );
+			session = new FBWebSession( appConf );
 			httpSession.setAttribute( skey, session );
 		}
 
-		FBWebRequest request = new FBWebRequest( httpRequest, session, params, cookies, validParams || validCookies );
+		// if validParams, validCookies, validSession:: make sure apiKey matches all around
+
+		FBWebRequest request = new FBWebRequest( session, params, cookies, validParams || validCookies );
 
 		boolean updateSession = false;
 		if ( validParams ) {
@@ -72,15 +72,15 @@ public class FbWebHelper {
 			// TODO: update cookies in http response
 		}
 
-		httpRequest.setAttribute( rkey, request );
-		httpRequest.setAttribute( skey, session );
-
 		return request;
 	}
 
 	// ---- Helpers
 
 	public static boolean updateRequestSessionFromParams( SortedMap<String,String> params, FBWebRequest request, FBWebSession session ) {
+		if ( params == null || params.isEmpty() ) {
+			return false;
+		}
 		String sessionKey = session.getSessionKey();
 		Long userId = session.getUserId();
 
@@ -99,7 +99,7 @@ public class FbWebHelper {
 			sessionKey = getFbParam( FacebookParam.PROFILE_SESSION_KEY, params );
 			userId = getFbParamLong( FacebookParam.PROFILE_USER, params );
 		}
-		Date sessionExpires = getFbParamDate( FacebookParam.EXPIRES, params );
+		Date sessionExpires = getFbParamExpiresDate( FacebookParam.EXPIRES, params );
 		String sessionSecret = getFbParam( FacebookParam.SS, params );
 		boolean appUser = getFbParamBooleanN( FacebookParam.ADDED, params );
 
@@ -107,8 +107,11 @@ public class FbWebHelper {
 	}
 
 	public static boolean updateSessionFromCookies( String apiKey, SortedMap<String,String> cookies, FBWebSession session ) {
+		if ( cookies == null || cookies.isEmpty() ) {
+			return false;
+		}
 		String sessionKey = cookies.get( apiKey + "_session_key" );
-		Date sessionExpires = toDate( cookies.get( apiKey + "_expires" ) );
+		Date sessionExpires = toExpiresDate( cookies.get( apiKey + "_expires" ) );
 		Long userId = toLong( cookies.get( apiKey + "_user" ) );
 		String sessionSecret = cookies.get( apiKey + "_ss" );
 
@@ -134,7 +137,10 @@ public class FbWebHelper {
 	// ---- Parameter Helpers
 
 	public static String getFbParam( FacebookParam key, Map<String,String> params ) {
-		return params.get( key.toString() );
+		if ( params != null ) {
+			return params.get( key.toString() );
+		}
+		return null;
 	}
 
 	public static Date getFbParamDate( FacebookParam key, Map<String,String> params ) {
@@ -147,6 +153,24 @@ public class FbWebHelper {
 
 	public static Date toDate( Long l ) {
 		if ( l != null ) {
+			return new Date( l * 1000 );
+		}
+		return null;
+	}
+
+	public static Date getFbParamExpiresDate( FacebookParam key, Map<String,String> params ) {
+		return toExpiresDate( getFbParam( key, params ) );
+	}
+
+	public static Date toExpiresDate( String t ) {
+		return toExpiresDate( toLong( t ) );
+	}
+
+	public static Date toExpiresDate( Long l ) {
+		if ( l != null ) {
+			if ( l <= 0 ) {
+				return new Date( Long.MAX_VALUE );
+			}
 			return new Date( l * 1000 );
 		}
 		return null;
