@@ -1,10 +1,7 @@
 package com.google.code.facebookapi;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,8 +28,7 @@ public class BasicClient {
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
 
 	protected URL _serverUrl;
-	protected int _timeout;
-	protected int _readTimeout;
+	private CommunicationStrategy _communicationStrategy;
 
 	protected final String _apiKey;
 	protected final String _secret;
@@ -70,33 +66,14 @@ public class BasicClient {
 
 
 	protected BasicClient( String apiKey, String secret ) {
-		this( null, apiKey, secret, null );
-	}
-
-	protected BasicClient( String apiKey, String secret, int timeout ) {
-		this( null, apiKey, secret, null, timeout );
+		this( apiKey, secret, null );
 	}
 
 	protected BasicClient( String apiKey, String secret, String sessionKey ) {
-		this( null, apiKey, secret, sessionKey );
+		this( null, apiKey, secret, sessionKey, new DefaultCommunicationStrategy() );
 	}
 
-	protected BasicClient( String apiKey, String secret, String sessionKey, int timeout ) {
-		this( null, apiKey, secret, sessionKey, timeout );
-	}
-
-	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout ) {
-		this( serverUrl, apiKey, secret, sessionKey );
-		_timeout = timeout;
-	}
-
-	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey, int timeout, int readTimeout ) {
-		this( serverUrl, apiKey, secret, sessionKey );
-		_timeout = timeout;
-		_readTimeout = readTimeout;
-	}
-
-	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey ) {
+	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey, CommunicationStrategy communicationStrategy ) {
 		this.cacheSessionKey = sessionKey;
 		this._apiKey = apiKey;
 		this._secret = secret;
@@ -104,8 +81,7 @@ public class BasicClient {
 			_isDesktop = true;
 		}
 		this._serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
-		this._timeout = -1;
-		this._readTimeout = -1;
+		this._communicationStrategy = communicationStrategy;
 		this.batchMode = false;
 		this.queries = new ArrayList<BatchQuery>();
 	}
@@ -231,7 +207,7 @@ public class BasicClient {
 
 		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
-			rawResponse = method.takesFile() ? postFileRequest( params, fileName, fileStream ) : postRequest( method, params, doHttps );
+			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 			return rawResponse;
 		}
 		catch ( IOException ex ) {
@@ -241,35 +217,10 @@ public class BasicClient {
 
 	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
-		CharSequence paramString = ( null == params ) ? "" : BasicClientHelper.delimit( params.entrySet(), "&", "=", true );
 		if ( log.isDebugEnabled() ) {
-			log.debug( method.methodName() + " POST: " + serverUrl.toString() + "?" + paramString );
+			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
 		}
-
-		HttpURLConnection conn = null;
-		OutputStream out = null;
-		InputStream in = null;
-		try {
-			conn = (HttpURLConnection) serverUrl.openConnection();
-			if ( _timeout != -1 ) {
-				conn.setConnectTimeout( _timeout );
-			}
-			if ( _readTimeout != -1 ) {
-				conn.setReadTimeout( _readTimeout );
-			}
-			conn.setRequestMethod( "POST" );
-			conn.setDoOutput( true );
-			conn.connect();
-			out = conn.getOutputStream();
-			out.write( paramString.toString().getBytes( "UTF-8" ) );
-			in = conn.getInputStream();
-			return BasicClientHelper.getResponse( in );
-		}
-		finally {
-			BasicClientHelper.close( in );
-			BasicClientHelper.close( out );
-			BasicClientHelper.disconnect( conn );
-		}
+		return _communicationStrategy.sendPostRequest( serverUrl, params );
 	}
 
 	/**
@@ -284,69 +235,11 @@ public class BasicClient {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload
 	 */
-
-	protected String postFileRequest( Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
-		HttpURLConnection con = null;
-		OutputStream urlOut = null;
-		InputStream in = null;
-		try {
-			String boundary = Long.toString( System.currentTimeMillis(), 16 );
-			con = (HttpURLConnection) _serverUrl.openConnection();
-			if ( _timeout != -1 ) {
-				con.setConnectTimeout( _timeout );
-			}
-			if ( _readTimeout != -1 ) {
-				con.setReadTimeout( _readTimeout );
-			}
-			con.setDoInput( true );
-			con.setDoOutput( true );
-			con.setUseCaches( false );
-			con.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + boundary );
-			con.setRequestProperty( "MIME-version", "1.0" );
-
-			urlOut = con.getOutputStream();
-			DataOutputStream out = new DataOutputStream( urlOut );
-
-			for ( Map.Entry<String,String> entry : params.entrySet() ) {
-				out.writeBytes( PREF + boundary + CRLF );
-
-				out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
-				// out.writeBytes( "Content-Transfer-Encoding: application/x-www-form-urlencoded" + CRLF );
-
-				// out.writeBytes( "Content-Type: text/plain;charset=utf-8" + CRLF );
-				// out.writeBytes( "Content-Transfer-Encoding: quoted-printable" + CRLF );
-
-				out.writeBytes( "Content-disposition: form-data; name=\"" + entry.getKey() + "\"" + CRLF );
-				out.writeBytes( CRLF );
-				byte[] valueBytes = entry.getValue().toString().getBytes( "UTF-8" );
-				out.write( valueBytes );
-				out.writeBytes( CRLF );
-			}
-
-			out.writeBytes( PREF + boundary + CRLF );
-			out.writeBytes( "Content-Type: image" + CRLF );
-			out.writeBytes( "Content-disposition: form-data; filename=\"" + fileName + "\"" + CRLF );
-			// out.writeBytes("Content-Transfer-Encoding: binary" + CRLF); // not necessary
-
-			// Write the file
-			out.writeBytes( CRLF );
-			byte buf[] = new byte[UPLOAD_BUFFER_SIZE];
-			int len = 0;
-			while ( len >= 0 ) {
-				out.write( buf, 0, len );
-				len = fileStream.read( buf );
-			}
-
-			out.writeBytes( CRLF + PREF + boundary + PREF + CRLF );
-			out.flush();
-			in = con.getInputStream();
-			return BasicClientHelper.getResponse( in );
+	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
+		if ( log.isDebugEnabled() ) {
+			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
 		}
-		finally {
-			BasicClientHelper.close( urlOut );
-			BasicClientHelper.close( in );
-			BasicClientHelper.disconnect( con );
-		}
+		return _communicationStrategy.postFileRequest( _serverUrl, params, fileName, fileStream );
 	}
 
 	public void beginBatch() {
