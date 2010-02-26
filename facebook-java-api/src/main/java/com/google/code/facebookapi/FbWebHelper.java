@@ -80,6 +80,21 @@ public class FbWebHelper {
 	private static final String SUFF_SESSION_KEY = "_session_key";
 	private static final int SUFF_SESSION_KEY_LENGTH = SUFF_SESSION_KEY.length();
 
+	public static FBWebSession attainFBWebSession( FBAppConf appConf, HttpServletRequest httpRequest ) throws IOException, ServletException {
+		final String apiKey = appConf.getApiKey();
+		final String secret = appConf.getSecret();
+		Cookie[] hcookies = httpRequest.getCookies();
+		SortedMap<String,String> cookies = null;
+		cookies = pulloutFbConnectCookies( hcookies, apiKey );
+		cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, secret );
+		if ( cookies != null ) {
+			FBWebSession session = new FBWebSession( appConf );
+			updateSessionFromCookies( cookies, session );
+			return session;
+		}
+		return new FBWebSession( appConf );
+	}
+
 	public static List<FBWebSession> attainFBWebSessions( FBAppConfs appConfs, HttpServletRequest httpRequest ) throws IOException, ServletException {
 		List<FBWebSession> out = new ArrayList<FBWebSession>();
 		Cookie[] hcookies = httpRequest.getCookies();
