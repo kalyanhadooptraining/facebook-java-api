@@ -35,7 +35,7 @@ public class FBWebSession {
 	}
 
 	public boolean isExpired() {
-		return sessionExpires == null || sessionExpires.getTime() <= System.currentTimeMillis();
+		return sessionKey == null || sessionExpires == null || sessionExpires.getTime() <= System.currentTimeMillis();
 	}
 
 	public Date getSessionExpires() {
