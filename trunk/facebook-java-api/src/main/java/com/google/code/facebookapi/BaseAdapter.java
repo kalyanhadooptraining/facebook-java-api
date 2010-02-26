@@ -168,18 +168,22 @@ public abstract class BaseAdapter {
 		getClient().setServerUrl( url );
 	}
 
+	@Deprecated
 	public int getConnectTimeout() {
 		return getClient().getConnectTimeout();
 	}
 
+	@Deprecated
 	public void setConnectTimeout( int connectTimeout ) {
 		getClient().setConnectTimeout( connectTimeout );
 	}
 
+	@Deprecated
 	public int getReadTimeout() {
 		return getClient().getReadTimeout();
 	}
 
+	@Deprecated
 	public void setReadTimeout( int readTimeout ) {
 		getClient().setReadTimeout( readTimeout );
 	}
@@ -192,7 +196,7 @@ public abstract class BaseAdapter {
 		getClient().sms_sendMessage( userId, message );
 	}
 
-	public void setCommunicationStrategy(CommunicationStrategy communicationStrategy) {
-		getClient().setCommunicationStrategy(communicationStrategy);
+	public void setCommunicationStrategy( CommunicationStrategy communicationStrategy ) {
+		getClient().setCommunicationStrategy( communicationStrategy );
 	}
 }

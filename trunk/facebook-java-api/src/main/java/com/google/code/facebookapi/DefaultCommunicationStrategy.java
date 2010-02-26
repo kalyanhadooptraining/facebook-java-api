@@ -16,23 +16,43 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultCommunicationStrategy implements CommunicationStrategy {
 
-	private static Log log = LogFactory.getLog( DefaultCommunicationStrategy.class );
+	protected static Log log = LogFactory.getLog( DefaultCommunicationStrategy.class );
 
 	private static final String ENCODING = "UTF-8";
-	
+
 	protected static final String CRLF = "\r\n";
 	protected static final String PREF = "--";
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
 
-	private int connectionTimeout;
-	private int readTimeout;
-	
-	public DefaultCommunicationStrategy(int connectionTimeout, int readTimeout) {
+	private int connectionTimeout = -1;
+	private int readTimeout = -1;
+
+	public int getConnectionTimeout() {
+		return connectionTimeout;
+	}
+
+	public void setConnectionTimeout( int connectionTimeout ) {
+		this.connectionTimeout = connectionTimeout;
+	}
+
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+
+	public void setReadTimeout( int readTimeout ) {
+		this.readTimeout = readTimeout;
+	}
+
+	public DefaultCommunicationStrategy() {
+		// empty
+	}
+
+	public DefaultCommunicationStrategy( int connectionTimeout, int readTimeout ) {
 		this.connectionTimeout = connectionTimeout;
 		this.readTimeout = readTimeout;
 	}
-	
-	public String sendPostRequest(URL serverUrl, Map<String, String> params) throws IOException {
+
+	public String sendPostRequest( URL serverUrl, Map<String,String> params ) throws IOException {
 		HttpURLConnection conn = null;
 		OutputStream out = null;
 		InputStream in = null;
@@ -60,13 +80,8 @@ public class DefaultCommunicationStrategy implements CommunicationStrategy {
 			BasicClientHelper.disconnect( conn );
 		}
 	}
-	
-	public String postFileRequest(
-		URL serverUrl, 
-		IFacebookMethod method, 
-		Map<String,String> params, 
-		String fileName, 
-		InputStream fileStream) throws IOException {
+
+	public String postFileRequest( URL serverUrl, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		HttpURLConnection con = null;
 		OutputStream urlOut = null;
 		InputStream in = null;
@@ -129,4 +144,5 @@ public class DefaultCommunicationStrategy implements CommunicationStrategy {
 			BasicClientHelper.disconnect( con );
 		}
 	}
+
 }

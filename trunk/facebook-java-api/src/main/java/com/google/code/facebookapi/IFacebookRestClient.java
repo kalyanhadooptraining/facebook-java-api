@@ -68,12 +68,16 @@ public interface IFacebookRestClient<T> {
 
 	public void setServerUrl( String newUrl );
 
+	@Deprecated
 	public int getConnectTimeout();
 
+	@Deprecated
 	public void setConnectTimeout( int connectTimeout );
 
+	@Deprecated
 	public int getReadTimeout();
 
+	@Deprecated
 	public void setReadTimeout( int readTimeout );
 
 	public String getResponseFormat();
@@ -1852,12 +1856,12 @@ public interface IFacebookRestClient<T> {
 	/**
 	 * Adds all of the supplied news items to each of the users specified.
 	 * 
-	 * @param userIds 
-	 * 			Target users. Each user will be the target of all of the supplied news items.
-	 * @param newsitems 
-	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param userIds
+	 *            Target users. Each user will be the target of all of the supplied news items.
+	 * @param newsitems
+	 *            News item objects consisting of a message (mandatory) and an action link (optional).
 	 * @param imageUrl
-	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 *            Absolute URL of image used to replace application logo in the dashboard. (optional)
 	 * 
 	 * @return Set of user ids for which the operation was successful.
 	 */
@@ -1866,8 +1870,8 @@ public interface IFacebookRestClient<T> {
 
 	/**
 	 * Non-imageUrl method signature form.
-	 *  
-	 * @see #dashboard_multiAddNews(Collection, Collection, String) 
+	 * 
+	 * @see #dashboard_multiAddNews(Collection, Collection, String)
 	 */
 	@FacebookReturnType(JAXB = DashboardMultiAddNewsResponse.class, JSON = JSONArray.class)
 	public T dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException;
@@ -1875,22 +1879,22 @@ public interface IFacebookRestClient<T> {
 	/**
 	 * Removes the referenced news items against each of the users specified.
 	 * 
-	 * @param userIds 
-	 * 			Target users. Each user will be the target of all of the supplied news items.
-	 * @param newsitems 
-	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param userIds
+	 *            Target users. Each user will be the target of all of the supplied news items.
+	 * @param newsitems
+	 *            News item objects consisting of a message (mandatory) and an action link (optional).
 	 * @param imageUrl
-	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 *            Absolute URL of image used to replace application logo in the dashboard. (optional)
 	 * 
 	 * @return Set of user ids for which the operation was successful.
 	 */
 	@FacebookReturnType(JAXB = DashboardMultiClearNewsResponse.class, JSON = JSONArray.class)
-	public T dashboard_multiClearNews( Map<Long, Collection<Long>> userIdToNewsIdsMap ) throws FacebookException;
+	public T dashboard_multiClearNews( Map<Long,Collection<Long>> userIdToNewsIdsMap ) throws FacebookException;
 
 	/**
-	 * Clears all of the news items associated to the specified users. 
-	 *  
-	 * @see #dashboard_multiClearNews(Map<Long, Collection<Long>>) 
+	 * Clears all of the news items associated to the specified users.
+	 * 
+	 * @see #dashboard_multiClearNews(Map<Long, Collection<Long>>)
 	 */
 	@FacebookReturnType(JAXB = DashboardMultiClearNewsResponse.class, JSON = JSONArray.class)
 	public T dashboard_multiClearNews( Collection<Long> userIds ) throws FacebookException;
@@ -1898,10 +1902,10 @@ public interface IFacebookRestClient<T> {
 	/**
 	 * Submits global news items for all users of the app.
 	 * 
-	 * @param newsitems 
-	 * 			News item objects consisting of a message (mandatory) and an action link (optional).
+	 * @param newsitems
+	 *            News item objects consisting of a message (mandatory) and an action link (optional).
 	 * @param imageUrl
-	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 *            Absolute URL of image used to replace application logo in the dashboard. (optional)
 	 * 
 	 * @return Global news item id if successful, null if unsuccessful.
 	 */
@@ -1909,8 +1913,8 @@ public interface IFacebookRestClient<T> {
 
 	/**
 	 * Non-imageUrl method signature form.
-	 *  
-	 * @see #dashboard_addGlobalNews(Collection, Collection, String) 
+	 * 
+	 * @see #dashboard_addGlobalNews(Collection, Collection, String)
 	 */
 	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException;
 
@@ -1920,21 +1924,21 @@ public interface IFacebookRestClient<T> {
 	 * @return True if removal of global news items was successful.
 	 */
 	public boolean dashboard_clearGlobalNews() throws FacebookException;
-	
+
 	/**
 	 * Clears specific global news items from application.
 	 * 
 	 * @return True if removal of global news items was successful.
 	 */
-	public boolean dashboard_clearGlobalNews(Collection<Long> newsIds) throws FacebookException;
-	
+	public boolean dashboard_clearGlobalNews( Collection<Long> newsIds ) throws FacebookException;
+
 	/**
 	 * Submits activity for a given user as it will appear in the dashboard section, 'what your friends are doing'.
 	 * 
-	 * @param activityItem 
-	 * 			Activity item object consisting of a message (mandatory) and an action link (optional).
+	 * @param activityItem
+	 *            Activity item object consisting of a message (mandatory) and an action link (optional).
 	 * @param imageUrl
-	 * 			Absolute URL of image used to replace application logo in the dashboard. (optional)
+	 *            Absolute URL of image used to replace application logo in the dashboard. (optional)
 	 * 
 	 * @return Activity id if successful, null if unsuccessful.
 	 */
@@ -1942,7 +1946,7 @@ public interface IFacebookRestClient<T> {
 
 	/**
 	 * Non-imageUrl method signature form.
-	 *  
+	 * 
 	 * @see #dashboard_publishActivity(DashboardActivityItem, String)
 	 */
 	public Long dashboard_publishActivity( DashboardActivityItem activityItem ) throws FacebookException;
@@ -1951,7 +1955,7 @@ public interface IFacebookRestClient<T> {
 	 * Increments the dashboard bookmark counter by one for the given set of users.
 	 * 
 	 * @param userIds
-	 * 			Users for which to update dashboard bookmark counter by one.
+	 *            Users for which to update dashboard bookmark counter by one.
 	 * 
 	 * @return Set of user ids for which operation was successful.
 	 */

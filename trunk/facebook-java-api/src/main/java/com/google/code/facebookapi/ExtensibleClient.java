@@ -1,14 +1,11 @@
 package com.google.code.facebookapi;
 
 import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -58,23 +55,14 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
-	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
-	protected static final String CRLF = DefaultCommunicationStrategy.CRLF;
-	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
-	protected static final String PREF = DefaultCommunicationStrategy.PREF;
-	/** @deprecated Please switch to using CommunicationStrategy to override post methods. */
-	protected static final int UPLOAD_BUFFER_SIZE = DefaultCommunicationStrategy.UPLOAD_BUFFER_SIZE;
-
 	private static final int MAX_DASHBOARD_NEW_ITEMS = 8;
 
 	protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	protected URL _serverUrl;
-	protected int _connectTimeout;
-	protected int _readTimeout;
-	private String responseFormat;
 	private CommunicationStrategy _communicationStrategy;
-	
+	private String responseFormat;
+
 	protected final String _apiKey;
 	protected String _secret;
 	protected boolean _isDesktop;
@@ -108,9 +96,12 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	}
 
 	protected ExtensibleClient( String responseFormat, String apiKey, String secret, String sessionKey, boolean sessionSecret ) {
+		this( responseFormat, apiKey, secret, sessionKey, sessionSecret, new DefaultCommunicationStrategy() );
+	}
+
+	protected ExtensibleClient( String responseFormat, String apiKey, String secret, String sessionKey, boolean sessionSecret, CommunicationStrategy communicationStrategy ) {
 		this._serverUrl = FacebookApiUrls.getDefaultServerUrl();
-		this._connectTimeout = -1;
-		this._readTimeout = -1;
+		this._communicationStrategy = communicationStrategy;
 		this.responseFormat = responseFormat;
 
 		this._apiKey = apiKey;
@@ -139,35 +130,34 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
+	@Deprecated
 	public int getConnectTimeout() {
-		return _connectTimeout;
+		return getCommunicationStrategy().getConnectionTimeout();
 	}
 
+	@Deprecated
 	public void setConnectTimeout( int connectTimeout ) {
-		_connectTimeout = connectTimeout;
+		getCommunicationStrategy().setConnectionTimeout( connectTimeout );
 	}
 
+	@Deprecated
 	public int getReadTimeout() {
-		return _readTimeout;
+		return getCommunicationStrategy().getReadTimeout();
 	}
 
+	@Deprecated
 	public void setReadTimeout( int readTimeout ) {
-		_readTimeout = readTimeout;
+		getCommunicationStrategy().setReadTimeout( readTimeout );
 	}
 
 	public CommunicationStrategy getCommunicationStrategy() {
-		
-		if (_communicationStrategy == null) {
-			_communicationStrategy = new DefaultCommunicationStrategy( _connectTimeout, _readTimeout );
-		}
-		
 		return _communicationStrategy;
 	}
-	
-	public void setCommunicationStrategy(CommunicationStrategy communicationStrategy) {
+
+	public void setCommunicationStrategy( CommunicationStrategy communicationStrategy ) {
 		_communicationStrategy = communicationStrategy;
 	}
-	
+
 	/**
 	 * The response format in which results to FacebookMethod calls are returned
 	 * 
@@ -540,7 +530,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
 		}
-
 		return getCommunicationStrategy().sendPostRequest( serverUrl, params );
 	}
 
@@ -561,13 +550,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
 		}
-		
-		return getCommunicationStrategy().postFileRequest(
-				_serverUrl, 
-				method, 
-				params, 
-				fileName, 
-				fileStream);
+		return getCommunicationStrategy().postFileRequest( _serverUrl, params, fileName, fileStream );
 	}
 
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException {
@@ -2602,7 +2585,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 			props.put( property.getName() );
 		}
 		String rawResponse = callMethod( FacebookMethod.ADMIN_GET_APP_PROPERTIES, Pairs.newPair( "properties", props ) );
-		log.debug( "Facebook response: " + rawResponse );
+		if ( log.isDebugEnabled() ) {
+			log.debug( "Facebook response: " + rawResponse );
+		}
 		if ( "json".equals( getResponseFormat() ) ) {
 			return JsonHelper.parseCallResult( rawResponse ).toString();
 		} else {
@@ -2686,67 +2671,59 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return extractInt( callMethod( FacebookMethod.INTL_UPLOAD_NATIVE_STRINGS, Pairs.newPair( "native_strings", array ) ) );
 	}
 
-	public Object dashboard_multiAddNews( Collection<Long> userIds, 
-			 Collection<DashboardNewsItem> newsItems) throws FacebookException {
-		
+	public Object dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems ) throws FacebookException {
 		return dashboard_multiAddNews( userIds, newsItems, null );
 	}
-	
-	public Object dashboard_multiAddNews( Collection<Long> userIds, 
-										  Collection<DashboardNewsItem> newsItems,
-										  String imageUrl) throws FacebookException {
-	
+
+	public Object dashboard_multiAddNews( Collection<Long> userIds, Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
 		// validation
 		if ( userIds == null || userIds.isEmpty() || newsItems == null || newsItems.isEmpty() ) {
 			return null;
 		}
 
 		validateNewsItemsForDashboard( newsItems, imageUrl );
-		
+
 		// build parameters
 		JSONArray idsJSONArray = new JSONArray( userIds );
 
 		JSONArray newsJSONArray = buildDashboardNewsItemJSONArray( newsItems );
-		
+
 		Pair userIdsParameter = Pairs.newPair( "uids", idsJSONArray );
 		Pair newsParameter = Pairs.newPair( "news", newsJSONArray );
 		Pair imageUrlParameter = null;
-		if (imageUrl != null) {
+		if ( imageUrl != null ) {
 			imageUrlParameter = Pairs.newPair( "image", imageUrl );
 		}
-		
+
 		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
 		parameters.add( userIdsParameter );
 		parameters.add( newsParameter );
-		if (imageUrlParameter != null) {
+		if ( imageUrlParameter != null ) {
 			parameters.add( imageUrlParameter );
 		}
-		
+
 		// invoke API call
 		return callMethod( FacebookMethod.DASHBOARD_MULTI_ADD_NEWS, parameters );
 	}
 
-	public Object dashboard_multiClearNews( Collection<Long> userIds) throws FacebookException {
-		
-		Map<Long, Collection<Long>> parameterMap = new HashMap<Long,Collection<Long>>();
+	public Object dashboard_multiClearNews( Collection<Long> userIds ) throws FacebookException {
+		Map<Long,Collection<Long>> parameterMap = new HashMap<Long,Collection<Long>>();
 		for ( Long userId : userIds ) {
 			parameterMap.put( userId, Collections.EMPTY_LIST );
 		}
-		
 		return dashboard_multiClearNews( parameterMap );
 	}
-	
-	public Object dashboard_multiClearNews( Map<Long, Collection<Long>> userIdToNewsIdMap ) throws FacebookException {
-		
-		if (userIdToNewsIdMap == null || userIdToNewsIdMap.size() == 0) {
+
+	public Object dashboard_multiClearNews( Map<Long,Collection<Long>> userIdToNewsIdMap ) throws FacebookException {
+		if ( userIdToNewsIdMap == null || userIdToNewsIdMap.size() == 0 ) {
 			return null;
 		}
 
 		// build parameter
 		JSONObject parameterJSON = new JSONObject();
-		for (Entry<Long,Collection<Long>> entry : userIdToNewsIdMap.entrySet()) {
-			
-			JSONArray newsIdArray = new JSONArray(entry.getValue());
+		for ( Entry<Long,Collection<Long>> entry : userIdToNewsIdMap.entrySet() ) {
+
+			JSONArray newsIdArray = new JSONArray( entry.getValue() );
 			try {
 				parameterJSON.put( entry.getKey().toString(), newsIdArray );
 			}
@@ -2760,69 +2737,64 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		// invoke API call
 		return callMethod( FacebookMethod.DASHBOARD_MULTI_CLEAR_NEWS, singleParameter );
 	}
-	
+
 	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems ) throws FacebookException {
-		
 		return dashboard_addGlobalNews( newsItems, null );
 	}
-	
+
 	public Long dashboard_addGlobalNews( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
-	
 		// validation
 		validateNewsItemsForDashboard( newsItems, imageUrl );
-		
+
 		JSONArray newsJSONArray = buildDashboardNewsItemJSONArray( newsItems );
-		
+
 		Pair newsParameter = Pairs.newPair( "news", newsJSONArray );
 		Pair imageUrlParameter = null;
-		if (imageUrl != null) {
+		if ( imageUrl != null ) {
 			imageUrlParameter = Pairs.newPair( "image", imageUrl );
 		}
-		
+
 		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
 		parameters.add( newsParameter );
-		if (imageUrlParameter != null) {
+		if ( imageUrlParameter != null ) {
 			parameters.add( imageUrlParameter );
 		}
-		
+
 		// invoke API call
 		long response = extractLong( callMethod( FacebookMethod.DASHBOARD_ADD_GLOBAL_NEWS, parameters ) );
-		
+
 		return response == 0 ? null : response;
 	}
 
 	public Long dashboard_publishActivity( DashboardActivityItem activityItem ) throws FacebookException {
-		
 		return dashboard_publishActivity( activityItem, null );
 	}
-	
+
 	public Long dashboard_publishActivity( DashboardActivityItem activityItem, String imageUrl ) throws FacebookException {
-	
 		// validation
 		validateDashboardItem( activityItem );
 		validateImageUrl( imageUrl );
-		
+
 		// build parameters
 		Pair newsParameter = Pairs.newPair( "activity", activityItem.toJSON() );
 		Pair imageUrlParameter = null;
-		if (imageUrl != null) {
+		if ( imageUrl != null ) {
 			imageUrlParameter = Pairs.newPair( "image", imageUrl );
 		}
-		
+
 		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
 		parameters.add( newsParameter );
-		if (imageUrlParameter != null) {
+		if ( imageUrlParameter != null ) {
 			parameters.add( imageUrlParameter );
 		}
-		
+
 		// invoke API call
 		long response = extractLong( callMethod( FacebookMethod.DASHBOARD_PUBLISH_ACTIVITY, parameters ) );
-		
+
 		return response == 0 ? null : response;
 	}
 
 	public Set<Long> dashboard_multiIncrementCount( Collection<Long> userIds ) throws FacebookException {
-	
 		// validation
 		if ( userIds == null || userIds.isEmpty() ) {
 			return Collections.EMPTY_SET;
@@ -2831,17 +2803,11 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		// build parameters
 		JSONArray idsJSONArray = new JSONArray( userIds );
 
-		Pair userIdsParameter = Pairs.newPair( "uids", idsJSONArray );
-		
-		Collection<Pair<String,CharSequence>> parameters = new ArrayList<Pair<String,CharSequence>>();
-		parameters.add( userIdsParameter );
-		
 		// invoke API call
-		callMethod( FacebookMethod.DASHBOARD_MULTI_INCREMENT_COUNT, parameters );
-		
+		callMethod( FacebookMethod.DASHBOARD_MULTI_INCREMENT_COUNT, Pairs.newPair( "uids", idsJSONArray ) );
+
 		/*
-		 * FIXME: Facebook bug report against return values for this call. 
-		 * FB BUG REPORT: http://bugs.developers.facebook.com/show_bug.cgi?id=8557
+		 * FIXME: Facebook bug report against return values for this call. FB BUG REPORT: http://bugs.developers.facebook.com/show_bug.cgi?id=8557
 		 * 
 		 * For now, assuming all ids were successfully processed.
 		 */
@@ -2851,36 +2817,24 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	public boolean dashboard_clearGlobalNews() throws FacebookException {
 		return dashboard_clearGlobalNews( null );
 	}
-	
+
 	public boolean dashboard_clearGlobalNews( Collection<Long> newsIds ) throws FacebookException {
-		
-		Pair newsIdsParameter = null;
-		if (newsIds != null && !newsIds.isEmpty()) {
-			
+		if ( newsIds != null && !newsIds.isEmpty() ) {
 			JSONArray newsIdsJSONArray = new JSONArray( newsIds );
-			newsIdsParameter = Pairs.newPair( "news_ids", newsIdsJSONArray );
-		}
-		
-		boolean toReturn;
-		if (newsIdsParameter != null) {
-			toReturn = extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS, newsIdsParameter ) ); 
+			return extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS, Pairs.newPair( "news_ids", newsIdsJSONArray ) ) );
 		} else {
-			toReturn = extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS ) );
+			return extractBoolean( callMethod( FacebookMethod.DASHBOARD_CLEAR_GLOBAL_NEWS ) );
 		}
-		
-		return toReturn; 
 	}
 
 	/**
 	 * Builds a JSONArray consisting of the specified DashboardNewsItem instances.
 	 */
 	private JSONArray buildDashboardNewsItemJSONArray( Collection<DashboardNewsItem> newsItems ) {
-		
 		JSONArray newsJSONArray = new JSONArray();
 		for ( DashboardNewsItem newsItem : newsItems ) {
 			newsJSONArray.put( newsItem.toJSON() );
 		}
-		
 		return newsJSONArray;
 	}
 
@@ -2888,35 +2842,31 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * Builds a JSONArray consisting of the specified DashboardActivityItem instances.
 	 */
 	private JSONArray buildDashboardActivityItemJSONArray( Collection<DashboardActivityItem> activityItems ) {
-		
 		JSONArray activityJSONArray = new JSONArray();
 		for ( DashboardActivityItem activityItem : activityItems ) {
 			activityJSONArray.put( activityItem.toJSON() );
 		}
-		
 		return activityJSONArray;
 	}
-	
+
 	/**
 	 * Dashboard-specific news items validation logic.
 	 */
 	private void validateNewsItemsForDashboard( Collection<DashboardNewsItem> newsItems, String imageUrl ) throws FacebookException {
 		if ( newsItems.size() > MAX_DASHBOARD_NEW_ITEMS ) {
-			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, 
-				"Exceeded maximum of " + MAX_DASHBOARD_NEW_ITEMS + " news items allowed by API." );
+			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Exceeded maximum of " + MAX_DASHBOARD_NEW_ITEMS + " news items allowed by API." );
 		}
-		
 		for ( DashboardNewsItem newsItem : newsItems ) {
 			validateDashboardItem( newsItem );
 		}
-		
 		validateImageUrl( imageUrl );
 	}
 
 	/**
 	 * Validates image URL for dashboard if defined.
+	 * 
 	 * @param imageUrl
-	 * 			Url for image appearing alongside dashboard items.
+	 *            Url for image appearing alongside dashboard items.
 	 * @throws FacebookException
 	 */
 	private void validateImageUrl( String imageUrl ) throws FacebookException {
@@ -2927,26 +2877,23 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 
 	/**
 	 * Validates a single DashboardItem object for presence of mandatory and optional attributes.
-	 * @param item 
-	 * 			DashboardItem object to validate.
+	 * 
+	 * @param item
+	 *            DashboardItem object to validate.
 	 */
 	private void validateDashboardItem( DashboardItem item ) throws FacebookException {
-		
 		if ( item.getMessage() == null || "".equals( item.getMessage().trim() ) ) {
 			throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "Message parameter is mandatory in DashboardItem." );
 		}
-		
 		BundleActionLink actionLink = item.getActionLink();
-		if (actionLink != null) {
-			
-			if (actionLink.getHref() == null || "".equals( actionLink.getHref().trim() ) ) {
+		if ( actionLink != null ) {
+			if ( actionLink.getHref() == null || "".equals( actionLink.getHref().trim() ) ) {
 				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "ActionLink 'href' cannot be empty." );
 			}
-
-			if (actionLink.getText() == null || "".equals( actionLink.getText().trim() ) ) {
+			if ( actionLink.getText() == null || "".equals( actionLink.getText().trim() ) ) {
 				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "ActionLink 'text' cannot be empty." );
 			}
 		}
 	}
-}
 
+}
