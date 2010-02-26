@@ -1,9 +1,8 @@
 package com.google.code.facebookapi;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -95,28 +94,44 @@ public class FbWebHelper {
 		return new FBWebSession( appConf );
 	}
 
-	public static List<FBWebSession> attainFBWebSessions( FBAppConfs appConfs, HttpServletRequest httpRequest ) throws IOException, ServletException {
-		List<FBWebSession> out = new ArrayList<FBWebSession>();
-		Cookie[] hcookies = httpRequest.getCookies();
-		for ( Cookie cookie : hcookies ) {
-			final String name = cookie.getName();
-			if ( name.endsWith( SUFF_SESSION_KEY ) ) {
-				// looks to be possible fb connect cookie
-				String apiKey = name.substring( 0, name.length() - SUFF_SESSION_KEY_LENGTH );
-				FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
-				if ( appConf != null ) {
-					SortedMap<String,String> cookies = null;
-					cookies = pulloutFbConnectCookies( hcookies, apiKey );
-					cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, appConf.getSecret() );
-					if ( cookies != null ) {
-						FBWebSession session = new FBWebSession( appConf );
-						updateSessionFromCookies( cookies, session );
-						out.add( session );
+	public static Map<String,FBWebSession> attainFBWebSessions( FBAppConfs appConfs, HttpServletRequest httpRequest ) throws IOException, ServletException {
+		Map<String,FBWebSession> out = new HashMap<String,FBWebSession>();
+		{
+			Cookie[] hcookies = httpRequest.getCookies();
+			for ( Cookie cookie : hcookies ) {
+				final String name = cookie.getName();
+				if ( name.endsWith( SUFF_SESSION_KEY ) ) {
+					// looks to be possible fb connect cookie
+					String apiKey = name.substring( 0, name.length() - SUFF_SESSION_KEY_LENGTH );
+					FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
+					if ( appConf != null ) {
+						SortedMap<String,String> cookies = null;
+						cookies = pulloutFbConnectCookies( hcookies, apiKey );
+						cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, appConf.getSecret() );
+						if ( cookies != null ) {
+							FBWebSession session = new FBWebSession( appConf );
+							updateSessionFromCookies( cookies, session );
+							out.put( apiKey, session );
+						}
 					}
 				}
 			}
 		}
-		return null;
+		{
+			SortedMap<String,String> params = null;
+			params = FacebookSignatureUtil.pulloutFbSigParams( getRequestParameterMap( httpRequest ) );
+			String apiKey = params.get( "fb_sig_api_key" );
+			FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
+			if ( appConf != null ) {
+				params = FacebookSignatureUtil.getVerifiedParams( "fb_sig", params, appConf.getSecret() );
+				if ( params != null ) {
+					FBWebSession session = new FBWebSession( appConf );
+					updateSessionFromParams( params, session );
+					out.put( apiKey, session );
+				}
+			}
+		}
+		return out;
 	}
 
 	// ---- Helpers
@@ -133,6 +148,33 @@ public class FbWebHelper {
 		request.setInProfileTab( getFbParamBoolean( FacebookParam.IN_PROFILE_TAB, params ) );
 
 		if ( !request.isInProfileTab() ) {
+			sessionKey = getFbParam( FacebookParam.SESSION_KEY, params );
+			userId = getFbParamLong( FacebookParam.USER, params );
+			Long canvas_user = getFbParamLong( FacebookParam.CANVAS_USER, params );
+			if ( canvas_user != null ) {
+				userId = canvas_user;
+			}
+		} else {
+			sessionKey = getFbParam( FacebookParam.PROFILE_SESSION_KEY, params );
+			userId = getFbParamLong( FacebookParam.PROFILE_USER, params );
+		}
+		Date sessionExpires = getFbParamExpiresDate( FacebookParam.EXPIRES, params );
+		String sessionSecret = getFbParam( FacebookParam.SS, params );
+		boolean appUser = getFbParamBooleanN( FacebookParam.ADDED, params );
+
+		return session.update( sessionKey, sessionExpires, userId, sessionSecret, appUser );
+	}
+
+	public static boolean updateSessionFromParams( SortedMap<String,String> params, FBWebSession session ) {
+		if ( params == null || params.isEmpty() ) {
+			return false;
+		}
+
+		String sessionKey = session.getSessionKey();
+		Long userId = session.getUserId();
+
+		boolean inProfileTab = getFbParamBoolean( FacebookParam.IN_PROFILE_TAB, params );
+		if ( !inProfileTab ) {
 			sessionKey = getFbParam( FacebookParam.SESSION_KEY, params );
 			userId = getFbParamLong( FacebookParam.USER, params );
 			Long canvas_user = getFbParamLong( FacebookParam.CANVAS_USER, params );
