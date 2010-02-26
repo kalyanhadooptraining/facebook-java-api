@@ -545,7 +545,6 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload
 	 */
-
 	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
