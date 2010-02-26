@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 public class FBWebRequest {
 
+	private FBAppConf appConf;
 	private FBWebSession session;
 
 	private boolean valid;
@@ -15,7 +16,8 @@ public class FBWebRequest {
 	private boolean inIframe;
 	private boolean inProfileTab;
 
-	public FBWebRequest( FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies, boolean valid ) {
+	public FBWebRequest( FBAppConf appConf, FBWebSession session, SortedMap<String,String> params, SortedMap<String,String> cookies, boolean valid ) {
+		this.appConf = appConf;
 		this.session = session;
 		this.valid = valid;
 		this.params = params != null ? params : new TreeMap<String,String>();
@@ -60,6 +62,10 @@ public class FBWebRequest {
 
 	public void setInProfileTab( boolean inProfileTab ) {
 		this.inProfileTab = inProfileTab;
+	}
+
+	public FBAppConf getAppConf() {
+		return appConf;
 	}
 
 	public FBWebSession getSession() {

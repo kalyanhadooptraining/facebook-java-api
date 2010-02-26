@@ -1,7 +1,9 @@
 package com.google.code.facebookapi;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -54,14 +56,14 @@ public class FbWebHelper {
 
 		// if validParams, validCookies, validSession:: make sure apiKey matches all around
 
-		FBWebRequest request = new FBWebRequest( session, params, cookies, validParams || validCookies );
+		FBWebRequest request = new FBWebRequest( appConf, session, params, cookies, validParams || validCookies );
 
 		boolean updateSession = false;
 		if ( validParams ) {
 			updateSession = updateSession || updateRequestSessionFromParams( params, request, session );
 		}
 		if ( validCookies ) {
-			updateSession = updateSession || updateSessionFromCookies( apiKey, cookies, session );
+			updateSession = updateSession || updateSessionFromCookies( cookies, session );
 		}
 		if ( updateSession ) {
 			httpSession.setAttribute( skey, session );
@@ -73,6 +75,33 @@ public class FbWebHelper {
 		}
 
 		return request;
+	}
+
+	private static final String SUFF_SESSION_KEY = "_session_key";
+	private static final int SUFF_SESSION_KEY_LENGTH = SUFF_SESSION_KEY.length();
+
+	public static List<FBWebSession> attainFBWebSessions( FBAppConfs appConfs, HttpServletRequest httpRequest ) throws IOException, ServletException {
+		List<FBWebSession> out = new ArrayList<FBWebSession>();
+		Cookie[] hcookies = httpRequest.getCookies();
+		for ( Cookie cookie : hcookies ) {
+			final String name = cookie.getName();
+			if ( name.endsWith( SUFF_SESSION_KEY ) ) {
+				// looks to be possible fb connect cookie
+				String apiKey = name.substring( 0, name.length() - SUFF_SESSION_KEY_LENGTH );
+				FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
+				if ( appConf != null ) {
+					SortedMap<String,String> cookies = null;
+					cookies = pulloutFbConnectCookies( hcookies, apiKey );
+					cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, appConf.getSecret() );
+					if ( cookies != null ) {
+						FBWebSession session = new FBWebSession( appConf );
+						updateSessionFromCookies( cookies, session );
+						out.add( session );
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	// ---- Helpers
@@ -106,16 +135,17 @@ public class FbWebHelper {
 		return session.update( sessionKey, sessionExpires, userId, sessionSecret, appUser );
 	}
 
-	public static boolean updateSessionFromCookies( String apiKey, SortedMap<String,String> cookies, FBWebSession session ) {
+	public static boolean updateSessionFromCookies( SortedMap<String,String> cookies, FBWebSession session ) {
 		if ( cookies == null || cookies.isEmpty() ) {
 			return false;
 		}
+		String apiKey = session.getAppConf().getApiKey();
 		String sessionKey = cookies.get( apiKey + "_session_key" );
 		Date sessionExpires = toExpiresDate( cookies.get( apiKey + "_expires" ) );
 		Long userId = toLong( cookies.get( apiKey + "_user" ) );
 		String sessionSecret = cookies.get( apiKey + "_ss" );
 
-		return session.update( sessionKey, sessionExpires, userId, sessionSecret, null );
+		return session.update( sessionKey, sessionExpires, userId, sessionSecret, true );
 	}
 
 	@SuppressWarnings("unchecked")
