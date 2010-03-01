@@ -53,6 +53,8 @@ public class FbWebHelper {
 		if ( session == null ) {
 			session = new FBWebSession( appConf );
 			httpSession.setAttribute( skey, session );
+		} else {
+			// FIXME: do we have to fix/set up the deserialized session.appConf object
 		}
 
 		// if validParams, validCookies, validSession:: make sure apiKey matches all around
