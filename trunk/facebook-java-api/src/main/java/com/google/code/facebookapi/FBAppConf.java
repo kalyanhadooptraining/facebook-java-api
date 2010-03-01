@@ -1,6 +1,8 @@
 package com.google.code.facebookapi;
 
-public interface FBAppConf {
+import java.io.Serializable;
+
+public interface FBAppConf extends Serializable {
 
 	public String getAppId();
 

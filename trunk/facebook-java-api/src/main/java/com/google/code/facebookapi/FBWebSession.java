@@ -1,12 +1,13 @@
 package com.google.code.facebookapi;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class FBWebSession {
+public class FBWebSession implements Serializable {
 
 	private FBAppConf appConf;
 	private String sessionKey;
