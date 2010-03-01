@@ -32,6 +32,7 @@ import com.google.code.facebookapi.schema.FbmlGetCustomTagsResponse;
 import com.google.code.facebookapi.schema.FriendsAreFriendsResponse;
 import com.google.code.facebookapi.schema.FriendsGetAppUsersResponse;
 import com.google.code.facebookapi.schema.FriendsGetListsResponse;
+import com.google.code.facebookapi.schema.FriendsGetMutualFriendsResponse;
 import com.google.code.facebookapi.schema.FriendsGetResponse;
 import com.google.code.facebookapi.schema.GroupsGetResponse;
 import com.google.code.facebookapi.schema.PagesGetInfoResponse;
@@ -529,6 +530,14 @@ public interface IFacebookRestClient<T> {
 	public T friends_get( Long uid ) throws FacebookException;
 
 	/**
+	 * Retrieves the friends of the currently logged in user, who are also users of the calling application.
+	 * 
+	 * @return array of friends
+	 */
+	@FacebookReturnType(JAXB = FriendsGetAppUsersResponse.class, JSON = JSONArray.class)
+	public T friends_getAppUsers() throws FacebookException;
+
+	/**
 	 * Retrieves the friends of the currently logged in user that are members of the friends list with ID <code>friendListId</code>.
 	 * 
 	 * @param friendListId
@@ -547,12 +556,23 @@ public interface IFacebookRestClient<T> {
 	public T friends_getLists() throws FacebookException;
 
 	/**
-	 * Retrieves the friends of the currently logged in user, who are also users of the calling application.
+	 * Returns the Facebook user IDs of the mutual friends between the source user and target user. For the source user, you can either specify the source's user ID (the
+	 * source_id) or use the session key of the logged-in user, but not specify both.
 	 * 
-	 * @return array of friends
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.getMutualFriends
 	 */
-	@FacebookReturnType(JAXB = FriendsGetAppUsersResponse.class, JSON = JSONArray.class)
-	public T friends_getAppUsers() throws FacebookException;
+	@FacebookReturnType(JAXB = FriendsGetMutualFriendsResponse.class, JSON = JSONArray.class)
+	public T friends_getMutualFriends( Long targetId ) throws FacebookException;
+
+	/**
+	 * Returns the Facebook user IDs of the mutual friends between the source user and target user. For the source user, you can either specify the source's user ID (the
+	 * source_id) or use the session key of the logged-in user, but not specify both.
+	 * 
+	 * @see http://wiki.developers.facebook.com/index.php/Friends.getMutualFriends
+	 */
+	@FacebookReturnType(JAXB = FriendsGetMutualFriendsResponse.class, JSON = JSONArray.class)
+	public T friends_getMutualFriends( Long sourceId, Long targetId ) throws FacebookException;
+
 
 	/**
 	 * Retrieves the requested info fields for the requested set of users.
