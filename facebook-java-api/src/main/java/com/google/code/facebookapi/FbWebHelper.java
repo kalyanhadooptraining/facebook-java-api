@@ -3,9 +3,12 @@ package com.google.code.facebookapi;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -76,9 +79,6 @@ public class FbWebHelper {
 		return request;
 	}
 
-	private static final String SUFF_SESSION_KEY = "_session_key";
-	private static final int SUFF_SESSION_KEY_LENGTH = SUFF_SESSION_KEY.length();
-
 	public static FBWebSession attainFBWebSession( FBAppConf appConf, HttpServletRequest httpRequest ) throws IOException, ServletException {
 		final String apiKey = appConf.getApiKey();
 		final String secret = appConf.getSecret();
@@ -98,22 +98,16 @@ public class FbWebHelper {
 		Map<String,FBWebSession> out = new HashMap<String,FBWebSession>();
 		{
 			Cookie[] hcookies = httpRequest.getCookies();
-			for ( Cookie cookie : hcookies ) {
-				final String name = cookie.getName();
-				if ( name.endsWith( SUFF_SESSION_KEY ) ) {
-					// looks to be possible fb connect cookie
-					String apiKey = name.substring( 0, name.length() - SUFF_SESSION_KEY_LENGTH );
-					FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
-					if ( appConf != null ) {
-						SortedMap<String,String> cookies = null;
-						cookies = pulloutFbConnectCookies( hcookies, apiKey );
-						cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, appConf.getSecret() );
-						if ( cookies != null ) {
-							FBWebSession session = new FBWebSession( appConf );
-							updateSessionFromCookies( cookies, session );
-							out.put( apiKey, session );
-						}
-					}
+			Map<String,SortedMap<String,String>> cookiesMap = pulloutFbConnectCookies( hcookies, appConfs );
+			for ( Entry<String,SortedMap<String,String>> entry : cookiesMap.entrySet() ) {
+				String apiKey = entry.getKey();
+				SortedMap<String,String> cookies = entry.getValue();
+				FBAppConf appConf = appConfs.getConfByApiKey( apiKey );
+				cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, appConf.getSecret() );
+				if ( cookies != null ) {
+					FBWebSession session = new FBWebSession( appConf );
+					updateSessionFromCookies( cookies, session );
+					out.put( apiKey, session );
 				}
 			}
 		}
@@ -125,7 +119,10 @@ public class FbWebHelper {
 			if ( appConf != null ) {
 				params = FacebookSignatureUtil.getVerifiedParams( "fb_sig", params, appConf.getSecret() );
 				if ( params != null ) {
-					FBWebSession session = new FBWebSession( appConf );
+					FBWebSession session = out.get( apiKey );
+					if ( session == null ) {
+						session = new FBWebSession( appConf );
+					}
 					updateSessionFromParams( params, session );
 					out.put( apiKey, session );
 				}
@@ -216,6 +213,28 @@ public class FbWebHelper {
 			String key = cookie.getName();
 			if ( key.startsWith( apiKey ) ) {
 				out.put( key, cookie.getValue() );
+			}
+		}
+		return out;
+	}
+
+	public static Map<String,SortedMap<String,String>> pulloutFbConnectCookies( Cookie[] cookies, FBAppConfs appConfs ) {
+		Map<String,SortedMap<String,String>> out = new HashMap<String,SortedMap<String,String>>();
+		Set<String> existsSet = new HashSet<String>();
+		for ( Cookie cookie : cookies ) {
+			String key = cookie.getName();
+			String[] split = key.split( "_" );
+			if ( split.length == 1 || split.length == 2 ) {
+				String apiKey = split[0];
+				if ( existsSet.contains( apiKey ) || appConfs.hasConfByApiKey( apiKey ) ) {
+					existsSet.add( apiKey );
+					SortedMap<String,String> vals = out.get( apiKey );
+					if ( vals == null ) {
+						vals = new TreeMap<String,String>();
+						out.put( apiKey, vals );
+					}
+					vals.put( key, cookie.getValue() );
+				}
 			}
 		}
 		return out;
