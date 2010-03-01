@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+	  <groupId>com.google.code.facebookapi</groupId>
+	  <artifactId>parent-pom</artifactId>
+	  <version>3.0.3</version>
+	  <relativePath>../pom.xml</relativePath>
+	</parent>
+	<groupId>com.google.code.facebookapi</groupId>
+	<artifactId>facebook-java-api-annotation-processor</artifactId>
+	<version>3.0.3</version>
+	<packaging>jar</packaging>
+	<name>Facebook Java Library - Annotations Processor</name>
+	<description>Annotations Processor used to auto generate code.</description>
+	
+	<scm>
+	  <url>https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</url>
+	  <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</connection>
+	  <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</developerConnection>
+	</scm>
+
+	<profiles>
+
+      <!-- This line doesn't work on a Mac: <systemPath>${java.home}/../lib/tools.jar</systemPath> -->
+      <!-- <systemPath>${java.home}/../Classes/classes.jar</systemPath> -->
+	  <profile>
+	    <activation>
+              <property>
+		<name>java.vendor</name>
+		<value>Sun Microsystems Inc.</value>
+              </property>
+	    </activation>
+	    <dependencies>
+	      <dependency>
+		<groupId>java</groupId>
+		<artifactId>tools</artifactId>
+		<version>1.5.0</version>
+		<scope>system</scope>
+		<systemPath>${java.home}/../lib/tools.jar</systemPath>
+	      </dependency>
+	    </dependencies>
+	  </profile>
+	</profiles>
+
+</project>

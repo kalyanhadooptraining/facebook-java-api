@@ -1,0 +1,164 @@
+--- facebook.xsd	2009-11-18 00:14:07.000000000 -0800
++++ src/main/resources/schema.xsd	2009-11-18 00:13:01.000000000 -0800
+@@ -277,11 +277,19 @@
+     <xsd:element name="update_time" type="time" />
+     <xsd:element name="location" type="xsd:string" />
+     <xsd:element name="venue" type="location" />
+-    <xsd:element name="privacy" type="xsd:string" />
++    <xsd:element name="privacy" type="privacy" />
+     <xsd:element name="hide_guest_list" type="xsd:boolean" />
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<xsd:simpleType name="privacy">
++  <xsd:restriction base="xsd:string">
++    <xsd:enumeration value="OPEN"/>
++    <xsd:enumeration value="CLOSED"/>
++    <xsd:enumeration value="SECRET"/>
++  </xsd:restriction>
++</xsd:simpleType>
++
+ <xsd:complexType name="event_member">
+   <xsd:sequence>
+     <xsd:element name="uid" type="uid" />
+@@ -307,7 +315,7 @@
+     <xsd:element name="office" type="xsd:string" />
+     <xsd:element name="website" type="xsd:string" />
+     <xsd:element name="venue" type="location" />
+-    <xsd:element name="privacy" type="xsd:string" />
++    <xsd:element name="privacy" type="privacy" />
+   </xsd:sequence>
+ </xsd:complexType>
+ 
+@@ -478,10 +486,20 @@
+     <xsd:element name="location" type="xsd:string" />
+     <xsd:element name="link" type="xsd:string" />
+     <xsd:element name="size" type="xsd:int" />
+-    <xsd:element name="visible" type="xsd:string" />
++    <xsd:element name="visible" type="visible" minOccurs="0"/>
+   </xsd:sequence>
+ </xsd:complexType>
+ 
++<xsd:simpleType name="visible">
++  <xsd:restriction base="xsd:string">
++    <xsd:enumeration value="friends"/>
++    <xsd:enumeration value="friends-of-friends"/>
++    <xsd:enumeration value="networks"/>
++    <xsd:enumeration value="everyone"/>
++    <xsd:enumeration value="custom"/>
++  </xsd:restriction>
++</xsd:simpleType>
++
+ <xsd:complexType name="video">
+   <xsd:sequence>
+     <xsd:element name="vid" type="vid" />
+@@ -595,10 +613,14 @@
+     <xsd:element name="name" type="xsd:string" minOccurs="0" />
+     <xsd:element name="notes_count" type="xsd:int" minOccurs="0" nillable="true" />
+     <xsd:element name="pic" type="xsd:string" minOccurs="0" nillable="true" />
++    <xsd:element name="pic_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="pic_big" type="xsd:string" minOccurs="0" nillable="true" />
++    <xsd:element name="pic_big_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="pic_small" type="xsd:string" minOccurs="0" nillable="true" />
++    <xsd:element name="pic_small_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="political" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="profile_update_time" type="time" minOccurs="0" nillable="true" />
++    <xsd:element name="profile_url" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="quotes" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="relationship_status" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="religion" type="xsd:string" minOccurs="0" nillable="true" />
+@@ -618,6 +640,7 @@
+       </xsd:complexType>
+     </xsd:element>
+     <xsd:element name="pic_square" type="xsd:string" minOccurs="0" nillable="true" />
++    <xsd:element name="pic_square_with_logo" type="xsd:string" minOccurs="0" nillable="true" />
+     <xsd:element name="has_added_app" type="xsd:boolean" minOccurs="0" nillable="true" />
+     <xsd:element name="email_hashes" minOccurs="0" nillable="true">
+       <xsd:complexType>
+@@ -862,30 +885,6 @@
+   </xsd:sequence>
+ </xsd:complexType>
+ 
+-<xsd:complexType name="app_info">
+-  <xsd:sequence>
+-    <xsd:element name="app_id" type="xsd:long" />
+-    <xsd:element name="api_key" type="xsd:string" />
+-    <xsd:element name="canvas_name" type="xsd:string" />
+-    <xsd:element name="display_name" type="xsd:string" />
+-    <xsd:element name="icon_url" type="xsd:string" />
+-    <xsd:element name="logo_url" type="xsd:string" />
+-    <xsd:element name="developers">
+-      <xsd:complexType>
+-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+-          <xsd:element name="developer_info" type="developer_info" minOccurs="0" maxOccurs="unbounded" />
+-        </xsd:sequence>
+-        <xsd:attribute name="list" type="xsd:boolean" />
+-      </xsd:complexType>
+-    </xsd:element>
+-    <xsd:element name="company_name" type="xsd:string" />
+-    <xsd:element name="description" type="xsd:string" />
+-    <xsd:element name="daily_active_users" type="xsd:int" />
+-    <xsd:element name="weekly_active_users" type="xsd:int" />
+-    <xsd:element name="monthly_active_users" type="xsd:int" />
+-  </xsd:sequence>
+-</xsd:complexType>
+-
+ <xsd:complexType name="note">
+   <xsd:sequence>
+     <xsd:element name="note_id" type="note_id" />
+@@ -1333,7 +1332,11 @@
+ </xsd:element>
+ 
+ <xsd:element name="fql_query_response">
+-  <xsd:complexType />
++  <xsd:complexType>
++    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++      <xsd:any />
++    </xsd:sequence>
++  </xsd:complexType>
+ </xsd:element>
+ 
+ <xsd:element name="batch_run_response">
+@@ -1430,7 +1433,7 @@
+ <xsd:element name="users_getStandardInfo_response">
+   <xsd:complexType>
+     <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+-      <xsd:element name="user" type="user" minOccurs="0" maxOccurs="unbounded" />
++      <xsd:element name="standard_user_info" type="user" minOccurs="0" maxOccurs="unbounded" />
+     </xsd:sequence>
+     <xsd:attribute name="list" type="xsd:boolean" />
+   </xsd:complexType>
+@@ -1603,7 +1606,32 @@
+ 
+ <xsd:element name="admin_getAllocation_response" type="xsd:int" />
+ 
+-<xsd:element name="application_getPublicInfo_response" type="app_info" />
++<xsd:element name="application_getPublicInfo_response">
++  <xsd:complexType>
++    <xsd:sequence>
++      <xsd:element name="app_id" type="xsd:long" />
++      <xsd:element name="api_key" type="xsd:string" />
++      <xsd:element name="canvas_name" type="xsd:string" />
++      <xsd:element name="display_name" type="xsd:string" />
++      <xsd:element name="icon_url" type="xsd:string" />
++      <xsd:element name="logo_url" type="xsd:string" />
++      <xsd:element name="developers">
++        <xsd:complexType>
++          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
++            <xsd:element name="developer_info" type="developer_info" minOccurs="0" maxOccurs="unbounded" />
++          </xsd:sequence>
++          <xsd:attribute name="list" type="xsd:boolean" />
++        </xsd:complexType>
++      </xsd:element>
++      <xsd:element name="company_name" type="xsd:string" />
++      <xsd:element name="description" type="xsd:string" />
++      <xsd:element name="daily_active_users" type="xsd:int" />
++      <xsd:element name="weekly_active_users" type="xsd:int" />
++      <xsd:element name="monthly_active_users" type="xsd:int" />
++      <xsd:element name="daily_active_percentage" type="xsd:int" />
++    </xsd:sequence>
++  </xsd:complexType>
++</xsd:element>
+ 
+ <xsd:element name="feed_registerTemplateBundle_response" type="tbid" />
+ 
