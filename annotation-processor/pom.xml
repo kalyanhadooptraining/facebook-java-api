@@ -4,20 +4,20 @@
 	<parent>
 	  <groupId>com.google.code.facebookapi</groupId>
 	  <artifactId>parent-pom</artifactId>
-	  <version>3.0.3-SNAPSHOT</version>
+	  <version>3.0.3</version>
 	  <relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>com.google.code.facebookapi</groupId>
 	<artifactId>facebook-java-api-annotation-processor</artifactId>
-	<version>3.0.3-SNAPSHOT</version>
+	<version>3.0.3</version>
 	<packaging>jar</packaging>
 	<name>Facebook Java Library - Annotations Processor</name>
 	<description>Annotations Processor used to auto generate code.</description>
 	
 	<scm>
-	  <url>https://facebook-java-api.googlecode.com/svn/trunk/annotation-processor</url>
-	  <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/annotation-processor</connection>
-	  <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/annotation-processor</developerConnection>
+	  <url>https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</url>
+	  <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</connection>
+	  <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.3/annotation-processor</developerConnection>
 	</scm>
 
 	<profiles>
