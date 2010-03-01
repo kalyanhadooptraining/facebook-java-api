@@ -22,7 +22,7 @@ public class FBWebFilter implements Filter {
 	// jsessionid has to be same on fbml and browser
 
 	private FBAppConf appConf;
-	private boolean noCookies;
+	private boolean ignoreCookies;
 
 	public void init( FilterConfig filterConfig ) throws ServletException {
 		if ( appConf == null ) {
@@ -31,13 +31,13 @@ public class FBWebFilter implements Filter {
 			String secret = filterConfig.getInitParameter( "secret" );
 			appConf = new FBAppConfBean( appId, apiKey, secret );
 		}
-		noCookies = BooleanUtils.toBoolean( filterConfig.getInitParameter( "noCookies" ) );
+		ignoreCookies = BooleanUtils.toBoolean( filterConfig.getInitParameter( "ignoreCookies" ) );
 		init();
 	}
 
 	public void init( FBAppConf appConf, boolean noCookies ) {
 		this.appConf = appConf;
-		this.noCookies = noCookies;
+		this.ignoreCookies = noCookies;
 		init();
 	}
 
@@ -58,11 +58,9 @@ public class FBWebFilter implements Filter {
 	}
 
 	public void doFilter( HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain ) throws IOException, ServletException {
-		String skey = "fbses";
 		String rkey = "fbreq";
-		FBWebRequest request = FbWebHelper.attainFBWebRequest( appConf, noCookies, skey, httpRequest );
+		FBWebRequest request = FbWebHelper.attainFBWebRequest( appConf, ignoreCookies, httpRequest );
 		httpRequest.setAttribute( rkey, request );
-		httpRequest.setAttribute( skey, request.getSession() );
 		chain.doFilter( httpRequest, httpResponse );
 	}
 
@@ -76,12 +74,12 @@ public class FBWebFilter implements Filter {
 		this.appConf = appConf;
 	}
 
-	public boolean isNoCookies() {
-		return noCookies;
+	public boolean isIgnoreCookies() {
+		return ignoreCookies;
 	}
 
-	public void setNoCookies( boolean noCookies ) {
-		this.noCookies = noCookies;
+	public void setIgnoreCookies( boolean noCookies ) {
+		this.ignoreCookies = noCookies;
 	}
 
 }

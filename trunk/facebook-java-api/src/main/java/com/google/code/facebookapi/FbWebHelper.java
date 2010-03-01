@@ -20,13 +20,11 @@ import javax.servlet.http.HttpSession;
  */
 public class FbWebHelper {
 
-	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, String skey, HttpServletRequest httpRequest ) throws IOException, ServletException {
-		boolean noCookies = false;
-		return attainFBWebRequest( appConf, noCookies, skey, httpRequest );
+	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, HttpServletRequest httpRequest ) throws IOException, ServletException {
+		return attainFBWebRequest( appConf, false, httpRequest );
 	}
 
-	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, boolean noCookies, String skey, HttpServletRequest httpRequest ) throws IOException,
-			ServletException {
+	public static FBWebRequest attainFBWebRequest( FBAppConf appConf, boolean ignoreCookies, HttpServletRequest httpRequest ) throws IOException, ServletException {
 		HttpSession httpSession = httpRequest.getSession();
 		String apiKey = appConf.getApiKey();
 		String secret = appConf.getSecret();
@@ -43,13 +41,14 @@ public class FbWebHelper {
 
 		// FB CONNECT COOKIES
 		SortedMap<String,String> cookies = null;
-		if ( !noCookies ) {
+		if ( !ignoreCookies ) {
 			cookies = pulloutFbConnectCookies( httpRequest.getCookies(), apiKey );
 			cookies = FacebookSignatureUtil.getVerifiedParams( apiKey, cookies, secret );
 		}
 		boolean validCookies = ( cookies != null );
 
 		// PREVIOUSLY STORED SESSION
+		String skey = "fbsess_" + apiKey;
 		FBWebSession session = (FBWebSession) httpSession.getAttribute( skey );
 		if ( session == null ) {
 			session = new FBWebSession( appConf );
@@ -71,10 +70,10 @@ public class FbWebHelper {
 			httpSession.setAttribute( skey, session );
 		}
 
-		boolean updateCookies = !noCookies && validParams && !validCookies;
-		if ( updateCookies ) {
-			// TODO: update cookies in http response
-		}
+		// TODO: update cookies in http response
+		// boolean updateCookies = !ignoreCookies && validParams && session.getSessionSecret() != null;
+		// if ( updateCookies ) {
+		// }
 
 		return request;
 	}
