@@ -71,13 +71,6 @@
 			<version>6.1.21</version>
 			<scope>test</scope>
 		</dependency>
-		<!--
-			Compile-time Annotation processor shouldn't end up on runtime classpath. Java 6 annotation provider ready for when we move exclusively to Java 6.
-		-->
-		<!--
-			<dependency> <groupId>com.google.code.facebookapi</groupId> <artifactId>facebook-api-annotation-6-processor</artifactId> <version>1.0</version>
-			<scope>provided</scope> </dependency>
-		-->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -106,7 +99,7 @@
 			<groupId>com.google.code.facebookapi</groupId>
 			<artifactId>facebook-java-api-annotation-processor</artifactId>
 			<version>3.0.4-SNAPSHOT</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
