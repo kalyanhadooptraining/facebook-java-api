@@ -1,0 +1,12 @@
+#summary Describing how to build this project from source
+#labels Phase-Implementation
+
+= Caveat =
+
+The old BuildCodeInEclipse page is now old.  So I am trying to create new instructions here, but this is a work in progress.  So please bear with me.
+
+= Introduction =
+
+The first thing to recognize is that this is a project that is built using Maven, and leverages Maven's Dependency management.  I highly recommend Maven.  Also Maven Central Repository is becoming a large place to easily find dependent libraries and lots of good meta-data; that is why I think that every Java developer has to become familiar with it, if not actively use it.
+
+If you're familiar with Maven, have at the project, if you're not familiar with Maven, we'll give you a few pointers to get you started using our code, but recommend that you go and learn about Maven fully.
