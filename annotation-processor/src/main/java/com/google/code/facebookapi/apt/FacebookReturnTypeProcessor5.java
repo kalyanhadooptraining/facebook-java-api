@@ -24,10 +24,6 @@ import com.sun.mirror.util.SimpleDeclarationVisitor;
 @SuppressWarnings("restriction")
 public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 
-	private PrintWriter outJAXB;
-	private PrintWriter outJSON;
-	private PrintWriter outXML;
-
 	private AnnotationProcessorEnvironment processingEnv;
 
 	public FacebookReturnTypeProcessor5( AnnotationProcessorEnvironment processingEnv ) {
@@ -216,84 +212,63 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 		return paramListCode;
 	}
 
-	private static void writeHeader( PrintWriter out, String classNamePart ) {
-		out.println( "package com.google.code.facebookapi;" );
-		out.println();
-
-		if ( classNamePart.equals( "Jaxb" ) ) {
-			out.println( "@SuppressWarnings(\"unchecked\")" );
-		}
-		out.println( "public class Facebook" + classNamePart + "RestClient extends Facebook" + classNamePart + "RestClientBase {" );
-		out.println();
-	}
-
 	public void process() {
-		// DateFormat isoDateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.mmmZ" );
-		// String now = isoDateFormat.format( new Date() );
+		PrintWriter outJAXB = openClassFile( "Jaxb" );
+		PrintWriter outJSON = openClassFile( "Json" );
+		PrintWriter outXML = openClassFile( "Xml" );
 
-		try {
-			outJAXB = processingEnv.getFiler().createSourceFile( "com.google.code.facebookapi.FacebookJaxbRestClient" );
-			outJSON = processingEnv.getFiler().createSourceFile( "com.google.code.facebookapi.FacebookJsonRestClient" );
-			outXML = processingEnv.getFiler().createSourceFile( "com.google.code.facebookapi.FacebookXmlRestClient" );
-		}
-		catch ( IOException ex ) {
-			System.out.println( "Ignoring second attempt to process annotations" );
+		if ( outJAXB == null && outJSON == null && outXML == null ) {
 			return;
 		}
 
-		writeHeader( outJAXB, "Jaxb" );
-		writeHeader( outJSON, "Json" );
-		writeHeader( outXML, "Xml" );
-
-		CopyConstructorVisitor copyConstructorsJaxb = new CopyConstructorVisitor( "Jaxb", outJAXB );
-		CopyConstructorVisitor copyConstructorsJson = new CopyConstructorVisitor( "Json", outJSON );
-		CopyConstructorVisitor copyConstructorsXml = new CopyConstructorVisitor( "Xml", outXML );
-
-		ClassDeclaration jaxbClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJaxbRestClientBase" );
-		for ( ConstructorDeclaration cd : jaxbClientBase.getConstructors() ) {
-			cd.accept( copyConstructorsJaxb );
-		}
-
-		ClassDeclaration jsonClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookJsonRestClientBase" );
-		for ( ConstructorDeclaration cd : jsonClientBase.getConstructors() ) {
-			cd.accept( copyConstructorsJson );
-		}
-
-		ClassDeclaration xmlClientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookXmlRestClientBase" );
-		for ( ConstructorDeclaration cd : xmlClientBase.getConstructors() ) {
-			cd.accept( copyConstructorsXml );
-		}
-
+		final AnnotationTypeDeclaration annotationType = (AnnotationTypeDeclaration) processingEnv.getTypeDeclaration( "com.google.code.facebookapi.FacebookReturnType" );
+		Collection<Declaration> elements = processingEnv.getDeclarationsAnnotatedWith( annotationType );
 
 		AnnotationVisitor visitor = new AnnotationVisitor( outJAXB, outJSON, outXML );
-
-		Collection<Declaration> elements = processingEnv.getDeclarationsAnnotatedWith( (AnnotationTypeDeclaration) processingEnv
-				.getTypeDeclaration( "com.google.code.facebookapi.FacebookReturnType" ) );
-
 		for ( Declaration element : elements ) {
 			element.accept( visitor );
 		}
 
-		outJAXB.println( "}" );
-		outJAXB.flush();
-		outJAXB.close();
-
-		outJSON.println( "}" );
-		outJSON.flush();
-		outJSON.close();
-
-		outXML.println( "}" );
-		outXML.flush();
-		outXML.close();
+		closeClassFile( outJAXB );
+		closeClassFile( outJSON );
+		closeClassFile( outXML );
 	}
 
-	/**
-	 * These two lines are required to ensure that the object tree actually bothers to parse the method parameters. Otherwise they're empty for every method!
-	 * 
-	 * @param e
-	 */
-	private static void shakeEnclosingElementMethods( MethodDeclaration e ) {
-		e.getDeclaringType().getMethods();
+	private PrintWriter openClassFile( String type ) {
+		final String codepackage = "com.google.code.facebookapi";
+		final String mainClassName = "Facebook" + type + "RestClient";
+		final String baseClassName = mainClassName + "Base";
+		final String mainClass = codepackage + "." + mainClassName;
+		final String baseClass = codepackage + "." + baseClassName;
+		try {
+			PrintWriter out = processingEnv.getFiler().createSourceFile( mainClass );
+			out.println( String.format( "package %s;", codepackage ) );
+			out.println();
+			if ( type.equals( "Jaxb" ) ) {
+				out.println( "@SuppressWarnings(\"unchecked\")" );
+			}
+			out.println( String.format( "public class %s extends %s {", mainClassName, baseClassName ) );
+			out.println();
+			CopyConstructorVisitor copyConstructors = new CopyConstructorVisitor( type, out );
+			ClassDeclaration clientBase = (ClassDeclaration) processingEnv.getTypeDeclaration( baseClass );
+			for ( ConstructorDeclaration cd : clientBase.getConstructors() ) {
+				cd.accept( copyConstructors );
+			}
+			return out;
+		}
+		catch ( IOException ex ) {
+			System.err.println( "Ignoring IOException during: " + type + "; " + ex );
+			return null;
+		}
+	}
+
+	private void closeClassFile( PrintWriter out ) {
+		if ( out == null ) {
+			return;
+		}
+		out.println( "}" );
+		out.flush();
+		out.close();
 	}
 
 
@@ -308,6 +283,13 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			this.outJAXB = outJAXB;
 			this.outJSON = outJSON;
 			this.outXML = outXML;
+		}
+
+		/**
+		 * These two lines are required to ensure that the object tree actually bothers to parse the method parameters. Otherwise they're empty for every method!
+		 */
+		private static void shakeEnclosingElementMethods( MethodDeclaration e ) {
+			e.getDeclaringType().getMethods();
 		}
 
 		@Override
@@ -362,25 +344,29 @@ public class FacebookReturnTypeProcessor5 implements AnnotationProcessor {
 			printMethod( outJSON, jsonReturnType, deprecated, methSig, methCall, methRet2 );
 			printMethod( outXML, xmlReturnType, deprecated, methSig, methCall, methRet );
 		}
-	}
 
-	public static void printMethod( PrintWriter out, String returnType, boolean deprecated, String methSig, String methCall, String methRet ) {
-		if ( deprecated ) {
-			out.println( "    @Deprecated" );
+		public static void printMethod( PrintWriter out, String returnType, boolean deprecated, String methSig, String methCall, String methRet ) {
+			if ( out == null ) {
+				return;
+			}
+			if ( deprecated ) {
+				out.println( "    @Deprecated" );
+			}
+			out.println( methSig.replace( "%RETURNTYPE%", returnType ) );
+			out.println( methCall );
+			out.println( methRet.replace( "%RETURNTYPE%", returnType ) );
+			out.println( "    }" );
+			out.println();
 		}
-		out.println( methSig.replace( "%RETURNTYPE%", returnType ) );
-		out.println( methCall );
-		out.println( methRet.replace( "%RETURNTYPE%", returnType ) );
-		out.println( "    }" );
-		out.println();
-	}
 
-	public static String stripDotClass( String input ) {
-		if ( !input.endsWith( ".class" ) ) {
-			return input;
-		} else {
-			return input.substring( 0, input.length() - 6 );
+		public static String stripDotClass( String input ) {
+			if ( !input.endsWith( ".class" ) ) {
+				return input;
+			} else {
+				return input.substring( 0, input.length() - 6 );
+			}
 		}
+
 	}
 
 }
