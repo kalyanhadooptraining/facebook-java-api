@@ -1,4 +1,5 @@
 #summary Converting my application from the old Facebook Java API to the facebook-java API.
+#labels Deprecated
 
 by Marc Novakowski.
 
