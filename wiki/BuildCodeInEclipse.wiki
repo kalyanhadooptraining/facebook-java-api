@@ -1,4 +1,5 @@
 #summary How to check out, compile and run JUnit tests for the Java Facebook API.
+#labels Deprecated
 
 =Summary=
 
