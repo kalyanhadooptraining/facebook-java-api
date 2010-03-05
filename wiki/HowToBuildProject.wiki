@@ -1,5 +1,5 @@
 #summary Describing how to build this project from source
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 
 = Caveat =
 
