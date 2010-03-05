@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import com.sun.mirror.apt.AnnotationProcessor;
+import com.sun.mirror.apt.AnnotationProcessors;
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.apt.AnnotationProcessorFactory;
 import com.sun.mirror.declaration.AnnotationTypeDeclaration;
@@ -28,6 +29,9 @@ public class FacebookReturnTypeProcessorFactory5 implements AnnotationProcessorF
 	}
 
 	public AnnotationProcessor getProcessorFor( Set<AnnotationTypeDeclaration> atds, AnnotationProcessorEnvironment env ) {
+		if ( atds.isEmpty() ) {
+			return AnnotationProcessors.NO_OP;
+		}
 		return new FacebookReturnTypeProcessor5( env );
 	}
 
