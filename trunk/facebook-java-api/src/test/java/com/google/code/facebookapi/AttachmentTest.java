@@ -74,6 +74,7 @@ public class AttachmentTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testStreamPublishVideo() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
@@ -125,6 +126,7 @@ public class AttachmentTest {
 				"In Rainbows" );
 	}
 
+	@Deprecated
 	private AttachmentMediaVideo createMediaVideo() {
 		AttachmentMediaVideo mediaVideo = new AttachmentMediaVideo( "http://www.youtube.com/v/fzzjgBAaWZw&hl=en&fs=1",
 				"http://icanhascheezburger.files.wordpress.com/2009/04/funny-pictures-hairless-cat-phones-home.jpg", "kitty", "application/x-shockwave-flash",
