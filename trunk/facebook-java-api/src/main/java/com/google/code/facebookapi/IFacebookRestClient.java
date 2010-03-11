@@ -1210,7 +1210,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_getByAlbum( String albumId, Collection<String> photoIds ) throws FacebookException;
 
 	/**
@@ -1222,7 +1222,7 @@ public interface IFacebookRestClient<T> {
 	 * @see #photos_get(Integer, Long, Collection)
 	 * @see <a href="http://wiki.developers.facebook.com/index.php/Photos.get"> Developers Wiki: Photos.get</a>
 	 */
-	@FacebookReturnType(JAXBList = Photo.class, JSON = JSONArray.class)
+	@FacebookReturnType(JAXB = PhotosGetResponse.class, JSON = JSONArray.class)
 	public T photos_getByAlbum( String albumId ) throws FacebookException;
 
 	/**
