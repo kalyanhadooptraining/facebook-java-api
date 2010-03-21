@@ -73,13 +73,14 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<version>1.2.14</version>
 			<scope>test</scope>
+			<!--
+				Excluded packages which are not available on the main Maven repository because otherwise it's a pain, you have to download them and install
+				them to your local repository manually.
+			-->
+<!--
 			<exclusions>
-				<!--
-					Excluded packages which are not available on the main Maven repository because otherwise it's a pain, you have to download them and install them to your
-					local repository manually.
-				-->
 				<exclusion>
 					<groupId>javax.jms</groupId>
 					<artifactId>jms</artifactId>
@@ -92,7 +93,12 @@
 					<groupId>com.sun.jmx</groupId>
 					<artifactId>jmxri</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
 			</exclusions>
+-->
 		</dependency>
 	</dependencies>
 	<build>
