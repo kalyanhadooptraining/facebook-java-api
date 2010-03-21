@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class JUnitProperties {
 
-	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
+	protected static Log log = LogFactory.getLog( JUnitProperties.class );
 
 	private Properties properties = new Properties();
 
