@@ -9,13 +9,22 @@ import java.util.TreeMap;
 import junit.framework.Assert;
 
 import org.json.JSONException;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AttachmentTest {
 
+	private FacebookSessionTestUtils testUtils;
+
+	@Before
+	public void initTestUtils() {
+		testUtils = new FacebookSessionTestUtils();
+	}
+
 	@Test
 	public void testStreamPublishProperties() throws Exception {
-		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookJsonRestClient client = testUtils.getValidClient( FacebookJsonRestClient.class );
 		FacebookSessionTestUtils.requirePerm( Permission.PUBLISH_STREAM, client );
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
@@ -74,6 +83,7 @@ public class AttachmentTest {
 	}
 
 	@Test
+	@Ignore
 	@Deprecated
 	public void testStreamPublishVideo() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
