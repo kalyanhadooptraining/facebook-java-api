@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mortbay.jetty.Request;
@@ -27,19 +28,26 @@ import com.Ostermiller.util.Browser;
 
 public class FacebookSessionTestUtils {
 
-	protected static Logger logger = Logger.getLogger( FacebookSessionTestUtils.class );
+	protected static Log log = LogFactory.getLog( FacebookSessionTestUtils.class );
 
 	public static final String LOGIN_BASE_URL = "https://www.facebook.com/login.php";
 	public static final String PERM_BASE_URL = "http://www.facebook.com/connect/prompt_permissions.php";
 
-	public static final JUnitProperties junitProperties = new JUnitProperties();
+	public static JUnitProperties junitProperties;
+
+	public static JUnitProperties getJunitProperties() {
+		if ( junitProperties == null ) {
+			junitProperties = new JUnitProperties();
+		}
+		return junitProperties;
+	}
 
 	public static void clearSessions() throws IOException {
-		junitProperties.clearSessions();
+		getJunitProperties().clearSessions();
 	}
 
 	public static JSONObject attainSession() throws Exception {
-		JSONObject out = junitProperties.loadSession();
+		JSONObject out = getJunitProperties().loadSession();
 		if ( out == null ) {
 			out = attainSessionRaw2();
 			junitProperties.storeSession( out );
@@ -81,7 +89,7 @@ public class FacebookSessionTestUtils {
 	private static <T extends IFacebookRestClient> T getSessionlessIFacebookRestClient( Class<T> clientReturnType ) {
 		try {
 			Constructor<T> clientConstructor = clientReturnType.getConstructor( String.class, String.class );
-			return clientConstructor.newInstance( junitProperties.getAPIKEY(), junitProperties.getSECRET() );
+			return clientConstructor.newInstance( getJunitProperties().getAPIKEY(), getJunitProperties().getSECRET() );
 		}
 		catch ( Exception ex ) {
 			throw new RuntimeException( "Couldn't create relevant IFacebookRestClient using reflection", ex );
@@ -110,7 +118,7 @@ public class FacebookSessionTestUtils {
 	}
 
 	public static JSONObject attainSessionRaw2() throws Exception {
-		return attainSessionRaw2( junitProperties.getAPIKEY(), junitProperties.getSECRET(), 8080 );
+		return attainSessionRaw2( getJunitProperties().getAPIKEY(), getJunitProperties().getSECRET(), 8080 );
 	}
 
 	/**
@@ -126,7 +134,7 @@ public class FacebookSessionTestUtils {
 				// start jetty to capture return value from connect login
 				server = new Server( port );
 				server.setHandler( handler );
-				logger.info( "Starting Jetty" );
+				log.info( "Starting Jetty" );
 				server.start();
 			}
 			{
@@ -142,14 +150,14 @@ public class FacebookSessionTestUtils {
 				params.put( "cancel_url", "http://localhost:" + port + "/cancel" );
 				String query = BasicClientHelper.delimit( params.entrySet(), "&", "=", true ).toString();
 				String url = LOGIN_BASE_URL + "?" + query;
-				logger.info( "Sending user to attain session:\n" + url );
+				log.info( "Sending user to attain session:\n" + url );
 				Browser.init();
 				Browser.displayURL( url );
 			}
 			{
 				// wait until jetty handler receives reply and captures session
 				for ( int i = 1; i <= 12; i++ ) {
-					logger.debug( "Waiting for 5 sec (" + i + ")" );
+					log.debug( "Waiting for 5 sec (" + i + ")" );
 					if ( semaphore.tryAcquire( 5, TimeUnit.SECONDS ) ) {
 						Thread.sleep( 1000 );
 						break;
@@ -159,7 +167,7 @@ public class FacebookSessionTestUtils {
 		}
 		finally {
 			if ( server != null && ! ( server.isStopped() || server.isStopping() ) ) {
-				logger.info( "Stopping Jetty" );
+				log.info( "Stopping Jetty" );
 				server.stop();
 			}
 		}
@@ -187,17 +195,17 @@ public class FacebookSessionTestUtils {
 
 		@SuppressWarnings("unchecked")
 		public void handle( String target, HttpServletRequest request, HttpServletResponse response, int dispatch ) throws IOException, ServletException {
-			logger.debug( "handle(): " + request.getRequestURL() + printMap( request.getParameterMap() ) );
+			log.debug( "handle(): " + request.getRequestURL() + printMap( request.getParameterMap() ) );
 			try {
 				if ( target.equals( "/next" ) ) {
 					out = captureSession( request, apikey, secret );
 				}
 				if ( target.equals( "/cancel" ) ) {
-					logger.warn( "User cancelled" );
+					log.warn( "User cancelled" );
 					semaphore.release();
 				}
 				if ( target.equals( "/done" ) ) {
-					logger.warn( "User is done" );
+					log.warn( "User is done" );
 					semaphore.release();
 				}
 			}
@@ -217,7 +225,7 @@ public class FacebookSessionTestUtils {
 			out.put( "ss", out.getString( "secret" ) );
 			out.put( "secret", secret );
 			out.put( "api_key", apikey );
-			logger.debug( "session: " + out );
+			log.debug( "session: " + out );
 			return out;
 		}
 

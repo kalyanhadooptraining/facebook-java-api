@@ -8,13 +8,14 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JUnitProperties {
 
-	protected static Logger logger = Logger.getLogger( JUnitProperties.class );
+	protected static Log log = LogFactory.getLog( ExtensibleClient.class );
 
 	private Properties properties = new Properties();
 
@@ -72,7 +73,7 @@ public class JUnitProperties {
 	}
 
 	public void loadProperties() throws IOException {
-		logger.debug( "loadProperties()" );
+		log.debug( "loadProperties()" );
 		File file = getPropertiesFile();
 		FileInputStream in = new FileInputStream( file );
 		properties.clear();
@@ -80,7 +81,7 @@ public class JUnitProperties {
 	}
 
 	public void storeProperties() throws IOException {
-		logger.debug( "storeProperties()" );
+		log.debug( "storeProperties()" );
 		File file = getPropertiesFile();
 		FileOutputStream out = new FileOutputStream( file );
 		properties.store( out, null );
