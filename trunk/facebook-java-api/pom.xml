@@ -4,7 +4,6 @@
 		<groupId>com.google.code.facebookapi</groupId>
 		<artifactId>parent-pom</artifactId>
 		<version>3.0.4-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>com.google.code.facebookapi</groupId>
 	<artifactId>facebook-java-api</artifactId>
