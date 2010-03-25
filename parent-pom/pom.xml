@@ -87,23 +87,6 @@
       <uniqueVersion>true</uniqueVersion>
     </snapshotRepository>
   </distributionManagement>
-  <!-- "com.google.code.facebookapi","mrepo@mrepo.happyfern.com:/home/mrepo/mrepo.happyfern.com/maven2/","rsync_ssh","Fernando Padilla","fern@alum.mit.edu",, -->
-  <!--
-      <distributionManagement>
-	<downloadUrl>http://mrepo.happyfern.com/maven2/</downloadUrl>
-	<repository>
-	  <uniqueVersion>false</uniqueVersion>
-	  <id>mrepo-happyfern</id>
-	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2/</url>
-	</repository>
-	<snapshotRepository>
-	  <uniqueVersion>true</uniqueVersion>
-	  <id>mrepo-happyfern-snapshot</id>
-	  <url>sftp://mrepo.happyfern.com/home/mrepo/mrepo.happyfern.com/maven2-snapshot/</url>
-	</snapshotRepository>
-      </distributionManagement>
-      -->
-
   <dependencies>
     <dependency>
         <groupId>com.sun.xml.bind</groupId>
