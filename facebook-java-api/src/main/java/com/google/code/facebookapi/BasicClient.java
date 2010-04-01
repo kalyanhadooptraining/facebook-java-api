@@ -37,7 +37,6 @@ public class BasicClient {
 	protected String cacheSessionKey;
 	protected Long cacheSessionExpires;
 
-	protected String rawResponse;
 	protected boolean batchMode;
 
 	public boolean isBatchMode() {
@@ -55,10 +54,6 @@ public class BasicClient {
 
 	public boolean isDesktop() {
 		return _isDesktop;
-	}
-
-	public String getRawResponse() {
-		return rawResponse;
 	}
 
 
@@ -148,8 +143,6 @@ public class BasicClient {
 
 	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
 			throws FacebookException {
-		rawResponse = null;
-
 		SortedMap<String,String> params = new TreeMap<String,String>();
 
 		if ( permissionsApiKey != null ) {
@@ -207,8 +200,7 @@ public class BasicClient {
 
 		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
-			rawResponse = method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
-			return rawResponse;
+			return method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
 		}
 		catch ( IOException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
