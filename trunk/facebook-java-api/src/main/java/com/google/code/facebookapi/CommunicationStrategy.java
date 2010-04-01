@@ -3,7 +3,7 @@ package com.google.code.facebookapi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Interface for encapsulating network communication logic.
@@ -21,7 +21,7 @@ public interface CommunicationStrategy {
 	 * @throws IOException
 	 *             Thrown on any communication-related error.
 	 */
-	public String postRequest( URL serverUrl, Map<String,String> params ) throws IOException;
+	public String postRequest( URL serverUrl, SortedMap<String,String> params ) throws IOException;
 
 	/**
 	 * Helper function for posting a request that includes raw file data, such as file upload.
@@ -34,7 +34,7 @@ public interface CommunicationStrategy {
 	 * @param fileStream
 	 * @return an InputStream with the request response
 	 */
-	public String postRequest( URL serverUrl, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException;
+	public String postRequest( URL serverUrl, SortedMap<String,String> params, String fileName, InputStream fileStream ) throws IOException;
 
 	public int getConnectionTimeout();
 

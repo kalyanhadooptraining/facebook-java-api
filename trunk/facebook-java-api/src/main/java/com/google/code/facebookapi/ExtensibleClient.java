@@ -517,7 +517,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		}
 	}
 
-	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
+	private String postRequest( IFacebookMethod method, SortedMap<String,String> params, boolean doHttps ) throws IOException {
 		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
@@ -537,7 +537,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 	 * @return an InputStream with the request response
 	 * @see #photos_upload
 	 */
-	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
+	protected String postFileRequest( IFacebookMethod method, SortedMap<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
 		}
