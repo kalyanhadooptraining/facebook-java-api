@@ -21,6 +21,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
 		attachment.setProperties( createPropertiesList() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		// streamRemove( result.toString() );
@@ -33,6 +34,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish properties test.";
 		Attachment attachment = createAttachment();
 		attachment.setAdditionalInfo( createAdditionalInfoMap() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		streamRemove( result.toString() );
@@ -45,6 +47,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish image test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaImage() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		streamRemove( result.toString() );
@@ -57,6 +60,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish flash test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaFlash() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		streamRemove( result.toString() );
@@ -69,6 +73,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish mp3 test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaMP3() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		streamRemove( result.toString() );
@@ -83,6 +88,7 @@ public class AttachmentTest {
 		String message = "Facebook stream publish video test.";
 		Attachment attachment = createAttachment();
 		attachment.setMedia( createMediaVideo() );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		String result = client.stream_publish( message, attachment, null, null, null );
 		Assert.assertNotNull( result );
 		streamRemove( result.toString() );
@@ -145,6 +151,7 @@ public class AttachmentTest {
 	 */
 	private void streamRemove( final String postId ) throws IOException, FacebookException, JSONException {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_remove( postId, null );
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );

@@ -16,6 +16,7 @@ public class Issue208StreamAPITest {
 	public void testStreamGet() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		JSONObject result = (JSONObject) client.stream_get( null, null, null, null, null, null, null );
 
 		Assert.assertNotNull( result );
@@ -26,6 +27,7 @@ public class Issue208StreamAPITest {
 	public void testStreamGetLimit() throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		JSONObject result = (JSONObject) client.stream_get( null, null, null, null, 1, null, null );
 
 		Assert.assertNotNull( result );
@@ -39,6 +41,7 @@ public class Issue208StreamAPITest {
 		Date start = DateUtils.addDays( new Date(), -2 );
 		Date end = DateUtils.addDays( new Date(), -1 );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		JSONObject result = (JSONObject) client.stream_get( null, null, start, end, null, null, null );
 
 		Assert.assertNotNull( result );
@@ -52,6 +55,7 @@ public class Issue208StreamAPITest {
 		List<String> metadata = new ArrayList<String>( 1 );
 		metadata.add( "photo_tags" );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		JSONObject result = (JSONObject) client.stream_get( null, null, null, null, null, null, metadata );
 
 		Assert.assertNotNull( result );
@@ -65,6 +69,7 @@ public class Issue208StreamAPITest {
 		List<Long> sourceIds = new ArrayList<Long>( 1 );
 		sourceIds.add( client.users_getLoggedInUser() );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_get( null, sourceIds, null, null, null, null, null );
 
 		Assert.assertNotNull( result );
@@ -83,6 +88,7 @@ public class Issue208StreamAPITest {
 
 		String message = "Facebook stream publish test.";
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_publish( message, null, null, null, null );
 
 		Assert.assertNotNull( result );
@@ -94,6 +100,7 @@ public class Issue208StreamAPITest {
 	private void streamRemove( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_remove( postId, null );
 
 		Assert.assertNotNull( result );
@@ -113,6 +120,7 @@ public class Issue208StreamAPITest {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
 		String comment = "Unit test comment.";
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_addComment( postId, comment, null );
 
 		Assert.assertNotNull( result );
@@ -123,6 +131,7 @@ public class Issue208StreamAPITest {
 	private void streamGetComments( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_getComments( postId );
 
 		Assert.assertNotNull( result );
@@ -131,6 +140,7 @@ public class Issue208StreamAPITest {
 	private void streamRemoveComment( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_removeComment( postId, null );
 
 		Assert.assertNotNull( result );
@@ -158,6 +168,7 @@ public class Issue208StreamAPITest {
 	private void streamRemoveLike( final String postId ) throws Exception {
 		FacebookJsonRestClient client = FacebookSessionTestUtils.getValidClient( FacebookJsonRestClient.class );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_removeLike( postId, null );
 
 		Assert.assertNotNull( result );
@@ -171,6 +182,7 @@ public class Issue208StreamAPITest {
 		List<Long> sourceIds = new ArrayList<Long>( 1 );
 		sourceIds.add( client.users_getLoggedInUser() );
 
+		FacebookSessionTestUtils.pauseForStreamRate();
 		Object result = client.stream_getFilters( null );
 
 		Assert.assertNotNull( result );
