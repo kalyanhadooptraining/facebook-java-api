@@ -240,4 +240,13 @@ public class FacebookSessionTestUtils {
 
 	}
 
+	public static void pauseForStreamRate() {
+		try {
+			Thread.sleep( 6000 );
+		}
+		catch ( InterruptedException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+	}
+
 }
