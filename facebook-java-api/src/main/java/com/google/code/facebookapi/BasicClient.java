@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
- * Basic client taking care of rest call mechanics (signing, etc) to facebook. No api knowledge, nor response interpretation is planned.
+ * Basic client taking care of rest call mechanics (signing, etc) to facebook. Little api knowledge, no response interpretation is planned.
  */
 public class BasicClient {
 
