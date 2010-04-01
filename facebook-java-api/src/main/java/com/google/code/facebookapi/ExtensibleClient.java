@@ -522,7 +522,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
 		}
-		return getCommunicationStrategy().sendPostRequest( serverUrl, params );
+		return getCommunicationStrategy().postRequest( serverUrl, params );
 	}
 
 	/**
@@ -541,7 +541,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( log.isDebugEnabled() ) {
 			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
 		}
-		return getCommunicationStrategy().postFileRequest( _serverUrl, params, fileName, fileStream );
+		return getCommunicationStrategy().postRequest( _serverUrl, params, fileName, fileStream );
 	}
 
 	public boolean fbml_refreshRefUrl( URL url ) throws FacebookException {

@@ -235,18 +235,20 @@ public class BasicClient {
 		}
 
 		try {
+			// FIXME when to use https?
+			// when called from desktop, some methods require https
 			boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 			URL url = ( doHttps ) ? serverUrlHttps : serverUrl;
 			if ( fileCall ) {
 				if ( log.isDebugEnabled() ) {
 					log.debug( method.methodName() + ": POST-FILE: " + url.toString() + ": " + params );
 				}
-				return communicationStrategy.postFileRequest( url, params, fileName, fileStream );
+				return communicationStrategy.postRequest( url, params, fileName, fileStream );
 			} else {
 				if ( log.isDebugEnabled() ) {
 					log.debug( method.methodName() + ": POST: " + url.toString() + ": " + params );
 				}
-				return communicationStrategy.sendPostRequest( url, params );
+				return communicationStrategy.postRequest( url, params );
 			}
 		}
 		catch ( IOException ex ) {

@@ -21,7 +21,7 @@ public interface CommunicationStrategy {
 	 * @throws IOException
 	 *             Thrown on any communication-related error.
 	 */
-	String sendPostRequest( URL serverUrl, Map<String,String> params ) throws IOException;
+	public String postRequest( URL serverUrl, Map<String,String> params ) throws IOException;
 
 	/**
 	 * Helper function for posting a request that includes raw file data, such as file upload.
@@ -34,7 +34,7 @@ public interface CommunicationStrategy {
 	 * @param fileStream
 	 * @return an InputStream with the request response
 	 */
-	String postFileRequest( URL serverUrl, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException;
+	public String postRequest( URL serverUrl, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException;
 
 	public int getConnectionTimeout();
 
