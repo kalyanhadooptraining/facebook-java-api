@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Basic client taking care of rest call mechanics (signing, etc) to facebook. No api knowledge, nor response interpretation is planned.
@@ -27,12 +27,13 @@ public class BasicClient {
 	protected static final String PREF = "--";
 	protected static final int UPLOAD_BUFFER_SIZE = 1024;
 
-	protected URL _serverUrl;
-	private CommunicationStrategy _communicationStrategy;
+	protected URL serverUrl;
+	protected URL serverUrlHttps;
+	private CommunicationStrategy communicationStrategy;
 
-	protected final String _apiKey;
-	protected final String _secret;
-	protected boolean _isDesktop;
+	protected final String apiKey;
+	protected final String secret;
+	protected boolean isSessionSecret;
 
 	protected String cacheSessionKey;
 	protected Long cacheSessionExpires;
@@ -52,8 +53,8 @@ public class BasicClient {
 	protected String permissionsApiKey = null;
 
 
-	public boolean isDesktop() {
-		return _isDesktop;
+	public boolean isSessionSecret() {
+		return isSessionSecret;
 	}
 
 
@@ -65,28 +66,30 @@ public class BasicClient {
 	}
 
 	protected BasicClient( String apiKey, String secret, String sessionKey ) {
-		this( null, apiKey, secret, sessionKey, new DefaultCommunicationStrategy() );
+		this( null, null, apiKey, secret, sessionKey, new DefaultCommunicationStrategy() );
 	}
 
-	protected BasicClient( URL serverUrl, String apiKey, String secret, String sessionKey, CommunicationStrategy communicationStrategy ) {
+	protected BasicClient( URL serverUrl, URL serverUrlHttps, String apiKey, String secret, String sessionKey, CommunicationStrategy communicationStrategy ) {
 		this.cacheSessionKey = sessionKey;
-		this._apiKey = apiKey;
-		this._secret = secret;
+		this.apiKey = apiKey;
+		this.secret = secret;
 		if ( secret.endsWith( "__" ) ) {
-			_isDesktop = true;
+			isSessionSecret = true;
 		}
-		this._serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
-		this._communicationStrategy = communicationStrategy;
+		this.serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
+		this.serverUrlHttps = ( null != serverUrlHttps ) ? serverUrlHttps : FacebookApiUrls.getDefaultHttpsServerUrl();
+
+		this.communicationStrategy = communicationStrategy;
 		this.batchMode = false;
 		this.queries = new ArrayList<BatchQuery>();
 	}
 
 	public String getApiKey() {
-		return _apiKey;
+		return apiKey;
 	}
 
 	public String getSecret() {
-		return _secret;
+		return secret;
 	}
 
 	public void beginPermissionsMode( String apiKey ) {
@@ -111,6 +114,35 @@ public class BasicClient {
 
 	public void setCacheSessionKey( String cacheSessionKey ) {
 		this.cacheSessionKey = cacheSessionKey;
+	}
+
+
+	public void setServerUrl( String newUrl ) {
+		String base = newUrl;
+		if ( base.startsWith( "http" ) ) {
+			base = base.substring( base.indexOf( "://" ) + 3 );
+		}
+		try {
+			String url = "http://" + base;
+			serverUrl = new URL( url );
+		}
+		catch ( MalformedURLException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+	}
+
+	public void setServerUrlHttps( String newUrl ) {
+		String base = newUrl;
+		if ( base.startsWith( "https" ) ) {
+			base = base.substring( base.indexOf( "://" ) + 3 );
+		}
+		try {
+			String url = "https://" + base;
+			serverUrlHttps = new URL( url );
+		}
+		catch ( MalformedURLException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
 	}
 
 	/**
@@ -141,7 +173,7 @@ public class BasicClient {
 		return callMethod( responseFormat, method, paramPairs, null, null );
 	}
 
-	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
+	protected SortedMap<String,String> prepareRequestParams( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs )
 			throws FacebookException {
 		SortedMap<String,String> params = new TreeMap<String,String>();
 
@@ -149,11 +181,15 @@ public class BasicClient {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
 
+		if ( isSessionSecret() ) {
+			params.put( "ss", "1" );
+		}
+
 		params.put( "method", method.methodName() );
-		params.put( "api_key", _apiKey );
+		params.put( "api_key", apiKey );
 		params.put( "v", IFacebookRestClient.TARGET_API_VERSION );
 
-		if ( null != responseFormat ) {
+		if ( responseFormat != null ) {
 			params.put( "format", responseFormat );
 		}
 
@@ -164,15 +200,24 @@ public class BasicClient {
 		}
 
 		for ( Pair<String,CharSequence> p : paramPairs ) {
-			CharSequence oldVal = params.put( p.first, BasicClientHelper.toString( p.second ) );
-			if ( oldVal != null ) {
-				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", p.first, oldVal, p.second ) );
+			final String key = p.first;
+			if ( !"sig".equals( "sig" ) ) {
+				CharSequence oldVal = params.put( key, BasicClientHelper.toString( p.second ) );
+				if ( oldVal != null ) {
+					log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", key, oldVal, p.second ) );
+				}
 			}
 		}
 
-		assert ( !params.containsKey( "sig" ) );
-		String signature = FacebookSignatureUtil.generateSignature( params, _secret );
+		String signature = FacebookSignatureUtil.generateSignature( params, secret );
 		params.put( "sig", signature );
+
+		return params;
+	}
+
+	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
+			throws FacebookException {
+		SortedMap<String,String> params = prepareRequestParams( responseFormat, method, paramPairs );
 
 		if ( batchMode ) {
 			// if we are running in batch mode, don't actually execute the query now, just add it to the list
@@ -200,38 +245,22 @@ public class BasicClient {
 
 		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
-			return method.takesFile() ? postFileRequest( method, params, fileName, fileStream ) : postRequest( method, params, doHttps );
+			URL url = ( doHttps ) ? serverUrlHttps : serverUrl;
+			if ( method.takesFile() ) {
+				if ( log.isDebugEnabled() ) {
+					log.debug( method.methodName() + ": POST-FILE: " + url.toString() + ": " + params );
+				}
+				return communicationStrategy.postFileRequest( url, params, fileName, fileStream );
+			} else {
+				if ( log.isDebugEnabled() ) {
+					log.debug( method.methodName() + ": POST: " + url.toString() + ": " + params );
+				}
+				return communicationStrategy.sendPostRequest( url, params );
+			}
 		}
 		catch ( IOException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
 		}
-	}
-
-	private String postRequest( IFacebookMethod method, Map<String,String> params, boolean doHttps ) throws IOException {
-		URL serverUrl = ( doHttps ) ? FacebookApiUrls.getDefaultHttpsServerUrl() : _serverUrl;
-		if ( log.isDebugEnabled() ) {
-			log.debug( method.methodName() + ": POST: " + serverUrl.toString() + ": " + params );
-		}
-		return _communicationStrategy.sendPostRequest( serverUrl, params );
-	}
-
-	/**
-	 * Helper function for posting a request that includes raw file data, eg {@link #photos_upload}.
-	 * 
-	 * @param methodName
-	 *            the name of the method
-	 * @param params
-	 *            request parameters (not including the file)
-	 * @param doEncode
-	 *            whether to UTF8-encode the parameters
-	 * @return an InputStream with the request response
-	 * @see #photos_upload
-	 */
-	protected String postFileRequest( IFacebookMethod method, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
-		if ( log.isDebugEnabled() ) {
-			log.debug( method.methodName() + ": POST-FILE: " + _serverUrl.toString() + ": " + params );
-		}
-		return _communicationStrategy.postFileRequest( _serverUrl, params, fileName, fileStream );
 	}
 
 	public void beginBatch() {
@@ -239,62 +268,47 @@ public class BasicClient {
 		queries = new ArrayList<BatchQuery>();
 	}
 
-	@SuppressWarnings("unchecked")
-	public String batch_run( String responseFormat, String methods, boolean serial ) throws FacebookException {
-		if ( !serial ) {
-			return callMethod( responseFormat, FacebookMethod.BATCH_RUN, Pairs.newPair( "method_feed", methods ) );
-		} else {
-			return callMethod( responseFormat, FacebookMethod.BATCH_RUN, Pairs.newPair( "method_feed", methods ), Pairs.newPair( "serial_only", "1" ) );
-		}
-	}
-
-	public void setServerUrl( String newUrl ) {
-		String base = newUrl;
-		if ( base.startsWith( "http" ) ) {
-			base = base.substring( base.indexOf( "://" ) + 3 );
-		}
-		try {
-			String url = "http://" + base;
-			_serverUrl = new URL( url );
-			// do not set default url
-			// setDefaultServerUrl( _serverUrl );
-		}
-		catch ( MalformedURLException ex ) {
-			throw BasicClientHelper.runtimeException( ex );
-		}
-	}
-
 	/**
 	 * Returns a list of String raw responses which will be further broken down by the adapters into the actual individual responses. One string is returned per 20
 	 * methods in the batch.
 	 */
-	public List<String> executeBatch( String responseFormat, boolean serial ) throws FacebookException {
-		int BATCH_LIMIT = 20;
-		this.batchMode = false;
-		List<String> result = new ArrayList<String>();
-		List<BatchQuery> buffer = new ArrayList<BatchQuery>();
-
-		while ( !this.queries.isEmpty() ) {
-			buffer.add( this.queries.remove( 0 ) );
-			if ( ( buffer.size() == BATCH_LIMIT ) || ( this.queries.isEmpty() ) ) {
-				// we can only actually batch up to 20 at once
-
-				String batchRawResponse = batch_run( responseFormat, encodeMethods( buffer ), serial );
-				result.add( batchRawResponse );
-
-				if ( buffer.size() == BATCH_LIMIT ) {
-					log.debug( "Clearing buffer for the next run." );
-					buffer.clear();
-				} else {
-					log.trace( "No need to clear buffer, this is the final iteration of the batch" );
+	public List<String> executeBatch( boolean serial ) throws FacebookException {
+		final int BATCH_LIMIT = 20;
+		batchMode = false;
+		final List<String> result = new ArrayList<String>();
+		List<BatchQuery> buffer = new ArrayList<BatchQuery>( BATCH_LIMIT );
+		while ( !queries.isEmpty() ) {
+			buffer.add( queries.remove( 0 ) );
+			boolean batchFull = buffer.size() >= BATCH_LIMIT;
+			if ( batchFull || ( queries.isEmpty() ) ) {
+				List<String> batchRawResponse = batch_run( encodeMethods( buffer ), serial );
+				result.addAll( batchRawResponse );
+				if ( batchFull ) {
+					buffer = new ArrayList<BatchQuery>( BATCH_LIMIT );
 				}
 			}
 		}
-
 		return result;
 	}
 
-	public static String encodeMethods( List<BatchQuery> queryList ) throws FacebookException {
+	@SuppressWarnings("unchecked")
+	protected List<String> batch_run( String methods, boolean serial ) throws FacebookException {
+		final String call = callMethod( "json", FacebookMethod.BATCH_RUN, Pairs.newPair( "method_feed", methods ), Pairs.newPair10( "serial_only", serial ) );
+		try {
+			JSONArray arr = new JSONArray( call );
+			List<String> out = new ArrayList<String>();
+			int l = arr.length();
+			for ( int i = 0; i < l; i++ ) {
+				out.add( arr.getString( i ) );
+			}
+			return out;
+		}
+		catch ( JSONException ex ) {
+			throw BasicClientHelper.runtimeException( ex );
+		}
+	}
+
+	protected static String encodeMethods( List<BatchQuery> queryList ) throws FacebookException {
 		JSONArray result = new JSONArray();
 		for ( BatchQuery query : queryList ) {
 			if ( query.getMethod().takesFile() ) {
