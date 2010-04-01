@@ -241,6 +241,7 @@ public class FacebookSessionTestUtils {
 	}
 
 	public static void pauseForStreamRate() {
+		log.debug( "pauseForStreamRate()" );
 		try {
 			Thread.sleep( 6000 );
 		}
