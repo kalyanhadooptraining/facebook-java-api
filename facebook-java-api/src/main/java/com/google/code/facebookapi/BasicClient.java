@@ -218,7 +218,7 @@ public class BasicClient {
 						StackTraceElement caller = traceElems[index + 1];
 						final boolean calledFromSelf = caller.getClassName().equals( BasicClient.class.getName() );
 						final boolean calledFromAuth = caller.getMethodName().startsWith( "auth_" );
-						if ( calledFromSelf && ( !calledFromAuth ) ) {
+						if ( calledFromSelf && !calledFromAuth ) {
 							addToBatch = false;
 						}
 						break;
