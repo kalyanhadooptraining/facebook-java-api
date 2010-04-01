@@ -1,6 +1,7 @@
 package com.google.code.facebookapi;
 
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Represents a bactched Facebook API request.
@@ -9,9 +10,9 @@ import java.util.Map;
 class BatchQuery {
 
 	private IFacebookMethod method;
-	private Map<String,String> params;
+	private SortedMap<String,String> params;
 
-	public BatchQuery( IFacebookMethod method, Map<String,String> params ) {
+	public BatchQuery( IFacebookMethod method, SortedMap<String,String> params ) {
 		this.method = method;
 		this.params = params;
 	}
@@ -20,7 +21,7 @@ class BatchQuery {
 		return method;
 	}
 
-	public void setMethod( FacebookMethod method ) {
+	protected void setMethod( FacebookMethod method ) {
 		this.method = method;
 	}
 
@@ -28,7 +29,7 @@ class BatchQuery {
 		return params;
 	}
 
-	public void setParams( Map<String,String> params ) {
+	protected void setParams( SortedMap<String,String> params ) {
 		this.params = params;
 	}
 
