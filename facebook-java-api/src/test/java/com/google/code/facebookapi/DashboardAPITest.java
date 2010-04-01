@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +33,6 @@ public class DashboardAPITest {
 	 */
 	@Test
 	public void testMultiClearNews_basic() throws Exception {
-
 		// seed data
 		Long userId = Long.parseLong( properties.getUID() );
 		List<Long> ids = new ArrayList<Long>();
@@ -55,7 +55,7 @@ public class DashboardAPITest {
 		DashboardMultiAddNewsResponse addResponse = jaxbClient.dashboard_multiAddNews( ids, newsItems );
 		Long newsId = addResponse.getDashboardMultiAddNewsResponseElt().get( 0 ).getValue();
 
-		assert newsId > 0;
+		Assert.assertTrue( newsId > 0 );
 
 		// build parameters
 		Collection<Long> newsIds = new ArrayList<Long>();
@@ -66,22 +66,23 @@ public class DashboardAPITest {
 
 		// invoke api
 		DashboardMultiClearNewsResponse clearResponse = jaxbClient.dashboard_multiClearNews( parameter );
-		assert clearResponse != null;
+		Assert.assertNotNull( clearResponse );
 
 		// validate
 		List<DashboardMultiClearNewsResponseElt> responseElts = clearResponse.getDashboardMultiClearNewsResponseElt();
-		assert responseElts != null;
-		assert responseElts.size() == 1;
+		Assert.assertNotNull( responseElts );
+		Assert.assertEquals( 1, responseElts.size() );
 
 		DashboardMultiClearNewsResponseElt userRecords = responseElts.get( 0 );
-		assert userRecords != null;
-		assert userRecords.getKey().equals( userId );
+		Assert.assertNotNull( userRecords );
+		Assert.assertEquals( userId, userRecords.getKey() );
 
 		List<IdToBooleanPair> idPairs = userRecords.getDashboardMultiClearNewsResponseEltElt();
-		assert idPairs != null;
-		assert idPairs.size() == 1;
-		assert idPairs.get( 0 ).getKey().equals( newsId );
-		assert idPairs.get( 0 ).isValue();
+		Assert.assertNotNull( idPairs );
+		Assert.assertEquals( 1, idPairs.size() );
+		final IdToBooleanPair pair = idPairs.get( 0 );
+		Assert.assertEquals( newsId, pair.getKey() );
+		Assert.assertTrue( pair.isValue() );
 	}
 
 	/**

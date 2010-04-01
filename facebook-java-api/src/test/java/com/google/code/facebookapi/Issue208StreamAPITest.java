@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Issue208StreamAPITest {
@@ -21,8 +20,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -33,8 +30,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -48,8 +43,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -63,8 +56,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -78,8 +69,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertFalse( StringUtils.isEmpty( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -98,8 +87,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		// System.out.println( result );
-
 		return result.toString();
 	}
 
@@ -111,8 +98,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -132,8 +117,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 
-		// System.out.println( result );
-
 		return result.toString();
 	}
 
@@ -143,8 +126,6 @@ public class Issue208StreamAPITest {
 		Object result = client.stream_getComments( postId );
 
 		Assert.assertNotNull( result );
-
-		// System.out.println( result );
 	}
 
 	private void streamRemoveComment( final String postId ) throws Exception {
@@ -153,8 +134,6 @@ public class Issue208StreamAPITest {
 		Object result = client.stream_removeComment( postId, null );
 
 		Assert.assertNotNull( result );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -173,8 +152,6 @@ public class Issue208StreamAPITest {
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
 
-		// System.out.println( result );
-
 		return result.toString();
 	}
 
@@ -185,8 +162,6 @@ public class Issue208StreamAPITest {
 
 		Assert.assertNotNull( result );
 		Assert.assertTrue( Boolean.valueOf( result.toString() ) );
-
-		// System.out.println( result );
 	}
 
 	@Test
@@ -199,8 +174,6 @@ public class Issue208StreamAPITest {
 		Object result = client.stream_getFilters( null );
 
 		Assert.assertNotNull( result );
-
-		// System.out.println( result );
 	}
 
 }
