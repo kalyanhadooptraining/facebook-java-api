@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +53,7 @@ public class DefaultCommunicationStrategy implements CommunicationStrategy {
 		this.readTimeout = readTimeout;
 	}
 
-	public String postRequest( URL serverUrl, Map<String,String> params ) throws IOException {
+	public String postRequest( URL serverUrl, SortedMap<String,String> params ) throws IOException {
 		HttpURLConnection conn = null;
 		OutputStream out = null;
 		InputStream in = null;
@@ -81,7 +82,7 @@ public class DefaultCommunicationStrategy implements CommunicationStrategy {
 		}
 	}
 
-	public String postRequest( URL serverUrl, Map<String,String> params, String fileName, InputStream fileStream ) throws IOException {
+	public String postRequest( URL serverUrl, SortedMap<String,String> params, String fileName, InputStream fileStream ) throws IOException {
 		HttpURLConnection con = null;
 		OutputStream urlOut = null;
 		InputStream in = null;

@@ -160,38 +160,35 @@ public class BasicClient {
 			throws FacebookException {
 		SortedMap<String,String> params = new TreeMap<String,String>();
 
+		for ( Pair<String,CharSequence> p : paramPairs ) {
+			final String key = p.first;
+			CharSequence oldVal = params.put( key, BasicClientHelper.toString( p.second ) );
+			if ( oldVal != null ) {
+				log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", key, oldVal, p.second ) );
+			}
+		}
+
 		if ( permissionsApiKey != null ) {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
 
-		if ( sessionSecret ) {
-			params.put( "ss", "1" );
-		}
-
-		params.put( "method", method.methodName() );
-		params.put( "api_key", apiKey );
 		params.put( "v", IFacebookRestClient.TARGET_API_VERSION );
-
+		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
+		params.put( "method", method.methodName() );
 		if ( responseFormat != null ) {
 			params.put( "format", responseFormat );
 		}
 
-		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
+		params.put( "api_key", apiKey );
 		boolean includeSession = !method.requiresNoSession() && sessionKey != null;
 		if ( includeSession ) {
 			params.put( "session_key", sessionKey );
 		}
 
-		for ( Pair<String,CharSequence> p : paramPairs ) {
-			final String key = p.first;
-			if ( !"sig".equals( "sig" ) ) {
-				CharSequence oldVal = params.put( key, BasicClientHelper.toString( p.second ) );
-				if ( oldVal != null ) {
-					log.warn( String.format( "For parameter %s, overwrote old value %s with new value %s.", key, oldVal, p.second ) );
-				}
-			}
+		params.remove( "sig" );
+		if ( sessionSecret ) {
+			params.put( "ss", "1" );
 		}
-
 		String signature = FacebookSignatureUtil.generateSignature( params, secret );
 		params.put( "sig", signature );
 
