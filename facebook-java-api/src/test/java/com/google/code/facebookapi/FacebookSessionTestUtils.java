@@ -243,7 +243,7 @@ public class FacebookSessionTestUtils {
 	public static void pauseForStreamRate() {
 		log.debug( "pauseForStreamRate()" );
 		try {
-			Thread.sleep( 6000 );
+			Thread.sleep( 8000 );
 		}
 		catch ( InterruptedException ex ) {
 			throw BasicClientHelper.runtimeException( ex );
