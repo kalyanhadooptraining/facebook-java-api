@@ -463,6 +463,7 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		if ( batchMode ) {
 			// if we are running in batch mode, don't actually execute the query now, just add it to the list
 			boolean addToBatch = true;
+			// FIXME what the heck is going on here??
 			if ( method.methodName().equals( FacebookMethod.USERS_GET_LOGGED_IN_USER.methodName() ) ) {
 				Exception trace = new Exception();
 				StackTraceElement[] traceElems = trace.getStackTrace();
@@ -470,7 +471,9 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 				for ( StackTraceElement elem : traceElems ) {
 					if ( elem.getMethodName().indexOf( "_" ) != -1 ) {
 						StackTraceElement caller = traceElems[index + 1];
-						if ( ( caller.getClassName().equals( ExtensibleClient.class.getName() ) ) && ( !caller.getMethodName().startsWith( "auth_" ) ) ) {
+						final boolean calledFromSelf = caller.getClassName().equals( ExtensibleClient.class.getName() );
+						final boolean calledFromAuth = caller.getMethodName().startsWith( "auth_" );
+						if ( calledFromSelf && !calledFromAuth ) {
 							addToBatch = false;
 						}
 						break;

@@ -33,49 +33,36 @@ public class BasicClient {
 
 	protected final String apiKey;
 	protected final String secret;
-	protected boolean isSessionSecret;
+	protected boolean sessionSecret;
 
-	protected String cacheSessionKey;
-	protected Long cacheSessionExpires;
+	protected String sessionKey;
 
 	protected boolean batchMode;
+	protected List<BatchQuery> queries;
+	protected String permissionsApiKey;
 
 	public boolean isBatchMode() {
 		return batchMode;
 	}
 
-	protected List<BatchQuery> queries;
-
-	public List<BatchQuery> getQueries() {
+	protected List<BatchQuery> getQueries() {
 		return queries;
 	}
 
-	protected String permissionsApiKey = null;
-
-
-	public boolean isSessionSecret() {
-		return isSessionSecret;
+	protected BasicClient( String apiKey, String secret, boolean sessionSecret ) {
+		this( apiKey, secret, sessionSecret, null );
 	}
 
-
-
-
-
-	protected BasicClient( String apiKey, String secret ) {
-		this( apiKey, secret, null );
+	protected BasicClient( String apiKey, String secret, boolean sessionSecret, String sessionKey ) {
+		this( null, null, apiKey, secret, sessionSecret, sessionKey, new DefaultCommunicationStrategy() );
 	}
 
-	protected BasicClient( String apiKey, String secret, String sessionKey ) {
-		this( null, null, apiKey, secret, sessionKey, new DefaultCommunicationStrategy() );
-	}
-
-	protected BasicClient( URL serverUrl, URL serverUrlHttps, String apiKey, String secret, String sessionKey, CommunicationStrategy communicationStrategy ) {
-		this.cacheSessionKey = sessionKey;
+	protected BasicClient( URL serverUrl, URL serverUrlHttps, String apiKey, String secret, boolean sessionSecret, String sessionKey,
+			CommunicationStrategy communicationStrategy ) {
+		this.sessionKey = sessionKey;
 		this.apiKey = apiKey;
 		this.secret = secret;
-		if ( secret.endsWith( "__" ) ) {
-			isSessionSecret = true;
-		}
+		this.sessionSecret = sessionSecret || secret.endsWith( "__" );
 		this.serverUrl = ( null != serverUrl ) ? serverUrl : FacebookApiUrls.getDefaultServerUrl();
 		this.serverUrlHttps = ( null != serverUrlHttps ) ? serverUrlHttps : FacebookApiUrls.getDefaultHttpsServerUrl();
 
@@ -92,6 +79,10 @@ public class BasicClient {
 		return secret;
 	}
 
+	public boolean isSessionSecret() {
+		return sessionSecret;
+	}
+
 	public void beginPermissionsMode( String apiKey ) {
 		this.permissionsApiKey = apiKey;
 	}
@@ -100,20 +91,12 @@ public class BasicClient {
 		this.permissionsApiKey = null;
 	}
 
-	public Long getCacheSessionExpires() {
-		return cacheSessionExpires;
+	public String getSessionKey() {
+		return sessionKey;
 	}
 
-	public void setCacheSessionExpires( Long cacheSessionExpires ) {
-		this.cacheSessionExpires = cacheSessionExpires;
-	}
-
-	public String getCacheSessionKey() {
-		return cacheSessionKey;
-	}
-
-	public void setCacheSessionKey( String cacheSessionKey ) {
-		this.cacheSessionKey = cacheSessionKey;
+	public void setSessionKey( String cacheSessionKey ) {
+		this.sessionKey = cacheSessionKey;
 	}
 
 
@@ -181,7 +164,7 @@ public class BasicClient {
 			params.put( "call_as_apikey", permissionsApiKey );
 		}
 
-		if ( isSessionSecret() ) {
+		if ( sessionSecret ) {
 			params.put( "ss", "1" );
 		}
 
@@ -194,9 +177,9 @@ public class BasicClient {
 		}
 
 		params.put( "call_id", Long.toString( System.currentTimeMillis() ) );
-		boolean includeSession = !method.requiresNoSession() && cacheSessionKey != null;
+		boolean includeSession = !method.requiresNoSession() && sessionKey != null;
 		if ( includeSession ) {
-			params.put( "session_key", cacheSessionKey );
+			params.put( "session_key", sessionKey );
 		}
 
 		for ( Pair<String,CharSequence> p : paramPairs ) {
@@ -218,10 +201,14 @@ public class BasicClient {
 	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
 			throws FacebookException {
 		SortedMap<String,String> params = prepareRequestParams( responseFormat, method, paramPairs );
-
+		final boolean fileCall = fileName != null || fileStream != null;
 		if ( batchMode ) {
+			if ( fileCall ) {
+				throw new FacebookException( ErrorCode.GEN_INVALID_PARAMETER, "File upload API calls cannot be batched:  " + method.methodName() );
+			}
 			// if we are running in batch mode, don't actually execute the query now, just add it to the list
 			boolean addToBatch = true;
+			// FIXME what the heck is going on here??
 			if ( method.methodName().equals( FacebookMethod.USERS_GET_LOGGED_IN_USER.methodName() ) ) {
 				Exception trace = new Exception();
 				StackTraceElement[] traceElems = trace.getStackTrace();
@@ -229,7 +216,9 @@ public class BasicClient {
 				for ( StackTraceElement elem : traceElems ) {
 					if ( elem.getMethodName().indexOf( "_" ) != -1 ) {
 						StackTraceElement caller = traceElems[index + 1];
-						if ( ( caller.getClassName().equals( BasicClient.class.getName() ) ) && ( !caller.getMethodName().startsWith( "auth_" ) ) ) {
+						final boolean calledFromSelf = caller.getClassName().equals( BasicClient.class.getName() );
+						final boolean calledFromAuth = caller.getMethodName().startsWith( "auth_" );
+						if ( calledFromSelf && ( !calledFromAuth ) ) {
 							addToBatch = false;
 						}
 						break;
@@ -239,14 +228,16 @@ public class BasicClient {
 			}
 			if ( addToBatch ) {
 				queries.add( new BatchQuery( method, params ) );
+				// should return null be here or below
+				// return null;
 			}
 			return null;
 		}
 
-		boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 		try {
+			boolean doHttps = FacebookMethod.AUTH_GET_SESSION.equals( method ) && "true".equals( params.get( "generate_session_secret" ) );
 			URL url = ( doHttps ) ? serverUrlHttps : serverUrl;
-			if ( method.takesFile() ) {
+			if ( fileCall ) {
 				if ( log.isDebugEnabled() ) {
 					log.debug( method.methodName() + ": POST-FILE: " + url.toString() + ": " + params );
 				}
@@ -273,14 +264,17 @@ public class BasicClient {
 	 * methods in the batch.
 	 */
 	public List<String> executeBatch( boolean serial ) throws FacebookException {
-		final int BATCH_LIMIT = 20;
 		batchMode = false;
+		final List<BatchQuery> q = queries;
+		queries = null;
+
+		final int BATCH_LIMIT = 20;
 		final List<String> result = new ArrayList<String>();
 		List<BatchQuery> buffer = new ArrayList<BatchQuery>( BATCH_LIMIT );
-		while ( !queries.isEmpty() ) {
-			buffer.add( queries.remove( 0 ) );
+		while ( !q.isEmpty() ) {
+			buffer.add( q.remove( 0 ) );
 			boolean batchFull = buffer.size() >= BATCH_LIMIT;
-			if ( batchFull || ( queries.isEmpty() ) ) {
+			if ( batchFull || ( q.isEmpty() ) ) {
 				List<String> batchRawResponse = batch_run( encodeMethods( buffer ), serial );
 				result.addAll( batchRawResponse );
 				if ( batchFull ) {
