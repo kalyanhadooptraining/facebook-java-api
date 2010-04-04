@@ -258,7 +258,8 @@ public class BasicClient {
 
 	@SuppressWarnings("unchecked")
 	protected List<String> batch_run( String methods, boolean serial ) throws FacebookException {
-		final String call = callMethod( "json", FacebookMethod.BATCH_RUN, Pairs.newPair( "method_feed", methods ), Pairs.newPair10( "serial_only", serial ) );
+		final String call = callMethod( "json", FacebookMethod.BATCH_RUN, null, Arrays.asList( Pairs.newPair( "method_feed", methods ), Pairs.newPair10( "serial_only",
+				serial ) ), null, null );
 		try {
 			JSONArray arr = new JSONArray( call );
 			List<String> out = new ArrayList<String>();
