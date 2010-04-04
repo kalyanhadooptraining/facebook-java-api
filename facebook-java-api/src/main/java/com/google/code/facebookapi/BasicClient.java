@@ -35,8 +35,6 @@ public class BasicClient {
 	protected final String secret;
 	protected boolean sessionSecret;
 
-	protected String sessionKey;
-
 	protected boolean batchMode;
 	protected List<BatchQuery> queries;
 	protected String permissionsApiKey;
@@ -50,16 +48,10 @@ public class BasicClient {
 	}
 
 	protected BasicClient( String apiKey, String secret, boolean sessionSecret ) {
-		this( apiKey, secret, sessionSecret, null );
+		this( null, null, apiKey, secret, sessionSecret, new DefaultCommunicationStrategy() );
 	}
 
-	protected BasicClient( String apiKey, String secret, boolean sessionSecret, String sessionKey ) {
-		this( null, null, apiKey, secret, sessionSecret, sessionKey, new DefaultCommunicationStrategy() );
-	}
-
-	protected BasicClient( URL serverUrl, URL serverUrlHttps, String apiKey, String secret, boolean sessionSecret, String sessionKey,
-			CommunicationStrategy communicationStrategy ) {
-		this.sessionKey = sessionKey;
+	protected BasicClient( URL serverUrl, URL serverUrlHttps, String apiKey, String secret, boolean sessionSecret, CommunicationStrategy communicationStrategy ) {
 		this.apiKey = apiKey;
 		this.secret = secret;
 		this.sessionSecret = sessionSecret || secret.endsWith( "__" );
@@ -91,15 +83,6 @@ public class BasicClient {
 		this.permissionsApiKey = null;
 	}
 
-	public String getSessionKey() {
-		return sessionKey;
-	}
-
-	public void setSessionKey( String cacheSessionKey ) {
-		this.sessionKey = cacheSessionKey;
-	}
-
-
 	public void setServerUrl( String newUrl ) {
 		String base = newUrl;
 		if ( base.startsWith( "http" ) ) {
@@ -128,36 +111,25 @@ public class BasicClient {
 		}
 	}
 
-	/**
-	 * Call the specified method, with the given parameters, and return a DOM tree with the results.
-	 * 
-	 * @param method
-	 *            the fieldName of the method
-	 * @param paramPairs
-	 *            a list of arguments to the method
-	 * @throws Exception
-	 *             with a description of any errors given to us by the server.
-	 */
-	protected String callMethod( String responseFormat, IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException {
-		return callMethod( responseFormat, method, Arrays.asList( paramPairs ), null, null );
+	public String callMethod( String responseFormat, IFacebookMethod method, String sessionKey, Pair<String,CharSequence>... paramPairs ) throws FacebookException {
+		return callMethod( responseFormat, method, sessionKey, Arrays.asList( paramPairs ), null, null );
 	}
 
-	/**
-	 * Call the specified method, with the given parameters, and return a DOM tree with the results.
-	 * 
-	 * @param method
-	 *            the fieldName of the method
-	 * @param paramPairs
-	 *            a list of arguments to the method
-	 * @throws Exception
-	 *             with a description of any errors given to us by the server.
-	 */
-	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException {
-		return callMethod( responseFormat, method, paramPairs, null, null );
-	}
-
-	protected SortedMap<String,String> prepareRequestParams( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs )
+	public String callMethod( String responseFormat, IFacebookMethod method, String sessionKey, Collection<Pair<String,CharSequence>> paramPairs )
 			throws FacebookException {
+		return callMethod( responseFormat, method, sessionKey, paramPairs, null, null );
+	}
+
+	public String callMethod( String responseFormat, IFacebookMethod method, Pair<String,CharSequence>... paramPairs ) throws FacebookException {
+		return callMethod( responseFormat, method, null, Arrays.asList( paramPairs ), null, null );
+	}
+
+	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException {
+		return callMethod( responseFormat, method, null, paramPairs, null, null );
+	}
+
+	protected SortedMap<String,String> prepareRequestParams( String responseFormat, IFacebookMethod method, String sessionKey,
+			Collection<Pair<String,CharSequence>> paramPairs ) throws FacebookException {
 		SortedMap<String,String> params = new TreeMap<String,String>();
 
 		for ( Pair<String,CharSequence> p : paramPairs ) {
@@ -180,7 +152,7 @@ public class BasicClient {
 		}
 
 		params.put( "api_key", apiKey );
-		boolean includeSession = !method.requiresNoSession() && sessionKey != null;
+		boolean includeSession = sessionKey != null;
 		if ( includeSession ) {
 			params.put( "session_key", sessionKey );
 		}
@@ -195,9 +167,9 @@ public class BasicClient {
 		return params;
 	}
 
-	public String callMethod( String responseFormat, IFacebookMethod method, Collection<Pair<String,CharSequence>> paramPairs, String fileName, InputStream fileStream )
-			throws FacebookException {
-		SortedMap<String,String> params = prepareRequestParams( responseFormat, method, paramPairs );
+	public String callMethod( String responseFormat, IFacebookMethod method, String sessionKey, Collection<Pair<String,CharSequence>> paramPairs, String fileName,
+			InputStream fileStream ) throws FacebookException {
+		SortedMap<String,String> params = prepareRequestParams( responseFormat, method, sessionKey, paramPairs );
 		final boolean fileCall = fileName != null || fileStream != null;
 		if ( batchMode ) {
 			if ( fileCall ) {
