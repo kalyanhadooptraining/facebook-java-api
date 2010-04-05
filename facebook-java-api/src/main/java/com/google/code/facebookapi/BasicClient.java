@@ -23,10 +23,6 @@ public class BasicClient {
 
 	protected static Log log = LogFactory.getLog( BasicClient.class );
 
-	protected static final String CRLF = "\r\n";
-	protected static final String PREF = "--";
-	protected static final int UPLOAD_BUFFER_SIZE = 1024;
-
 	protected URL serverUrl;
 	protected URL serverUrlHttps;
 	private CommunicationStrategy communicationStrategy;
@@ -60,7 +56,7 @@ public class BasicClient {
 
 		this.communicationStrategy = communicationStrategy;
 		this.batchMode = false;
-		this.queries = new ArrayList<BatchQuery>();
+		this.queries = null;
 	}
 
 	public String getApiKey() {
