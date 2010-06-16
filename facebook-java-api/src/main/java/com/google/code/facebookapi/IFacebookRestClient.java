@@ -1589,6 +1589,21 @@ public interface IFacebookRestClient<T> {
 	 */
 	public boolean pages_isAdmin( Long pageId ) throws FacebookException;
 
+
+	/**
+	 * Returns all orders for the given application
+	 * 
+	 * @param status
+	 *            Return orders with the specified status. Specify one of reserved, settled, or refunded
+	 * @param startTime
+	 *            Return orders within this time interval
+	 * @param endTime
+	 *            Return orders within this time interval
+	 * @return An array of {order_ids => order_details}. Currently limited by facebook to returning 100,000 orders per query.
+	 */
+	@FacebookReturnType(JSON = JSONArray.class)
+	public Object payments_getOrders( String status, long startTime, long endTime ) throws FacebookException;
+
 	/**
 	 * Retrieves the outstanding notifications for the session user.
 	 * 

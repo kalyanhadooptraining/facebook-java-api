@@ -246,8 +246,10 @@ public enum FacebookMethod implements IFacebookMethod, CharSequence {
 	DASHBOARD_PUBLISH_ACTIVITY("dashboard.publishActivity"),
 	DASHBOARD_MULTI_INCREMENT_COUNT("dashboard.multiIncrementCount"),
 	DASHBOARD_CLEAR_GLOBAL_NEWS("dashboard.clearGlobalNews"),
-	DASHBOARD_MULTI_CLEAR_NEWS("dashboard.multiClearNews");
-
+	DASHBOARD_MULTI_CLEAR_NEWS("dashboard.multiClearNews"),
+	
+	// Payments
+	PAYMENTS_GET_ORDERS("facebook.payments.getOrders");
 
 	private static final EnumSet<FacebookMethod> listSessionNone;
 	private static final EnumSet<FacebookMethod> listTakesFile;

@@ -2420,6 +2420,15 @@ public class ExtensibleClient implements IFacebookRestClient<Object> {
 		return callMethod( method, params, fileName, fileStream );
 	}
 
+	public Object payments_getOrders( String status, long startTime, long endTime ) throws FacebookException {
+		List<Pair<String,CharSequence>> params = new ArrayList<Pair<String,CharSequence>>( 3 );
+		Pairs.addParam( "status", status, params );
+		Pairs.addParam( "start_time", startTime, params );
+		Pairs.addParam( "end_time", endTime, params );
+		Pairs.addParam( "test_mode", "1", params );
+		return callMethod( FacebookMethod.PAYMENTS_GET_ORDERS, params );
+	}
+
 	// ========== SEND NOTIFICATIONS ==========
 
 	@Deprecated
