@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+<!--
+	<parent>
+	  <groupId>com.google.code.facebookapi</groupId>
+	  <artifactId>parent-pom</artifactId>
+	  <version>3.0.4-SNAPSHOT</version>
+	</parent>
+-->
+  <groupId>com.google.code.facebookapi</groupId>
+  <artifactId>projects-all</artifactId>
+  <packaging>pom</packaging>
+  <version>3.0.4</version>
+  <name>Facebook Java Library - All</name>
+  <description>Facebook Java Library - All</description>
+  <modules>
+    <module>parent-pom</module>
+    <module>annotation-processor</module>
+    <module>facebook-java-api-schema</module>
+    <module>facebook-java-api</module>
+  </modules>
+  <scm>
+    <url>https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4</developerConnection>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>googlecode-releases.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <!-- <url>http://oss.sonatype.org/content/repositories/googlecode-releases</url> -->
+    </repository>
+    <snapshotRepository>
+      <id>googlecode-snapshots.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
+</project>
