@@ -20,6 +20,11 @@
     <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
   </modules>
+  <scm>
+    <url>https://facebook-java-api.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk</developerConnection>
+  </scm>
   <distributionManagement>
     <repository>
       <id>googlecode-releases.oss.sonatype.com</id>
