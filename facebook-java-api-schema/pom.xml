@@ -3,19 +3,19 @@
 	<parent>
 		<groupId>com.google.code.facebookapi</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>3.0.4</version>
+		<version>3.0.5-SNAPSHOT</version>
 	</parent>
 	<groupId>com.google.code.facebookapi</groupId>
 	<artifactId>facebook-java-api-schema</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.4</version>
+	<version>3.0.5-SNAPSHOT</version>
 	<name>Facebook Java Library - JAXB Schema</name>
 	<description>Generated classes from XSD Schema</description>
 
 	<scm>
-		<url>https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4/facebook-java-api-schema</url>
-		<connection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4/facebook-java-api-schema</connection>
-		<developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/tags/release-3.0.4/facebook-java-api-schema</developerConnection>
+		<url>https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</url>
+		<connection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</connection>
+		<developerConnection>scm:svn:https://facebook-java-api.googlecode.com/svn/trunk/facebook-java-api-schema</developerConnection>
 	</scm>
 
 	<dependencies>
