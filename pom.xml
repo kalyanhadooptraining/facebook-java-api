@@ -20,4 +20,16 @@
     <module>facebook-java-api-schema</module>
     <module>facebook-java-api</module>
   </modules>
+  <distributionManagement>
+    <repository>
+      <id>googlecode-releases.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <!-- <url>http://oss.sonatype.org/content/repositories/googlecode-releases</url> -->
+    </repository>
+    <snapshotRepository>
+      <id>googlecode-snapshots.oss.sonatype.com</id>
+      <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
