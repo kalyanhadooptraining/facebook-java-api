@@ -1,3 +1,4 @@
+#labels Featured
 === Summary ===
 
 A Facebook API client implemented in Java, originally derived from the official Facebook client.
